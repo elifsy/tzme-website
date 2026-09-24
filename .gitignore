@@ -1,0 +1,33 @@
+# Frontend dependencies and build output
+node_modules/
+dist/
+coverage/
+*.log
+
+# Java and Maven build output
+server/target/
+*.class
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+server/src/main/resources/application-local.properties
+*.key
+*.pem
+*.p12
+*.jks
+
+# Local database files and exports
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.sql.gz
+
+# Editor and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
