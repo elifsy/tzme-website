@@ -1,5 +1,10 @@
 export default {
   "site": {
+    "navHome": "首页",
+    "navAbout": "关于我们",
+    "navProducts": "产品中心",
+    "navNews": "新闻资讯",
+    "navContact": "联系我们",
     "phonePlaceholder": "请输入联系电话",
     "solutions": "解决方案",
     "industries": "服务行业",

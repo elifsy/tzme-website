@@ -38,6 +38,39 @@
 .design-site .hc-ico {
   cursor: pointer;
 }
+.design-site .hc-nav .hc-menu {
+  align-items: center;
+  gap: clamp(16px, 2.3vw, 34px);
+  margin-left: 8px;
+}
+.design-site .hc-nav .hc-menu a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 0 12px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+.design-site .hc-nav .hc-menu a::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  left: 0;
+  height: 2px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.18s ease;
+}
+.design-site .hc-nav .hc-menu a:hover::after,
+.design-site .hc-nav .hc-menu a.on::after {
+  transform: scaleX(1);
+}
 .design-site .hc-lang-option {
   all: unset;
   cursor: pointer;

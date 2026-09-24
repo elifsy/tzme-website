@@ -1,26 +1,24 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { localeMessages } from '../i18n/locales/index.js'
 
 const navigationItems = [
-  { key: 'solutions', path: '/solutions' },
-  { key: 'industries', path: '/#industries' },
-  { key: 'capabilities', path: '/#capabilities' },
-  { key: 'projects', path: '/#projects' },
-  { key: 'aboutTzme', path: '/about' },
-  { key: 'insights', path: '/insights' },
-  { key: 'contact', path: '/contact' },
+  { key: 'navHome', path: '/' },
+  { key: 'navAbout', path: '/about' },
+  { key: 'navProducts', path: '/solutions' },
+  { key: 'navNews', path: '/insights' },
+  { key: 'navContact', path: '/contact' },
 ]
 
-const routeByLabel = Object.fromEntries(navigationItems.map(({ key, path }) => [localeMessages.en.site[key], path]))
 const englishCopyByLocale = Object.fromEntries(Object.entries(localeMessages).map(([code, messages]) => [
   code,
   new Map(Object.entries(messages.site).map(([key, translated]) => [translated, localeMessages.en.site[key]])),
 ]))
 
 export function useDesignPage(pageKey, page) {
+  const route = useRoute()
   const router = useRouter()
   const { t, locale } = useI18n({ useScope: 'global' })
   const drawerOpen = ref(false)
@@ -29,6 +27,11 @@ export function useDesignPage(pageKey, page) {
     label: t(`site.${key}`),
     path,
   })))
+  function isMenuActive(item) {
+    if (item.key === 'navHome') return route.path === '/'
+    if (item.key === 'navProducts') return route.path.startsWith('/solutions')
+    return route.path === item.path
+  }
   let managedProducts = []
   let managedArticles = []
   const productSlots = pageKey === 'hc-home'
@@ -159,6 +162,12 @@ export function useDesignPage(pageKey, page) {
     }
   }
 
+  function navigateLink(event, path) {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+    event.preventDefault()
+    goTo(path)
+  }
+
   async function submitInquiry(form) {
     const values = {}
     const fieldNames = ['name', 'company', 'country', 'email', 'phone', 'industry', 'requirements']
@@ -210,14 +219,11 @@ export function useDesignPage(pageKey, page) {
     const root = page.value
     const target = event.target instanceof Element ? event.target : null
     if (!root || !target) return
-    const control = target.closest('.hc-logo,.hc-menu a,.hc-foot-nav a,.hc-btn,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]')
+    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]')
     if (!control || !root.contains(control)) return
     event.preventDefault()
 
     if (control.matches('.hc-logo')) return goTo('/')
-    if (control.matches('.hc-menu a,.hc-foot-nav a')) {
-      return goTo(routeByLabel[control.dataset.action] || '/contact')
-    }
     if (control.matches('.hc-ico')) return goTo('/solutions')
     if (control.matches('.hc-soc>span')) {
       ElMessage.info(t('site.contactEmailNotice'))
@@ -249,12 +255,12 @@ export function useDesignPage(pageKey, page) {
 
   function onKeydown(event) {
     if (!['Enter', ' '].includes(event.key)) return
-    if (event.target.matches('.hc-logo,.hc-menu a,.hc-foot-nav a,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]')) onClick(event)
+    if (event.target.matches('.hc-logo,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]')) onClick(event)
   }
 
   onMounted(() => {
     const root = page.value
-    root?.querySelectorAll('.hc-menu a,.hc-foot-nav a,.hc-btn,.hc-lnk,.hc-card').forEach((control) => {
+    root?.querySelectorAll('.hc-btn,.hc-lnk,.hc-card').forEach((control) => {
       const label = control.textContent.replace(/→/g, '').trim()
       control.dataset.action = englishCopyByLocale[locale.value]?.get(label) || label
     })
@@ -264,7 +270,7 @@ export function useDesignPage(pageKey, page) {
     }
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)
-    root?.querySelectorAll('.hc-logo,.hc-menu a,.hc-foot-nav a,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]').forEach((control) => {
+    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]').forEach((control) => {
       control.tabIndex = 0
       control.setAttribute('role', 'link')
     })
@@ -274,5 +280,5 @@ export function useDesignPage(pageKey, page) {
     page.value?.removeEventListener('keydown', onKeydown)
   })
 
-  return { drawerOpen, goTo, menuItems }
+  return { drawerOpen, goTo, menuItems, isMenuActive, navigateLink }
 }

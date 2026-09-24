@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 const page = ref(null)
-const { drawerOpen, goTo, menuItems } = useDesignPage('hc-about', page)
+const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-about', page)
 </script>
 
 <template>
@@ -14,8 +14,9 @@ const { drawerOpen, goTo, menuItems } = useDesignPage('hc-about', page)
         <div class="hc-nav-in">
           <span class="hc-logo"><i></i>TZME</span>
           <nav class="hc-menu">
-            <a>{{ $t('site.solutions') }}</a><a>{{ $t('site.industries') }}</a><a>{{ $t('site.capabilities') }}</a>
-            <a>{{ $t('site.projects') }}</a><a class="on">{{ $t('site.aboutTzme') }}</a><a>{{ $t('site.insights') }}</a>
+            <a v-for="item in menuItems" :key="item.key" :href="item.path" :class="{ on: isMenuActive(item) }"
+              :aria-current="isMenuActive(item) ? 'page' : undefined"
+              @click="navigateLink($event, item.path)">{{ item.label }}</a>
           </nav>
           <div class="hc-nav-r">
             <el-button class="hc-mobile-menu" text :aria-label="$t('site.openNavigation')"
@@ -183,8 +184,9 @@ const { drawerOpen, goTo, menuItems } = useDesignPage('hc-about', page)
     </div>
     <el-drawer v-model="drawerOpen" title="TZME" direction="rtl" size="min(320px, 85vw)" class="hc-mobile-drawer">
       <nav class="hc-mobile-links">
-        <el-button v-for="item in menuItems" :key="item.key" text @click="goTo(item.path)">{{ item.label }}</el-button>
-      </nav>
+        <el-button v-for="item in menuItems" :key="item.key" text
+          :type="isMenuActive(item) ? 'primary' : 'default'" @click="goTo(item.path)">{{ item.label }}</el-button>
+        </nav>
       <LanguageSwitcher mobile />
     </el-drawer>
   </main>

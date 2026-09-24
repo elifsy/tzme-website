@@ -1,5 +1,10 @@
 export default {
   "site": {
+    "navHome": "Home",
+    "navAbout": "About us",
+    "navProducts": "Products",
+    "navNews": "News",
+    "navContact": "Contact",
     "phonePlaceholder": "+61 …",
     "solutions": "Solutions",
     "industries": "Industries",
