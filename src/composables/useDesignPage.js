@@ -2,38 +2,38 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { setLocale as saveLocale } from '../i18n/index.js'
-import { siteKeyByEnglish } from '../i18n/site.js'
+import { localeMessages } from '../i18n/locales/index.js'
 
 const navigationItems = [
-  { label: 'Solutions', path: '/solutions' },
-  { label: 'Industries', path: '/#industries' },
-  { label: 'Capabilities', path: '/#capabilities' },
-  { label: 'Projects', path: '/#projects' },
-  { label: 'About TZME', path: '/about' },
-  { label: 'Insights', path: '/insights' },
-  { label: 'Contact', path: '/contact' },
+  { key: 'solutions', path: '/solutions' },
+  { key: 'industries', path: '/#industries' },
+  { key: 'capabilities', path: '/#capabilities' },
+  { key: 'projects', path: '/#projects' },
+  { key: 'aboutTzme', path: '/about' },
+  { key: 'insights', path: '/insights' },
+  { key: 'contact', path: '/contact' },
 ]
 
-const routeByLabel = Object.fromEntries(navigationItems.map(({ label, path }) => [label, path]))
+const routeByLabel = Object.fromEntries(navigationItems.map(({ key, path }) => [localeMessages.en.site[key], path]))
+const englishCopyByLocale = Object.fromEntries(Object.entries(localeMessages).map(([code, messages]) => [
+  code,
+  new Map(Object.entries(messages.site).map(([key, translated]) => [translated, localeMessages.en.site[key]])),
+]))
 
 export function useDesignPage(pageKey, page) {
   const router = useRouter()
   const { t, locale } = useI18n({ useScope: 'global' })
   const drawerOpen = ref(false)
-  const menuItems = computed(() => navigationItems.map(({ label, path }) => ({
-    label: siteKeyByEnglish.has(label) ? t(`site.${siteKeyByEnglish.get(label)}`) : label,
+  const menuItems = computed(() => navigationItems.map(({ key, path }) => ({
+    key,
+    label: t(`site.${key}`),
     path,
   })))
-  const originalNodes = []
-  const originalAttributes = []
   let managedProducts = []
   let managedArticles = []
   const productSlots = pageKey === 'hc-home'
     ? ['material-handling', 'mining-equipment', 'port-machinery', 'metallurgy', 'bridge-equipment']
     : ['mining-equipment', 'material-handling', 'conveying', 'port-machinery', 'bridge-equipment', 'metallurgy', 'environmental', 'tourism']
-  const message = (english, chinese) => locale.value === 'zh' ? chinese : english
-
   function contentField(item, name) {
     return locale.value === 'zh'
       ? (item[`${name}Zh`] || item[`${name}En`] || item[name] || '')
@@ -87,7 +87,7 @@ export function useDesignPage(pageKey, page) {
           summary.textContent = contentField(item, 'summary')
           const arrow = document.createElement('span')
           arrow.className = 'go'
-          arrow.textContent = message('Explore →', '了解更多 →')
+          arrow.textContent = t('site.exploreArrow')
           body.append(title, summary, arrow)
           card.append(imageWrap, body)
           grid?.append(card)
@@ -141,34 +141,7 @@ export function useDesignPage(pageKey, page) {
     renderCopy()
   }
 
-  function captureCopy(root) {
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
-    while (walker.nextNode()) {
-      const node = walker.currentNode
-      const original = node.textContent
-      const key = siteKeyByEnglish.get(original.replace(/\s+/g, ' ').trim())
-      if (key) originalNodes.push({ node, original, key })
-    }
-    root.querySelectorAll('[placeholder],[aria-label]').forEach((element) => {
-      for (const name of ['placeholder', 'aria-label']) {
-        const original = element.getAttribute(name)
-        const key = siteKeyByEnglish.get(original)
-        if (key) originalAttributes.push({ element, name, original, key })
-      }
-    })
-  }
-
   function renderCopy() {
-    for (const { node, original, key } of originalNodes) {
-      if (node.isConnected) {
-        const leading = original.match(/^\s*/)?.[0] || ''
-        const trailing = original.match(/\s*$/)?.[0] || ''
-        node.textContent = locale.value === 'en' ? original : `${leading}${t(`site.${key}`)}${trailing}`
-      }
-    }
-    for (const { element, name, original, key } of originalAttributes) {
-      if (element.isConnected) element.setAttribute(name, locale.value === 'en' ? original : t(`site.${key}`))
-    }
     applyManagedContent()
   }
 
@@ -197,11 +170,11 @@ export function useDesignPage(pageKey, page) {
     const required = ['name', 'company', 'country', 'email', 'industry', 'requirements']
     const missing = required.find((name) => !values[name])
     if (missing) {
-      ElMessage.warning(message(`Please enter ${missing === 'requirements' ? 'project requirements' : missing}.`, '请填写所有必填项。'))
+      ElMessage.warning(t('site.inquiryMissing', { field: missing === 'requirements' ? t('site.projectRequirements') : missing }))
       return
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-      ElMessage.warning(message('Please enter a valid email address.', '请输入有效的邮箱地址。'))
+      ElMessage.warning(t('site.inquiryInvalidEmail'))
       return
     }
     try {
@@ -215,9 +188,9 @@ export function useDesignPage(pageKey, page) {
         input.value = ''
         input.dispatchEvent(new Event('input', { bubbles: true }))
       })
-      ElMessage.success(message('Your inquiry has been sent. We will contact you soon.', '咨询已发送，我们会尽快与您联系。'))
+      ElMessage.success(t('site.inquirySent'))
     } catch {
-      ElMessage.error(message('Could not send your inquiry. Please email tzme@tzme.net.', '发送失败，请发邮件至 tzme@tzme.net。'))
+      ElMessage.error(t('site.inquiryFailed'))
     }
   }
 
@@ -227,10 +200,10 @@ export function useDesignPage(pageKey, page) {
     const item = target.closest('a') || target.closest('.hc-w')
     const title = (managed && contentField(managed, 'title')) || item?.querySelector('h3')?.textContent?.trim()
       || item?.querySelector('span[style*="font-size:15px"]')?.textContent?.trim()
-      || message('News & insights', '新闻与洞察')
+      || t('site.newsAndInsights')
     const content = (managed && contentField(managed, 'content')) || (managed && contentField(managed, 'summary')) || item?.querySelector('p')?.textContent?.trim()
-      || message('Please contact TZME for details about this notice.', '请联系 TZME 了解详情。')
-    await ElMessageBox.alert(content, title, { confirmButtonText: message('Close', '关闭') })
+      || t('site.noticeDetails')
+    await ElMessageBox.alert(content, title, { confirmButtonText: t('site.close') })
   }
 
   function onClick(event) {
@@ -247,11 +220,11 @@ export function useDesignPage(pageKey, page) {
     }
     if (control.matches('.hc-ico')) return goTo('/solutions')
     if (control.matches('.hc-soc>span')) {
-      ElMessage.info(message('Please contact us at tzme@tzme.net.', '请发邮件至 tzme@tzme.net 联系我们。'))
+      ElMessage.info(t('site.contactEmailNotice'))
       return
     }
     if (control.matches('.hc-upload')) {
-      ElMessage.info(message('Please email drawings and attachments to tzme@tzme.net.', '请将图纸和附件发送至 tzme@tzme.net。'))
+      ElMessage.info(t('site.attachmentEmailNotice'))
       return
     }
     if (control.matches('.hc-ind>div')) return goTo('/solutions')
@@ -263,7 +236,7 @@ export function useDesignPage(pageKey, page) {
     if (label.includes('industr')) return goTo('/#industries')
     if (label.includes('contact') || label.includes('project') || label.includes('quote') || label.includes('certificate') || label.includes('factory visit') || label.includes('subscribe')) return goTo('/contact')
     if (label.includes('datasheet')) {
-      ElMessage.info(message('Please request the datasheet at tzme@tzme.net.', '请发邮件至 tzme@tzme.net 索取技术资料。'))
+      ElMessage.info(t('site.datasheetEmailNotice'))
       return
     }
     if (label.includes('facility') || label.includes('global reach')) return goTo('/about')
@@ -282,10 +255,10 @@ export function useDesignPage(pageKey, page) {
   onMounted(() => {
     const root = page.value
     root?.querySelectorAll('.hc-menu a,.hc-foot-nav a,.hc-btn,.hc-lnk,.hc-card').forEach((control) => {
-      control.dataset.action = control.textContent.replace(/→/g, '').trim()
+      const label = control.textContent.replace(/→/g, '').trim()
+      control.dataset.action = englishCopyByLocale[locale.value]?.get(label) || label
     })
     if (root) {
-      captureCopy(root)
       renderCopy()
       loadManagedContent()
     }
@@ -301,5 +274,5 @@ export function useDesignPage(pageKey, page) {
     page.value?.removeEventListener('keydown', onKeydown)
   })
 
-  return { drawerOpen, goTo, menuItems, locale, setLocale: saveLocale }
+  return { drawerOpen, goTo, menuItems }
 }

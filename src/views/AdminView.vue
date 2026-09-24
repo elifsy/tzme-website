@@ -15,15 +15,11 @@ import {
   products as productSeed,
 } from "../data/content.js";
 import { setLocale } from "../i18n/index.js";
-import { adminKeyByEnglish } from "../i18n/admin.js";
+import { availableLocales } from "../i18n/locales/index.js";
 
 const route = useRoute();
 const router = useRouter();
 const { t, locale } = useI18n({ useScope: "global" });
-function tr(english) {
-  const key = adminKeyByEnglish.get(english);
-  return key ? t(`admin.${key}`) : english;
-}
 const tab = computed(() => route.params.view || "overview");
 const products = ref([]);
 const articles = ref([]);
@@ -48,16 +44,16 @@ const form = reactive({
   date: "",
 });
 const titles = {
-  overview: "Overview",
-  products: "Products",
-  articles: "Insights",
-  inquiries: "Enquiries",
+  overview: "admin.overview",
+  products: "admin.products",
+  articles: "admin.insights",
+  inquiries: "admin.enquiries",
 };
 const navItems = [
-  { key: "overview", label: "Overview", icon: "DataBoard" },
-  { key: "products", label: "Products", icon: "Box" },
-  { key: "articles", label: "Insights", icon: "Document" },
-  { key: "inquiries", label: "Enquiries", icon: "ChatDotRound" },
+  { key: "overview", label: "admin.overview", icon: "DataBoard" },
+  { key: "products", label: "admin.products", icon: "Box" },
+  { key: "articles", label: "admin.insights", icon: "Document" },
+  { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
 ];
 const publishedProducts = computed(
   () => products.value.filter((item) => item.status === "published").length,
@@ -168,7 +164,7 @@ async function load() {
 
 function openEditor(type, item) {
   kind.value = type;
-  editingLocale.value = locale.value;
+  editingLocale.value = locale.value === "zh" ? "zh" : "en";
   Object.assign(form, {
     id: item?.id || "",
     titleEn: item?.titleEn || item?.title || "",
@@ -188,11 +184,7 @@ function openEditor(type, item) {
 
 async function save() {
   if (!form.titleEn.trim() || !form.titleZh.trim()) {
-    ElMessage.warning(
-      locale.value === "zh"
-        ? "请填写英文和中文标题。"
-        : "Please enter both English and Chinese titles.",
-    );
+    ElMessage.warning(t("admin.bothTitlesRequired"));
     return;
   }
   saving.value = true;
@@ -215,9 +207,9 @@ async function save() {
   try {
     await writeRecord(kind.value, record, Boolean(form.id));
     rememberEdit(kind.value, record.id, "synced");
-    ElMessage.success(tr("Content saved"));
+    ElMessage.success(t('admin.contentSaved'));
   } catch {
-    ElMessage.warning(tr("Saved in this browser; backend API is unavailable"));
+    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'));
   }
   saving.value = false;
   modal.value = false;
@@ -226,13 +218,11 @@ async function save() {
 async function remove(type, item) {
   try {
     await ElMessageBox.confirm(
-      locale.value === "zh"
-        ? `确定删除“${field(item, "title")}”吗？此操作无法撤销。`
-        : `Delete “${item.title}”? This action cannot be undone.`,
-      tr("Delete content"),
+      t("admin.deleteConfirm", { title: field(item, "title") }),
+      t('admin.deleteContent'),
       {
-        confirmButtonText: tr("Delete"),
-        cancelButtonText: tr("Cancel"),
+        confirmButtonText: t('admin.delete'),
+        cancelButtonText: t('admin.cancel'),
         type: "warning",
       },
     );
@@ -248,7 +238,7 @@ async function remove(type, item) {
       method: "DELETE",
     });
   } catch {}
-  ElMessage.success(tr("Content deleted"));
+  ElMessage.success(t('admin.contentDeleted'));
 }
 
 async function toggle(item, type) {
@@ -263,7 +253,7 @@ async function toggle(item, type) {
     rememberEdit(type, item.id, "synced");
   } catch {}
   ElMessage.success(
-    tr(item.status === "published" ? "Content published" : "Moved to drafts"),
+    t(item.status === "published" ? "admin.contentPublished" : "admin.movedToDrafts"),
   );
 }
 
@@ -277,7 +267,7 @@ async function updateInquiry(item, status) {
       body: JSON.stringify(item),
     });
   } catch {}
-  ElMessage.success(tr("Enquiry updated"));
+  ElMessage.success(t('admin.enquiryUpdated'));
 }
 
 function navigate(key) {
@@ -292,10 +282,10 @@ onMounted(load);
       <router-link to="/admin" class="admin-brand">
         <span class="admin-brand-mark">T</span>
         <span
-          >TZME<small>{{ tr("MANAGEMENT") }}</small></span
+          >TZME<small>{{ $t('admin.management') }}</small></span
         >
       </router-link>
-      <div class="admin-menu-label">{{ tr("WORKSPACE") }}</div>
+      <div class="admin-menu-label">{{ $t('admin.workspace') }}</div>
       <el-menu class="admin-menu" :default-active="tab" @select="navigate">
         <el-menu-item
           v-for="item in navItems"
@@ -303,7 +293,7 @@ onMounted(load);
           :index="item.key"
         >
           <el-icon><component :is="item.icon" /></el-icon>
-          <span>{{ tr(item.label) }}</span>
+          <span>{{ $t(item.label) }}</span>
           <el-badge
             v-if="item.key === 'inquiries' && newInquiries"
             :value="newInquiries"
@@ -312,9 +302,9 @@ onMounted(load);
         </el-menu-item>
       </el-menu>
       <div class="admin-sidebar-foot">
-        <div><span class="online-dot" />{{ tr("System operational") }}</div>
+        <div><span class="online-dot" />{{ $t('admin.systemOperational') }}</div>
         <el-link href="/" target="_blank" :underline="false"
-          ><el-icon><Link /></el-icon>{{ tr("View website") }}</el-link
+          ><el-icon><Link /></el-icon>{{ $t('admin.viewWebsite') }}</el-link
         >
       </div>
     </el-aside>
@@ -324,29 +314,25 @@ onMounted(load);
         <el-breadcrumb separator="/">
           <el-breadcrumb-item>TZME</el-breadcrumb-item>
           <el-breadcrumb-item>{{
-            tr(titles[tab] || "Overview")
+            $t(titles[tab] || "admin.overview")
           }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="admin-profile">
           <el-button-group class="admin-language">
             <el-button
+              v-for="option in availableLocales"
+              :key="option.code"
               size="small"
-              :type="locale === 'en' ? 'primary' : 'default'"
-              @click="setLocale('en')"
-              >EN</el-button
-            >
-            <el-button
-              size="small"
-              :type="locale === 'zh' ? 'primary' : 'default'"
-              @click="setLocale('zh')"
-              >中文</el-button
+              :type="locale === option.code ? 'primary' : 'default'"
+              @click="setLocale(option.code)"
+              >{{ option.shortLabel }}</el-button
             >
           </el-button-group>
           <el-avatar :size="32" class="admin-avatar">A</el-avatar>
           <div>
-            {{ tr("Administrator") }}<small>{{ tr("Content manager") }}</small>
+            {{ $t('admin.administrator') }}<small>{{ $t('admin.contentManager') }}</small>
           </div>
-          <el-tooltip :content="tr('Refresh data')"
+          <el-tooltip :content="$t('admin.refreshData')"
             ><el-button text circle :icon="Refresh" @click="load"
           /></el-tooltip>
         </div>
@@ -356,16 +342,16 @@ onMounted(load);
         <div class="admin-heading">
           <div>
             <div class="admin-eyebrow">
-              {{ tr("CONTENT MANAGEMENT / 2026") }}
+              {{ $t('admin.contentManagement2026') }}
             </div>
-            <h1>{{ tr(titles[tab] || "Overview") }}</h1>
+            <h1>{{ $t(titles[tab] || "admin.overview") }}</h1>
             <p>
-              {{ tr("Manage your corporate website content and enquiries.") }}
+              {{ $t('admin.manageYourCorporateWebsiteContentAndEnquiries') }}
             </p>
           </div>
           <div class="admin-actions">
             <el-button :icon="Refresh" @click="load">{{
-              tr("Refresh")
+              $t('admin.refresh')
             }}</el-button>
             <el-button
               v-if="tab === 'products' || tab === 'articles'"
@@ -373,7 +359,7 @@ onMounted(load);
               :icon="Plus"
               @click="openEditor(tab)"
             >
-              {{ tr(tab === "articles" ? "Create article" : "Create product") }}
+              {{ $t(tab === "articles" ? "admin.createArticle" : "admin.createProduct") }}
             </el-button>
           </div>
         </div>
@@ -383,30 +369,30 @@ onMounted(load);
             <el-col
               v-for="stat in [
                 {
-                  label: 'TOTAL PRODUCTS',
+                  label: 'admin.totalProducts',
                   value: products.length,
-                  hint: `${publishedProducts} ${tr('published')}`,
+                  hint: `${publishedProducts} ${$t('admin.published3')}`,
                   icon: 'Box',
                   tone: 'blue',
                 },
                 {
-                  label: 'ARTICLES',
+                  label: 'admin.articles',
                   value: articles.length,
-                  hint: `${publishedArticles} ${tr('published')}`,
+                  hint: `${publishedArticles} ${$t('admin.published3')}`,
                   icon: 'Document',
                   tone: 'violet',
                 },
                 {
-                  label: 'TOTAL ENQUIRIES',
+                  label: 'admin.totalEnquiries',
                   value: inquiries.length,
-                  hint: `${newInquiries} ${tr('awaiting response')}`,
+                  hint: `${newInquiries} ${$t('admin.awaitingResponse')}`,
                   icon: 'ChatDotRound',
                   tone: 'orange',
                 },
                 {
-                  label: 'WEBSITE STATUS',
-                  value: 'Online',
-                  hint: 'All systems operational',
+                  label: 'admin.websiteStatus',
+                  value: 'admin.online',
+                  hint: $t('admin.allSystemsOperational'),
                   icon: 'CircleCheckFilled',
                   tone: 'green',
                 },
@@ -418,16 +404,16 @@ onMounted(load);
             >
               <el-card shadow="never" class="stat-card">
                 <div class="stat-top">
-                  <span class="stat-label">{{ tr(stat.label) }}</span
+                  <span class="stat-label">{{ $t(stat.label) }}</span
                   ><span :class="['stat-icon', stat.tone]"
                     ><el-icon><component :is="stat.icon" /></el-icon
                   ></span>
                 </div>
                 <strong
-                  :class="{ 'status-good': stat.label === 'WEBSITE STATUS' }"
-                  >{{ tr(stat.value) }}</strong
+                  :class="{ 'status-good': stat.label === 'admin.websiteStatus' }"
+                  >{{ typeof stat.value === 'string' ? $t(stat.value) : stat.value }}</strong
                 >
-                <div class="stat-hint">{{ tr(stat.hint) }}</div>
+                <div class="stat-hint">{{ stat.hint }}</div>
               </el-card>
             </el-col>
           </el-row>
@@ -438,22 +424,22 @@ onMounted(load);
                 <template #header
                   ><div class="card-heading">
                     <div>
-                      <strong>{{ tr("Recent enquiries") }}</strong
+                      <strong>{{ $t('admin.recentEnquiries') }}</strong
                       ><small>{{
-                        tr("Latest messages from your website")
+                        $t('admin.latestMessagesFromYourWebsite')
                       }}</small>
                     </div>
                     <el-button
                       link
                       type="primary"
                       @click="navigate('inquiries')"
-                      >{{ tr("View all") }} <el-icon><ArrowRight /></el-icon
+                      >{{ $t('admin.viewAll') }} <el-icon><ArrowRight /></el-icon
                     ></el-button></div
                 ></template>
                 <el-empty
                   v-if="!inquiries.length"
                   :image-size="52"
-                  :description="tr('No enquiries yet')"
+                  :description="$t('admin.noEnquiriesYet')"
                 />
                 <div
                   v-for="item in inquiries.slice(0, 4)"
@@ -464,10 +450,10 @@ onMounted(load);
                     (item.name || "U").slice(0, 1).toUpperCase()
                   }}</el-avatar>
                   <div class="inquiry-summary">
-                    <strong>{{ item.name || tr("Website visitor") }}</strong
+                    <strong>{{ item.name || $t('admin.websiteVisitor') }}</strong
                     ><small>{{ item.company }} · {{ item.email }}</small>
                   </div>
-                  <time>{{ item.createdAt?.slice(0, 10) || tr("Today") }}</time>
+                  <time>{{ item.createdAt?.slice(0, 10) || $t('admin.today') }}</time>
                 </div>
               </el-card>
             </el-col>
@@ -476,8 +462,8 @@ onMounted(load);
                 <template #header
                   ><div class="card-heading">
                     <div>
-                      <strong>{{ tr("Quick actions") }}</strong
-                      ><small>{{ tr("Common content tasks") }}</small>
+                      <strong>{{ $t('admin.quickActions') }}</strong
+                      ><small>{{ $t('admin.commonContentTasks') }}</small>
                     </div>
                   </div></template
                 >
@@ -487,9 +473,9 @@ onMounted(load);
                   @click="openEditor('products')"
                   ><el-icon><Box /></el-icon
                   ><span
-                    ><b>{{ tr("Add a product") }}</b
+                    ><b>{{ $t('admin.addAProduct') }}</b
                     ><small>{{
-                      tr("Create a product listing for the website")
+                      $t('admin.createAProductListingForTheWebsite')
                     }}</small></span
                   ><el-icon class="quick-arrow"><ArrowRight /></el-icon
                 ></el-button>
@@ -499,9 +485,9 @@ onMounted(load);
                   @click="openEditor('articles')"
                   ><el-icon><EditPen /></el-icon
                   ><span
-                    ><b>{{ tr("Write an article") }}</b
+                    ><b>{{ $t('admin.writeAnArticle') }}</b
                     ><small>{{
-                      tr("Share company news and insights")
+                      $t('admin.shareCompanyNewsAndInsights')
                     }}</small></span
                   ><el-icon class="quick-arrow"><ArrowRight /></el-icon
                 ></el-button>
@@ -512,9 +498,9 @@ onMounted(load);
                   :underline="false"
                   ><el-icon><View /></el-icon
                   ><span
-                    ><b>{{ tr("Preview website") }}</b
+                    ><b>{{ $t('admin.previewWebsite') }}</b
                     ><small>{{
-                      tr("Open the public facing website")
+                      $t('admin.openThePublicFacingWebsite')
                     }}</small></span
                   ><el-icon class="quick-arrow"><ArrowRight /></el-icon
                 ></el-link>
@@ -526,8 +512,8 @@ onMounted(load);
             <template #header
               ><div class="card-heading">
                 <div>
-                  <strong>{{ tr("Content overview") }}</strong
-                  ><small>{{ tr("Published website content") }}</small>
+                  <strong>{{ $t('admin.contentOverview') }}</strong
+                  ><small>{{ $t('admin.publishedWebsiteContent') }}</small>
                 </div>
               </div></template
             >
@@ -535,21 +521,21 @@ onMounted(load);
               <el-col
                 v-for="item in [
                   {
-                    label: 'Products',
+                    label: 'admin.products',
                     value: publishedProducts,
                     total: products.length,
                     route: 'products',
                     color: '#4388dc',
                   },
                   {
-                    label: 'Insights',
+                    label: 'admin.insights',
                     value: publishedArticles,
                     total: articles.length,
                     route: 'articles',
                     color: '#826bd5',
                   },
                   {
-                    label: 'Open enquiries',
+                    label: 'admin.openEnquiries',
                     value: newInquiries,
                     total: inquiries.length,
                     route: 'inquiries',
@@ -561,7 +547,7 @@ onMounted(load);
                 :sm="8"
               >
                 <button class="overview-item" @click="navigate(item.route)">
-                  <span>{{ tr(item.label) }}</span
+                  <span>{{ $t(item.label) }}</span
                   ><strong
                     >{{ item.value
                     }}<small v-if="item.route !== 'inquiries'">
@@ -592,22 +578,22 @@ onMounted(load);
             ><div class="card-heading">
               <div>
                 <strong>{{
-                  tr(
+                  $t(
                     tab === "products"
-                      ? "Product catalogue"
-                      : "Articles & insights",
+                      ? "admin.productCatalogue"
+                      : "admin.articlesAndInsights",
                   )
                 }}</strong
                 ><small>{{
-                  tr(
+                  $t(
                     tab === "products"
-                      ? "Manage solution categories and product listings"
-                      : "Publish news and company updates",
+                      ? "admin.manageSolutionCategoriesAndProductListings"
+                      : "admin.publishNewsAndCompanyUpdates",
                   )
                 }}</small>
               </div>
               <el-tag effect="plain" type="info"
-                >{{ currentItems.length }} {{ tr("records") }}</el-tag
+                >{{ currentItems.length }} {{ $t('admin.records') }}</el-tag
               >
             </div></template
           >
@@ -615,9 +601,9 @@ onMounted(load);
             :data="currentItems"
             v-loading="loading"
             row-key="id"
-            :empty-text="tr('No content yet. Create your first record.')"
+            :empty-text="$t('admin.noContentYetCreateYourFirstRecord')"
           >
-            <el-table-column :label="tr('CONTENT')" min-width="300">
+            <el-table-column :label="$t('admin.content')" min-width="300">
               <template #default="{ row }"
                 ><div class="content-cell">
                   <el-image
@@ -640,12 +626,8 @@ onMounted(load);
                         effect="plain"
                         >{{
                           row.titleZh
-                            ? locale === "zh"
-                              ? "中文"
-                              : "ZH"
-                            : locale === "zh"
-                              ? "待补中文"
-                              : "ZH missing"
+                            ? $t('admin.zhPresent')
+                            : $t('admin.zhMissing')
                         }}</el-tag
                       >
                     </div>
@@ -653,49 +635,49 @@ onMounted(load);
                 </div></template
               >
             </el-table-column>
-            <el-table-column :label="tr('CATEGORY')" width="150"
+            <el-table-column :label="$t('admin.category')" width="150"
               ><template #default="{ row }"
                 ><el-tag size="small" effect="plain" type="info">{{
-                  field(row, "category") || tr("General")
+                  field(row, "category") || $t('admin.general')
                 }}</el-tag></template
               ></el-table-column
             >
-            <el-table-column :label="tr('STATUS')" width="140"
+            <el-table-column :label="$t('admin.status')" width="140"
               ><template #default="{ row }"
                 ><el-tag
                   :type="row.status === 'published' ? 'success' : 'warning'"
                   effect="light"
                   round
                   >{{
-                    tr(row.status === "published" ? "Published" : "Draft")
+                    $t(row.status === "published" ? "admin.published" : "admin.draft")
                   }}</el-tag
                 ></template
               ></el-table-column
             >
-            <el-table-column prop="date" :label="tr('UPDATED')" width="130"
+            <el-table-column prop="date" :label="$t('admin.updated')" width="130"
               ><template #default="{ row }">{{
                 row.date || "—"
               }}</template></el-table-column
             >
-            <el-table-column :label="tr('ACTIONS')" width="150" align="right"
+            <el-table-column :label="$t('admin.actions')" width="150" align="right"
               ><template #default="{ row }"
                 ><el-button
                   link
                   type="primary"
                   :icon="Edit"
-                  :title="tr('Edit')"
+                  :title="$t('admin.edit')"
                   @click="openEditor(tab, row)" /><el-button
                   link
                   :type="row.status === 'published' ? 'warning' : 'success'"
                   :icon="Promotion"
                   :title="
-                    tr(row.status === 'published' ? 'Unpublish' : 'Publish')
+                    $t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')
                   "
                   @click="toggle(row, tab)" /><el-button
                   link
                   type="danger"
                   :icon="Delete"
-                  :title="tr('Delete')"
+                  :title="$t('admin.delete')"
                   @click="remove(tab, row)" /></template
             ></el-table-column>
           </el-table>
@@ -709,13 +691,13 @@ onMounted(load);
           <template #header
             ><div class="card-heading">
               <div>
-                <strong>{{ tr("Customer enquiries") }}</strong
+                <strong>{{ $t('admin.customerEnquiries') }}</strong
                 ><small>{{
-                  tr("Messages submitted through the website contact form")
+                  $t('admin.messagesSubmittedThroughTheWebsiteContactForm')
                 }}</small>
               </div>
               <el-tag effect="plain" type="info"
-                >{{ inquiries.length }} {{ tr("records") }}</el-tag
+                >{{ inquiries.length }} {{ $t('admin.records') }}</el-tag
               >
             </div></template
           >
@@ -723,9 +705,9 @@ onMounted(load);
             :data="inquiries"
             v-loading="loading"
             row-key="id"
-            :empty-text="tr('No enquiries received yet.')"
+            :empty-text="$t('admin.noEnquiriesReceivedYet')"
           >
-            <el-table-column :label="tr('CONTACT')" min-width="190"
+            <el-table-column :label="$t('admin.contact')" min-width="190"
               ><template #default="{ row }"
                 ><strong>{{ row.name }}</strong
                 ><small class="table-sub"
@@ -733,7 +715,7 @@ onMounted(load);
                 ></template
               ></el-table-column
             >
-            <el-table-column :label="tr('COMPANY & INDUSTRY')" min-width="190"
+            <el-table-column :label="$t('admin.companyAndIndustry')" min-width="190"
               ><template #default="{ row }"
                 >{{ row.company
                 }}<small class="table-sub"
@@ -743,16 +725,16 @@ onMounted(load);
             >
             <el-table-column
               prop="requirements"
-              :label="tr('REQUIREMENTS')"
+              :label="$t('admin.requirements')"
               min-width="220"
               show-overflow-tooltip
             />
-            <el-table-column :label="tr('RECEIVED')" width="130"
+            <el-table-column :label="$t('admin.received')" width="130"
               ><template #default="{ row }">{{
                 row.createdAt?.slice(0, 10)
               }}</template></el-table-column
             >
-            <el-table-column :label="tr('STATUS')" width="140"
+            <el-table-column :label="$t('admin.status')" width="140"
               ><template #default="{ row }"
                 ><el-tag
                   :type="row.status === 'new' ? 'warning' : 'success'"
@@ -763,7 +745,7 @@ onMounted(load);
                       row.status === 'new' ? 'contacted' : 'new',
                     )
                   "
-                  >{{ tr(row.status === "new" ? "New" : "Contacted") }}</el-tag
+                  >{{ $t(row.status === "new" ? "admin.new" : "admin.contacted") }}</el-tag
                 ></template
               ></el-table-column
             >
@@ -771,19 +753,17 @@ onMounted(load);
         </el-card>
 
         <footer class="admin-footer">
-          {{ tr("TZME CONTENT MANAGEMENT") }}
-          <span>{{ tr("Secure workspace · v1.0.0") }}</span>
+          {{ $t('admin.tzmeContentManagement') }}
+          <span>{{ $t('admin.secureWorkspaceV100') }}</span>
         </footer>
       </el-main>
     </el-container>
 
     <el-dialog
       v-model="modal"
-      :title="
-        tr(
-          `${form.id ? 'Edit' : 'Create'} ${kind === 'products' ? 'product' : 'article'}`,
-        )
-      "
+      :title="$t(form.id
+        ? (kind === 'products' ? 'admin.editProduct' : 'admin.editArticle')
+        : (kind === 'products' ? 'admin.createProduct' : 'admin.createArticle'))"
       width="640px"
       class="editor-dialog"
       destroy-on-close
@@ -794,82 +774,78 @@ onMounted(load);
           type="info"
           :closable="false"
           show-icon
-          :title="
-            tr(
-              'Maintain English and Chinese together. Both titles are required before saving.',
-            )
-          "
+          :title="$t('admin.maintainEnglishAndChineseTogetherBothTitlesAreRequiredBeforeSaving')"
         />
         <el-tabs v-model="editingLocale" class="bilingual-tabs">
-          <el-tab-pane :label="tr('English')" name="en">
-            <el-form-item :label="tr('Title (English)')" required
+          <el-tab-pane :label="$t('admin.english')" name="en">
+            <el-form-item :label="$t('admin.titleEnglish')" required
               ><el-input
                 v-model="form.titleEn"
-                placeholder="Enter an English title"
+                :placeholder="$t('admin.enterEnglishTitle')"
             /></el-form-item>
-            <el-form-item :label="tr('Category (English)')"
-              ><el-input v-model="form.categoryEn" placeholder="e.g. Mining"
+            <el-form-item :label="$t('admin.categoryEnglish')"
+              ><el-input v-model="form.categoryEn" :placeholder="$t('admin.exampleMining')"
             /></el-form-item>
-            <el-form-item :label="tr('Short description (English)')"
+            <el-form-item :label="$t('admin.shortDescriptionEnglish')"
               ><el-input
                 v-model="form.summaryEn"
                 type="textarea"
                 :rows="3"
-                placeholder="English summary shown on the website"
+                :placeholder="$t('admin.englishSummaryPlaceholder')"
             /></el-form-item>
             <el-form-item
               v-if="kind === 'articles'"
-              :label="tr('Article content (English)')"
+              :label="$t('admin.articleContentEnglish')"
               ><el-input
                 v-model="form.contentEn"
                 type="textarea"
                 :rows="5"
-                placeholder="Write the English article"
+                :placeholder="$t('admin.englishArticlePlaceholder')"
             /></el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="中文" name="zh">
-            <el-form-item label="标题（中文）" required
-              ><el-input v-model="form.titleZh" placeholder="请输入中文标题"
+          <el-tab-pane :label="$t('admin.chinese')" name="zh">
+            <el-form-item :label="$t('admin.titleChinese')" required
+              ><el-input v-model="form.titleZh" :placeholder="$t('admin.enterChineseTitle')"
             /></el-form-item>
-            <el-form-item label="分类（中文）"
-              ><el-input v-model="form.categoryZh" placeholder="例如：矿山"
+            <el-form-item :label="$t('admin.categoryChinese')"
+              ><el-input v-model="form.categoryZh" :placeholder="$t('admin.exampleMiningChinese')"
             /></el-form-item>
-            <el-form-item label="简短描述（中文）"
+            <el-form-item :label="$t('admin.summaryChinese')"
               ><el-input
                 v-model="form.summaryZh"
                 type="textarea"
                 :rows="3"
-                placeholder="网站展示的中文简介"
+                :placeholder="$t('admin.chineseSummaryPlaceholder')"
             /></el-form-item>
-            <el-form-item v-if="kind === 'articles'" label="文章正文（中文）"
+            <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleChinese')"
               ><el-input
                 v-model="form.contentZh"
                 type="textarea"
                 :rows="5"
-                placeholder="请输入中文正文"
+                :placeholder="$t('admin.chineseArticlePlaceholder')"
             /></el-form-item>
           </el-tab-pane>
         </el-tabs>
         <el-row :gutter="14"
           ><el-col :span="12"
-            ><el-form-item :label="tr('Image path / 图片路径')"
+            ><el-form-item :label="$t('admin.imagePath')"
               ><el-input
                 v-model="form.image"
-                placeholder="/assets/example.jpg" /></el-form-item></el-col
+                :placeholder="$t('admin.imagePathPlaceholder')" /></el-form-item></el-col
           ><el-col :span="12"
-            ><el-form-item :label="tr('Status / 状态')"
+            ><el-form-item :label="$t('admin.status2')"
               ><el-select v-model="form.status" class="full-width"
                 ><el-option
-                  :label="tr('Published / 已发布')"
+                  :label="$t('admin.published2')"
                   value="published" /><el-option
-                  :label="tr('Draft / 草稿')"
+                  :label="$t('admin.draft2')"
                   value="draft" /></el-select></el-form-item></el-col
         ></el-row>
       </el-form>
       <template #footer
-        ><el-button @click="modal = false">{{ tr("Cancel") }}</el-button
+        ><el-button @click="modal = false">{{ $t('admin.cancel') }}</el-button
         ><el-button type="primary" :loading="saving" @click="save">{{
-          tr("Save content")
+          $t('admin.saveContent')
         }}</el-button></template
       >
     </el-dialog>
