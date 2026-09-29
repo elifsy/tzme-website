@@ -2,6 +2,8 @@ package com.tzme.cms.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "site_content")
@@ -20,6 +22,9 @@ public class Content {
     private String category;
     private String categoryEn;
     private String categoryZh;
+    private String industry;
+    @Column(length = 2000)
+    private String industryIds;
     @Column(length = 3000)
     private String summary;
     @Column(length = 3000)
@@ -35,6 +40,16 @@ public class Content {
     private String contentEn;
     @Column(length = 30000)
     private String contentZh;
+    @Column(columnDefinition = "TEXT")
+    private String featuresEn;
+    @Column(columnDefinition = "TEXT")
+    private String featuresZh;
+    @Column(columnDefinition = "TEXT")
+    private String specificationsEn;
+    @Column(columnDefinition = "TEXT")
+    private String specificationsZh;
+    private Boolean showOnHome;
+    private Integer homeOrder;
 
     protected Content() {
     }
@@ -84,6 +99,22 @@ public class Content {
     public void setCategoryEn(String v) { categoryEn = v; category = v; }
     public String getCategoryZh() { return categoryZh; }
     public void setCategoryZh(String v) { categoryZh = v; }
+    public String getIndustry() { return industry; }
+    public void setIndustry(String v) { industry = v; }
+    public List<String> getIndustries() {
+        if (industryIds != null) {
+            return Arrays.stream(industryIds.split(","))
+                    .map(String::trim).filter(value -> !value.isBlank()).distinct().toList();
+        }
+        return industry == null || industry.isBlank() ? List.of() : List.of(industry);
+    }
+    public void setIndustries(List<String> values) {
+        List<String> cleaned = values == null ? List.of() : values.stream()
+                .filter(value -> value != null && !value.isBlank())
+                .map(String::trim).distinct().toList();
+        industryIds = String.join(",", cleaned);
+        industry = cleaned.isEmpty() ? null : cleaned.get(0);
+    }
 
     public String getSummary() {
         return summary;
@@ -134,4 +165,16 @@ public class Content {
     public void setContentEn(String v) { contentEn = v; content = v; }
     public String getContentZh() { return contentZh; }
     public void setContentZh(String v) { contentZh = v; }
+    public String getFeaturesEn() { return featuresEn; }
+    public void setFeaturesEn(String v) { featuresEn = v; }
+    public String getFeaturesZh() { return featuresZh; }
+    public void setFeaturesZh(String v) { featuresZh = v; }
+    public String getSpecificationsEn() { return specificationsEn; }
+    public void setSpecificationsEn(String v) { specificationsEn = v; }
+    public String getSpecificationsZh() { return specificationsZh; }
+    public void setSpecificationsZh(String v) { specificationsZh = v; }
+    public Boolean getShowOnHome() { return showOnHome; }
+    public void setShowOnHome(Boolean v) { showOnHome = v; }
+    public Integer getHomeOrder() { return homeOrder; }
+    public void setHomeOrder(Integer v) { homeOrder = v; }
 }

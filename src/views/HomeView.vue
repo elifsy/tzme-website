@@ -1,9 +1,23 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
+import { industryField, useIndustryCatalog } from '../services/industries.js'
 const page = ref(null)
 const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-home', page)
+const { locale } = useI18n({ useScope: 'global' })
+const { products, loadProducts } = useProductCatalog()
+const { industries, loadIndustries } = useIndustryCatalog()
+const publishedIndustries = computed(() => industries.value.filter((item) => item.status === 'published'))
+const featuredProducts = computed(() => products.value
+  .filter((item) => item.status === 'published' && item.showOnHome)
+  .sort((a, b) => (Number(a.homeOrder) || 999) - (Number(b.homeOrder) || 999))
+  .slice(0, MAX_HOME_PRODUCTS))
+const productField = (item, name) => localizedField(item, name, locale.value)
+const displayIndustry = (item, name) => industryField(item, name, locale.value)
+onMounted(() => { loadProducts(); loadIndustries() })
 </script>
 
 <template>
@@ -73,51 +87,15 @@ const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPag
                     <span class="hc-lnk">{{ $t('site.allSolutions') }}<i>→</i></span>
                   </div>
                   <div class="hc-cards">
-                <a class="hc-card">
-                  <div class="im"><img src="/assets/p-mining-2.jpg" alt="" /></div>
-                  <div class="bd">
-                    <span class="no">01</span>
-                    <h3>{{ $t('site.materialHandling') }}</h3>
-                    <p>{{ $t('site.movingMoreMovingSmarter') }}</p>
-                    <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                  </div>
-                </a>
-                <a class="hc-card">
-                  <div class="im"><img src="/assets/p-mining-1.jpg" alt="" /></div>
-                  <div class="bd">
-                    <span class="no">02</span>
-                    <h3>{{ $t('site.mining') }}</h3>
-                    <p>{{ $t('site.builtForExtremeConditions') }}</p>
-                    <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                  </div>
-                </a>
-                <a class="hc-card">
-                  <div class="im"><img src="/assets/p-port-1.jpg" alt="" /></div>
-                  <div class="bd">
-                    <span class="no">03</span>
-                    <h3>{{ $t('site.portsAndTerminals') }}</h3>
-                    <p>{{ $t('site.engineeredForGlobalTrade') }}</p>
-                    <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                  </div>
-                </a>
-                <a class="hc-card">
-                  <div class="im"><img src="/assets/p-metal-1.jpg" alt="" /></div>
-                  <div class="bd">
-                    <span class="no">04</span>
-                    <h3>{{ $t('site.metallurgy') }}</h3>
-                    <p>{{ $t('site.precisionBuiltForHeavyIndustry') }}</p>
-                    <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                  </div>
-                </a>
-                <a class="hc-card">
-                  <div class="im"><img src="/assets/p-bridge-1.jpg" alt="" /></div>
-                  <div class="bd">
-                    <span class="no">05</span>
-                    <h3>{{ $t('site.infrastructure') }}</h3>
-                    <p>{{ $t('site.engineeringAtScale') }}</p>
-                    <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                  </div>
-                </a>
+                    <router-link v-for="(item, index) in featuredProducts" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
+                      <div class="im"><img :src="item.image || '/assets/p-other-1.jpg'" :alt="productField(item, 'title')" /></div>
+                      <div class="bd">
+                        <span class="no">{{ String(index + 1).padStart(2, '0') }}</span>
+                        <h3>{{ productField(item, 'title') }}</h3>
+                        <p>{{ productField(item, 'summary') }}</p>
+                        <span class="go">{{ $t('site.explore') }}<i>→</i></span>
+                      </div>
+                    </router-link>
                   </div>
                 </div>
               </section>
@@ -133,19 +111,14 @@ const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPag
                       <h2 class="hc-h2" style="margin-top:18px;color:#fff">{{ $t('site.engineeredFor') }}<br />{{ $t('site.yourIndustry') }}</h2>
                       <p class="hc-p" style="margin-top:20px;max-width:420px;color:var(--txt-2)">
                         {{ $t('site.weUnderstandTheUniqueChallengesOfYourIndustryAndDeliverSolutionsThat') }}</p>
-                      <div style="margin-top:30px"><span class="hc-lnk">{{ $t('site.exploreAllIndustries') }}<i>→</i></span></div>
+                      <div style="margin-top:30px"><router-link class="hc-lnk" to="/solutions" @click.stop>{{ $t('site.exploreAllIndustries') }}<i>→</i></router-link></div>
                     </div>
                     <div class="hc-ind">
-                  <div><span class="ic"></span>
-                    <div><b>{{ $t('site.mining') }}</b><u>{{ $t('site.miningAndBulkMaterials') }}</u></div></div>
-                  <div><span class="ic"></span>
-                    <div><b>{{ $t('site.ports') }}</b><u>{{ $t('site.portsAndTerminals') }}</u></div></div>
-                  <div><span class="ic"></span>
-                    <div><b>{{ $t('site.metallurgy') }}</b><u>{{ $t('site.steelAndMetallurgy') }}</u></div></div>
-                  <div><span class="ic"></span>
-                    <div><b>{{ $t('site.energy') }}</b><u>{{ $t('site.energyAndIndustrialInfrastructure') }}</u></div></div>
-                  <div><span class="ic"></span>
-                    <div><b>{{ $t('site.construction') }}</b><u>{{ $t('site.constructionAndHeavyInfrastructure') }}</u></div></div>
+                      <router-link v-for="industry in publishedIndustries" :key="industry.id" class="hc-ind-item"
+                        :to="{ path: '/solutions', query: { industry: industry.id } }">
+                        <span class="ic"></span>
+                        <div><b>{{ displayIndustry(industry, 'title') }}</b><u>{{ displayIndustry(industry, 'subtitle') }}</u></div>
+                      </router-link>
                     </div>
                   </div>
                 </div>

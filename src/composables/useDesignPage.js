@@ -32,11 +32,7 @@ export function useDesignPage(pageKey, page) {
     if (item.key === 'navProducts') return route.path.startsWith('/solutions')
     return route.path === item.path
   }
-  let managedProducts = []
   let managedArticles = []
-  const productSlots = pageKey === 'hc-home'
-    ? ['material-handling', 'mining-equipment', 'port-machinery', 'metallurgy', 'bridge-equipment']
-    : ['mining-equipment', 'material-handling', 'conveying', 'port-machinery', 'bridge-equipment', 'metallurgy', 'environmental', 'tourism']
   function contentField(item, name) {
     return locale.value === 'zh'
       ? (item[`${name}Zh`] || item[`${name}En`] || item[name] || '')
@@ -55,48 +51,6 @@ export function useDesignPage(pageKey, page) {
   function applyManagedContent() {
     const root = page.value
     if (!root) return
-    if (pageKey === 'hc-home' || pageKey === 'hc-products') {
-      const cards = [...root.querySelectorAll('.hc-cards .hc-card')].filter((card) => !card.classList.contains('managed-extra'))
-      const byId = new Map(managedProducts.map((item) => [item.id, item]))
-      cards.slice(0, productSlots.length).forEach((card, index) => {
-        const item = byId.get(productSlots[index])
-        if (!item) return
-        card.style.display = item.status === 'draft' ? 'none' : ''
-        if (item.status === 'draft') return
-        setText(card.querySelector('h3'), contentField(item, 'title'))
-        setText(card.querySelector('p'), contentField(item, 'summary'))
-        if (item.image) card.querySelector('img')?.setAttribute('src', item.image)
-      })
-      if (pageKey === 'hc-products') {
-        root.querySelectorAll('.managed-extra').forEach((card) => card.remove())
-        const grid = cards[0]?.parentElement
-        for (const item of managedProducts.filter((product) => !productSlots.includes(product.id) && product.status === 'published')) {
-          const card = document.createElement('a')
-          card.className = 'hc-card managed-extra'
-          card.tabIndex = 0
-          card.setAttribute('role', 'link')
-          card.dataset.action = 'catalog item'
-          const imageWrap = document.createElement('div')
-          imageWrap.className = 'im'
-          const image = document.createElement('img')
-          image.alt = ''
-          image.src = item.image || '/assets/p-other-1.jpg'
-          imageWrap.append(image)
-          const body = document.createElement('div')
-          body.className = 'bd'
-          const title = document.createElement('h3')
-          title.textContent = contentField(item, 'title')
-          const summary = document.createElement('p')
-          summary.textContent = contentField(item, 'summary')
-          const arrow = document.createElement('span')
-          arrow.className = 'go'
-          arrow.textContent = t('site.exploreArrow')
-          body.append(title, summary, arrow)
-          card.append(imageWrap, body)
-          grid?.append(card)
-        }
-      }
-    }
     if (pageKey === 'hc-news' && managedArticles.length) {
       const articles = managedArticles.filter((item) => item.status === 'published')
       const rows = [...root.querySelectorAll('a[style*="grid-template-columns:150px"]')]
@@ -121,8 +75,8 @@ export function useDesignPage(pageKey, page) {
   }
 
   async function loadManagedContent() {
-    const type = pageKey === 'hc-news' ? 'articles' : 'products'
-    if (!['hc-home', 'hc-products', 'hc-news'].includes(pageKey)) return
+    const type = 'articles'
+    if (pageKey !== 'hc-news') return
     let records = []
     try {
       const response = await fetch(`/api/${type}`)
@@ -139,8 +93,7 @@ export function useDesignPage(pageKey, page) {
       for (const [id, action] of Object.entries(edits)) if (action === 'delete') byId.delete(id)
       records = [...byId.values()]
     } catch { /* Keep the API records or the reference copy. */ }
-    if (type === 'articles') managedArticles = records
-    else managedProducts = records
+    managedArticles = records
     renderCopy()
   }
 
@@ -219,7 +172,7 @@ export function useDesignPage(pageKey, page) {
     const root = page.value
     const target = event.target instanceof Element ? event.target : null
     if (!root || !target) return
-    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]')
+    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span,a[style*="grid-template-columns:150px"]')
     if (!control || !root.contains(control)) return
     event.preventDefault()
 
@@ -233,7 +186,6 @@ export function useDesignPage(pageKey, page) {
       ElMessage.info(t('site.attachmentEmailNotice'))
       return
     }
-    if (control.matches('.hc-ind>div')) return goTo('/solutions')
 
     const label = (control.dataset.action || control.textContent).replace(/→/g, '').trim().toLowerCase()
     if (label === 'send inquiry') return submitInquiry(control.closest('.hc-form'))
@@ -247,20 +199,16 @@ export function useDesignPage(pageKey, page) {
     }
     if (label.includes('facility') || label.includes('global reach')) return goTo('/about')
     if (label.includes('solution') || label.includes('product list') || label.includes('port equipment')) return goTo('/solutions')
-    if (control.matches('.hc-card')) {
-      if (pageKey === 'hc-home') return goTo('/solutions')
-      return goTo('/solutions/ports/ship-loader')
-    }
   }
 
   function onKeydown(event) {
     if (!['Enter', ' '].includes(event.key)) return
-    if (event.target.matches('.hc-logo,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]')) onClick(event)
+    if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span,a[style*="grid-template-columns:150px"]')) onClick(event)
   }
 
   onMounted(() => {
     const root = page.value
-    root?.querySelectorAll('.hc-btn,.hc-lnk,.hc-card').forEach((control) => {
+    root?.querySelectorAll('.hc-btn,.hc-lnk').forEach((control) => {
       const label = control.textContent.replace(/→/g, '').trim()
       control.dataset.action = englishCopyByLocale[locale.value]?.get(label) || label
     })
@@ -270,7 +218,7 @@ export function useDesignPage(pageKey, page) {
     }
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)
-    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-card,.hc-ico,.hc-upload,.hc-ind>div,.hc-soc>span,a[style*="grid-template-columns:150px"]').forEach((control) => {
+    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span,a[style*="grid-template-columns:150px"]').forEach((control) => {
       control.tabIndex = 0
       control.setAttribute('role', 'link')
     })

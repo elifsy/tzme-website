@@ -1,9 +1,20 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { certificationSeed } from '../data/certifications.js'
+import { loadCertifications } from '../services/certifications.js'
 const page = ref(null)
 const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-about', page)
+const { locale } = useI18n({ useScope: 'global' })
+const certifications = ref(certificationSeed)
+const publishedCertifications = computed(() => certifications.value.filter((item) => item.status === 'published'))
+const featuredCertificate = computed(() => publishedCertifications.value.find((item) => item.image))
+const certificationField = (item, name) => locale.value === 'zh'
+  ? item[`${name}Zh`] || item[`${name}En`] || ''
+  : item[`${name}En`] || ''
+onMounted(async () => { certifications.value = await loadCertifications() })
 </script>
 
 <template>
@@ -74,40 +85,34 @@ const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPag
             </div>
             <span class="hc-lnk">{{ $t('site.requestCertificates') }}<i>→</i></span>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 340px;gap:64px;
-                       align-items:start">
+          <div class="hc-cert-layout" :class="{ 'hc-cert-layout-single': !featuredCertificate }">
             <div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                <div style="padding:26px 24px;background:#fff;border:1px solid var(--line-l);border-radius:6px">
-                  <div style="font-family:var(--f-din);font-size:20px;font-weight:700;color:var(--blue)">EN 1090-2</div>
-                  <div style="font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.7">{{
-                    $t('site.executionOfSteelStructures') }}<br />{{ $t('site.classExc4') }}</div>
-                </div>
-                <div style="padding:26px 24px;background:#fff;border:1px solid var(--line-l);border-radius:6px">
-                  <div style="font-family:var(--f-din);font-size:20px;font-weight:700;color:var(--blue)">ISO 3834-2
+              <div class="hc-cert-grid">
+                <div v-for="certificate in publishedCertifications" :key="certificate.id"
+                  style="padding:26px 24px;background:#fff;border:1px solid var(--line-l);border-radius:6px">
+                  <div style="font-family:var(--f-din);font-size:20px;font-weight:700;color:var(--blue)">
+                    {{ certificationField(certificate, 'title') }}</div>
+                  <div style="font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.7;white-space:pre-line">
+                    {{ certificationField(certificate, 'summary') }}</div>
+                  <div v-if="certificationField(certificate, 'issuer')"
+                    style="font-size:10.5px;color:var(--mut);margin-top:9px">
+                    {{ certificationField(certificate, 'issuer') }}</div>
+                  <div v-if="certificate.certificateNo || certificate.expiresAt"
+                    style="font-size:10.5px;color:var(--mut);margin-top:8px">
+                    <span v-if="certificate.certificateNo">{{ certificate.certificateNo }}</span>
+                    <span v-if="certificate.expiresAt"><span v-if="certificate.certificateNo"> · </span>{{ $t('site.certValidThrough') }} {{ certificate.expiresAt }}</span>
                   </div>
-                  <div style="font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.7">{{
-                    $t('site.qualityRequirementsFor') }}<br />{{ $t('site.fusionWelding') }}</div>
-                </div>
-                <div style="padding:26px 24px;background:#fff;border:1px solid var(--line-l);border-radius:6px">
-                  <div style="font-family:var(--f-din);font-size:20px;font-weight:700;color:var(--blue)">CWB</div>
-                  <div style="font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.7">{{
-                    $t('site.canadianWeldingBureau') }}<br />{{ $t('site.certifiedFabricator') }}</div>
-                </div>
-                <div style="padding:26px 24px;background:#fff;border:1px solid var(--line-l);border-radius:6px">
-                  <div style="font-family:var(--f-din);font-size:20px;font-weight:700;color:var(--blue)">ISO 9001</div>
-                  <div style="font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.7">{{
-                    $t('site.qualityManagement') }}<br />{{ $t('site.system') }}</div>
                 </div>
               </div>
-              <p class="hc-p" style="margin-top:26px;max-width:640px">
+              <el-empty v-if="!publishedCertifications.length" :description="$t('site.certEmpty')" />
+              <p v-if="publishedCertifications.length" class="hc-p" style="margin-top:26px;max-width:640px">
                 {{ $t('site.ourQualityManagementSystemAndWeldingCertificationWereIssuedByAccreditedThird') }}</p>
             </div>
-            <div>
-              <img src="/assets/cert-1.jpg" style="width:100%;border-radius:6px;
-                           border:1px solid var(--line-l)" alt="" />
+            <div v-if="featuredCertificate">
+              <img :src="featuredCertificate.image" style="width:100%;border-radius:6px;
+                           border:1px solid var(--line-l)" :alt="certificationField(featuredCertificate, 'title')" />
               <div style="font-size:10.5px;letter-spacing:.1em;color:var(--mut);
-                           margin-top:14px;text-transform:uppercase">{{ $t('site.fig01Iso9001CertificateScan') }}</div>
+                           margin-top:14px;text-transform:uppercase">{{ certificationField(featuredCertificate, 'title') }}</div>
             </div>
           </div>
         </div>

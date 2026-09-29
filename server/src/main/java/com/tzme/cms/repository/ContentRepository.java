@@ -9,4 +9,5 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Content> findAllByTypeOrderByDateDesc(String type);
 
     Optional<Content> findByIdAndType(String id, String type);
+    long countByTypeAndShowOnHomeTrueAndIdNot(String type, String id);
 }

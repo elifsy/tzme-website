@@ -1,198 +1,130 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
+import { localizedField, useProductCatalog } from '../services/catalog.js'
+import { industryField, useIndustryCatalog } from '../services/industries.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+
 const page = ref(null)
+const route = useRoute()
+const { locale } = useI18n({ useScope: 'global' })
 const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-detail', page)
+const { products, loadProducts } = useProductCatalog()
+const { industries, loadIndustries } = useIndustryCatalog()
+const loading = ref(true)
+const productId = computed(() => route.params.id === 'ship-loader' ? 'port-machinery' : route.params.id)
+const product = computed(() => products.value.find((item) => item.id === productId.value && item.status === 'published'))
+const productIndustries = computed(() => (product.value?.industries || [])
+  .map((id) => industries.value.find((item) => item.id === id && item.status === 'published'))
+  .filter(Boolean))
+const field = (item, name) => localizedField(item, name, locale.value)
+const features = computed(() => field(product.value, 'features').split(/\r?\n/).map((line) => line.trim()).filter(Boolean))
+const specifications = computed(() => field(product.value, 'specifications').split(/\r?\n/).map((line) => {
+  const separator = line.search(/[:：]/)
+  return separator < 0 ? { label: '', value: line.trim() } : {
+    label: line.slice(0, separator).trim(), value: line.slice(separator + 1).trim(),
+  }
+}).filter((item) => item.label || item.value))
+const related = computed(() => {
+  if (!product.value) return []
+  const other = products.value.filter((item) => item.status === 'published' && item.id !== product.value.id)
+  return [...other.filter((item) => item.categoryEn === product.value.categoryEn),
+    ...other.filter((item) => item.categoryEn !== product.value.categoryEn)].slice(0, 3)
+})
+onMounted(async () => { await Promise.all([loadProducts(), loadIndustries()]); loading.value = false })
+watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
 </script>
 
 <template>
-<main ref="page" class="design-site">
-<div class="hc-page">
+  <main ref="page" class="design-site product-detail">
+    <div class="hc-page">
+      <header class="hc-nav">
+        <div class="hc-nav-in">
+          <span class="hc-logo"><i></i>TZME</span>
+          <nav class="hc-menu">
+            <a v-for="item in menuItems" :key="item.key" :href="item.path" :class="{ on: isMenuActive(item) }"
+              :aria-current="isMenuActive(item) ? 'page' : undefined"
+              @click="navigateLink($event, item.path)">{{ item.label }}</a>
+          </nav>
+          <div class="hc-nav-r">
+            <el-button class="hc-mobile-menu" text :aria-label="$t('site.openNavigation')" @click="drawerOpen = true">☰</el-button>
+            <LanguageSwitcher />
+            <el-button class="hc-btn solid sm" style="height:34px" @click.stop="goTo('/contact')">{{ $t('site.contactUs') }}<i>→</i></el-button>
+          </div>
+        </div>
+      </header>
 
-              <header class="hc-nav">
-                <div class="hc-nav-in">
-                  <span class="hc-logo"><i></i>TZME</span>
-                  <nav class="hc-menu">
-                    <a v-for="item in menuItems" :key="item.key" :href="item.path" :class="{ on: isMenuActive(item) }"
-                      :aria-current="isMenuActive(item) ? 'page' : undefined"
-                      @click="navigateLink($event, item.path)">{{ item.label }}</a>
-                  </nav>
-                  <div class="hc-nav-r">
-                    <el-button class="hc-mobile-menu" text :aria-label="$t('site.openNavigation')" @click="drawerOpen = true">☰</el-button>
-                    <LanguageSwitcher />
-                    <span class="hc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></span>
-                    <el-button class="hc-btn solid sm" style="height:34px">{{ $t('site.contactUs') }}<i>→</i></el-button>
-                  </div>
-                </div>
-              </header>
+      <template v-if="!loading && product">
+        <section class="hc-hero product-detail-hero">
+          <div class="hc-bleed"><img :src="product.image || '/assets/p-other-1.jpg'" :alt="field(product, 'title')" /></div>
+          <span class="hc-scrim"></span>
+          <div class="hc-hero-in"><div class="hc-w">
+            <span class="hc-kick">{{ field(product, 'category') }}<template v-for="item in productIndustries" :key="item.id"> · {{ industryField(item, 'title', locale) }}</template></span>
+            <h1 class="hc-h1">{{ field(product, 'title') }}</h1>
+            <p class="hc-p">{{ field(product, 'summary') }}</p>
+            <el-button class="hc-btn solid" @click.stop="goTo('/contact')">{{ $t('site.requestAQuote') }}<i>→</i></el-button>
+          </div></div>
+        </section>
 
-              <section class="hc-hero">
-                <div class="hc-bleed"><img src="/assets/p-port-1.jpg" alt="" /></div>
-                <span class="hc-scrim"></span>
-                <div class="hc-hero-in" style="bottom:74px"><div class="hc-w">
-                  <span class="hc-kick">{{ $t('site.portsAndTerminalsDwgTzmeHm0412') }}</span>
-                  <h2 class="hc-h1" style="margin-top:20px;font-size:52px">
-                    {{ $t('site.shipLoader') }}<br />2,500 t/h</h2>
-                  <p class="hc-p" style="margin-top:20px;max-width:520px">
-                    {{ $t('site.railMountedTravellingShipLoaderBoomLuffsAndSlewsIndependentlyToTrim') }}</p>
-                  <div style="display:flex;gap:14px;margin-top:30px">
-                    <el-button class="hc-btn solid">{{ $t('site.requestAQuote') }}<i>→</i></el-button>
-                    <el-button class="hc-btn ghost">{{ $t('site.downloadDatasheet') }}</el-button>
-                  </div>
-                </div></div>
-              </section>
-
-              <section class="hc-sec">
-                <div class="hc-w" style="display:grid;grid-template-columns:1fr 480px;gap:88px">
-                  <div>
-                    <span class="hc-kick">{{ $t('site.01Description') }}</span>
-                    <h3 class="hc-h3" style="margin-top:16px;color:#fff;font-size:24px">
-                      {{ $t('site.continuousLoadingOfIronOreAndCoal') }}</h3>
-                    <p class="hc-p" style="margin-top:18px">
-                      {{ $t('site.structureMachineryHouseAndBoomAreFabricatedInOurOwnWorkshopsTo') }}</p>
-                    <span class="hc-kick" style="margin-top:44px;display:block">{{ $t('site.02TechnicalNotes') }}</span>
-                    <div style="margin-top:22px">
-                    <div style="display:flex;gap:20px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
-                      <span style="font-family:var(--f-din);font-size:11px;font-weight:700;color:var(--blue-2);flex:0 0 24px">01</span>
-                      <span style="font-size:13px;line-height:1.7;color:var(--txt-2)">{{ $t('site.weldingToEn10902Exc4InAnIso38342Certified') }}</span>
-                    </div>
-                    <div style="display:flex;gap:20px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
-                      <span style="font-family:var(--f-din);font-size:11px;font-weight:700;color:var(--blue-2);flex:0 0 24px">02</span>
-                      <span style="font-size:13px;line-height:1.7;color:var(--txt-2)">{{ $t('site.fatigueAssessmentToEn199319ForBoomAndSlewStructure') }}</span>
-                    </div>
-                    <div style="display:flex;gap:20px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
-                      <span style="font-family:var(--f-din);font-size:11px;font-weight:700;color:var(--blue-2);flex:0 0 24px">03</span>
-                      <span style="font-size:13px;line-height:1.7;color:var(--txt-2)">{{ $t('site.surfacePreparationToSa25CoatingSystemC5MForMarine') }}</span>
-                    </div>
-                    <div style="display:flex;gap:20px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
-                      <span style="font-family:var(--f-din);font-size:11px;font-weight:700;color:var(--blue-2);flex:0 0 24px">04</span>
-                      <span style="font-size:13px;line-height:1.7;color:var(--txt-2)">{{ $t('site.trialAssemblyAndFunctionalTestRecordedBeforeShipment') }}</span>
-                    </div>
-                    </div>
-                  </div>
-                  <div>
-                    <span class="hc-kick">{{ $t('site.03Specification') }}</span>
-                    <div style="margin-top:22px">
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.ratedCapacity') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">2 500 t/h</dd>
-                      </div>
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.outreach') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">78 m</dd>
-                      </div>
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.boomLength') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">92 m</dd>
-                      </div>
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.totalMass') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">1 850 t</dd>
-                      </div>
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.steelGrade') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">S355J2 · S690QL</dd>
-                      </div>
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.weldingStandard') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">EN 1090-2 EXC4</dd>
-                      </div>
-                      <div style="display:flex;justify-content:space-between;gap:24px;padding:13px 0;border-bottom:1px solid var(--line-d2)">
-                        <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)">{{ $t('site.coating') }}</dt>
-                        <dd style="font-size:13px;font-weight:600;color:var(--txt)">C5-M · Sa 2.5</dd>
-                      </div>
-                    </div>
-                    <div style="margin-top:34px;padding:26px 26px 24px;border-radius:6px;
-                         background:var(--navy-2);border:1px solid var(--line-d)">
-                      <span class="hc-kick">{{ $t('site.indicativeDelivery') }}</span>
-                      <div style="font-size:38px;font-weight:700;color:#fff;margin-top:14px;
-                           letter-spacing:-.01em">Q3 · 2027</div>
-                      <div style="font-size:11px;color:var(--txt-3);margin-top:12px;
-                           letter-spacing:.06em">{{ $t('site.1518MonthsFromPo') }}</div>
-                      <div style="display:flex;gap:10px;margin-top:22px">
-                        <span class="hc-tag d">EN 1090-2 EXC4</span>
-                        <span class="hc-tag d">ISO 3834-2</span>
-                        <span class="hc-tag d">CWB</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="hc-sec hc-light" style="padding:72px 0">
-                <div class="hc-w">
-                  <span class="hc-kick">{{ $t('site.04ManufacturingRoute') }}</span>
-                  <div class="hc-steps" style="margin-top:40px">
-                    <div><span class="ic"><i></i></span><div class="no">01</div>
-                      <div class="lb">{{ $t('site.concept') }}</div></div>
-                    <div><span class="ic"><i></i></span><div class="no">02</div>
-                      <div class="lb">{{ $t('site.engineering') }}</div></div>
-                    <div><span class="ic"><i></i></span><div class="no">03</div>
-                      <div class="lb">{{ $t('site.design') }}</div></div>
-                    <div><span class="ic"><i></i></span><div class="no">04</div>
-                      <div class="lb">{{ $t('site.fabrication') }}</div></div>
-                    <div><span class="ic"><i></i></span><div class="no">05</div>
-                      <div class="lb">{{ $t('site.assembly') }}</div></div>
-                    <div><span class="ic"><i></i></span><div class="no">06</div>
-                      <div class="lb">{{ $t('site.delivery') }}</div></div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="hc-sec">
-                <div class="hc-w">
-                  <div class="hc-shead">
-                    <div class="l">
-                      <span class="hc-kick">{{ $t('site.05RelatedEquipment') }}</span>
-                      <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.sameCategory') }}</h2>
-                    </div>
-                    <span class="hc-lnk">{{ $t('site.allPortEquipment') }}<i>→</i></span>
-                  </div>
-                  <div class="hc-cards" style="grid-template-columns:repeat(3,1fr)">
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-port-2.png" alt="" /></div>
-                    <div class="bd">
-                      <h3>{{ $t('site.shipUnloader') }}</h3>
-                      <p>{{ $t('site.capacity1800THGrabType') }}</p>
-                      <span class="go">{{ $t('site.view') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-convey-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <h3>{{ $t('site.beltConveyor') }}</h3>
-                      <p>{{ $t('site.capacity1200THLongDistance') }}</p>
-                      <span class="go">{{ $t('site.view') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-mining-2.jpg" alt="" /></div>
-                    <div class="bd">
-                      <h3>{{ $t('site.stackerReclaimer2') }}</h3>
-                      <p>{{ $t('site.capacity6000THRailMounted') }}</p>
-                      <span class="go">{{ $t('site.view') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  </div>
-                </div>
-              </section>
-
-              <footer class="hc-foot">
-                <div class="hc-foot-in">
-                  <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
-                  <span class="tag">TZME-HM-0412 · Rev 1.0</span>
-                  <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-                  <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
-                </div>
-              </footer>
-
+        <section class="hc-sec product-detail-content">
+          <div class="hc-w product-detail-grid">
+            <div>
+              <span class="hc-kick">{{ $t('site.productDescription') }}</span>
+              <h2 class="hc-h2">{{ field(product, 'title') }}</h2>
+              <p class="hc-p product-detail-paragraph">{{ field(product, 'content') || field(product, 'summary') }}</p>
+              <template v-if="features.length">
+                <h3 class="product-detail-subheading">{{ $t('site.productFeatures') }}</h3>
+                <ul class="product-feature-list">
+                  <li v-for="feature in features" :key="feature">{{ feature }}</li>
+                </ul>
+              </template>
             </div>
-  <el-drawer v-model="drawerOpen" title="TZME" direction="rtl" size="min(320px, 85vw)" class="hc-mobile-drawer">
-    <nav class="hc-mobile-links">
-      <el-button v-for="item in menuItems" :key="item.key" text
-        :type="isMenuActive(item) ? 'primary' : 'default'" @click="goTo(item.path)">{{ item.label }}</el-button>
-    </nav>
-    <LanguageSwitcher mobile />
-  </el-drawer></main>
+            <div v-if="specifications.length" class="product-detail-specs">
+              <span class="hc-kick">{{ $t('site.productSpecifications') }}</span>
+              <dl>
+                <div v-for="(spec, index) in specifications" :key="index">
+                  <dt>{{ spec.label }}</dt><dd>{{ spec.value }}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section v-if="related.length" class="hc-sec product-related">
+          <div class="hc-w">
+            <div class="hc-shead"><div class="l">
+              <span class="hc-kick">{{ $t('site.relatedProducts') }}</span>
+              <h2 class="hc-h2">{{ $t('site.exploreMoreProducts') }}</h2>
+            </div><router-link class="product-all-link" to="/solutions">{{ $t('site.allSolutions') }} →</router-link></div>
+            <div class="hc-cards">
+              <router-link v-for="item in related" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
+                <div class="im"><img :src="item.image || '/assets/p-other-1.jpg'" :alt="field(item, 'title')" /></div>
+                <div class="bd"><h3>{{ field(item, 'title') }}</h3><p>{{ field(item, 'summary') }}</p>
+                  <span class="go">{{ $t('site.explore') }}<i>→</i></span></div>
+              </router-link>
+            </div>
+          </div>
+        </section>
+      </template>
+      <section v-else-if="!loading" class="hc-sec product-not-found">
+        <el-empty :description="$t('site.productNotFound')" />
+        <el-button type="primary" @click="goTo('/solutions')">{{ $t('site.backToProducts') }}</el-button>
+      </section>
+
+      <footer class="hc-foot"><div class="hc-foot-in">
+        <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
+        <span class="tag">{{ $t('site.productCenter') }}</span>
+        <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
+      </div></footer>
+    </div>
+    <el-drawer v-model="drawerOpen" title="TZME" direction="rtl" size="min(320px, 85vw)" class="hc-mobile-drawer">
+      <nav class="hc-mobile-links">
+        <el-button v-for="item in menuItems" :key="item.key" text
+          :type="isMenuActive(item) ? 'primary' : 'default'" @click="goTo(item.path)">{{ item.label }}</el-button>
+      </nav>
+      <LanguageSwitcher mobile />
+    </el-drawer>
+  </main>
 </template>

@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ContentController {
+    private static final int MAX_HOME_PRODUCTS = 5;
     private final ContentRepository repository;
 
     public ContentController(ContentRepository repository) {
@@ -25,6 +26,8 @@ public class ContentController {
     @ResponseStatus(HttpStatus.CREATED)
     public Content create(@PathVariable String type, @RequestBody Content content) {
         content.setType(type);
+        if ("products".equals(type)) content.setIndustries(content.getIndustries());
+        enforceHomeLimit(type, content);
         content.setTitleEn(content.getTitleEn());
         content.setCategoryEn(content.getCategoryEn());
         content.setSummaryEn(content.getSummaryEn());
@@ -42,6 +45,10 @@ public class ContentController {
         existing.setCategory(input.getCategory());
         existing.setCategoryEn(input.getCategoryEn());
         existing.setCategoryZh(input.getCategoryZh());
+        if ("products".equals(type)) {
+            existing.setIndustry(input.getIndustry());
+            existing.setIndustries(input.getIndustries());
+        }
         existing.setSummary(input.getSummary());
         existing.setSummaryEn(input.getSummaryEn());
         existing.setSummaryZh(input.getSummaryZh());
@@ -51,6 +58,13 @@ public class ContentController {
         existing.setContent(input.getContent());
         existing.setContentEn(input.getContentEn());
         existing.setContentZh(input.getContentZh());
+        existing.setFeaturesEn(input.getFeaturesEn());
+        existing.setFeaturesZh(input.getFeaturesZh());
+        existing.setSpecificationsEn(input.getSpecificationsEn());
+        existing.setSpecificationsZh(input.getSpecificationsZh());
+        existing.setShowOnHome(input.getShowOnHome());
+        existing.setHomeOrder(input.getHomeOrder());
+        enforceHomeLimit(type, existing);
         return repository.save(existing);
     }
 
@@ -60,5 +74,12 @@ public class ContentController {
         Content existing = repository.findByIdAndType(id, type)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         repository.delete(existing);
+    }
+
+    private void enforceHomeLimit(String type, Content content) {
+        if ("products".equals(type) && Boolean.TRUE.equals(content.getShowOnHome())
+                && repository.countByTypeAndShowOnHomeTrueAndIdNot(type, content.getId()) >= MAX_HOME_PRODUCTS) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The homepage can feature at most five products");
+        }
     }
 }

@@ -1,9 +1,34 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { localizedField, useProductCatalog } from '../services/catalog.js'
+import { industryField, useIndustryCatalog } from '../services/industries.js'
 const page = ref(null)
+const route = useRoute()
+const router = useRouter()
 const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-products', page)
+const { locale } = useI18n({ useScope: 'global' })
+const { products, loadProducts } = useProductCatalog()
+const { industries, loadIndustries } = useIndustryCatalog()
+const publishedIndustries = computed(() => industries.value.filter((item) => item.status === 'published'))
+const publishedProducts = computed(() => products.value.filter((item) => item.status === 'published'))
+const selectedIndustry = computed(() => publishedIndustries.value.some((item) => item.id === route.query.industry) ? route.query.industry : '')
+const visibleProducts = computed(() => selectedIndustry.value
+  ? publishedProducts.value.filter((item) => item.industries?.includes(selectedIndustry.value))
+  : publishedProducts.value)
+const categoryCount = computed(() => new Set(publishedProducts.value.map((item) => item.categoryEn || item.category).filter(Boolean)).size)
+const productField = (item, name) => localizedField(item, name, locale.value)
+const displayIndustry = (item) => industryField(item, 'title', locale.value)
+function setIndustry(id) {
+  const query = { ...route.query }
+  if (id) query.industry = id
+  else delete query.industry
+  router.push({ path: '/solutions', query })
+}
+onMounted(() => { loadProducts(); loadIndustries() })
 </script>
 
 <template>
@@ -31,7 +56,7 @@ const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPag
                 <div class="hc-w" style="display:grid;grid-template-columns:1fr 380px;gap:80px;
                      align-items:flex-end">
                   <div>
-                    <span class="hc-kick">{{ $t('site.solutions31ProductsIn8Categories') }}</span>
+                    <span class="hc-kick">{{ $t('site.solutionCount', { products: publishedProducts.length, categories: categoryCount }) }}</span>
                     <h2 class="hc-h2" style="margin-top:18px;color:#fff;font-size:52px">
                       {{ $t('site.whatWeEngineer') }}</h2>
                   </div>
@@ -42,137 +67,40 @@ const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPag
 
               <section style="border-top:1px solid var(--line-d2)">
                 <div class="hc-w" style="padding:56px 0 96px">
+                  <div class="product-industry-filter">
+                    <span class="hc-kick">{{ $t('site.filterByIndustry') }}</span>
+                    <div class="product-industry-options">
+                      <el-button :type="!selectedIndustry ? 'primary' : 'default'" :aria-pressed="!selectedIndustry"
+                        @click="setIndustry('')">{{ $t('site.allIndustries') }}</el-button>
+                      <el-button v-for="industry in publishedIndustries" :key="industry.id"
+                        :type="selectedIndustry === industry.id ? 'primary' : 'default'"
+                        :aria-pressed="selectedIndustry === industry.id"
+                        @click="setIndustry(industry.id)">{{ displayIndustry(industry) }}</el-button>
+                    </div>
+                    <span class="product-result-count">{{ $t('site.filteredProductCount', { count: visibleProducts.length }) }}</span>
+                  </div>
                   <div class="hc-cards" style="grid-template-columns:repeat(4,1fr)">
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-mining-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">01</span>
-                      <h3>{{ $t('site.miningMachinery') }}</h3>
-                      <p>{{ $t('site.excavatorsCrushersSpreaders') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-mining-2.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">02</span>
-                      <h3>{{ $t('site.materialHandling') }}</h3>
-                      <p>{{ $t('site.stackersAndReclaimers') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-convey-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">03</span>
-                      <h3>{{ $t('site.conveying') }}</h3>
-                      <p>{{ $t('site.beltTubularAndPipeConveyors') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-port-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">04</span>
-                      <h3>{{ $t('site.portsAndTerminals') }}</h3>
-                      <p>{{ $t('site.shipLoadersAndUnloaders') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-bridge-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">05</span>
-                      <h3>{{ $t('site.bridgeBuilding') }}</h3>
-                      <p>{{ $t('site.launchingGirdersMssTravellers') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-metal-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">06</span>
-                      <h3>{{ $t('site.metallurgy') }}</h3>
-                      <p>{{ $t('site.ladleTurretsFurnaceStructures') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-env-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">07</span>
-                      <h3>{{ $t('site.environment') }}</h3>
-                      <p>{{ $t('site.wasteHandlingFlueGasDucting') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  <a class="hc-card">
-                    <div class="im"><img src="/assets/p-tour-1.jpg" alt="" /></div>
-                    <div class="bd">
-                      <span class="no">08</span>
-                      <h3>{{ $t('site.tourismFacilities') }}</h3>
-                      <p>{{ $t('site.ferrisWheelsRopeways') }}</p>
-                      <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                    </div>
-                  </a>
-                  </div>
-                </div>
-              </section>
-
-              <section class="hc-sec hc-white">
-                <div class="hc-w">
-                  <div class="hc-shead">
-                    <div class="l">
-                      <span class="hc-kick">{{ $t('site.selectedEquipment') }}</span>
-                      <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.typicalConfigurations') }}</h2>
-                    </div>
-                    <span class="hc-lnk">{{ $t('site.fullProductList') }}<i>→</i></span>
-                  </div>
-                  <div class="hc-proj">
-                  <div class="c">
-                    <div class="im"><img src="/assets/p-mining-2.jpg" alt="" /></div>
-                    <div class="bd">
-                      <h3>{{ $t('site.stackerReclaimer2') }}</h3>
-                      <div class="tg"><span class="hc-tag l">{{ $t('site.mining') }}</span><span class="hc-tag l">{{ $t('site.australia') }}</span></div>
-                      <div class="meta">
-                        <div><b>{{ $t('site.capacity') }}</b><span>6,000 t/h</span></div>
-                        <div><b>{{ $t('site.technology') }}</b><span>{{ $t('site.railMounted') }}</span></div>
-                        <div><b>{{ $t('site.scope') }}</b><span>EP + MC</span></div>
+                    <router-link v-for="(item, index) in visibleProducts" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
+                      <div class="im"><img :src="item.image || '/assets/p-other-1.jpg'" :alt="productField(item, 'title')" /></div>
+                      <div class="bd">
+                        <span class="no">{{ String(index + 1).padStart(2, '0') }}</span>
+                        <h3>{{ productField(item, 'title') }}</h3>
+                        <p>{{ productField(item, 'summary') }}</p>
+                        <span class="go">{{ $t('site.explore') }}<i>→</i></span>
                       </div>
-                    </div>
+                    </router-link>
                   </div>
-                  <div class="c">
-                    <div class="im"><img src="/assets/p-convey-2.jpg" alt="" /></div>
-                    <div class="bd">
-                      <h3>{{ $t('site.pipeConveyorSystem') }}</h3>
-                      <div class="tg"><span class="hc-tag l">{{ $t('site.conveying') }}</span><span class="hc-tag l">{{ $t('site.chile') }}</span></div>
-                      <div class="meta">
-                        <div><b>{{ $t('site.capacity') }}</b><span>600 t/h</span></div>
-                        <div><b>{{ $t('site.technology') }}</b><span>{{ $t('site.tubularBelt') }}</span></div>
-                        <div><b>{{ $t('site.scope') }}</b><span>EP + MC</span></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="c">
-                    <div class="im"><img src="/assets/p-port-2.png" alt="" /></div>
-                    <div class="bd">
-                      <h3>{{ $t('site.travellingShipUnloader') }}</h3>
-                      <div class="tg"><span class="hc-tag l">{{ $t('site.port') }}</span><span class="hc-tag l">{{ $t('site.india') }}</span></div>
-                      <div class="meta">
-                        <div><b>{{ $t('site.capacity') }}</b><span>1,800 t/h</span></div>
-                        <div><b>{{ $t('site.technology') }}</b><span>{{ $t('site.grabType') }}</span></div>
-                        <div><b>{{ $t('site.scope') }}</b><span>EP + MC</span></div>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
+                  <el-empty v-if="!visibleProducts.length" class="product-filter-empty"
+                    :description="$t('site.noProductsForIndustry')">
+                    <el-button type="primary" @click="setIndustry('')">{{ $t('site.allIndustries') }}</el-button>
+                  </el-empty>
                 </div>
               </section>
 
               <footer class="hc-foot">
                 <div class="hc-foot-in">
                   <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
-                  <span class="tag">{{ $t('site.solutions8Categories31Products') }}</span>
+                  <span class="tag">{{ $t('site.solutionCount', { products: publishedProducts.length, categories: categoryCount }) }}</span>
                   <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
                   <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
                 </div>

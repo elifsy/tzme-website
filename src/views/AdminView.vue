@@ -16,6 +16,10 @@ import {
 } from "../data/content.js";
 import { setLocale } from "../i18n/index.js";
 import { availableLocales } from "../i18n/locales/index.js";
+import CertificationsManager from "../components/CertificationsManager.vue";
+import IndustriesManager from "../components/IndustriesManager.vue";
+import { MAX_HOME_PRODUCTS, mergeManagedContent } from "../services/catalog.js";
+import { industryField, useIndustryCatalog } from "../services/industries.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -24,6 +28,9 @@ const tab = computed(() => route.params.view || "overview");
 const products = ref([]);
 const articles = ref([]);
 const inquiries = ref([]);
+const certManager = ref(null);
+const industryManager = ref(null);
+const { industries: industryRecords, loadIndustries } = useIndustryCatalog();
 const loading = ref(true);
 const modal = ref(false);
 const kind = ref("products");
@@ -35,10 +42,17 @@ const form = reactive({
   titleZh: "",
   categoryEn: "",
   categoryZh: "",
+  industries: [],
   summaryEn: "",
   summaryZh: "",
   contentEn: "",
   contentZh: "",
+  featuresEn: "",
+  featuresZh: "",
+  specificationsEn: "",
+  specificationsZh: "",
+  showOnHome: false,
+  homeOrder: null,
   image: "",
   status: "published",
   date: "",
@@ -46,18 +60,23 @@ const form = reactive({
 const titles = {
   overview: "admin.overview",
   products: "admin.products",
+  industries: "admin.industryManagement",
   articles: "admin.insights",
+  certifications: "admin.certifications",
   inquiries: "admin.enquiries",
 };
 const navItems = [
   { key: "overview", label: "admin.overview", icon: "DataBoard" },
   { key: "products", label: "admin.products", icon: "Box" },
+  { key: "industries", label: "admin.industryManagement", icon: "DataBoard" },
   { key: "articles", label: "admin.insights", icon: "Document" },
+  { key: "certifications", label: "admin.certifications", icon: "CircleCheckFilled" },
   { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
 ];
 const publishedProducts = computed(
   () => products.value.filter((item) => item.status === "published").length,
 );
+const homeProductCount = computed(() => products.value.filter((item) => item.showOnHome).length);
 const publishedArticles = computed(
   () => articles.value.filter((item) => item.status === "published").length,
 );
@@ -72,18 +91,13 @@ function field(item, key) {
     ? item[`${key}Zh`] || item[`${key}En`] || item[key] || ""
     : item[`${key}En`] || item[key] || "";
 }
-function normalize(item) {
-  return {
-    ...item,
-    titleEn: item.titleEn || item.title || "",
-    titleZh: item.titleZh || "",
-    categoryEn: item.categoryEn || item.category || "",
-    categoryZh: item.categoryZh || "",
-    summaryEn: item.summaryEn || item.summary || "",
-    summaryZh: item.summaryZh || "",
-    contentEn: item.contentEn || item.content || "",
-    contentZh: item.contentZh || "",
-  };
+function industryNames(ids) {
+  return (ids || []).map((id) => industryField(industryRecords.value.find((item) => item.id === id), 'title', locale.value))
+    .filter(Boolean).join(' · ') || '—';
+}
+function industryOptionLabel(item) {
+  const title = industryField(item, 'title', locale.value);
+  return item.status === 'draft' ? `${title} (${t('admin.draft')})` : title;
 }
 function rememberEdit(type, id, action) {
   const key = "tzme-content-edits";
@@ -94,27 +108,6 @@ function rememberEdit(type, id, action) {
   edits[type] ||= {};
   edits[type][id] = action;
   localStorage.setItem(key, JSON.stringify(edits));
-}
-function combineContent(type, seed, remote = []) {
-  let edits = {};
-  let local = [];
-  try {
-    edits =
-      JSON.parse(localStorage.getItem("tzme-content-edits"))?.[type] || {};
-  } catch {}
-  try {
-    local = JSON.parse(localStorage.getItem(`tzme-${type}`)) || [];
-  } catch {}
-  const byId = new Map();
-  for (const item of seed)
-    if (edits[item.id] !== "delete") byId.set(item.id, normalize(item));
-  for (const item of local)
-    if (edits[item.id] === "save" || edits[item.id] === "synced")
-      byId.set(item.id, normalize(item));
-  for (const item of remote)
-    if (edits[item.id] !== "delete" && edits[item.id] !== "save")
-      byId.set(item.id, normalize(item));
-  return [...byId.values()];
 }
 async function writeRecord(type, record, update) {
   const options = {
@@ -130,7 +123,11 @@ async function writeRecord(type, record, update) {
   if (update && response.status === 404) {
     response = await fetch(`/api/${type}`, { ...options, method: "POST" });
   }
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  if (!response.ok) {
+    const error = new Error(`HTTP ${response.status}`);
+    error.status = response.status;
+    throw error;
+  }
   return response.json();
 }
 
@@ -146,16 +143,16 @@ async function load() {
       if (!response.ok) throw new Error("API unavailable");
       const remote = await response.json();
       dest.value =
-        key === "inquiries" ? remote : combineContent(key, seed, remote);
+        key === "inquiries" ? remote : mergeManagedContent(key, seed, remote);
       localStorage.setItem(`tzme-${key}`, JSON.stringify(dest.value));
     } catch {
       try {
         dest.value =
           key === "inquiries"
             ? JSON.parse(localStorage.getItem(`tzme-${key}`)) || seed
-            : combineContent(key, seed);
+            : mergeManagedContent(key, seed);
       } catch {
-        dest.value = key === "inquiries" ? seed : seed.map(normalize);
+        dest.value = key === "inquiries" ? seed : mergeManagedContent(key, seed);
       }
     }
   }
@@ -171,10 +168,17 @@ function openEditor(type, item) {
     titleZh: item?.titleZh || "",
     categoryEn: item?.categoryEn || item?.category || "",
     categoryZh: item?.categoryZh || "",
+    industries: [...(item?.industries || (item?.industry ? [item.industry] : []))],
     summaryEn: item?.summaryEn || item?.summary || "",
     summaryZh: item?.summaryZh || "",
     contentEn: item?.contentEn || item?.content || "",
     contentZh: item?.contentZh || "",
+    featuresEn: item?.featuresEn || "",
+    featuresZh: item?.featuresZh || "",
+    specificationsEn: item?.specificationsEn || "",
+    specificationsZh: item?.specificationsZh || "",
+    showOnHome: item?.showOnHome ?? false,
+    homeOrder: item?.homeOrder ?? null,
     image: item?.image || "",
     status: item?.status || "published",
     date: item?.date || new Date().toISOString().slice(0, 10),
@@ -187,10 +191,21 @@ async function save() {
     ElMessage.warning(t("admin.bothTitlesRequired"));
     return;
   }
+  if (kind.value === 'products' && (!form.industries.length ||
+      form.industries.some((id) => !industryRecords.value.some((item) => item.id === id)))) {
+    ElMessage.warning(t('admin.selectProductIndustry'));
+    return;
+  }
+  if (kind.value === 'products' && form.showOnHome &&
+      products.value.filter((item) => item.showOnHome && item.id !== form.id).length >= MAX_HOME_PRODUCTS) {
+    ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
+    return;
+  }
   saving.value = true;
   const items = kind.value === "products" ? products.value : articles.value;
   const record = {
     ...form,
+    industries: [...form.industries],
     id:
       form.id ||
       `${kind.value === "products" ? "product" : "article"}-${Date.now()}`,
@@ -200,6 +215,7 @@ async function save() {
     content: form.contentEn,
   };
   const index = items.findIndex((item) => item.id === record.id);
+  const previous = index >= 0 ? items[index] : null;
   if (index < 0) items.unshift(record);
   else items[index] = record;
   localStorage.setItem(`tzme-${kind.value}`, JSON.stringify(items));
@@ -208,11 +224,49 @@ async function save() {
     await writeRecord(kind.value, record, Boolean(form.id));
     rememberEdit(kind.value, record.id, "synced");
     ElMessage.success(t('admin.contentSaved'));
-  } catch {
+  } catch (error) {
+    if (error.status === 400 && kind.value === 'products') {
+      if (previous) items[index] = previous;
+      else items.splice(items.findIndex((item) => item.id === record.id), 1);
+      localStorage.setItem('tzme-products', JSON.stringify(items));
+      rememberEdit('products', record.id, previous ? 'save' : 'delete');
+      ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
+      saving.value = false;
+      return;
+    }
     ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'));
   }
   saving.value = false;
   modal.value = false;
+}
+
+async function setHomeFeatured(item, selected) {
+  if (selected && homeProductCount.value >= MAX_HOME_PRODUCTS) {
+    ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
+    return;
+  }
+  const previousSelected = item.showOnHome;
+  const previousOrder = item.homeOrder;
+  item.showOnHome = selected;
+  if (selected && !item.homeOrder) {
+    item.homeOrder = Math.max(0, ...products.value.map((product) => Number(product.homeOrder) || 0)) + 1;
+  }
+  localStorage.setItem('tzme-products', JSON.stringify(products.value));
+  rememberEdit('products', item.id, 'save');
+  try {
+    await writeRecord('products', item, true);
+    rememberEdit('products', item.id, 'synced');
+  } catch (error) {
+    if (error.status === 400) {
+      item.showOnHome = previousSelected;
+      item.homeOrder = previousOrder;
+      localStorage.setItem('tzme-products', JSON.stringify(products.value));
+      rememberEdit('products', item.id, 'save');
+      ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
+      return;
+    }
+    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'));
+  }
 }
 
 async function remove(type, item) {
@@ -273,7 +327,12 @@ async function updateInquiry(item, status) {
 function navigate(key) {
   router.push(`/admin/${key === "overview" ? "" : key}`);
 }
-onMounted(load);
+function refresh() {
+  if (tab.value === 'certifications') certManager.value?.load();
+  else if (tab.value === 'industries') industryManager.value?.load();
+  else { load(); loadIndustries(); }
+}
+onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 </script>
 
 <template>
@@ -333,7 +392,7 @@ onMounted(load);
             {{ $t('admin.administrator') }}<small>{{ $t('admin.contentManager') }}</small>
           </div>
           <el-tooltip :content="$t('admin.refreshData')"
-            ><el-button text circle :icon="Refresh" @click="load"
+            ><el-button text circle :icon="Refresh" @click="refresh"
           /></el-tooltip>
         </div>
       </el-header>
@@ -346,11 +405,13 @@ onMounted(load);
             </div>
             <h1>{{ $t(titles[tab] || "admin.overview") }}</h1>
             <p>
-              {{ $t('admin.manageYourCorporateWebsiteContentAndEnquiries') }}
+              {{ $t(tab === 'certifications' ? 'admin.certDescription'
+                : tab === 'industries' ? 'admin.industryManagementDescription'
+                : 'admin.manageYourCorporateWebsiteContentAndEnquiries') }}
             </p>
           </div>
           <div class="admin-actions">
-            <el-button :icon="Refresh" @click="load">{{
+            <el-button :icon="Refresh" @click="refresh">{{
               $t('admin.refresh')
             }}</el-button>
             <el-button
@@ -597,6 +658,9 @@ onMounted(load);
               >
             </div></template
           >
+          <el-alert v-if="tab === 'products'" class="home-product-tip" type="info" :closable="false"
+            :title="$t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS })"
+            :description="$t('admin.homeSelectionHint')" />
           <el-table
             :data="currentItems"
             v-loading="loading"
@@ -642,6 +706,17 @@ onMounted(load);
                 }}</el-tag></template
               ></el-table-column
             >
+            <el-table-column v-if="tab === 'products'" :label="$t('admin.productIndustry')" min-width="200" show-overflow-tooltip>
+              <template #default="{ row }">{{ industryNames(row.industries) }}</template>
+            </el-table-column>
+            <el-table-column v-if="tab === 'products'" :label="$t('admin.showOnHome')" width="128" align="center">
+              <template #default="{ row }">
+                <el-switch :model-value="Boolean(row.showOnHome)"
+                  :disabled="!row.showOnHome && homeProductCount >= MAX_HOME_PRODUCTS"
+                  :aria-label="$t('admin.showOnHome') + ': ' + field(row, 'title')"
+                  @change="setHomeFeatured(row, $event)" />
+              </template>
+            </el-table-column>
             <el-table-column :label="$t('admin.status')" width="140"
               ><template #default="{ row }"
                 ><el-tag
@@ -682,6 +757,9 @@ onMounted(load);
             ></el-table-column>
           </el-table>
         </el-card>
+
+        <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
+        <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
 
         <el-card
           v-else-if="tab === 'inquiries'"
@@ -802,6 +880,17 @@ onMounted(load);
                 :rows="5"
                 :placeholder="$t('admin.englishArticlePlaceholder')"
             /></el-form-item>
+            <template v-if="kind === 'products'">
+              <el-form-item :label="$t('admin.productDescriptionEnglish')">
+                <el-input v-model="form.contentEn" type="textarea" :rows="5" />
+              </el-form-item>
+              <el-form-item :label="$t('admin.productFeaturesEnglish')">
+                <el-input v-model="form.featuresEn" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
+              </el-form-item>
+              <el-form-item :label="$t('admin.productSpecificationsEnglish')">
+                <el-input v-model="form.specificationsEn" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+              </el-form-item>
+            </template>
           </el-tab-pane>
           <el-tab-pane :label="$t('admin.chinese')" name="zh">
             <el-form-item :label="$t('admin.titleChinese')" required
@@ -824,8 +913,26 @@ onMounted(load);
                 :rows="5"
                 :placeholder="$t('admin.chineseArticlePlaceholder')"
             /></el-form-item>
+            <template v-if="kind === 'products'">
+              <el-form-item :label="$t('admin.productDescriptionChinese')">
+                <el-input v-model="form.contentZh" type="textarea" :rows="5" />
+              </el-form-item>
+              <el-form-item :label="$t('admin.productFeaturesChinese')">
+                <el-input v-model="form.featuresZh" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
+              </el-form-item>
+              <el-form-item :label="$t('admin.productSpecificationsChinese')">
+                <el-input v-model="form.specificationsZh" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+              </el-form-item>
+            </template>
           </el-tab-pane>
         </el-tabs>
+        <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
+          <el-select v-model="form.industries" multiple filterable collapse-tags collapse-tags-tooltip
+            class="full-width" :placeholder="$t('admin.chooseIndustries')">
+            <el-option v-for="industry in industryRecords" :key="industry.id"
+              :label="industryOptionLabel(industry)" :value="industry.id" />
+          </el-select>
+        </el-form-item>
         <el-row :gutter="14"
           ><el-col :span="12"
             ><el-form-item :label="$t('admin.imagePath')"
@@ -841,6 +948,13 @@ onMounted(load);
                   :label="$t('admin.draft2')"
                   value="draft" /></el-select></el-form-item></el-col
         ></el-row>
+        <el-form-item v-if="kind === 'products'" :label="$t('admin.homepagePlacement')">
+          <el-switch v-model="form.showOnHome" />
+          <span class="home-product-form-hint">{{ $t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS }) }}</span>
+        </el-form-item>
+        <el-form-item v-if="kind === 'products' && form.showOnHome" :label="$t('admin.homeDisplayOrder')">
+          <el-input-number v-model="form.homeOrder" :min="1" :max="999" />
+        </el-form-item>
       </el-form>
       <template #footer
         ><el-button @click="modal = false">{{ $t('admin.cancel') }}</el-button

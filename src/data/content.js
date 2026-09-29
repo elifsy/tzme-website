@@ -1,3 +1,5 @@
+import { productDetails } from './productDetails.js'
+
 export const products = [
   {
     id: "material-handling",
@@ -121,7 +123,7 @@ const productChinese = {
   'port-machinery': ['港口机械', '港口', '服务现代港口的高效装卸船设备。'],
   'bridge-equipment': ['桥梁设备', '桥梁', '为桥梁建设项目定制的重型机械。'],
   'metallurgy': ['冶金系统', '冶金', '用于金属生产与加工的定制工业装备。'],
-  'environmental': ['环保系统', '环保', '支持负责任工业运营的集成系统。'],
+  'environmental': ['环保系统', '环保', '支持工业环保项目的集成系统。'],
   'custom-engineering': ['定制工程', '工程设计', '从方案设计、制造到调试与服务。'],
   'tourism': ['旅游设施', '其他', '面向公共景区的大型专用工程装备。'],
 }
@@ -131,9 +133,25 @@ const articleChinese = {
   'global-partnership': ['以工程实力建立长期合作伙伴关系', '行业洞察', '跨国际市场的协作与全生命周期支持。'],
   'manufacturing': ['走进我们的重型装备制造能力', '公司新闻', '了解可靠交付背后的人员与流程。'],
 }
+const homeIds = ['material-handling', 'mining-equipment', 'port-machinery', 'metallurgy', 'bridge-equipment']
+const productIndustries = {
+  'material-handling': 'mining',
+  'mining-equipment': 'mining',
+  conveying: 'energy',
+  'port-machinery': 'ports',
+  'bridge-equipment': 'construction',
+  metallurgy: 'metallurgy',
+  environmental: 'energy',
+  'custom-engineering': 'energy',
+  tourism: 'construction',
+}
 for (const product of products) {
   const [titleZh, categoryZh, summaryZh] = productChinese[product.id]
-  Object.assign(product, { titleEn: product.title, titleZh, categoryEn: product.category, categoryZh, summaryEn: product.summary, summaryZh })
+  const homeIndex = homeIds.indexOf(product.id)
+  Object.assign(product, { titleEn: product.title, titleZh, categoryEn: product.category, categoryZh, summaryEn: product.summary, summaryZh,
+    industry: productIndustries[product.id],
+    industries: [productIndustries[product.id]],
+    showOnHome: homeIndex >= 0, homeOrder: homeIndex >= 0 ? homeIndex + 1 : null, ...productDetails[product.id] })
 }
 for (const article of articles) {
   const [titleZh, categoryZh, summaryZh] = articleChinese[article.id]
