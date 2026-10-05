@@ -47,13 +47,14 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
               </section>
 
               <!-- 02 简介 -->
-              <section class="hc-about">
-                <div class="hc-about-l"><div class="hc-w">
+              <section class="hc-sec home-about">
+                <div class="hc-w home-about-layout">
+                  <div class="home-about-copy">
                   <span class="hc-kick">{{ $t('site.aboutTzme') }}</span>
                   <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.engineering') }}<br />{{ $t('site.withoutLimits') }}</h2>
                   <p class="hc-p" style="margin-top:20px;max-width:520px">
                     {{ $t('site.tzmeDeliversEngineeredEquipmentAndCustomisedIndustrialSolutionsForSomeOfThe') }}</p>
-                  <div class="hc-band" style="margin-top:52px">
+                  <div class="hc-band home-about-stats">
                     <div><div class="hc-stat">20<u>+</u></div>
                       <div class="hc-stat-cap">{{ $t('site.yearsOfExperience') }}</div></div>
                     <div><div class="hc-stat">{{ $t('site.global') }}</div>
@@ -61,8 +62,9 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
                     <div><div class="hc-stat">{{ $t('site.endToEnd') }}</div>
                       <div class="hc-stat-cap">{{ $t('site.engineeringAndManufacturing') }}</div></div>
                   </div>
-                </div></div>
-                <div class="hc-about-r"><img src="/assets/rnd-2.jpg" alt="" /></div>
+                  </div>
+                  <div class="home-about-image"><el-image src="/assets/rnd-2.jpg" alt="" fit="cover" /></div>
+                </div>
               </section>
 
               <!-- 03 服务分类 -->
@@ -286,3 +288,27 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
             </div>
 </main>
 </template>
+
+<style scoped>
+.home-about { padding: 72px 0 56px; }
+.home-about-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
+.home-about-copy { min-width: 0; }
+.home-about .hc-h2 { color: var(--txt); }
+.home-about-image { position: relative; align-self: stretch; min-width: 0; min-height: 360px; overflow: hidden; border: 1px solid var(--line-d); border-radius: 4px; }
+.home-about-image .el-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.home-about-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 40px; }
+.home-about-stats > div, .home-about-stats > div + div { min-width: 0; padding: 24px 10px 4px; }
+.home-about-stats > div:first-child { padding-left: 0; }
+.home-about-stats > div:last-child { padding-right: 0; }
+.home-about-stats .hc-stat { font-size: clamp(22px, 2vw, 30px); }
+.home-about-stats .hc-stat-cap { color: #bccddb; font-size: 12px; }
+@media (max-width: 960px) {
+  .home-about-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .home-about-image { min-height: 0; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 700px) {
+  .home-about-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+  .home-about-stats > div:nth-child(2n) { border-right: 0; }
+  .home-about-stats > div:last-child { grid-column: 1 / -1; padding-left: 0; }
+}
+</style>

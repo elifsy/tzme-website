@@ -204,18 +204,34 @@
 .project-detail-metrics > div + div { border-left: 1px solid #6b8293; padding-left: 28px; }
 .project-detail-metrics dt { color: #d5e0e9; font-size: .875rem; line-height: 1.65; margin-bottom: 10px; }
 .project-detail-metrics dd { color: #fff; font-weight: 700; font-size: 1.25rem; line-height: 1.5; margin: 0; }
-.project-site .project-detail-content { background: #fff; padding: 72px 0 80px; color: #203548; }
-.project-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 320px); gap: 72px; align-items: start; }
-.project-detail-layout article { min-width: 0; }
-.project-article-heading { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #a8b7c4; }
+.project-site .project-detail-content { background: #e7edf2; padding: 56px 0 64px; color: #203548; border-bottom: 1px solid #c3d0db; }
+.project-content-heading { margin-bottom: 24px; }
+.project-content-heading h2 { font-size: 1.75rem; color: #152b3d; line-height: 1.4; margin-top: 10px; }
+.project-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 320px); gap: 32px; align-items: start; }
+.project-article { min-width: 0; }
+.project-article-card.el-card { --el-card-border-color: #bfceda; --el-card-padding: 32px; border-radius: 6px; background: #f8fafc; color: #203548; }
+.project-article-footer { border-top: 1px solid #c9d5df; margin-top: 28px; padding-top: 16px; }
+.project-detail-sidebar { display: grid; gap: 20px; min-width: 0; }
+.project-detail-sidebar > :only-child { grid-column: 1 / -1; }
+.project-toc-card.el-card { --el-card-border-color: #bfceda; --el-card-padding: 24px; border-radius: 6px; background: #f2f6f9; color: #203548; }
+.project-content-toc h3 { font-size: 1rem; line-height: 1.5; font-weight: 700; color: #152b3d; margin-bottom: 14px; }
+.project-content-toc ol { list-style: none; padding: 0; margin: 0; }
+.project-content-toc li + li { border-top: 1px solid #c9d5df; }
+.project-content-toc a { display: flex; align-items: baseline; gap: 12px; padding: 12px 0; color: #334e65; font-size: .875rem; line-height: 1.7; overflow-wrap: anywhere; }
+.project-content-toc a:hover { color: #075cac; text-decoration: underline; text-underline-offset: 4px; }
+.project-toc-number { color: #075cac; font-size: .75rem; font-weight: 700; flex: 0 0 20px; }
 .project-detail-content .hc-kick { color: #075cac; }
-.project-article-heading h2 { font-size: 1.75rem; color: #152b3d; line-height: 1.4; margin-top: 12px; }
 .project-detail-content .article-body { color: #203548; font-size: 1rem; line-height: 1.9; }
 .project-detail-content .article-body :is(h1, h2, h3, h4, h5, h6) { color: #152b3d; line-height: 1.5; font-weight: 700; }
 .project-detail-content .article-body h1 { font-size: 1.875rem; }
 .project-detail-content .article-body h2 { font-size: 1.625rem; }
 .project-detail-content .article-body h3 { font-size: 1.375rem; }
 .project-detail-content .article-body :is(h4, h5, h6) { font-size: 1.125rem; }
+.project-article-card .article-body .project-content-section-title { display: flex; align-items: baseline; gap: 14px; margin: 28px 0 16px; padding-top: 24px; border-top: 1px solid #c9d5df; font-size: 1.25rem; line-height: 1.55; scroll-margin-top: 24px; }
+.project-article-card .article-body > .project-content-section-title:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.project-section-number { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; min-width: 30px; min-height: 28px; padding: 0 6px; border: 1px solid #bfceda; border-radius: 3px; background: #e8eff5; color: #075cac; font-size: .8125rem; font-weight: 700; }
+.project-section-title-text { min-width: 0; overflow-wrap: anywhere; }
+.project-content-section-title:focus { outline: 2px solid #075cac; outline-offset: 6px; }
 .project-detail-content .article-body :is(a, code) { color: #075cac; }
 .project-detail-content .article-body a { text-decoration: underline; text-underline-offset: 4px; }
 .project-detail-content .article-body :is(blockquote, pre) { background: #f0f5f9; color: #203548; border-radius: 3px; }
@@ -230,12 +246,14 @@
 .project-detail-content .article-body hr { border-top-color: #a8b7c4; }
 .project-detail-content .project-back { color: #075cac; }
 .project-detail-content .project-back:hover { color: #064b8e; }
-.project-detail-content :where(a, [tabindex="0"]):focus-visible { outline-color: #075cac; box-shadow: 0 0 0 7px #fff; }
-.project-article-back { margin-top: 36px; }
-.project-contact-panel { border: 1px solid #50697c; border-radius: 4px; padding: 28px; background: #0a1e2c; }
-.project-contact-marker { display: block; width: 44px; height: 4px; background: #f6b44d; margin-bottom: 24px; }
-.project-contact-panel h2 { color: #fff; font-size: 1.25rem; line-height: 1.5; }
-.project-contact-panel p { margin: 16px 0 24px; font-size: .875rem; color: #d5e0e9; line-height: 1.85; }
+.project-detail-content :where(a, [tabindex="0"]):focus-visible { outline-color: #075cac; box-shadow: 0 0 0 7px #e7edf2; }
+.project-contact-panel.el-card { --el-card-border-color: #456073; --el-card-padding: 24px; border-radius: 6px; border-top: 3px solid #f6b44d; background: #0a1e2c; color: #d5e0e9; }
+.project-contact-eyebrow { display: flex; align-items: center; gap: 10px; color: #d5e0e9; font-size: .75rem; margin-bottom: 18px; }
+.project-contact-eyebrow .el-icon { font-size: 18px; color: #a4d7f7; }
+.project-contact-panel h3 { color: #fff; font-size: 1.25rem; line-height: 1.5; font-weight: 700; }
+.project-contact-panel p { margin: 14px 0 24px; font-size: .875rem; color: #d5e0e9; line-height: 1.85; }
+.project-contact-panel .site-filter-button { width: 100%; }
+.project-contact-panel .site-filter-button > span { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .project-site .projects-related { background: #06131c; padding: 64px 0 88px; border-top: 1px solid #456073; }
 .project-unavailable { min-height: 70vh; }
 .project-site .project-footer { background: #020c13; border-top: 1px solid #456073; }
@@ -249,7 +267,6 @@
 
 @media (max-width: 1280px) {
   .project-detail-hero-grid { gap: 40px; }
-  .project-detail-layout { gap: 40px; }
 }
 @media (max-width: 1080px) {
   .project-site .projects-catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
@@ -257,7 +274,7 @@
 @media (max-width: 860px) {
   .project-detail-hero-grid, .project-detail-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .project-detail-cover { aspect-ratio: 16 / 9; }
-  .project-contact-panel { max-width: 640px; }
+  .project-detail-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 }
 @media (max-width: 700px) {
   .project-site .projects-catalog-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -267,6 +284,8 @@
   .project-detail-intro { padding: 28px 0 44px; }
   .project-detail-metrics { padding: 24px; gap: 20px; grid-template-columns: 1fr; margin-top: 32px; }
   .project-detail-metrics > div + div { border-left: 0; border-top: 1px solid #6b8293; padding: 20px 0 0; }
+  .project-article-card.el-card { --el-card-padding: 24px; }
+  .project-detail-sidebar { grid-template-columns: minmax(0, 1fr); }
   .project-site .project-footer .hc-foot-in { gap: 24px; align-items: flex-start; }
   .project-footer-brand { flex-basis: 100%; }
 }
@@ -278,6 +297,8 @@
   .projects-list-toolbar { padding: 16px; }
   .projects-search { flex-basis: 100%; }
   .project-site .project-detail-content { overflow-wrap: anywhere; }
+  .project-article-card.el-card, .project-toc-card.el-card, .project-contact-panel.el-card { --el-card-padding: 20px; }
+  .project-article-card .article-body .project-content-section-title { gap: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -300,6 +321,7 @@
   .projects-search .el-input__wrapper:focus-within { outline-color: Highlight; }
   .project-site .project-card { border-color: CanvasText; }
   .project-site .project-card:focus-visible { outline-color: Highlight; box-shadow: none; }
+  .project-content-section-title:focus { outline-color: Highlight; }
   .project-skip-link { border-color: LinkText; }
   .project-site .hc-nav .hc-menu a.on::after { background: Highlight; }
 }

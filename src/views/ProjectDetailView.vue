@@ -34,11 +34,27 @@ const body = computed(() => {
   })
   const headings = [...template.content.querySelectorAll('h1, h2, h3, h4, h5, h6')]
   const firstLevel = Math.min(...headings.map((heading) => Number(heading.tagName.slice(1))))
-  for (const heading of headings) {
+  const sections = []
+  for (const [index, heading] of headings.entries()) {
     const level = Math.min(6, Number(heading.tagName.slice(1)) + 3 - firstLevel)
     const normalized = document.createElement(`h${level}`)
     for (const attribute of [...heading.attributes]) normalized.setAttribute(attribute.name, attribute.value)
     normalized.append(...heading.childNodes)
+    const title = normalized.textContent.trim()
+    if (level === 3 && title) {
+      normalized.id = `project-section-${index + 1}`
+      normalized.tabIndex = -1
+      normalized.className = 'project-content-section-title'
+      const number = document.createElement('span')
+      number.className = 'project-section-number'
+      number.setAttribute('aria-hidden', 'true')
+      number.textContent = String(sections.length + 1).padStart(2, '0')
+      const text = document.createElement('span')
+      text.className = 'project-section-title-text'
+      text.append(...normalized.childNodes)
+      normalized.append(number, text)
+      sections.push({ id: normalized.id, title, number: number.textContent })
+    }
     heading.replaceWith(normalized)
   }
   template.content.querySelectorAll('table').forEach((table) => {
@@ -50,7 +66,7 @@ const body = computed(() => {
     table.replaceWith(region)
     region.append(table)
   })
-  return template.innerHTML
+  return { html: template.innerHTML, sections }
 })
 const related = computed(() => {
   const others = publishedProjects.value.filter((item) => item.id !== project.value?.id)
@@ -99,17 +115,41 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
             </dl>
           </div></section>
 
-          <section class="hc-sec project-detail-content" aria-labelledby="project-overview-title"><div class="hc-w project-detail-layout">
-            <article>
-              <div class="project-article-heading"><span class="hc-kick">{{ $t('site.navProjects') }}</span><h2 id="project-overview-title">{{ $t('site.projectOverview') }}</h2></div>
-              <div class="article-body" v-html="body"></div>
-              <router-link class="project-back project-article-back" :to="listLink"><span aria-hidden="true">←</span>{{ $t('site.backToProjects') }}</router-link>
-            </article>
-            <aside class="project-contact-panel" aria-labelledby="project-contact-title">
-              <span class="project-contact-marker" aria-hidden="true"></span>
-              <h2 id="project-contact-title">{{ $t('site.projectContactTitle') }}</h2><p>{{ $t('site.projectContactText') }}</p>
-              <el-button type="primary" class="site-filter-button" @click="goTo('/contact')">{{ $t('site.contactUs') }}<el-icon aria-hidden="true"><ArrowRight /></el-icon></el-button>
-            </aside>
+          <section class="hc-sec project-detail-content" aria-labelledby="project-details-title"><div class="hc-w">
+            <div class="project-content-heading">
+              <span class="hc-kick">{{ $t('site.navProjects') }}</span>
+              <h2 id="project-details-title">{{ $t('site.projectDetails') }}</h2>
+            </div>
+            <div class="project-detail-layout">
+              <article class="project-article" aria-labelledby="project-details-title">
+                <el-card class="project-article-card" shadow="never">
+                  <div class="article-body" v-html="body.html"></div>
+                  <div class="project-article-footer">
+                    <router-link class="project-back" :to="listLink"><span aria-hidden="true">←</span>{{ $t('site.backToProjects') }}</router-link>
+                  </div>
+                </el-card>
+              </article>
+              <aside class="project-detail-sidebar" :aria-label="$t('site.projectSupportingInformation')">
+                <el-card v-if="body.sections.length" class="project-toc-card" shadow="never">
+                  <nav class="project-content-toc" aria-labelledby="project-contents-title">
+                    <h3 id="project-contents-title">{{ $t('site.projectContents') }}</h3>
+                    <ol>
+                      <li v-for="section in body.sections" :key="section.id">
+                        <a :href="`#${section.id}`" @click.prevent="focusProjectContent(section.id)">
+                          <span class="project-toc-number" aria-hidden="true">{{ section.number }}</span><span>{{ section.title }}</span>
+                        </a>
+                      </li>
+                    </ol>
+                  </nav>
+                </el-card>
+                <el-card class="project-contact-panel" shadow="never">
+                  <div class="project-contact-eyebrow"><el-icon aria-hidden="true"><ChatDotRound /></el-icon><span>{{ $t('site.projectContactEyebrow') }}</span></div>
+                  <h3 id="project-contact-title">{{ $t('site.projectContactTitle') }}</h3>
+                  <p>{{ $t('site.projectContactText') }}</p>
+                  <el-button type="primary" class="site-filter-button" @click="goTo('/contact')">{{ $t('site.contactUs') }}<el-icon aria-hidden="true"><ArrowRight /></el-icon></el-button>
+                </el-card>
+              </aside>
+            </div>
           </div></section>
 
           <section v-if="related.length" class="hc-sec projects-related" aria-labelledby="related-projects-title"><div class="hc-w">

@@ -24,9 +24,9 @@ onMounted(async () => { certifications.value = await loadCertifications() })
 
       <SiteNav />
 
-      <section class="hc-about">
-        <div class="hc-about-l">
-          <div class="hc-w">
+      <section class="hc-sec about-intro">
+        <div class="hc-w about-intro-layout">
+          <div class="about-intro-copy">
             <span class="hc-kick">{{ $t('site.aboutTzme') }}</span>
             <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.engineering') }}<br />{{ $t('site.withoutLimits') }}
             </h2>
@@ -34,7 +34,7 @@ onMounted(async () => { certifications.value = await loadCertifications() })
               {{ $t('site.tianjinHeavySteelMachineryEquipmentCoLtdDesignsFabricatesAndDeliversEngineered') }}</p>
             <p class="hc-p" style="margin-top:18px;max-width:540px">
               {{ $t('site.roughly90OfOurOutputIsExportedMainlyToMiningHousesPort') }}</p>
-            <div class="hc-band" style="margin-top:48px;grid-template-columns:repeat(4,1fr)">
+            <div class="hc-band about-intro-stats">
               <div>
                 <div class="hc-stat">30,000<u>t</u></div>
                 <div class="hc-stat-cap">{{ $t('site.annualOutput') }}</div>
@@ -53,8 +53,8 @@ onMounted(async () => { certifications.value = await loadCertifications() })
               </div>
             </div>
           </div>
+          <div class="about-intro-image"><el-image src="/assets/rnd-2.jpg" alt="" fit="cover" /></div>
         </div>
-        <div class="hc-about-r"><img src="/assets/rnd-2.jpg" alt="" /></div>
       </section>
 
       <section class="hc-sec hc-light">
@@ -171,3 +171,28 @@ onMounted(async () => { certifications.value = await loadCertifications() })
 
   </main>
 </template>
+
+<style scoped>
+.about-intro { padding: 72px 0 56px; }
+.about-intro-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
+.about-intro-copy { min-width: 0; }
+.about-intro .hc-h2 { color: var(--txt); }
+.about-intro-image { position: relative; align-self: stretch; min-width: 0; min-height: 360px; overflow: hidden; border: 1px solid var(--line-d); border-radius: 4px; }
+.about-intro-image .el-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.about-intro-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 40px; }
+.about-intro-stats > div, .about-intro-stats > div + div { min-width: 0; padding: 24px 10px 4px; }
+.about-intro-stats > div:first-child { padding-left: 0; }
+.about-intro-stats > div:last-child { padding-right: 0; }
+.about-intro-stats .hc-stat { font-size: clamp(22px, 2vw, 30px); white-space: nowrap; }
+.about-intro-stats .hc-stat u { font-size: 12px; }
+.about-intro-stats .hc-stat-cap { color: #bccddb; font-size: 12px; }
+@media (max-width: 960px) {
+  .about-intro-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .about-intro-image { min-height: 0; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 700px) {
+  .about-intro-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+  .about-intro-stats > div:nth-child(2n) { border-right: 0; }
+  .about-intro-stats > div:nth-child(2n + 1) { padding-left: 0; }
+}
+</style>
