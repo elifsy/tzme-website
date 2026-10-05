@@ -703,22 +703,26 @@
 .design-site .hc-ind > a.hc-ind-item:focus-visible {
   background: rgba(255, 255, 255, .05);
 }
-.design-site .product-industry-filter {
+.design-site .product-industry-filter,
+.design-site .news-category-filter {
   display: flex;
   align-items: center;
   gap: 18px;
   flex-wrap: wrap;
   margin-bottom: 30px;
 }
-.design-site .product-industry-options {
+.design-site .product-industry-options,
+.design-site .news-category-options {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
-.design-site .product-industry-options .el-button {
+.design-site .product-industry-options .el-button,
+.design-site .news-category-options .el-button {
   margin: 0;
 }
-.design-site .product-result-count {
+.design-site .product-result-count,
+.design-site .news-result-count {
   margin-left: auto;
   color: var(--txt-3);
   font-size: 12px;

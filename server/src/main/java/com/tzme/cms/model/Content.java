@@ -34,11 +34,11 @@ public class Content {
     private String image;
     private String status = "published";
     private LocalDate date;
-    @Column(length = 30000)
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
-    @Column(length = 30000)
+    @Column(columnDefinition = "LONGTEXT")
     private String contentEn;
-    @Column(length = 30000)
+    @Column(columnDefinition = "LONGTEXT")
     private String contentZh;
     @Column(columnDefinition = "TEXT")
     private String featuresEn;

@@ -3,6 +3,8 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { industrySeed } from '../data/industries.js'
+import AdminEditorDialog from './AdminEditorDialog.vue'
+import AdminEditorPanel from './AdminEditorPanel.vue'
 import {
   deleteIndustryLocally,
   industryField,
@@ -161,44 +163,50 @@ onMounted(load)
     </el-table>
   </el-card>
 
-  <el-dialog v-model="dialogOpen" :title="$t(form.id ? 'admin.editIndustry' : 'admin.addIndustry')"
-    width="640px" class="editor-dialog" destroy-on-close>
+  <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.editIndustry' : 'admin.addIndustry')"
+    :description="$t('admin.industryManagementDescription')" icon="DataBoard" width="min(980px, calc(100vw - 40px))"
+    :status="form.status" :saving="saving" @save="save">
     <el-form :model="form" label-position="top" @submit.prevent="save">
-      <el-tabs v-model="editingLocale" class="bilingual-tabs">
-        <el-tab-pane :label="$t('admin.english')" name="en">
-          <el-form-item :label="$t('admin.industryNameEnglish')" required>
-            <el-input v-model="form.titleEn" maxlength="255" show-word-limit />
-          </el-form-item>
-          <el-form-item :label="$t('admin.industrySubtitleEnglish')">
-            <el-input v-model="form.subtitleEn" maxlength="1000" show-word-limit />
-          </el-form-item>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('admin.chinese')" name="zh">
-          <el-form-item :label="$t('admin.industryNameChinese')" required>
-            <el-input v-model="form.titleZh" maxlength="255" show-word-limit />
-          </el-form-item>
-          <el-form-item :label="$t('admin.industrySubtitleChinese')">
-            <el-input v-model="form.subtitleZh" maxlength="1000" show-word-limit />
-          </el-form-item>
-        </el-tab-pane>
-      </el-tabs>
-      <el-row :gutter="16">
-        <el-col :xs="24" :sm="12"><el-form-item :label="$t('admin.industryOrder')">
-          <el-input-number v-model="form.sortOrder" :min="0" :max="9999" />
-        </el-form-item></el-col>
-        <el-col :xs="24" :sm="12"><el-form-item :label="$t('admin.status')">
-          <el-select v-model="form.status" class="full-width">
-            <el-option :label="$t('admin.published')" value="published" />
-            <el-option :label="$t('admin.draft')" value="draft" />
-          </el-select>
-        </el-form-item></el-col>
-      </el-row>
+      <div class="cms-editor-layout">
+        <div class="cms-editor-main">
+          <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
+            <el-tabs v-model="editingLocale" class="bilingual-tabs">
+              <el-tab-pane :label="$t('admin.english')" name="en">
+                <el-form-item :label="$t('admin.industryNameEnglish')" required>
+                  <el-input v-model="form.titleEn" maxlength="255" show-word-limit />
+                </el-form-item>
+                <el-form-item :label="$t('admin.industrySubtitleEnglish')">
+                  <el-input v-model="form.subtitleEn" type="textarea" :rows="4" maxlength="1000" show-word-limit />
+                </el-form-item>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('admin.chinese')" name="zh">
+                <el-form-item :label="$t('admin.industryNameChinese')" required>
+                  <el-input v-model="form.titleZh" maxlength="255" show-word-limit />
+                </el-form-item>
+                <el-form-item :label="$t('admin.industrySubtitleChinese')">
+                  <el-input v-model="form.subtitleZh" type="textarea" :rows="4" maxlength="1000" show-word-limit />
+                </el-form-item>
+              </el-tab-pane>
+            </el-tabs>
+          </AdminEditorPanel>
+        </div>
+        <aside class="cms-editor-aside">
+          <AdminEditorPanel step="02" :title="$t('admin.editorIndustrySettings')" :description="$t('admin.industryVisibilityHint')">
+            <el-form-item :label="$t('admin.industryOrder')">
+              <el-input-number v-model="form.sortOrder" :min="0" :max="9999" controls-position="right" />
+            </el-form-item>
+            <el-form-item :label="$t('admin.status')">
+              <el-radio-group v-model="form.status" class="cms-status-options">
+                <el-radio-button value="published">{{ $t('admin.published') }}</el-radio-button>
+                <el-radio-button value="draft">{{ $t('admin.draft') }}</el-radio-button>
+              </el-radio-group>
+              <p class="cms-field-hint">{{ $t(form.status === 'published' ? 'admin.editorPublishedHint' : 'admin.editorDraftHint') }}</p>
+            </el-form-item>
+          </AdminEditorPanel>
+        </aside>
+      </div>
     </el-form>
-    <template #footer>
-      <el-button @click="dialogOpen = false">{{ $t('admin.cancel') }}</el-button>
-      <el-button type="primary" :loading="saving" @click="save">{{ $t('admin.saveContent') }}</el-button>
-    </template>
-  </el-dialog>
+  </AdminEditorDialog>
 </template>
 
 <style scoped>

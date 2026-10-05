@@ -2,6 +2,8 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import AdminEditorDialog from './AdminEditorDialog.vue'
+import AdminEditorPanel from './AdminEditorPanel.vue'
 import {
   deleteCertificationLocally,
   loadCertifications,
@@ -198,72 +200,77 @@ onMounted(load)
     </el-table>
   </el-card>
 
-  <el-dialog v-model="dialogOpen" :title="$t(form.id ? 'admin.certEdit' : 'admin.certAdd')"
-    width="700px" class="cert-dialog" destroy-on-close>
+  <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.certEdit' : 'admin.certAdd')"
+    :description="$t('admin.certDescription')" icon="CircleCheckFilled" width="min(1100px, calc(100vw - 40px))"
+    :status="form.status" :saving="saving" @save="save">
     <el-form :model="form" label-position="top" @submit.prevent="save">
-      <el-alert type="info" :closable="false" show-icon :title="$t('admin.certBilingualHint')" />
-      <el-tabs v-model="editingLocale" class="cert-language-tabs">
-        <el-tab-pane :label="$t('admin.english')" name="en">
-          <el-form-item :label="$t('admin.certNameEn')" required>
-            <el-input v-model="form.titleEn" maxlength="255" show-word-limit />
-          </el-form-item>
-          <el-form-item :label="$t('admin.certSummaryEn')">
-            <el-input v-model="form.summaryEn" type="textarea" :rows="3" maxlength="3000" show-word-limit />
-          </el-form-item>
-          <el-form-item :label="$t('admin.certIssuerEn')">
-            <el-input v-model="form.issuerEn" maxlength="255" />
-          </el-form-item>
-        </el-tab-pane>
-        <el-tab-pane :label="$t('admin.chinese')" name="zh">
-          <el-form-item :label="$t('admin.certNameZh')" required>
-            <el-input v-model="form.titleZh" maxlength="255" show-word-limit />
-          </el-form-item>
-          <el-form-item :label="$t('admin.certSummaryZh')">
-            <el-input v-model="form.summaryZh" type="textarea" :rows="3" maxlength="3000" show-word-limit />
-          </el-form-item>
-          <el-form-item :label="$t('admin.certIssuerZh')">
-            <el-input v-model="form.issuerZh" maxlength="255" />
-          </el-form-item>
-        </el-tab-pane>
-      </el-tabs>
-      <el-row :gutter="16">
-        <el-col :xs="24" :sm="12">
-          <el-form-item :label="$t('admin.certNumber')"><el-input v-model="form.certificateNo" maxlength="255" /></el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12">
-          <el-form-item :label="$t('admin.certOrder')">
-            <el-input-number v-model="form.sortOrder" :min="0" :max="9999" controls-position="right" class="cert-full-width" />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12">
-          <el-form-item :label="$t('admin.certIssuedAt')">
-            <el-date-picker v-model="form.issuedAt" type="date" value-format="YYYY-MM-DD"
-              :placeholder="$t('admin.certSelectDate')" class="cert-full-width" />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12">
-          <el-form-item :label="$t('admin.certExpiresAt')">
-            <el-date-picker v-model="form.expiresAt" type="date" value-format="YYYY-MM-DD"
-              :placeholder="$t('admin.certSelectDate')" class="cert-full-width" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item :label="$t('admin.certImage')">
-        <el-input v-model="form.image" maxlength="500" :placeholder="$t('admin.imagePathPlaceholder')" />
-        <el-image v-if="form.image" :src="form.image" fit="contain" class="cert-image-preview" />
-      </el-form-item>
-      <el-form-item :label="$t('admin.status2')">
-        <el-radio-group v-model="form.status">
-          <el-radio value="published">{{ $t('admin.published2') }}</el-radio>
-          <el-radio value="draft">{{ $t('admin.draft2') }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
+      <div class="cms-editor-layout">
+        <div class="cms-editor-main">
+          <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
+            <el-alert class="bilingual-tip" type="info" :closable="false" show-icon :title="$t('admin.certBilingualHint')" />
+            <el-tabs v-model="editingLocale">
+              <el-tab-pane :label="$t('admin.english')" name="en">
+                <el-form-item :label="$t('admin.certNameEn')" required>
+                  <el-input v-model="form.titleEn" maxlength="255" show-word-limit />
+                </el-form-item>
+                <el-form-item :label="$t('admin.certSummaryEn')">
+                  <el-input v-model="form.summaryEn" type="textarea" :rows="3" maxlength="3000" show-word-limit />
+                </el-form-item>
+                <el-form-item :label="$t('admin.certIssuerEn')">
+                  <el-input v-model="form.issuerEn" maxlength="255" />
+                </el-form-item>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('admin.chinese')" name="zh">
+                <el-form-item :label="$t('admin.certNameZh')" required>
+                  <el-input v-model="form.titleZh" maxlength="255" show-word-limit />
+                </el-form-item>
+                <el-form-item :label="$t('admin.certSummaryZh')">
+                  <el-input v-model="form.summaryZh" type="textarea" :rows="3" maxlength="3000" show-word-limit />
+                </el-form-item>
+                <el-form-item :label="$t('admin.certIssuerZh')">
+                  <el-input v-model="form.issuerZh" maxlength="255" />
+                </el-form-item>
+              </el-tab-pane>
+            </el-tabs>
+          </AdminEditorPanel>
+          <AdminEditorPanel step="02" :title="$t('admin.editorCertificateDetails')" :description="$t('admin.editorCertificateDescription')">
+            <div class="cms-field-grid">
+              <el-form-item :label="$t('admin.certNumber')"><el-input v-model="form.certificateNo" maxlength="255" /></el-form-item>
+              <el-form-item :label="$t('admin.certOrder')">
+                <el-input-number v-model="form.sortOrder" :min="0" :max="9999" controls-position="right" />
+              </el-form-item>
+              <el-form-item :label="$t('admin.certIssuedAt')">
+                <el-date-picker v-model="form.issuedAt" type="date" value-format="YYYY-MM-DD" :placeholder="$t('admin.certSelectDate')" />
+              </el-form-item>
+              <el-form-item :label="$t('admin.certExpiresAt')">
+                <el-date-picker v-model="form.expiresAt" type="date" value-format="YYYY-MM-DD" :placeholder="$t('admin.certSelectDate')" />
+              </el-form-item>
+            </div>
+          </AdminEditorPanel>
+        </div>
+        <aside class="cms-editor-aside">
+          <AdminEditorPanel step="03" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
+            <el-form-item :label="$t('admin.certImage')">
+              <div class="cms-cover-control">
+                <el-image v-if="form.image" :src="form.image" fit="contain" class="cms-cover-image">
+                  <template #error><div class="cms-cover-fallback"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImageError') }}</span></div></template>
+                </el-image>
+                <div v-else class="cms-cover-empty"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImagePreview') }}</span><small>{{ $t('admin.editorImageHint') }}</small></div>
+                <el-input v-model="form.image" maxlength="500" :placeholder="$t('admin.imagePathPlaceholder')" />
+              </div>
+            </el-form-item>
+            <el-form-item :label="$t('admin.status2')">
+              <el-radio-group v-model="form.status" class="cms-status-options">
+                <el-radio-button value="published">{{ $t('admin.published2') }}</el-radio-button>
+                <el-radio-button value="draft">{{ $t('admin.draft2') }}</el-radio-button>
+              </el-radio-group>
+              <p class="cms-field-hint">{{ $t(form.status === 'published' ? 'admin.editorPublishedHint' : 'admin.editorDraftHint') }}</p>
+            </el-form-item>
+          </AdminEditorPanel>
+        </aside>
+      </div>
     </el-form>
-    <template #footer>
-      <el-button @click="dialogOpen = false">{{ $t('admin.cancel') }}</el-button>
-      <el-button type="primary" :loading="saving" @click="save">{{ $t('admin.saveContent') }}</el-button>
-    </template>
-  </el-dialog>
+  </AdminEditorDialog>
 </template>
 
 <style scoped>
@@ -274,7 +281,4 @@ onMounted(load)
 .cert-name-cell small { margin-top: 3px; overflow: hidden; color: #8995a1; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .cert-thumbnail { width: 48px; height: 48px; flex: none; border-radius: 4px; }
 .cert-thumbnail-empty { display: grid; place-items: center; background: #eef3f8; color: #9baabd; font-size: 20px; }
-.cert-language-tabs { margin-top: 14px; }
-.cert-full-width { width: 100%; }
-.cert-image-preview { width: 100%; max-width: 260px; height: 120px; margin-top: 10px; border: 1px solid #e8edf2; border-radius: 4px; }
 </style>

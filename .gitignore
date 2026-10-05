@@ -6,6 +6,8 @@ coverage/
 
 # Java and Maven build output
 server/target/
+server/uploads/
+uploads/
 *.class
 
 # Local configuration and credentials

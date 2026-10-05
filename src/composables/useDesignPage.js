@@ -1,7 +1,7 @@
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { localeMessages } from '../i18n/locales/index.js'
 
 const navigationItems = [
@@ -30,79 +30,9 @@ export function useDesignPage(pageKey, page) {
   function isMenuActive(item) {
     if (item.key === 'navHome') return route.path === '/'
     if (item.key === 'navProducts') return route.path.startsWith('/solutions')
+    if (item.key === 'navNews') return route.path.startsWith('/insights')
     return route.path === item.path
   }
-  let managedArticles = []
-  function contentField(item, name) {
-    return locale.value === 'zh'
-      ? (item[`${name}Zh`] || item[`${name}En`] || item[name] || '')
-      : (item[`${name}En`] || item[name] || '')
-  }
-
-  function setText(element, value) {
-    if (!element || !value) return
-    if (element.childNodes.length === 1 && element.firstChild.nodeType === Node.TEXT_NODE) {
-      element.firstChild.nodeValue = value
-    } else {
-      element.textContent = value
-    }
-  }
-
-  function applyManagedContent() {
-    const root = page.value
-    if (!root) return
-    if (pageKey === 'hc-news' && managedArticles.length) {
-      const articles = managedArticles.filter((item) => item.status === 'published')
-      const rows = [...root.querySelectorAll('a[style*="grid-template-columns:150px"]')]
-      rows.forEach((row, index) => {
-        const item = articles[index]
-        if (!item) return
-        row.dataset.articleId = item.id
-        setText(row.children[0], item.date?.replaceAll('-', '.') || '')
-        setText(row.children[1], contentField(item, 'title'))
-        setText(row.children[2], contentField(item, 'category'))
-      })
-      const featured = root.querySelector('section .hc-w>div[style*="grid-template-columns:1fr 1fr"]')
-      const first = articles[0]
-      if (featured && first) {
-        featured.dataset.articleId = first.id
-        setText(featured.querySelector('h3'), contentField(first, 'title'))
-        setText(featured.querySelector('p'), contentField(first, 'summary'))
-        setText(featured.querySelector('.hc-tag'), contentField(first, 'category'))
-        if (first.image) featured.querySelector('img')?.setAttribute('src', first.image)
-      }
-    }
-  }
-
-  async function loadManagedContent() {
-    const type = 'articles'
-    if (pageKey !== 'hc-news') return
-    let records = []
-    try {
-      const response = await fetch(`/api/${type}`)
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      records = await response.json()
-    } catch { /* The page can show the reference copy while the API is offline. */ }
-    try {
-      const edits = JSON.parse(localStorage.getItem('tzme-content-edits'))?.[type] || {}
-      const local = JSON.parse(localStorage.getItem(`tzme-${type}`)) || []
-      const byId = new Map(records.map((item) => [item.id, item]))
-      for (const item of local) {
-        if (edits[item.id] === 'save' || (!records.length && edits[item.id] === 'synced')) byId.set(item.id, item)
-      }
-      for (const [id, action] of Object.entries(edits)) if (action === 'delete') byId.delete(id)
-      records = [...byId.values()]
-    } catch { /* Keep the API records or the reference copy. */ }
-    managedArticles = records
-    renderCopy()
-  }
-
-  function renderCopy() {
-    applyManagedContent()
-  }
-
-  watch(locale, () => nextTick(renderCopy), { flush: 'post' })
-
   async function goTo(path) {
     drawerOpen.value = false
     const [pathname, hash] = path.split('#')
@@ -156,23 +86,12 @@ export function useDesignPage(pageKey, page) {
     }
   }
 
-  async function showNotice(target) {
-    const articleId = target.closest('[data-article-id]')?.dataset.articleId
-    const managed = managedArticles.find((item) => item.id === articleId)
-    const item = target.closest('a') || target.closest('.hc-w')
-    const title = (managed && contentField(managed, 'title')) || item?.querySelector('h3')?.textContent?.trim()
-      || item?.querySelector('span[style*="font-size:15px"]')?.textContent?.trim()
-      || t('site.newsAndInsights')
-    const content = (managed && contentField(managed, 'content')) || (managed && contentField(managed, 'summary')) || item?.querySelector('p')?.textContent?.trim()
-      || t('site.noticeDetails')
-    await ElMessageBox.alert(content, title, { confirmButtonText: t('site.close') })
-  }
-
   function onClick(event) {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
     const root = page.value
     const target = event.target instanceof Element ? event.target : null
     if (!root || !target) return
-    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span,a[style*="grid-template-columns:150px"]')
+    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span')
     if (!control || !root.contains(control)) return
     event.preventDefault()
 
@@ -189,7 +108,6 @@ export function useDesignPage(pageKey, page) {
 
     const label = (control.dataset.action || control.textContent).replace(/→/g, '').trim().toLowerCase()
     if (label === 'send inquiry') return submitInquiry(control.closest('.hc-form'))
-    if (pageKey === 'hc-news' && label !== 'subscribe to updates' && control.matches('.hc-lnk,a')) return showNotice(control)
     if (label.includes('all project')) return goTo('/#projects')
     if (label.includes('industr')) return goTo('/#industries')
     if (label.includes('contact') || label.includes('project') || label.includes('quote') || label.includes('certificate') || label.includes('factory visit') || label.includes('subscribe')) return goTo('/contact')
@@ -203,7 +121,7 @@ export function useDesignPage(pageKey, page) {
 
   function onKeydown(event) {
     if (!['Enter', ' '].includes(event.key)) return
-    if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span,a[style*="grid-template-columns:150px"]')) onClick(event)
+    if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span')) onClick(event)
   }
 
   onMounted(() => {
@@ -212,13 +130,9 @@ export function useDesignPage(pageKey, page) {
       const label = control.textContent.replace(/→/g, '').trim()
       control.dataset.action = englishCopyByLocale[locale.value]?.get(label) || label
     })
-    if (root) {
-      renderCopy()
-      loadManagedContent()
-    }
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)
-    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span,a[style*="grid-template-columns:150px"]').forEach((control) => {
+    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span').forEach((control) => {
       control.tabIndex = 0
       control.setAttribute('role', 'link')
     })

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, defineAsyncComponent, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -18,11 +18,17 @@ import { setLocale } from "../i18n/index.js";
 import { availableLocales } from "../i18n/locales/index.js";
 import CertificationsManager from "../components/CertificationsManager.vue";
 import IndustriesManager from "../components/IndustriesManager.vue";
+import AdminEditorDialog from "../components/AdminEditorDialog.vue";
+import AdminEditorPanel from "../components/AdminEditorPanel.vue";
+import { sanitizeRichText } from "../utils/richText.js";
 import { MAX_HOME_PRODUCTS, mergeManagedContent } from "../services/catalog.js";
 import { industryField, useIndustryCatalog } from "../services/industries.js";
 
 const route = useRoute();
 const router = useRouter();
+const RichTextEditor = defineAsyncComponent(() => import('../components/RichTextEditor.vue'));
+const imageUploading = ref(false);
+const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
 const products = ref([]);
@@ -171,8 +177,8 @@ function openEditor(type, item) {
     industries: [...(item?.industries || (item?.industry ? [item.industry] : []))],
     summaryEn: item?.summaryEn || item?.summary || "",
     summaryZh: item?.summaryZh || "",
-    contentEn: item?.contentEn || item?.content || "",
-    contentZh: item?.contentZh || "",
+    contentEn: type === 'articles' ? sanitizeRichText(item?.contentEn || item?.content || '') : item?.contentEn || item?.content || "",
+    contentZh: type === 'articles' ? sanitizeRichText(item?.contentZh || '') : item?.contentZh || "",
     featuresEn: item?.featuresEn || "",
     featuresZh: item?.featuresZh || "",
     specificationsEn: item?.specificationsEn || "",
@@ -187,9 +193,18 @@ function openEditor(type, item) {
 }
 
 async function save() {
+  if (saving.value || imageUploading.value) return;
   if (!form.titleEn.trim() || !form.titleZh.trim()) {
     ElMessage.warning(t("admin.bothTitlesRequired"));
     return;
+  }
+  if (kind.value === 'articles' && !form.date) {
+    ElMessage.warning(t('admin.publicationDateRequired'));
+    return;
+  }
+  if (kind.value === 'articles') {
+    form.contentEn = sanitizeRichText(form.contentEn);
+    form.contentZh = sanitizeRichText(form.contentZh);
   }
   if (kind.value === 'products' && (!form.industries.length ||
       form.industries.some((id) => !industryRecords.value.some((item) => item.id === id)))) {
@@ -837,132 +852,123 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
       </el-main>
     </el-container>
 
-    <el-dialog
-      v-model="modal"
-      :title="$t(form.id
-        ? (kind === 'products' ? 'admin.editProduct' : 'admin.editArticle')
-        : (kind === 'products' ? 'admin.createProduct' : 'admin.createArticle'))"
-      width="640px"
-      class="editor-dialog"
-      destroy-on-close
-    >
-      <el-form :model="form" label-position="top" @submit.prevent="save">
-        <el-alert
-          class="bilingual-tip"
-          type="info"
-          :closable="false"
-          show-icon
-          :title="$t('admin.maintainEnglishAndChineseTogetherBothTitlesAreRequiredBeforeSaving')"
-        />
-        <el-tabs v-model="editingLocale" class="bilingual-tabs">
-          <el-tab-pane :label="$t('admin.english')" name="en">
-            <el-form-item :label="$t('admin.titleEnglish')" required
-              ><el-input
-                v-model="form.titleEn"
-                :placeholder="$t('admin.enterEnglishTitle')"
-            /></el-form-item>
-            <el-form-item :label="$t('admin.categoryEnglish')"
-              ><el-input v-model="form.categoryEn" :placeholder="$t('admin.exampleMining')"
-            /></el-form-item>
-            <el-form-item :label="$t('admin.shortDescriptionEnglish')"
-              ><el-input
-                v-model="form.summaryEn"
-                type="textarea"
-                :rows="3"
-                :placeholder="$t('admin.englishSummaryPlaceholder')"
-            /></el-form-item>
-            <el-form-item
-              v-if="kind === 'articles'"
-              :label="$t('admin.articleContentEnglish')"
-              ><el-input
-                v-model="form.contentEn"
-                type="textarea"
-                :rows="5"
-                :placeholder="$t('admin.englishArticlePlaceholder')"
-            /></el-form-item>
-            <template v-if="kind === 'products'">
-              <el-form-item :label="$t('admin.productDescriptionEnglish')">
-                <el-input v-model="form.contentEn" type="textarea" :rows="5" />
+    <AdminEditorDialog v-model="modal"
+      :title="$t(form.id ? (kind === 'products' ? 'admin.editProduct' : 'admin.editArticle') : (kind === 'products' ? 'admin.createProduct' : 'admin.createArticle'))"
+      :description="$t(kind === 'products' ? 'admin.productEditorDescription' : 'admin.newsEditorDescription')"
+      :icon="kind === 'products' ? 'Box' : 'Document'"
+      :width="kind === 'articles' ? 'min(1280px, calc(100vw - 40px))' : 'min(1120px, calc(100vw - 40px))'"
+      :status="form.status" :saving="saving" :save-disabled="imageUploading" :editor-fullscreen="editorFullscreen" @save="save">
+      <el-form :model="form" label-position="top" class="cms-editor-form" @submit.prevent="save">
+        <div class="cms-editor-layout">
+          <div class="cms-editor-main">
+            <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
+              <el-alert class="bilingual-tip" type="info" :closable="false" show-icon
+                :title="$t('admin.maintainEnglishAndChineseTogetherBothTitlesAreRequiredBeforeSaving')" />
+              <el-tabs v-model="editingLocale" class="bilingual-tabs">
+                <el-tab-pane :label="$t('admin.english')" name="en">
+                  <div class="cms-field-grid">
+                    <el-form-item :label="$t('admin.titleEnglish')" required>
+                      <el-input v-model="form.titleEn" :placeholder="$t('admin.enterEnglishTitle')" />
+                    </el-form-item>
+                    <el-form-item :label="$t('admin.categoryEnglish')">
+                      <el-input v-model="form.categoryEn" :placeholder="$t('admin.exampleMining')" />
+                    </el-form-item>
+                  </div>
+                  <el-form-item :label="$t('admin.shortDescriptionEnglish')">
+                    <el-input v-model="form.summaryEn" type="textarea" :rows="3" :placeholder="$t('admin.englishSummaryPlaceholder')" />
+                  </el-form-item>
+                  <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleContentEnglish')">
+                    <RichTextEditor v-if="modal && editingLocale === 'en'" :key="'en-' + locale"
+                      v-model="form.contentEn" :placeholder="$t('admin.englishArticlePlaceholder')"
+                      @uploading="imageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
+                  </el-form-item>
+                  <template v-if="kind === 'products'">
+                    <el-form-item :label="$t('admin.productDescriptionEnglish')">
+                      <el-input v-model="form.contentEn" type="textarea" :rows="5" />
+                    </el-form-item>
+                    <div class="cms-field-grid">
+                      <el-form-item :label="$t('admin.productFeaturesEnglish')">
+                        <el-input v-model="form.featuresEn" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
+                      </el-form-item>
+                      <el-form-item :label="$t('admin.productSpecificationsEnglish')">
+                        <el-input v-model="form.specificationsEn" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+                      </el-form-item>
+                    </div>
+                  </template>
+                </el-tab-pane>
+                <el-tab-pane :label="$t('admin.chinese')" name="zh">
+                  <div class="cms-field-grid">
+                    <el-form-item :label="$t('admin.titleChinese')" required>
+                      <el-input v-model="form.titleZh" :placeholder="$t('admin.enterChineseTitle')" />
+                    </el-form-item>
+                    <el-form-item :label="$t('admin.categoryChinese')">
+                      <el-input v-model="form.categoryZh" :placeholder="$t('admin.exampleMiningChinese')" />
+                    </el-form-item>
+                  </div>
+                  <el-form-item :label="$t('admin.summaryChinese')">
+                    <el-input v-model="form.summaryZh" type="textarea" :rows="3" :placeholder="$t('admin.chineseSummaryPlaceholder')" />
+                  </el-form-item>
+                  <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleChinese')">
+                    <RichTextEditor v-if="modal && editingLocale === 'zh'" :key="'zh-' + locale"
+                      v-model="form.contentZh" :placeholder="$t('admin.chineseArticlePlaceholder')"
+                      @uploading="imageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
+                  </el-form-item>
+                  <template v-if="kind === 'products'">
+                    <el-form-item :label="$t('admin.productDescriptionChinese')">
+                      <el-input v-model="form.contentZh" type="textarea" :rows="5" />
+                    </el-form-item>
+                    <div class="cms-field-grid">
+                      <el-form-item :label="$t('admin.productFeaturesChinese')">
+                        <el-input v-model="form.featuresZh" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
+                      </el-form-item>
+                      <el-form-item :label="$t('admin.productSpecificationsChinese')">
+                        <el-input v-model="form.specificationsZh" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+                      </el-form-item>
+                    </div>
+                  </template>
+                </el-tab-pane>
+              </el-tabs>
+            </AdminEditorPanel>
+          </div>
+          <aside class="cms-editor-aside">
+            <AdminEditorPanel step="02" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
+              <el-form-item :label="$t('admin.editorDisplayImage')">
+                <div class="cms-cover-control">
+                  <el-image v-if="form.image" :src="form.image" fit="cover" class="cms-cover-image">
+                    <template #error><div class="cms-cover-fallback"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImageError') }}</span></div></template>
+                  </el-image>
+                  <div v-else class="cms-cover-empty"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImagePreview') }}</span><small>{{ $t('admin.editorImageHint') }}</small></div>
+                  <el-input v-model="form.image" :placeholder="$t('admin.imagePathPlaceholder')" />
+                </div>
               </el-form-item>
-              <el-form-item :label="$t('admin.productFeaturesEnglish')">
-                <el-input v-model="form.featuresEn" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
+              <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
+                <el-select v-model="form.industries" multiple filterable collapse-tags collapse-tags-tooltip
+                  :placeholder="$t('admin.chooseIndustries')">
+                  <el-option v-for="industry in industryRecords" :key="industry.id" :label="industryOptionLabel(industry)" :value="industry.id" />
+                </el-select>
               </el-form-item>
-              <el-form-item :label="$t('admin.productSpecificationsEnglish')">
-                <el-input v-model="form.specificationsEn" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+              <el-form-item v-if="kind === 'articles'" :label="$t('admin.publicationDate')" required>
+                <el-date-picker v-model="form.date" type="date" value-format="YYYY-MM-DD" :clearable="false" />
               </el-form-item>
-            </template>
-          </el-tab-pane>
-          <el-tab-pane :label="$t('admin.chinese')" name="zh">
-            <el-form-item :label="$t('admin.titleChinese')" required
-              ><el-input v-model="form.titleZh" :placeholder="$t('admin.enterChineseTitle')"
-            /></el-form-item>
-            <el-form-item :label="$t('admin.categoryChinese')"
-              ><el-input v-model="form.categoryZh" :placeholder="$t('admin.exampleMiningChinese')"
-            /></el-form-item>
-            <el-form-item :label="$t('admin.summaryChinese')"
-              ><el-input
-                v-model="form.summaryZh"
-                type="textarea"
-                :rows="3"
-                :placeholder="$t('admin.chineseSummaryPlaceholder')"
-            /></el-form-item>
-            <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleChinese')"
-              ><el-input
-                v-model="form.contentZh"
-                type="textarea"
-                :rows="5"
-                :placeholder="$t('admin.chineseArticlePlaceholder')"
-            /></el-form-item>
-            <template v-if="kind === 'products'">
-              <el-form-item :label="$t('admin.productDescriptionChinese')">
-                <el-input v-model="form.contentZh" type="textarea" :rows="5" />
+              <el-form-item :label="$t('admin.status2')">
+                <el-radio-group v-model="form.status" class="cms-status-options">
+                  <el-radio-button value="published">{{ $t('admin.published2') }}</el-radio-button>
+                  <el-radio-button value="draft">{{ $t('admin.draft2') }}</el-radio-button>
+                </el-radio-group>
+                <p class="cms-field-hint">{{ $t(form.status === 'published' ? 'admin.editorPublishedHint' : 'admin.editorDraftHint') }}</p>
               </el-form-item>
-              <el-form-item :label="$t('admin.productFeaturesChinese')">
-                <el-input v-model="form.featuresZh" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
+            </AdminEditorPanel>
+            <AdminEditorPanel v-if="kind === 'products'" step="03" :title="$t('admin.editorHomepageSettings')" :description="$t('admin.homeSelectionHint')">
+              <div class="cms-switch-row"><strong>{{ $t('admin.showOnHome') }}</strong><el-switch v-model="form.showOnHome" /></div>
+              <p class="cms-home-count">{{ $t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS }) }}</p>
+              <el-form-item v-if="form.showOnHome" :label="$t('admin.homeDisplayOrder')">
+                <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
               </el-form-item>
-              <el-form-item :label="$t('admin.productSpecificationsChinese')">
-                <el-input v-model="form.specificationsZh" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
-              </el-form-item>
-            </template>
-          </el-tab-pane>
-        </el-tabs>
-        <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
-          <el-select v-model="form.industries" multiple filterable collapse-tags collapse-tags-tooltip
-            class="full-width" :placeholder="$t('admin.chooseIndustries')">
-            <el-option v-for="industry in industryRecords" :key="industry.id"
-              :label="industryOptionLabel(industry)" :value="industry.id" />
-          </el-select>
-        </el-form-item>
-        <el-row :gutter="14"
-          ><el-col :span="12"
-            ><el-form-item :label="$t('admin.imagePath')"
-              ><el-input
-                v-model="form.image"
-                :placeholder="$t('admin.imagePathPlaceholder')" /></el-form-item></el-col
-          ><el-col :span="12"
-            ><el-form-item :label="$t('admin.status2')"
-              ><el-select v-model="form.status" class="full-width"
-                ><el-option
-                  :label="$t('admin.published2')"
-                  value="published" /><el-option
-                  :label="$t('admin.draft2')"
-                  value="draft" /></el-select></el-form-item></el-col
-        ></el-row>
-        <el-form-item v-if="kind === 'products'" :label="$t('admin.homepagePlacement')">
-          <el-switch v-model="form.showOnHome" />
-          <span class="home-product-form-hint">{{ $t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS }) }}</span>
-        </el-form-item>
-        <el-form-item v-if="kind === 'products' && form.showOnHome" :label="$t('admin.homeDisplayOrder')">
-          <el-input-number v-model="form.homeOrder" :min="1" :max="999" />
-        </el-form-item>
+            </AdminEditorPanel>
+          </aside>
+        </div>
       </el-form>
-      <template #footer
-        ><el-button @click="modal = false">{{ $t('admin.cancel') }}</el-button
-        ><el-button type="primary" :loading="saving" @click="save">{{
-          $t('admin.saveContent')
-        }}</el-button></template
-      >
-    </el-dialog>
+    </AdminEditorDialog>
   </el-container>
 </template>
 
@@ -1428,18 +1434,6 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 .full-width {
   width: 100%;
 }
-.editor-dialog .el-dialog__title {
-  font-size: 16px;
-  font-weight: 650;
-}
-.editor-dialog .el-form-item__label {
-  padding-bottom: 4px;
-  color: #556372;
-  font-size: 11px;
-}
-.editor-dialog .el-dialog__footer {
-  padding-top: 4px;
-}
 .el-message-box {
   max-width: calc(100vw - 32px);
 }
@@ -1527,10 +1521,6 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 }
 .bilingual-tabs .el-tab-pane {
   padding-top: 8px;
-}
-.editor-dialog .el-dialog__body {
-  max-height: 70vh;
-  overflow: auto;
 }
 .bilingual-badges {
   display: flex;

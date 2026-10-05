@@ -1,4 +1,5 @@
 import { productDetails } from './productDetails.js'
+import { articleDetails } from './articleDetails.js'
 
 export const products = [
   {
@@ -155,5 +156,5 @@ for (const product of products) {
 }
 for (const article of articles) {
   const [titleZh, categoryZh, summaryZh] = articleChinese[article.id]
-  Object.assign(article, { titleEn: article.title, titleZh, categoryEn: article.category, categoryZh, summaryEn: article.summary, summaryZh, contentEn: article.content || '', contentZh: '' })
+  Object.assign(article, { titleEn: article.title, titleZh, categoryEn: article.category, categoryZh, summaryEn: article.summary, summaryZh, ...articleDetails[article.id] })
 }
