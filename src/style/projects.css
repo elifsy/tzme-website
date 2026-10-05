@@ -120,8 +120,8 @@
 }
 .project-site :where(a, button, input, [tabindex="0"]):focus-visible,
 .project-site .el-button:focus-visible,
-.project-mobile-drawer :focus-visible,
-.project-mobile-drawer .el-button:focus-visible {
+.site-nav-drawer :focus-visible,
+.site-nav-drawer .el-button:focus-visible {
   outline: 3px solid #f6b44d;
   outline-offset: 4px;
   box-shadow: 0 0 0 7px #06131c;
@@ -282,7 +282,7 @@
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .project-site *, .project-site *::before, .project-site *::after,
-  .design-site .project-card, .design-site .project-card *, .project-mobile-drawer, .project-mobile-drawer * {
+  .design-site .project-card, .design-site .project-card *, .site-nav-drawer, .site-nav-drawer * {
     scroll-behavior: auto !important;
     transition: none !important;
     animation: none !important;
@@ -290,12 +290,12 @@
   .design-site .project-card:hover, .design-site .project-card:hover .im img { transform: none; }
 }
 @media (forced-colors: active) {
-  .project-site, .project-mobile-drawer { forced-color-adjust: auto; }
+  .project-site, .site-nav-drawer { forced-color-adjust: auto; }
   .project-site :where(a, button, input, [tabindex="0"]):focus-visible,
   .project-site .el-button:focus-visible,
   .project-site .projects-pagination :is(button, .el-pager li):focus-visible,
-  .project-mobile-drawer :focus-visible,
-  .project-mobile-drawer .el-button:focus-visible { outline-color: Highlight; box-shadow: none; }
+  .site-nav-drawer :focus-visible,
+  .site-nav-drawer .el-button:focus-visible { outline-color: Highlight; box-shadow: none; }
   .projects-search .el-input__wrapper { border-color: ButtonText; }
   .projects-search .el-input__wrapper:focus-within { outline-color: Highlight; }
   .project-site .project-card { border-color: CanvasText; }

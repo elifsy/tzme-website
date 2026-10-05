@@ -8,13 +8,14 @@ import { focusProjectContent } from '../utils/projectNavigation.js'
 import { localizedField } from '../services/catalog.js'
 import { projectPath, useProjectCatalog } from '../services/projects.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 
 const page = ref(null)
 const route = useRoute()
 const router = useRouter()
 const { locale } = useI18n({ useScope: 'global' })
-const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-projects', page)
+const { menuItems, isMenuActive } = useDesignPage('hc-projects', page)
 const { publishedProjects, loadProjects } = useProjectCatalog()
 const loading = ref(true)
 const pageSize = 6
@@ -48,17 +49,7 @@ onMounted(async () => { await loadProjects(); loading.value = false })
   <div ref="page" class="design-site projects-page project-site">
     <a class="project-skip-link" href="#projects-main" @click.prevent="focusProjectContent('projects-main')">{{ $t('site.skipToProjectContent') }}</a>
     <div class="hc-page">
-      <header class="hc-nav"><div class="hc-nav-in">
-        <router-link class="hc-logo" to="/" :aria-label="$t('site.brandHome')"><i aria-hidden="true"></i>TZME</router-link>
-        <nav class="hc-menu" :aria-label="$t('site.primaryNavigation')"><a v-for="item in menuItems" :key="item.key" :href="item.path" :class="{ on: isMenuActive(item) }"
-          :aria-current="isMenuActive(item) ? 'page' : undefined" @click="navigateLink($event, item.path)">{{ item.label }}</a></nav>
-        <div class="hc-nav-r">
-          <el-button class="hc-mobile-menu" text :aria-label="$t('site.openNavigation')" :aria-expanded="drawerOpen" @click="drawerOpen = true">☰</el-button>
-          <LanguageSwitcher />
-          <span class="hc-ico" :aria-label="$t('site.productCenter')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></span>
-          <el-button class="hc-btn solid sm" style="height:34px" @click.stop="goTo('/contact')">{{ $t('site.contactUs') }}<i aria-hidden="true">→</i></el-button>
-        </div>
-      </div></header>
+      <SiteNav />
 
       <main id="projects-main" tabindex="-1" aria-labelledby="projects-page-title">
         <section class="hc-sec projects-intro" aria-labelledby="projects-page-title"><div class="hc-w projects-intro-heading">
@@ -105,9 +96,6 @@ onMounted(async () => { await loadProjects(); loading.value = false })
         <LanguageSwitcher />
       </div></footer>
     </div>
-    <el-drawer v-model="drawerOpen" title="TZME" direction="rtl" size="min(320px, 85vw)" class="hc-mobile-drawer project-mobile-drawer">
-      <nav class="hc-mobile-links" :aria-label="$t('site.primaryNavigation')"><el-button v-for="item in menuItems" :key="item.key" text :type="isMenuActive(item) ? 'primary' : 'default'" :aria-current="isMenuActive(item) ? 'page' : undefined" @click="goTo(item.path)">{{ item.label }}</el-button></nav>
-      <LanguageSwitcher mobile />
-    </el-drawer>
+
   </div>
 </template>

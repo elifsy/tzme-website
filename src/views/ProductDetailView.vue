@@ -6,11 +6,12 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SiteNav from '../components/SiteNav.vue'
 
 const page = ref(null)
 const route = useRoute()
 const { locale } = useI18n({ useScope: 'global' })
-const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-detail', page)
+const { goTo } = useDesignPage('hc-detail', page)
 const { products, loadProducts } = useProductCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
 const loading = ref(true)
@@ -40,21 +41,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
 <template>
   <main ref="page" class="design-site product-detail">
     <div class="hc-page">
-      <header class="hc-nav">
-        <div class="hc-nav-in">
-          <span class="hc-logo"><i></i>TZME</span>
-          <nav class="hc-menu">
-            <a v-for="item in menuItems" :key="item.key" :href="item.path" :class="{ on: isMenuActive(item) }"
-              :aria-current="isMenuActive(item) ? 'page' : undefined"
-              @click="navigateLink($event, item.path)">{{ item.label }}</a>
-          </nav>
-          <div class="hc-nav-r">
-            <el-button class="hc-mobile-menu" text :aria-label="$t('site.openNavigation')" @click="drawerOpen = true">☰</el-button>
-            <LanguageSwitcher />
-            <el-button class="hc-btn solid sm" style="height:34px" @click.stop="goTo('/contact')">{{ $t('site.contactUs') }}<i>→</i></el-button>
-          </div>
-        </div>
-      </header>
+      <SiteNav />
 
       <template v-if="!loading && product">
         <section class="hc-hero product-detail-hero">
@@ -119,12 +106,6 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
         <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
       </div></footer>
     </div>
-    <el-drawer v-model="drawerOpen" title="TZME" direction="rtl" size="min(320px, 85vw)" class="hc-mobile-drawer">
-      <nav class="hc-mobile-links">
-        <el-button v-for="item in menuItems" :key="item.key" text
-          :type="isMenuActive(item) ? 'primary' : 'default'" @click="goTo(item.path)">{{ item.label }}</el-button>
-      </nav>
-      <LanguageSwitcher mobile />
-    </el-drawer>
+
   </main>
 </template>

@@ -1,17 +1,8 @@
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { localeMessages } from '../i18n/locales/index.js'
-
-const navigationItems = [
-  { key: 'navHome', path: '/' },
-  { key: 'navAbout', path: '/about' },
-  { key: 'navProducts', path: '/solutions' },
-  { key: 'navProjects', path: '/projects' },
-  { key: 'navNews', path: '/insights' },
-  { key: 'navContact', path: '/contact' },
-]
+import { useSiteNavigation } from './useSiteNavigation.js'
 
 const englishCopyByLocale = Object.fromEntries(Object.entries(localeMessages).map(([code, messages]) => [
   code,
@@ -19,39 +10,8 @@ const englishCopyByLocale = Object.fromEntries(Object.entries(localeMessages).ma
 ]))
 
 export function useDesignPage(pageKey, page) {
-  const route = useRoute()
-  const router = useRouter()
   const { t, locale } = useI18n({ useScope: 'global' })
-  const drawerOpen = ref(false)
-  const menuItems = computed(() => navigationItems.map(({ key, path }) => ({
-    key,
-    label: t(`site.${key}`),
-    path,
-  })))
-  function isMenuActive(item) {
-    if (item.key === 'navHome') return route.path === '/'
-    if (item.key === 'navProducts') return route.path.startsWith('/solutions')
-    if (item.key === 'navProjects') return route.path.startsWith('/projects')
-    if (item.key === 'navNews') return route.path.startsWith('/insights')
-    return route.path === item.path
-  }
-  async function goTo(path) {
-    drawerOpen.value = false
-    const [pathname, hash] = path.split('#')
-    await router.push({ path: pathname || '/', hash: hash ? `#${hash}` : '' })
-    await nextTick()
-    if (hash) {
-      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    } else {
-      window.scrollTo({ top: 0, behavior: 'instant' })
-    }
-  }
-
-  function navigateLink(event, path) {
-    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
-    event.preventDefault()
-    goTo(path)
-  }
+  const { goTo, menuItems, isMenuActive, navigateLink } = useSiteNavigation()
 
   async function submitInquiry(form) {
     const values = {}
@@ -92,7 +52,7 @@ export function useDesignPage(pageKey, page) {
     if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
     const root = page.value
     const target = event.target instanceof Element ? event.target : null
-    if (!root || !target) return
+    if (!root || !target || target.closest('[data-site-nav]')) return
     const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span')
     if (!control || !root.contains(control)) return
     event.preventDefault()
@@ -123,20 +83,21 @@ export function useDesignPage(pageKey, page) {
 
   function onKeydown(event) {
     if (!['Enter', ' '].includes(event.key)) return
-    if (!(event.target instanceof Element) || event.target.closest('a,button,input,textarea,select')) return
+    if (!(event.target instanceof Element) || event.target.closest('[data-site-nav],a,button,input,textarea,select')) return
     if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span')) onClick(event)
   }
 
   onMounted(() => {
     const root = page.value
     root?.querySelectorAll('.hc-btn,.hc-lnk').forEach((control) => {
+      if (control.closest('[data-site-nav]')) return
       const label = control.textContent.replace(/→/g, '').trim()
       control.dataset.action = englishCopyByLocale[locale.value]?.get(label) || label
     })
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)
     root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span').forEach((control) => {
-      if (control.matches('a,button')) return
+      if (control.closest('[data-site-nav]') || control.matches('a,button')) return
       control.tabIndex = 0
       control.setAttribute('role', 'link')
     })
@@ -146,5 +107,5 @@ export function useDesignPage(pageKey, page) {
     page.value?.removeEventListener('keydown', onKeydown)
   })
 
-  return { drawerOpen, goTo, menuItems, isMenuActive, navigateLink }
+  return { goTo, menuItems, isMenuActive, navigateLink }
 }

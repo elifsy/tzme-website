@@ -3,10 +3,11 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SiteNav from '../components/SiteNav.vue'
 import { certificationSeed } from '../data/certifications.js'
 import { loadCertifications } from '../services/certifications.js'
 const page = ref(null)
-const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-about', page)
+useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
 const certifications = ref(certificationSeed)
 const publishedCertifications = computed(() => certifications.value.filter((item) => item.status === 'published'))
@@ -21,27 +22,7 @@ onMounted(async () => { certifications.value = await loadCertifications() })
   <main ref="page" class="design-site">
     <div class="hc-page">
 
-      <header class="hc-nav">
-        <div class="hc-nav-in">
-          <span class="hc-logo"><i></i>TZME</span>
-          <nav class="hc-menu">
-            <a v-for="item in menuItems" :key="item.key" :href="item.path" :class="{ on: isMenuActive(item) }"
-              :aria-current="isMenuActive(item) ? 'page' : undefined"
-              @click="navigateLink($event, item.path)">{{ item.label }}</a>
-          </nav>
-          <div class="hc-nav-r">
-            <el-button class="hc-mobile-menu" text :aria-label="$t('site.openNavigation')"
-              @click="drawerOpen = true">☰</el-button>
-            <LanguageSwitcher />
-            <span class="hc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-3.8-3.8" />
-              </svg></span>
-            <el-button class="hc-btn solid sm" style="height:34px">{{ $t('site.contactUs') }}<i>→</i></el-button>
-          </div>
-        </div>
-      </header>
+      <SiteNav />
 
       <section class="hc-about">
         <div class="hc-about-l">
@@ -187,12 +168,6 @@ onMounted(async () => { certifications.value = await loadCertifications() })
       </footer>
 
     </div>
-    <el-drawer v-model="drawerOpen" title="TZME" direction="rtl" size="min(320px, 85vw)" class="hc-mobile-drawer">
-      <nav class="hc-mobile-links">
-        <el-button v-for="item in menuItems" :key="item.key" text
-          :type="isMenuActive(item) ? 'primary' : 'default'" @click="goTo(item.path)">{{ item.label }}</el-button>
-        </nav>
-      <LanguageSwitcher mobile />
-    </el-drawer>
+
   </main>
 </template>
