@@ -721,6 +721,10 @@
 .design-site .news-category-options .el-button {
   margin: 0;
 }
+.design-site .site-filter-button.el-button {
+  --el-color-primary: #4c91ec;
+  margin: 0;
+}
 .design-site .product-result-count,
 .design-site .news-result-count {
   margin-left: auto;

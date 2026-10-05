@@ -3,8 +3,8 @@
 ## Frontend
 
 - Vue 3 + Vite + Vue Router + Element Plus + Vue I18n. The public site and admin workspace both use Element Plus components.
-- Public routes: `/`, `/solutions`, `/solutions/:id`, `/about`, `/insights`, `/insights/:id`, `/contact`. The older `/solutions/:category/:id` route also opens the matching product.
-- Admin: `/admin` (overview), `/admin/products`, `/admin/industries`, `/admin/articles`, `/admin/certifications`, `/admin/inquiries`
+- Public routes: `/`, `/solutions`, `/solutions/:id`, `/projects`, `/projects/:id`, `/about`, `/insights`, `/insights/:id`, `/contact`. The older `/solutions/:category/:id` route also opens the matching product.
+- Admin: `/admin` (overview), `/admin/products`, `/admin/industries`, `/admin/projects`, `/admin/articles`, `/admin/certifications`, `/admin/inquiries`
 - Start frontend: `npm install` then `npm run dev`
 - Production build: `npm run build`
 
@@ -19,6 +19,20 @@ The Products page and the homepage “Our solutions” section read the same pro
 Each product can belong to multiple industries. `/admin/industries` lets editors add industries with English and Chinese names and subtitles, set their display order, and publish or unpublish them. Published industries automatically appear in the homepage “Industries” section and the product center filters. Homepage industry links open `/solutions?industry=<id>` with the matching filter selected; products appear under every industry assigned to them. The five original industries and existing product assignments are retained as initial data. A product must have at least one industry before it can be saved. Industry records and product associations are stored in MySQL when the Java service is running.
 
 Interface text uses `$t('site.key')` and `$t('admin.key')` in Vue templates. English and Chinese messages live in `src/i18n/locales/en.js` and `src/i18n/locales/zh.js`. To add another interface language, copy one locale file, translate its values, and register the new code, labels, HTML language tag, and messages in `src/i18n/locales/index.js`. The public and admin language switchers then show the new option automatically. Managed product and article records currently store English and Chinese fields; other interface languages display the English record fields until content storage is extended.
+
+## Real projects
+
+The project list and detail pages use the site's navy, blue and orange palette and typography consistent with the other pages. Project card titles use a 16 px equivalent size, metric labels 12 px, metric values 14 px, and detail body text 16 px; all use relative units so browser text settings are respected. The homepage selected projects section uses a soft blue gray background and lightly tinted cards. Navigation, footer links, search labels, result counts, tags, actions and pagination use contrasting text and visible keyboard focus. A skip link moves focus to the main content; search reset restores input focus, and pagination moves focus to the updated list. Layouts stack on narrow screens and browser zoom, and reduced motion and Windows forced colors preferences are supported.
+
+Project rich text is displayed using the page's readable colors, font sizes and line height. CMS formatting remains stored, while color, background and size overrides are removed from the public project rendering. Headings are arranged under the page and article titles. Wide data tables receive a labeled region with keyboard focus and their own horizontal scroll area.
+
+`/projects` lists all published projects using the homepage card design, with keyword search and Element Plus pagination (6 per page). Its intro shares the news page's count, title, spacing and responsive layout. Project action buttons use the same Element Plus styling as the news category filters. The navigation now includes Projects. The homepage “View all projects” link opens this page, and every project card opens its own `/projects/:id` detail page. The detail shows the selected language's name, tags, summary, cover, metrics and formatted body, plus links to other published projects. Returning to the list preserves the search and page number.
+
+In `/admin/projects`, every card field can be edited: image path or uploaded cover, bilingual image alternative text, project name, industry and location tags, and the labels and values of all three metrics (capacity, technology and scope). The summary and rich text detail body are maintained separately in English and Chinese. The editor includes a live card preview in the selected editing language. Draft projects are hidden from all public pages. List order and homepage order are independent and sort in ascending order.
+
+The homepage maintains its three card layout: choose up to **3** projects using “Show on homepage” and set their homepage order. Drafts retain their selection but do not appear on the website. Both the admin and Java API enforce the selection limit. To replace an initial featured project, first turn off its homepage selection, then select the replacement.
+
+Restart the Java service after this update. Hibernate creates the `projects` table, and `ProjectSeedInitializer` imports the three existing homepage cards from `server/src/main/resources/projects-seed.json` only when their IDs do not exist. Subsequent restarts preserve edits and deletion markers. The frontend fallback seed lives in `src/data/projects.js`. With the backend running, project edits are saved to MySQL. If the backend is unavailable, the admin explicitly reports that changes are saved only in this browser; these pending edits remain local until saved again with the backend available. Cover and rich text image uploads use the existing `/api/uploads/images` endpoint and require the backend.
 
 ## News and rich text editing
 
@@ -41,6 +55,7 @@ Java 17 / Spring Boot 3 / Spring Data JPA / MySQL 8.4. The local database is `tz
 - `POST /api/uploads/images` (multipart field `file`), `GET /api/uploads/images/{filename}`
 - `GET/POST /api/certifications`, `PUT/DELETE /api/certifications/{id}`
 - `GET/POST /api/industries`, `PUT/DELETE /api/industries/{id}`
+- `GET/POST /api/projects`, `PUT/DELETE /api/projects/{id}`
 - `GET/POST /api/inquiries`, `PUT /api/inquiries/{id}`
 
 When the API is unavailable, the admin can still edit content using browser local storage. This is a development fallback, not shared persistence. Seed records are included in `src/data/content.js`. The public page copy follows the supplied reference layout.

@@ -18,6 +18,7 @@ import { setLocale } from "../i18n/index.js";
 import { availableLocales } from "../i18n/locales/index.js";
 import CertificationsManager from "../components/CertificationsManager.vue";
 import IndustriesManager from "../components/IndustriesManager.vue";
+import ProjectsManager from "../components/ProjectsManager.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
 import AdminEditorPanel from "../components/AdminEditorPanel.vue";
 import { sanitizeRichText } from "../utils/richText.js";
@@ -36,6 +37,7 @@ const articles = ref([]);
 const inquiries = ref([]);
 const certManager = ref(null);
 const industryManager = ref(null);
+const projectManager = ref(null);
 const { industries: industryRecords, loadIndustries } = useIndustryCatalog();
 const loading = ref(true);
 const modal = ref(false);
@@ -67,6 +69,7 @@ const titles = {
   overview: "admin.overview",
   products: "admin.products",
   industries: "admin.industryManagement",
+  projects: "admin.projects",
   articles: "admin.insights",
   certifications: "admin.certifications",
   inquiries: "admin.enquiries",
@@ -75,6 +78,7 @@ const navItems = [
   { key: "overview", label: "admin.overview", icon: "DataBoard" },
   { key: "products", label: "admin.products", icon: "Box" },
   { key: "industries", label: "admin.industryManagement", icon: "DataBoard" },
+  { key: "projects", label: "admin.projects", icon: "DataBoard" },
   { key: "articles", label: "admin.insights", icon: "Document" },
   { key: "certifications", label: "admin.certifications", icon: "CircleCheckFilled" },
   { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
@@ -345,6 +349,7 @@ function navigate(key) {
 function refresh() {
   if (tab.value === 'certifications') certManager.value?.load();
   else if (tab.value === 'industries') industryManager.value?.load();
+  else if (tab.value === 'projects') projectManager.value?.load();
   else { load(); loadIndustries(); }
 }
 onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
@@ -422,6 +427,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
             <p>
               {{ $t(tab === 'certifications' ? 'admin.certDescription'
                 : tab === 'industries' ? 'admin.industryManagementDescription'
+                : tab === 'projects' ? 'admin.projectManagementDescription'
                 : 'admin.manageYourCorporateWebsiteContentAndEnquiries') }}
             </p>
           </div>
@@ -773,6 +779,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           </el-table>
         </el-card>
 
+        <ProjectsManager v-else-if="tab === 'projects'" ref="projectManager" />
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
         <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
 

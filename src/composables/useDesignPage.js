@@ -8,6 +8,7 @@ const navigationItems = [
   { key: 'navHome', path: '/' },
   { key: 'navAbout', path: '/about' },
   { key: 'navProducts', path: '/solutions' },
+  { key: 'navProjects', path: '/projects' },
   { key: 'navNews', path: '/insights' },
   { key: 'navContact', path: '/contact' },
 ]
@@ -30,6 +31,7 @@ export function useDesignPage(pageKey, page) {
   function isMenuActive(item) {
     if (item.key === 'navHome') return route.path === '/'
     if (item.key === 'navProducts') return route.path.startsWith('/solutions')
+    if (item.key === 'navProjects') return route.path.startsWith('/projects')
     if (item.key === 'navNews') return route.path.startsWith('/insights')
     return route.path === item.path
   }
@@ -108,7 +110,7 @@ export function useDesignPage(pageKey, page) {
 
     const label = (control.dataset.action || control.textContent).replace(/→/g, '').trim().toLowerCase()
     if (label === 'send inquiry') return submitInquiry(control.closest('.hc-form'))
-    if (label.includes('all project')) return goTo('/#projects')
+    if (label.includes('all project')) return goTo('/projects')
     if (label.includes('industr')) return goTo('/#industries')
     if (label.includes('contact') || label.includes('project') || label.includes('quote') || label.includes('certificate') || label.includes('factory visit') || label.includes('subscribe')) return goTo('/contact')
     if (label.includes('datasheet')) {
@@ -121,6 +123,7 @@ export function useDesignPage(pageKey, page) {
 
   function onKeydown(event) {
     if (!['Enter', ' '].includes(event.key)) return
+    if (!(event.target instanceof Element) || event.target.closest('a,button,input,textarea,select')) return
     if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span')) onClick(event)
   }
 
@@ -133,6 +136,7 @@ export function useDesignPage(pageKey, page) {
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)
     root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico,.hc-upload,.hc-soc>span').forEach((control) => {
+      if (control.matches('a,button')) return
       control.tabIndex = 0
       control.setAttribute('role', 'link')
     })

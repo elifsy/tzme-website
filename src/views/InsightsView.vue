@@ -68,9 +68,9 @@ onMounted(async () => { await loadArticles(); loading.value = false })
       <section class="news-filter-section"><div class="hc-w news-category-filter">
         <span class="hc-kick">{{ $t('site.filterNewsByCategory') }}</span>
         <div class="news-category-options" role="group" :aria-label="$t('site.filterNewsByCategory')">
-          <el-button :type="!selectedCategory ? 'primary' : 'default'" :aria-pressed="!selectedCategory"
+          <el-button class="site-filter-button" :type="!selectedCategory ? 'primary' : 'default'" :aria-pressed="!selectedCategory"
             @click="setCategory('')">{{ $t('site.allNewsCategories') }}</el-button>
-          <el-button v-for="category in newsCategories" :key="category.id"
+          <el-button v-for="category in newsCategories" :key="category.id" class="site-filter-button"
             :type="selectedCategory === category.id ? 'primary' : 'default'"
             :aria-pressed="selectedCategory === category.id" @click="setCategory(category.id)">{{ field(category, 'title') }}</el-button>
         </div>
@@ -97,7 +97,7 @@ onMounted(async () => { await loadArticles(); loading.value = false })
           </router-link>
         </div>
         <el-empty v-else :description="$t(selectedCategory ? 'site.noNewsForCategory' : 'site.newsEmpty')">
-          <el-button v-if="selectedCategory" type="primary" @click="setCategory('')">{{ $t('site.allNewsCategories') }}</el-button>
+          <el-button v-if="selectedCategory" type="primary" class="site-filter-button" @click="setCategory('')">{{ $t('site.allNewsCategories') }}</el-button>
         </el-empty>
         <el-pagination v-if="!loading && visibleArticles.length" class="news-pagination" background :current-page="currentPage"
           :page-size="pageSize" :total="visibleArticles.length" :pager-count="5" layout="prev, pager, next" @current-change="changePage" />

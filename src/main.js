@@ -26,6 +26,7 @@ import "./style.css";
 import "./style/design-reference.css";
 import "./style/design-adapter.css";
 import "./style/news.css";
+import "./style/projects.css";
 import { i18n } from "./i18n/index.js";
 
 const router = createRouter({
@@ -50,6 +51,8 @@ const router = createRouter({
       path: "/solutions/:id",
       component: () => import("./views/ProductDetailView.vue"),
     },
+    { path: "/projects", component: () => import("./views/ProjectsView.vue") },
+    { path: "/projects/:id", component: () => import("./views/ProjectDetailView.vue") },
     { path: "/about", component: () => import("./views/AboutView.vue") },
     { path: "/insights", component: () => import("./views/InsightsView.vue") },
     { path: "/insights/:id", component: () => import("./views/NewsDetailView.vue") },

@@ -7,7 +7,7 @@ import { i18nChangeLanguage } from '@wangeditor/editor'
 import '@wangeditor/editor/dist/css/style.css'
 import { sanitizeRichText } from '../utils/richText.js'
 
-const props = defineProps({ modelValue: { type: String, default: '' }, placeholder: { type: String, default: '' } })
+const props = defineProps({ modelValue: { type: String, default: '' }, placeholder: { type: String, default: '' }, showTocHint: { type: Boolean, default: true } })
 const emit = defineEmits(['update:modelValue', 'uploading', 'fullscreen-change'])
 const { t, locale } = useI18n({ useScope: 'global' })
 const editorRef = shallowRef()
@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
       </Teleport>
     </div>
     <p class="rich-editor-hint">{{ $t('admin.richEditorHint') }}</p>
-    <el-alert class="rich-editor-toc-hint" type="info" :closable="false" show-icon
+    <el-alert v-if="showTocHint" class="rich-editor-toc-hint" type="info" :closable="false" show-icon
       :title="$t('admin.articleTocRuleTitle')" :description="$t('admin.articleTocRuleDescription')" />
   </div>
 </template>

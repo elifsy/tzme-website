@@ -8,11 +8,13 @@ const { locale } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
-  <component :is="mobile ? 'div' : 'span'" :class="mobile ? 'hc-mobile-language' : 'hc-lang'">
+  <component :is="mobile ? 'div' : 'span'" :class="mobile ? 'hc-mobile-language' : 'hc-lang'" role="group" :aria-label="$t('site.languageSelection')">
     <template v-for="(option, index) in availableLocales" :key="option.code">
       <el-button
         v-if="mobile"
         :type="locale === option.code ? 'primary' : 'default'"
+        :aria-pressed="locale === option.code"
+        :lang="option.htmlLang"
         @click="setLocale(option.code)"
       >{{ option.label }}</el-button>
       <template v-else>
@@ -21,6 +23,9 @@ const { locale } = useI18n({ useScope: 'global' })
           type="button"
           class="hc-lang-option"
           :class="{ active: locale === option.code }"
+          :aria-label="option.label"
+          :aria-pressed="locale === option.code"
+          :lang="option.htmlLang"
           @click="setLocale(option.code)"
         >{{ option.shortLabel }}</button>
       </template>

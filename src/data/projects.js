@@ -1,0 +1,45 @@
+const cardLabels = {
+  capacityLabelEn: 'Capacity', capacityLabelZh: '处理能力',
+  technologyLabelEn: 'Technology', technologyLabelZh: '技术方案',
+  scopeLabelEn: 'Scope', scopeLabelZh: '供货范围',
+}
+
+// Initial content follows the three project cards in the supplied homepage.
+export const projectSeed = [
+  {
+    id: 'port-material-handling', titleEn: 'Port material handling systems', titleZh: '港口物料搬运系统',
+    industryEn: 'Port infrastructure', industryZh: '港口基础设施', locationEn: 'Chile', locationZh: '智利',
+    capacityEn: '3,000 t/h', capacityZh: '3,000 t/h', technologyEn: 'Stacker reclaimer', technologyZh: '堆取料机',
+    scopeEn: 'EP + MC', scopeZh: 'EP + MC', image: '/assets/p-port-1.jpg',
+    imageAltEn: 'Port material handling equipment', imageAltZh: '港口物料搬运设备',
+    summaryEn: 'A port material handling project in Chile, featuring a stacker reclaimer with a handling capacity of 3,000 t/h.',
+    summaryZh: '位于智利的港口物料搬运项目，采用堆取料机，处理能力为 3,000 t/h。',
+    contentEn: '<h2>Project overview</h2><p>Port material handling systems in Chile.</p><h2>Equipment and scope</h2><p>Technology: stacker reclaimer. Handling capacity: 3,000 t/h. Scope of supply: EP + MC.</p>',
+    contentZh: '<h2>项目概况</h2><p>智利港口物料搬运系统项目。</p><h2>设备与供货范围</h2><p>技术方案：堆取料机。处理能力：3,000 t/h。供货范围：EP + MC。</p>',
+    status: 'published', sortOrder: 10, showOnHome: true, homeOrder: 10, ...cardLabels,
+  },
+  {
+    id: 'mining-material-handling', titleEn: 'Mining material handling', titleZh: '矿山物料搬运',
+    industryEn: 'Mining', industryZh: '矿业', locationEn: 'Australia', locationZh: '澳大利亚',
+    capacityEn: '5,000 t/h', capacityZh: '5,000 t/h', technologyEn: 'Belt conveyor', technologyZh: '带式输送机',
+    scopeEn: 'EP + MC', scopeZh: 'EP + MC', image: '/assets/p-mining-2.jpg',
+    imageAltEn: 'Mining material handling equipment', imageAltZh: '矿山物料搬运设备',
+    summaryEn: 'An Australian mining material handling project using a belt conveyor, with a handling capacity of 5,000 t/h.',
+    summaryZh: '澳大利亚矿山物料搬运项目，采用带式输送机，处理能力为 5,000 t/h。',
+    contentEn: '<h2>Project overview</h2><p>Mining material handling in Australia.</p><h2>Equipment and scope</h2><p>Technology: belt conveyor. Handling capacity: 5,000 t/h. Scope of supply: EP + MC.</p>',
+    contentZh: '<h2>项目概况</h2><p>澳大利亚矿山物料搬运项目。</p><h2>设备与供货范围</h2><p>技术方案：带式输送机。处理能力：5,000 t/h。供货范围：EP + MC。</p>',
+    status: 'published', sortOrder: 20, showOnHome: true, homeOrder: 20, ...cardLabels,
+  },
+  {
+    id: 'heavy-industrial-equipment', titleEn: 'Heavy industrial equipment', titleZh: '重型工业装备',
+    industryEn: 'Metallurgy', industryZh: '冶金', locationEn: 'Middle East', locationZh: '中东',
+    capacityEn: '1,200 t/h', capacityZh: '1,200 t/h', technologyEn: 'Blast furnace equipment', technologyZh: '高炉设备',
+    scopeEn: 'EP + MC', scopeZh: 'EP + MC', image: '/assets/p-metal-1.jpg',
+    imageAltEn: 'Heavy industrial equipment for metallurgy', imageAltZh: '冶金重型工业装备',
+    summaryEn: 'A metallurgical equipment project in the Middle East, featuring blast furnace equipment with a handling capacity of 1,200 t/h.',
+    summaryZh: '中东冶金装备项目，采用高炉设备，处理能力为 1,200 t/h。',
+    contentEn: '<h2>Project overview</h2><p>Heavy industrial equipment for metallurgy in the Middle East.</p><h2>Equipment and scope</h2><p>Technology: blast furnace equipment. Handling capacity: 1,200 t/h. Scope of supply: EP + MC.</p>',
+    contentZh: '<h2>项目概况</h2><p>中东冶金行业重型工业装备项目。</p><h2>设备与供货范围</h2><p>技术方案：高炉设备。处理能力：1,200 t/h。供货范围：EP + MC。</p>',
+    status: 'published', sortOrder: 30, showOnHome: true, homeOrder: 30, ...cardLabels,
+  },
+]

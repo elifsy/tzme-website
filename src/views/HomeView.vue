@@ -3,12 +3,15 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ProjectCard from '../components/ProjectCard.vue'
+import { useProjectCatalog } from '../services/projects.js'
 import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 const page = ref(null)
 const { drawerOpen, goTo, menuItems, isMenuActive, navigateLink } = useDesignPage('hc-home', page)
 const { locale } = useI18n({ useScope: 'global' })
 const { products, loadProducts } = useProductCatalog()
+const { homeProjects, loadProjects } = useProjectCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
 const publishedIndustries = computed(() => industries.value.filter((item) => item.status === 'published'))
 const featuredProducts = computed(() => products.value
@@ -17,7 +20,7 @@ const featuredProducts = computed(() => products.value
   .slice(0, MAX_HOME_PRODUCTS))
 const productField = (item, name) => localizedField(item, name, locale.value)
 const displayIndustry = (item, name) => industryField(item, name, locale.value)
-onMounted(() => { loadProducts(); loadIndustries() })
+onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
 </script>
 
 <template>
@@ -191,53 +194,19 @@ onMounted(() => { loadProducts(); loadIndustries() })
               </section>
 
               <!-- 07 案例 -->
-              <section id="projects" class="hc-sec hc-white">
+              <section id="projects" class="hc-sec hc-white home-selected-projects">
                 <div class="hc-w">
                   <div class="hc-shead">
                     <div class="l">
                       <span class="hc-kick">{{ $t('site.selectedProjects') }}</span>
                       <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.realProjectsLastingValue') }}</h2>
                     </div>
-                    <span class="hc-lnk">{{ $t('site.viewAllProjects') }}<i>→</i></span>
+                    <router-link class="hc-lnk" to="/projects">{{ $t('site.viewAllProjects') }}<i>→</i></router-link>
                   </div>
-                  <div class="hc-proj">
-                <div class="c">
-                  <div class="im"><img src="/assets/p-port-1.jpg" alt="" /></div>
-                  <div class="bd">
-                    <h3>{{ $t('site.portMaterialHandlingSystem') }}</h3>
-                    <div class="tg"><span class="hc-tag l">{{ $t('site.portInfrastructure') }}</span><span class="hc-tag l">{{ $t('site.chile') }}</span></div>
-                    <div class="meta">
-                      <div><b>{{ $t('site.capacity') }}</b><span>3,000 t/h</span></div>
-                      <div><b>{{ $t('site.technology') }}</b><span>{{ $t('site.stackerReclaimer') }}</span></div>
-                      <div><b>{{ $t('site.scope') }}</b><span>EP + MC</span></div>
-                    </div>
+                  <div v-if="homeProjects.length" class="hc-proj">
+                    <ProjectCard v-for="project in homeProjects" :key="project.id" :project="project" />
                   </div>
-                </div>
-                <div class="c">
-                  <div class="im"><img src="/assets/p-mining-2.jpg" alt="" /></div>
-                  <div class="bd">
-                    <h3>{{ $t('site.miningMaterialHandling') }}</h3>
-                    <div class="tg"><span class="hc-tag l">{{ $t('site.miningIndustry') }}</span><span class="hc-tag l">{{ $t('site.australia') }}</span></div>
-                    <div class="meta">
-                      <div><b>{{ $t('site.capacity') }}</b><span>5,000 t/h</span></div>
-                      <div><b>{{ $t('site.technology') }}</b><span>{{ $t('site.beltConveyor') }}</span></div>
-                      <div><b>{{ $t('site.scope') }}</b><span>EP + MC</span></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="c">
-                  <div class="im"><img src="/assets/p-metal-1.jpg" alt="" /></div>
-                  <div class="bd">
-                    <h3>{{ $t('site.heavyIndustrialEquipment') }}</h3>
-                    <div class="tg"><span class="hc-tag l">{{ $t('site.metallurgy') }}</span><span class="hc-tag l">{{ $t('site.middleEast') }}</span></div>
-                    <div class="meta">
-                      <div><b>{{ $t('site.capacity') }}</b><span>1,200 t/h</span></div>
-                      <div><b>{{ $t('site.technology') }}</b><span>{{ $t('site.blastFurnaceEq') }}</span></div>
-                      <div><b>{{ $t('site.scope') }}</b><span>EP + MC</span></div>
-                    </div>
-                  </div>
-                </div>
-                  </div>
+                  <el-empty v-else :description="$t('site.projectsEmpty')" />
                 </div>
               </section>
 
