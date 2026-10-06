@@ -1,0 +1,2416 @@
+{
+  "source": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson",
+  "license": "Public domain",
+  "countries": [
+    {
+      "id": "country-AF",
+      "code": "AF",
+      "label": {
+        "en": "Afghanistan",
+        "zh": "阿富汗"
+      },
+      "x": 67.732,
+      "y": 36.254
+    },
+    {
+      "id": "country-AX",
+      "code": "AX",
+      "label": {
+        "en": "Åland",
+        "zh": "奥兰"
+      },
+      "x": 55.299,
+      "y": 19.763
+    },
+    {
+      "id": "country-AL",
+      "code": "AL",
+      "label": {
+        "en": "Albania",
+        "zh": "阿尔巴尼亚"
+      },
+      "x": 55.364,
+      "y": 32.136
+    },
+    {
+      "id": "country-DZ",
+      "code": "DZ",
+      "label": {
+        "en": "Algeria",
+        "zh": "阿尔及利亚"
+      },
+      "x": 50.749,
+      "y": 40.548
+    },
+    {
+      "id": "country-AS",
+      "code": "AS",
+      "label": {
+        "en": "American Samoa",
+        "zh": "美属萨摩亚"
+      },
+      "x": 4.467,
+      "y": 67.021
+    },
+    {
+      "id": "country-AD",
+      "code": "AD",
+      "label": {
+        "en": "Andorra",
+        "zh": "安道尔"
+      },
+      "x": 50.411,
+      "y": 30.935
+    },
+    {
+      "id": "country-AO",
+      "code": "AO",
+      "label": {
+        "en": "Angola",
+        "zh": "安哥拉"
+      },
+      "x": 54.796,
+      "y": 65.661
+    },
+    {
+      "id": "country-AI",
+      "code": "AI",
+      "label": {
+        "en": "Anguilla",
+        "zh": "安圭拉"
+      },
+      "x": 33.193,
+      "y": 46.356
+    },
+    {
+      "id": "country-AG",
+      "code": "AG",
+      "label": {
+        "en": "Antigua and Barbuda",
+        "zh": "安提瓜和巴布达"
+      },
+      "x": 33.523,
+      "y": 46.921
+    },
+    {
+      "id": "country-AR",
+      "code": "AR",
+      "label": {
+        "en": "Argentina",
+        "zh": "阿根廷"
+      },
+      "x": 32.887,
+      "y": 79.187
+    },
+    {
+      "id": "country-AM",
+      "code": "AM",
+      "label": {
+        "en": "Armenia",
+        "zh": "亚美尼亚"
+      },
+      "x": 61.947,
+      "y": 32.26
+    },
+    {
+      "id": "country-AW",
+      "code": "AW",
+      "label": {
+        "en": "Aruba",
+        "zh": "阿鲁巴"
+      },
+      "x": 31.341,
+      "y": 49.989
+    },
+    {
+      "id": "country-AU",
+      "code": "AU",
+      "label": {
+        "en": "Ashmore and Cartier Islands",
+        "zh": "阿什莫尔和卡捷群岛"
+      },
+      "x": 82.956,
+      "y": 65.819
+    },
+    {
+      "id": "country-AU",
+      "code": "AU",
+      "label": {
+        "en": "Australia",
+        "zh": "澳大利亚"
+      },
+      "x": 85.747,
+      "y": 73.241
+    },
+    {
+      "id": "country-AU",
+      "code": "AU",
+      "label": {
+        "en": "Australian Indian Ocean Territories",
+        "zh": "澳屬印度洋領地"
+      },
+      "x": 78.179,
+      "y": 64.587
+    },
+    {
+      "id": "country-AT",
+      "code": "AT",
+      "label": {
+        "en": "Austria",
+        "zh": "奥地利"
+      },
+      "x": 53.768,
+      "y": 27.781
+    },
+    {
+      "id": "country-AZ",
+      "code": "AZ",
+      "label": {
+        "en": "Azerbaijan",
+        "zh": "阿塞拜疆"
+      },
+      "x": 62.59,
+      "y": 32.296
+    },
+    {
+      "id": "country-BH",
+      "code": "BH",
+      "label": {
+        "en": "Bahrain",
+        "zh": "巴林"
+      },
+      "x": 63.481,
+      "y": 41.399
+    },
+    {
+      "id": "country-BD",
+      "code": "BD",
+      "label": {
+        "en": "Bangladesh",
+        "zh": "孟加拉国"
+      },
+      "x": 73.916,
+      "y": 42.567
+    },
+    {
+      "id": "country-BB",
+      "code": "BB",
+      "label": {
+        "en": "Barbados",
+        "zh": "巴巴多斯"
+      },
+      "x": 34.115,
+      "y": 49.579
+    },
+    {
+      "id": "country-BY",
+      "code": "BY",
+      "label": {
+        "en": "Belarus",
+        "zh": "白俄罗斯"
+      },
+      "x": 57.578,
+      "y": 23.782
+    },
+    {
+      "id": "country-BE",
+      "code": "BE",
+      "label": {
+        "en": "Belgium",
+        "zh": "比利时"
+      },
+      "x": 51.28,
+      "y": 25.709
+    },
+    {
+      "id": "country-BZ",
+      "code": "BZ",
+      "label": {
+        "en": "Belize",
+        "zh": "伯利兹"
+      },
+      "x": 26.343,
+      "y": 47.017
+    },
+    {
+      "id": "country-BJ",
+      "code": "BJ",
+      "label": {
+        "en": "Benin",
+        "zh": "贝宁"
+      },
+      "x": 50.627,
+      "y": 51.38
+    },
+    {
+      "id": "country-BM",
+      "code": "BM",
+      "label": {
+        "en": "Bermuda",
+        "zh": "百慕大"
+      },
+      "x": 32.73,
+      "y": 37.439
+    },
+    {
+      "id": "country-BT",
+      "code": "BT",
+      "label": {
+        "en": "Bhutan",
+        "zh": "不丹"
+      },
+      "x": 74.011,
+      "y": 40.459
+    },
+    {
+      "id": "country-BO",
+      "code": "BO",
+      "label": {
+        "en": "Bolivia",
+        "zh": "玻利维亚"
+      },
+      "x": 32.775,
+      "y": 68.505
+    },
+    {
+      "id": "country-BA",
+      "code": "BA",
+      "label": {
+        "en": "Bosnia and Herzegovina",
+        "zh": "波斯尼亚和黑塞哥维那"
+      },
+      "x": 54.818,
+      "y": 29.956
+    },
+    {
+      "id": "country-BW",
+      "code": "BW",
+      "label": {
+        "en": "Botswana",
+        "zh": "博茨瓦纳"
+      },
+      "x": 56.448,
+      "y": 71.955
+    },
+    {
+      "id": "country-BR",
+      "code": "BR",
+      "label": {
+        "en": "Brazil",
+        "zh": "巴西"
+      },
+      "x": 36.784,
+      "y": 65.607
+    },
+    {
+      "id": "country-IO",
+      "code": "IO",
+      "label": {
+        "en": "British Indian Ocean Territory",
+        "zh": "英属印度洋领地"
+      },
+      "x": 69.026,
+      "y": 61.859
+    },
+    {
+      "id": "country-VG",
+      "code": "VG",
+      "label": {
+        "en": "British Virgin Islands",
+        "zh": "英属维尔京群岛"
+      },
+      "x": 32.764,
+      "y": 46.24
+    },
+    {
+      "id": "country-BN",
+      "code": "BN",
+      "label": {
+        "en": "Brunei",
+        "zh": "文莱"
+      },
+      "x": 80.547,
+      "y": 55.109
+    },
+    {
+      "id": "country-BG",
+      "code": "BG",
+      "label": {
+        "en": "Bulgaria",
+        "zh": "保加利亚"
+      },
+      "x": 56.709,
+      "y": 30.96
+    },
+    {
+      "id": "country-BF",
+      "code": "BF",
+      "label": {
+        "en": "Burkina Faso",
+        "zh": "布基纳法索"
+      },
+      "x": 49.636,
+      "y": 49.89
+    },
+    {
+      "id": "country-BI",
+      "code": "BI",
+      "label": {
+        "en": "Burundi",
+        "zh": "布隆迪"
+      },
+      "x": 57.978,
+      "y": 60.046
+    },
+    {
+      "id": "country-KH",
+      "code": "KH",
+      "label": {
+        "en": "Cambodia",
+        "zh": "柬埔寨"
+      },
+      "x": 77.868,
+      "y": 49.906
+    },
+    {
+      "id": "country-CM",
+      "code": "CM",
+      "label": {
+        "en": "Cameroon",
+        "zh": "喀麦隆"
+      },
+      "x": 53.326,
+      "y": 55.022
+    },
+    {
+      "id": "country-CA",
+      "code": "CA",
+      "label": {
+        "en": "Canada",
+        "zh": "加拿大"
+      },
+      "x": 22.824,
+      "y": 19.656
+    },
+    {
+      "id": "country-CV",
+      "code": "CV",
+      "label": {
+        "en": "Cape Verde",
+        "zh": "佛得角"
+      },
+      "x": 43.696,
+      "y": 48.366
+    },
+    {
+      "id": "country-KY",
+      "code": "KY",
+      "label": {
+        "en": "Cayman Islands",
+        "zh": "开曼群岛"
+      },
+      "x": 28.336,
+      "y": 45.673
+    },
+    {
+      "id": "country-CF",
+      "code": "CF",
+      "label": {
+        "en": "Central African Republic",
+        "zh": "中非共和国"
+      },
+      "x": 55.575,
+      "y": 53.496
+    },
+    {
+      "id": "country-TD",
+      "code": "TD",
+      "label": {
+        "en": "Chad",
+        "zh": "乍得"
+      },
+      "x": 54.972,
+      "y": 48.323
+    },
+    {
+      "id": "country-CL",
+      "code": "CL",
+      "label": {
+        "en": "Chile",
+        "zh": "智利"
+      },
+      "x": 30.715,
+      "y": 82.138
+    },
+    {
+      "id": "country-CN",
+      "code": "CN",
+      "label": {
+        "en": "China",
+        "zh": "中国"
+      },
+      "x": 78.357,
+      "y": 37.312
+    },
+    {
+      "id": "country-CO",
+      "code": "CO",
+      "label": {
+        "en": "Colombia",
+        "zh": "哥伦比亚"
+      },
+      "x": 30.487,
+      "y": 55.791
+    },
+    {
+      "id": "country-KM",
+      "code": "KM",
+      "label": {
+        "en": "Comoros",
+        "zh": "科摩罗"
+      },
+      "x": 61.551,
+      "y": 65.372
+    },
+    {
+      "id": "country-CK",
+      "code": "CK",
+      "label": {
+        "en": "Cook Islands",
+        "zh": "库克群岛"
+      },
+      "x": 7.39,
+      "y": 71.392
+    },
+    {
+      "id": "country-CR",
+      "code": "CR",
+      "label": {
+        "en": "Costa Rica",
+        "zh": "哥斯达黎加"
+      },
+      "x": 27.579,
+      "y": 51.545
+    },
+    {
+      "id": "country-HR",
+      "code": "HR",
+      "label": {
+        "en": "Croatia",
+        "zh": "克罗地亚"
+      },
+      "x": 54.366,
+      "y": 28.868
+    },
+    {
+      "id": "country-CU",
+      "code": "CU",
+      "label": {
+        "en": "Cuba",
+        "zh": "古巴"
+      },
+      "x": 29.206,
+      "y": 44.395
+    },
+    {
+      "id": "country-CW",
+      "code": "CW",
+      "label": {
+        "en": "Curaçao",
+        "zh": "库拉索"
+      },
+      "x": 31.621,
+      "y": 50.225
+    },
+    {
+      "id": "country-CY",
+      "code": "CY",
+      "label": {
+        "en": "Cyprus",
+        "zh": "塞浦路斯"
+      },
+      "x": 58.822,
+      "y": 35.779
+    },
+    {
+      "id": "country-CZ",
+      "code": "CZ",
+      "label": {
+        "en": "Czech Republic",
+        "zh": "捷克"
+      },
+      "x": 54.101,
+      "y": 26.282
+    },
+    {
+      "id": "country-CD",
+      "code": "CD",
+      "label": {
+        "en": "Democratic Republic of the Congo",
+        "zh": "刚果民主共和国"
+      },
+      "x": 56.256,
+      "y": 59.11
+    },
+    {
+      "id": "country-DK",
+      "code": "DK",
+      "label": {
+        "en": "Denmark",
+        "zh": "丹麦"
+      },
+      "x": 52.405,
+      "y": 22.421
+    },
+    {
+      "id": "country-DJ",
+      "code": "DJ",
+      "label": {
+        "en": "Djibouti",
+        "zh": "吉布提"
+      },
+      "x": 61.333,
+      "y": 50.332
+    },
+    {
+      "id": "country-DM",
+      "code": "DM",
+      "label": {
+        "en": "Dominica",
+        "zh": "多米尼克"
+      },
+      "x": 33.641,
+      "y": 48.123
+    },
+    {
+      "id": "country-DO",
+      "code": "DO",
+      "label": {
+        "en": "Dominican Republic",
+        "zh": "多米尼加"
+      },
+      "x": 31.159,
+      "y": 45.81
+    },
+    {
+      "id": "country-TL",
+      "code": "TL",
+      "label": {
+        "en": "East Timor",
+        "zh": "东帝汶"
+      },
+      "x": 83.561,
+      "y": 63.517
+    },
+    {
+      "id": "country-EC",
+      "code": "EC",
+      "label": {
+        "en": "Ecuador",
+        "zh": "厄瓜多尔"
+      },
+      "x": 29.15,
+      "y": 58.73
+    },
+    {
+      "id": "country-EG",
+      "code": "EG",
+      "label": {
+        "en": "Egypt",
+        "zh": "埃及"
+      },
+      "x": 57.852,
+      "y": 41.316
+    },
+    {
+      "id": "country-SV",
+      "code": "SV",
+      "label": {
+        "en": "El Salvador",
+        "zh": "萨尔瓦多"
+      },
+      "x": 26.296,
+      "y": 49.248
+    },
+    {
+      "id": "country-GQ",
+      "code": "GQ",
+      "label": {
+        "en": "Equatorial Guinea",
+        "zh": "赤道几内亚"
+      },
+      "x": 52.397,
+      "y": 56.451
+    },
+    {
+      "id": "country-ER",
+      "code": "ER",
+      "label": {
+        "en": "Eritrea",
+        "zh": "厄立特里亚"
+      },
+      "x": 60.209,
+      "y": 47.914
+    },
+    {
+      "id": "country-EE",
+      "code": "EE",
+      "label": {
+        "en": "Estonia",
+        "zh": "爱沙尼亚"
+      },
+      "x": 56.898,
+      "y": 20.671
+    },
+    {
+      "id": "country-SZ",
+      "code": "SZ",
+      "label": {
+        "en": "Eswatini",
+        "zh": "斯威士兰"
+      },
+      "x": 58.391,
+      "y": 74.766
+    },
+    {
+      "id": "country-ET",
+      "code": "ET",
+      "label": {
+        "en": "Ethiopia",
+        "zh": "埃塞俄比亚"
+      },
+      "x": 60.424,
+      "y": 52.834
+    },
+    {
+      "id": "country-FK",
+      "code": "FK",
+      "label": {
+        "en": "Falkland Islands",
+        "zh": "福克兰群岛"
+      },
+      "x": 34.336,
+      "y": 90.676
+    },
+    {
+      "id": "country-FO",
+      "code": "FO",
+      "label": {
+        "en": "Faroe Islands",
+        "zh": "法罗群岛"
+      },
+      "x": 48.118,
+      "y": 18.475
+    },
+    {
+      "id": "country-FM",
+      "code": "FM",
+      "label": {
+        "en": "Federated States of Micronesia",
+        "zh": "密克罗尼西亚联邦"
+      },
+      "x": 92.196,
+      "y": 53.561
+    },
+    {
+      "id": "country-FJ",
+      "code": "FJ",
+      "label": {
+        "en": "Fiji",
+        "zh": "斐济"
+      },
+      "x": 97.46,
+      "y": 69.241
+    },
+    {
+      "id": "country-FI",
+      "code": "FI",
+      "label": {
+        "en": "Finland",
+        "zh": "芬兰"
+      },
+      "x": 57.274,
+      "y": 17.799
+    },
+    {
+      "id": "country-FR",
+      "code": "FR",
+      "label": {
+        "en": "France",
+        "zh": "法国"
+      },
+      "x": 50.681,
+      "y": 28.303
+    },
+    {
+      "id": "country-PF",
+      "code": "PF",
+      "label": {
+        "en": "French Polynesia",
+        "zh": "法属波利尼西亚"
+      },
+      "x": 10.144,
+      "y": 69.116
+    },
+    {
+      "id": "country-TF",
+      "code": "TF",
+      "label": {
+        "en": "French Southern and Antarctic Lands",
+        "zh": "法属南部和南极领地"
+      },
+      "x": 68.433,
+      "y": 89.213
+    },
+    {
+      "id": "country-GA",
+      "code": "GA",
+      "label": {
+        "en": "Gabon",
+        "zh": "加蓬"
+      },
+      "x": 53.156,
+      "y": 58.209
+    },
+    {
+      "id": "country-GE",
+      "code": "GE",
+      "label": {
+        "en": "Georgia",
+        "zh": "格鲁吉亚"
+      },
+      "x": 61.663,
+      "y": 31.365
+    },
+    {
+      "id": "country-DE",
+      "code": "DE",
+      "label": {
+        "en": "Germany",
+        "zh": "德国"
+      },
+      "x": 52.581,
+      "y": 25.597
+    },
+    {
+      "id": "country-GH",
+      "code": "GH",
+      "label": {
+        "en": "Ghana",
+        "zh": "加纳"
+      },
+      "x": 49.723,
+      "y": 53.034
+    },
+    {
+      "id": "country-GR",
+      "code": "GR",
+      "label": {
+        "en": "Greece",
+        "zh": "希腊"
+      },
+      "x": 55.794,
+      "y": 32.874
+    },
+    {
+      "id": "country-GL",
+      "code": "GL",
+      "label": {
+        "en": "Greenland",
+        "zh": "格陵兰"
+      },
+      "x": 39.511,
+      "y": 10.777
+    },
+    {
+      "id": "country-GD",
+      "code": "GD",
+      "label": {
+        "en": "Grenada",
+        "zh": "格林纳达"
+      },
+      "x": 33.552,
+      "y": 50.245
+    },
+    {
+      "id": "country-GU",
+      "code": "GU",
+      "label": {
+        "en": "Guam",
+        "zh": "关岛"
+      },
+      "x": 88.588,
+      "y": 49.458
+    },
+    {
+      "id": "country-GT",
+      "code": "GT",
+      "label": {
+        "en": "Guatemala",
+        "zh": "危地马拉"
+      },
+      "x": 25.867,
+      "y": 48.425
+    },
+    {
+      "id": "country-GG",
+      "code": "GG",
+      "label": {
+        "en": "Guernsey",
+        "zh": "根西"
+      },
+      "x": 49.317,
+      "y": 26.547
+    },
+    {
+      "id": "country-GN",
+      "code": "GN",
+      "label": {
+        "en": "Guinea",
+        "zh": "几内亚"
+      },
+      "x": 47.329,
+      "y": 51.194
+    },
+    {
+      "id": "country-GW",
+      "code": "GW",
+      "label": {
+        "en": "Guinea-Bissau",
+        "zh": "几内亚比绍"
+      },
+      "x": 46.127,
+      "y": 50.213
+    },
+    {
+      "id": "country-GY",
+      "code": "GY",
+      "label": {
+        "en": "Guyana",
+        "zh": "圭亚那"
+      },
+      "x": 34.282,
+      "y": 54.68
+    },
+    {
+      "id": "country-HT",
+      "code": "HT",
+      "label": {
+        "en": "Haiti",
+        "zh": "海地"
+      },
+      "x": 30.74,
+      "y": 45.708
+    },
+    {
+      "id": "country-HM",
+      "code": "HM",
+      "label": {
+        "en": "Heard Island and McDonald Islands",
+        "zh": "赫德岛和麦克唐纳群岛"
+      },
+      "x": 69.601,
+      "y": 91.624
+    },
+    {
+      "id": "country-HN",
+      "code": "HN",
+      "label": {
+        "en": "Honduras",
+        "zh": "洪都拉斯"
+      },
+      "x": 26.83,
+      "y": 48.544
+    },
+    {
+      "id": "country-HK",
+      "code": "HK",
+      "label": {
+        "en": "Hong Kong",
+        "zh": "香港"
+      },
+      "x": 80.426,
+      "y": 43.688
+    },
+    {
+      "id": "country-HU",
+      "code": "HU",
+      "label": {
+        "en": "Hungary",
+        "zh": "匈牙利"
+      },
+      "x": 55.186,
+      "y": 28.055
+    },
+    {
+      "id": "country-IS",
+      "code": "IS",
+      "label": {
+        "en": "Iceland",
+        "zh": "冰岛"
+      },
+      "x": 45.02,
+      "y": 16.83
+    },
+    {
+      "id": "country-IN",
+      "code": "IN",
+      "label": {
+        "en": "India",
+        "zh": "印度"
+      },
+      "x": 71.162,
+      "y": 43.537
+    },
+    {
+      "id": "country-ID",
+      "code": "ID",
+      "label": {
+        "en": "Indonesia",
+        "zh": "印度尼西亚"
+      },
+      "x": 77.171,
+      "y": 58.537
+    },
+    {
+      "id": "country-IR",
+      "code": "IR",
+      "label": {
+        "en": "Iran",
+        "zh": "伊朗"
+      },
+      "x": 64.648,
+      "y": 37.522
+    },
+    {
+      "id": "country-IQ",
+      "code": "IQ",
+      "label": {
+        "en": "Iraq",
+        "zh": "伊拉克"
+      },
+      "x": 61.536,
+      "y": 36.933
+    },
+    {
+      "id": "country-IE",
+      "code": "IE",
+      "label": {
+        "en": "Ireland",
+        "zh": "爱尔兰"
+      },
+      "x": 47.92,
+      "y": 24.253
+    },
+    {
+      "id": "country-IM",
+      "code": "IM",
+      "label": {
+        "en": "Isle of Man",
+        "zh": "马恩岛"
+      },
+      "x": 48.792,
+      "y": 23.529
+    },
+    {
+      "id": "country-IL",
+      "code": "IL",
+      "label": {
+        "en": "Israel",
+        "zh": "以色列"
+      },
+      "x": 59.293,
+      "y": 38.318
+    },
+    {
+      "id": "country-IT",
+      "code": "IT",
+      "label": {
+        "en": "Italy",
+        "zh": "意大利"
+      },
+      "x": 52.954,
+      "y": 29.549
+    },
+    {
+      "id": "country-CI",
+      "code": "CI",
+      "label": {
+        "en": "Ivory Coast",
+        "zh": "科特迪瓦"
+      },
+      "x": 48.515,
+      "y": 53.178
+    },
+    {
+      "id": "country-JM",
+      "code": "JM",
+      "label": {
+        "en": "Jamaica",
+        "zh": "牙买加"
+      },
+      "x": 29.382,
+      "y": 46.423
+    },
+    {
+      "id": "country-JP",
+      "code": "JP",
+      "label": {
+        "en": "Japan",
+        "zh": "日本"
+      },
+      "x": 86.918,
+      "y": 34.999
+    },
+    {
+      "id": "country-JE",
+      "code": "JE",
+      "label": {
+        "en": "Jersey",
+        "zh": "泽西"
+      },
+      "x": 49.443,
+      "y": 26.701
+    },
+    {
+      "id": "country-JO",
+      "code": "JO",
+      "label": {
+        "en": "Jordan",
+        "zh": "约旦"
+      },
+      "x": 59.7,
+      "y": 38.386
+    },
+    {
+      "id": "country-KZ",
+      "code": "KZ",
+      "label": {
+        "en": "Kazakhstan",
+        "zh": "哈萨克斯坦"
+      },
+      "x": 68.316,
+      "y": 26.807
+    },
+    {
+      "id": "country-KE",
+      "code": "KE",
+      "label": {
+        "en": "Kenya",
+        "zh": "肯尼亚"
+      },
+      "x": 60.109,
+      "y": 57.583
+    },
+    {
+      "id": "country-KI",
+      "code": "KI",
+      "label": {
+        "en": "Kiribati",
+        "zh": "基里巴斯"
+      },
+      "x": 8.031,
+      "y": 56.776
+    },
+    {
+      "id": "country-XK",
+      "code": "XK",
+      "label": {
+        "en": "Kosovo",
+        "zh": "科索沃"
+      },
+      "x": 55.563,
+      "y": 30.906
+    },
+    {
+      "id": "country-KW",
+      "code": "KW",
+      "label": {
+        "en": "Kuwait",
+        "zh": "科威特"
+      },
+      "x": 62.617,
+      "y": 39.269
+    },
+    {
+      "id": "country-KG",
+      "code": "KG",
+      "label": {
+        "en": "Kyrgyzstan",
+        "zh": "吉尔吉斯斯坦"
+      },
+      "x": 69.875,
+      "y": 31.493
+    },
+    {
+      "id": "country-LA",
+      "code": "LA",
+      "label": {
+        "en": "Laos",
+        "zh": "老挝"
+      },
+      "x": 77.342,
+      "y": 45.602
+    },
+    {
+      "id": "country-LV",
+      "code": "LV",
+      "label": {
+        "en": "Latvia",
+        "zh": "拉脱维亚"
+      },
+      "x": 56.789,
+      "y": 21.723
+    },
+    {
+      "id": "country-LB",
+      "code": "LB",
+      "label": {
+        "en": "Lebanon",
+        "zh": "黎巴嫩"
+      },
+      "x": 59.598,
+      "y": 36.274
+    },
+    {
+      "id": "country-LS",
+      "code": "LS",
+      "label": {
+        "en": "Lesotho",
+        "zh": "莱索托"
+      },
+      "x": 57.532,
+      "y": 76.636
+    },
+    {
+      "id": "country-LR",
+      "code": "LR",
+      "label": {
+        "en": "Liberia",
+        "zh": "利比里亚"
+      },
+      "x": 47.477,
+      "y": 53.84
+    },
+    {
+      "id": "country-LY",
+      "code": "LY",
+      "label": {
+        "en": "Libya",
+        "zh": "利比亚"
+      },
+      "x": 54.803,
+      "y": 41.029
+    },
+    {
+      "id": "country-LI",
+      "code": "LI",
+      "label": {
+        "en": "Liechtenstein",
+        "zh": "列支敦士登"
+      },
+      "x": 52.549,
+      "y": 28.04
+    },
+    {
+      "id": "country-LT",
+      "code": "LT",
+      "label": {
+        "en": "Lithuania",
+        "zh": "立陶宛"
+      },
+      "x": 56.424,
+      "y": 22.969
+    },
+    {
+      "id": "country-LU",
+      "code": "LU",
+      "label": {
+        "en": "Luxembourg",
+        "zh": "卢森堡"
+      },
+      "x": 51.621,
+      "y": 26.376
+    },
+    {
+      "id": "country-MO",
+      "code": "MO",
+      "label": {
+        "en": "Macao",
+        "zh": "澳门"
+      },
+      "x": 80.282,
+      "y": 43.89
+    },
+    {
+      "id": "country-MG",
+      "code": "MG",
+      "label": {
+        "en": "Madagascar",
+        "zh": "马达加斯加"
+      },
+      "x": 62.454,
+      "y": 69.75
+    },
+    {
+      "id": "country-MW",
+      "code": "MW",
+      "label": {
+        "en": "Malawi",
+        "zh": "马拉维"
+      },
+      "x": 58.962,
+      "y": 66.425
+    },
+    {
+      "id": "country-MY",
+      "code": "MY",
+      "label": {
+        "en": "Malaysia",
+        "zh": "马来西亚"
+      },
+      "x": 80.357,
+      "y": 56.327
+    },
+    {
+      "id": "country-MV",
+      "code": "MV",
+      "label": {
+        "en": "Maldives",
+        "zh": "马尔代夫"
+      },
+      "x": 69.602,
+      "y": 55.282
+    },
+    {
+      "id": "country-ML",
+      "code": "ML",
+      "label": {
+        "en": "Mali",
+        "zh": "马里"
+      },
+      "x": 49.456,
+      "y": 46.071
+    },
+    {
+      "id": "country-MT",
+      "code": "MT",
+      "label": {
+        "en": "Malta",
+        "zh": "马耳他"
+      },
+      "x": 53.849,
+      "y": 35.158
+    },
+    {
+      "id": "country-MH",
+      "code": "MH",
+      "label": {
+        "en": "Marshall Islands",
+        "zh": "马绍尔群岛"
+      },
+      "x": 95.652,
+      "y": 53.437
+    },
+    {
+      "id": "country-MR",
+      "code": "MR",
+      "label": {
+        "en": "Mauritania",
+        "zh": "毛里塔尼亚"
+      },
+      "x": 47.403,
+      "y": 45.503
+    },
+    {
+      "id": "country-MU",
+      "code": "MU",
+      "label": {
+        "en": "Mauritius",
+        "zh": "毛里求斯"
+      },
+      "x": 65.351,
+      "y": 70.811
+    },
+    {
+      "id": "country-MX",
+      "code": "MX",
+      "label": {
+        "en": "Mexico",
+        "zh": "墨西哥"
+      },
+      "x": 22.723,
+      "y": 42.754
+    },
+    {
+      "id": "country-MD",
+      "code": "MD",
+      "label": {
+        "en": "Moldova",
+        "zh": "摩尔多瓦"
+      },
+      "x": 57.597,
+      "y": 27.834
+    },
+    {
+      "id": "country-MC",
+      "code": "MC",
+      "label": {
+        "en": "Monaco",
+        "zh": "摩纳哥"
+      },
+      "x": 51.973,
+      "y": 30.179
+    },
+    {
+      "id": "country-MN",
+      "code": "MN",
+      "label": {
+        "en": "Mongolia",
+        "zh": "蒙古国"
+      },
+      "x": 77.773,
+      "y": 28.746
+    },
+    {
+      "id": "country-ME",
+      "code": "ME",
+      "label": {
+        "en": "Montenegro",
+        "zh": "黑山"
+      },
+      "x": 55.105,
+      "y": 30.773
+    },
+    {
+      "id": "country-MS",
+      "code": "MS",
+      "label": {
+        "en": "Montserrat",
+        "zh": "蒙特塞拉特"
+      },
+      "x": 33.416,
+      "y": 47.312
+    },
+    {
+      "id": "country-MA",
+      "code": "MA",
+      "label": {
+        "en": "Morocco",
+        "zh": "摩洛哥"
+      },
+      "x": 48.083,
+      "y": 37.849
+    },
+    {
+      "id": "country-MZ",
+      "code": "MZ",
+      "label": {
+        "en": "Mozambique",
+        "zh": "莫桑比克"
+      },
+      "x": 60.09,
+      "y": 66.778
+    },
+    {
+      "id": "country-MM",
+      "code": "MM",
+      "label": {
+        "en": "Myanmar",
+        "zh": "缅甸"
+      },
+      "x": 75.548,
+      "y": 44.243
+    },
+    {
+      "id": "country-NA",
+      "code": "NA",
+      "label": {
+        "en": "Namibia",
+        "zh": "纳米比亚"
+      },
+      "x": 54.562,
+      "y": 70.986
+    },
+    {
+      "id": "country-NR",
+      "code": "NR",
+      "label": {
+        "en": "Nauru",
+        "zh": "瑙鲁"
+      },
+      "x": 94.515,
+      "y": 58.261
+    },
+    {
+      "id": "country-NP",
+      "code": "NP",
+      "label": {
+        "en": "Nepal",
+        "zh": "尼泊尔"
+      },
+      "x": 72.304,
+      "y": 39.976
+    },
+    {
+      "id": "country-NL",
+      "code": "NL",
+      "label": {
+        "en": "Netherlands",
+        "zh": "荷兰"
+      },
+      "x": 51.496,
+      "y": 24.67
+    },
+    {
+      "id": "country-NC",
+      "code": "NC",
+      "label": {
+        "en": "New Caledonia",
+        "zh": "新喀里多尼亚"
+      },
+      "x": 94.022,
+      "y": 71.296
+    },
+    {
+      "id": "country-NZ",
+      "code": "NZ",
+      "label": {
+        "en": "New Zealand",
+        "zh": "新西兰"
+      },
+      "x": 96.077,
+      "y": 83.157
+    },
+    {
+      "id": "country-NI",
+      "code": "NI",
+      "label": {
+        "en": "Nicaragua",
+        "zh": "尼加拉瓜"
+      },
+      "x": 27.315,
+      "y": 49.892
+    },
+    {
+      "id": "country-NE",
+      "code": "NE",
+      "label": {
+        "en": "Niger",
+        "zh": "尼日尔"
+      },
+      "x": 52.534,
+      "y": 46.862
+    },
+    {
+      "id": "country-NG",
+      "code": "NG",
+      "label": {
+        "en": "Nigeria",
+        "zh": "尼日利亚"
+      },
+      "x": 52.001,
+      "y": 51.942
+    },
+    {
+      "id": "country-NU",
+      "code": "NU",
+      "label": {
+        "en": "Niue",
+        "zh": "纽埃"
+      },
+      "x": 4.703,
+      "y": 70.015
+    },
+    {
+      "id": "country-NF",
+      "code": "NF",
+      "label": {
+        "en": "Norfolk Island",
+        "zh": "诺福克岛"
+      },
+      "x": 94.788,
+      "y": 76.352
+    },
+    {
+      "id": "country-KP",
+      "code": "KP",
+      "label": {
+        "en": "North Korea",
+        "zh": "朝鲜民主主义人民共和国"
+      },
+      "x": 83.719,
+      "y": 32.625
+    },
+    {
+      "id": "country-MK",
+      "code": "MK",
+      "label": {
+        "en": "North Macedonia",
+        "zh": "北马其顿"
+      },
+      "x": 55.748,
+      "y": 31.563
+    },
+    {
+      "id": "country-MP",
+      "code": "MP",
+      "label": {
+        "en": "Northern Mariana Islands",
+        "zh": "北马里亚纳群岛"
+      },
+      "x": 88.863,
+      "y": 48.294
+    },
+    {
+      "id": "country-NO",
+      "code": "NO",
+      "label": {
+        "en": "Norway",
+        "zh": "挪威"
+      },
+      "x": 52.581,
+      "y": 19.001
+    },
+    {
+      "id": "country-OM",
+      "code": "OM",
+      "label": {
+        "en": "Oman",
+        "zh": "阿曼"
+      },
+      "x": 65.29,
+      "y": 43.896
+    },
+    {
+      "id": "country-PK",
+      "code": "PK",
+      "label": {
+        "en": "Pakistan",
+        "zh": "巴基斯坦"
+      },
+      "x": 68.279,
+      "y": 39.323
+    },
+    {
+      "id": "country-PW",
+      "code": "PW",
+      "label": {
+        "en": "Palau",
+        "zh": "帕劳"
+      },
+      "x": 85.888,
+      "y": 53.161
+    },
+    {
+      "id": "country-PS",
+      "code": "PS",
+      "label": {
+        "en": "Palestine",
+        "zh": "巴勒斯坦"
+      },
+      "x": 59.411,
+      "y": 37.597
+    },
+    {
+      "id": "country-PA",
+      "code": "PA",
+      "label": {
+        "en": "Panama",
+        "zh": "巴拿马"
+      },
+      "x": 28.573,
+      "y": 52.397
+    },
+    {
+      "id": "country-PG",
+      "code": "PG",
+      "label": {
+        "en": "Papua New Guinea",
+        "zh": "巴布亚新几内亚"
+      },
+      "x": 88.376,
+      "y": 61.545
+    },
+    {
+      "id": "country-PY",
+      "code": "PY",
+      "label": {
+        "en": "Paraguay",
+        "zh": "巴拉圭"
+      },
+      "x": 33.961,
+      "y": 71.683
+    },
+    {
+      "id": "country-PE",
+      "code": "PE",
+      "label": {
+        "en": "Peru",
+        "zh": "秘鲁"
+      },
+      "x": 30.56,
+      "y": 66.165
+    },
+    {
+      "id": "country-PH",
+      "code": "PH",
+      "label": {
+        "en": "Philippines",
+        "zh": "菲律宾"
+      },
+      "x": 82.657,
+      "y": 50.826
+    },
+    {
+      "id": "country-PN",
+      "code": "PN",
+      "label": {
+        "en": "Pitcairn Islands",
+        "zh": "皮特凯恩群岛"
+      },
+      "x": 15.782,
+      "y": 73.39
+    },
+    {
+      "id": "country-PL",
+      "code": "PL",
+      "label": {
+        "en": "Poland",
+        "zh": "波兰"
+      },
+      "x": 55.197,
+      "y": 24.944
+    },
+    {
+      "id": "country-PT",
+      "code": "PT",
+      "label": {
+        "en": "Portugal",
+        "zh": "葡萄牙"
+      },
+      "x": 47.794,
+      "y": 32.801
+    },
+    {
+      "id": "country-PR",
+      "code": "PR",
+      "label": {
+        "en": "Puerto Rico",
+        "zh": "波多黎各"
+      },
+      "x": 32.272,
+      "y": 46.361
+    },
+    {
+      "id": "country-QA",
+      "code": "QA",
+      "label": {
+        "en": "Qatar",
+        "zh": "卡塔尔"
+      },
+      "x": 63.638,
+      "y": 41.918
+    },
+    {
+      "id": "country-CG",
+      "code": "CG",
+      "label": {
+        "en": "Republic of the Congo",
+        "zh": "刚果共和国"
+      },
+      "x": 54.24,
+      "y": 57.841
+    },
+    {
+      "id": "country-RO",
+      "code": "RO",
+      "label": {
+        "en": "Romania",
+        "zh": "罗马尼亚"
+      },
+      "x": 56.659,
+      "y": 28.914
+    },
+    {
+      "id": "country-RU",
+      "code": "RU",
+      "label": {
+        "en": "Russia",
+        "zh": "俄罗斯"
+      },
+      "x": 61.916,
+      "y": 20.973
+    },
+    {
+      "id": "country-RW",
+      "code": "RW",
+      "label": {
+        "en": "Rwanda",
+        "zh": "卢旺达"
+      },
+      "x": 58.028,
+      "y": 59.135
+    },
+    {
+      "id": "country-BL",
+      "code": "BL",
+      "label": {
+        "en": "Saint Barthélemy",
+        "zh": "圣巴泰勒米"
+      },
+      "x": 33.244,
+      "y": 46.573
+    },
+    {
+      "id": "country-SH",
+      "code": "SH",
+      "label": {
+        "en": "Saint Helena",
+        "zh": "圣赫勒拿"
+      },
+      "x": 48.477,
+      "y": 68.051
+    },
+    {
+      "id": "country-KN",
+      "code": "KN",
+      "label": {
+        "en": "Saint Kitts and Nevis",
+        "zh": "圣基茨和尼维斯"
+      },
+      "x": 33.265,
+      "y": 46.931
+    },
+    {
+      "id": "country-LC",
+      "code": "LC",
+      "label": {
+        "en": "Saint Lucia",
+        "zh": "圣卢西亚"
+      },
+      "x": 33.739,
+      "y": 49.117
+    },
+    {
+      "id": "country-MF",
+      "code": "MF",
+      "label": {
+        "en": "Saint Martin",
+        "zh": "法属圣马丁"
+      },
+      "x": 33.187,
+      "y": 46.459
+    },
+    {
+      "id": "country-PM",
+      "code": "PM",
+      "label": {
+        "en": "Saint Pierre and Miquelon",
+        "zh": "圣皮埃尔和密克隆"
+      },
+      "x": 34.978,
+      "y": 28.085
+    },
+    {
+      "id": "country-VC",
+      "code": "VC",
+      "label": {
+        "en": "Saint Vincent and the Grenadines",
+        "zh": "圣文森特和格林纳丁斯"
+      },
+      "x": 33.644,
+      "y": 49.627
+    },
+    {
+      "id": "country-WS",
+      "code": "WS",
+      "label": {
+        "en": "Samoa",
+        "zh": "萨摩亚"
+      },
+      "x": 4.016,
+      "y": 66.585
+    },
+    {
+      "id": "country-SM",
+      "code": "SM",
+      "label": {
+        "en": "San Marino",
+        "zh": "圣马力诺"
+      },
+      "x": 53.318,
+      "y": 30.056
+    },
+    {
+      "id": "country-ST",
+      "code": "ST",
+      "label": {
+        "en": "São Tomé and Príncipe",
+        "zh": "圣多美和普林西比"
+      },
+      "x": 51.872,
+      "y": 57.315
+    },
+    {
+      "id": "country-SA",
+      "code": "SA",
+      "label": {
+        "en": "Saudi Arabia",
+        "zh": "沙特阿拉伯"
+      },
+      "x": 61.92,
+      "y": 42.826
+    },
+    {
+      "id": "country-SN",
+      "code": "SN",
+      "label": {
+        "en": "Senegal",
+        "zh": "塞内加尔"
+      },
+      "x": 46.059,
+      "y": 48.326
+    },
+    {
+      "id": "country-RS",
+      "code": "RS",
+      "label": {
+        "en": "Serbia",
+        "zh": "塞尔维亚"
+      },
+      "x": 55.543,
+      "y": 29.893
+    },
+    {
+      "id": "country-SC",
+      "code": "SC",
+      "label": {
+        "en": "Seychelles",
+        "zh": "塞舌尔"
+      },
+      "x": 64.795,
+      "y": 60.898
+    },
+    {
+      "id": "country-KAS",
+      "code": "KAS",
+      "label": {
+        "en": "Siachen Glacier",
+        "zh": "锡亚琴冰川"
+      },
+      "x": 70.568,
+      "y": 35.508
+    },
+    {
+      "id": "country-SL",
+      "code": "SL",
+      "label": {
+        "en": "Sierra Leone",
+        "zh": "塞拉利昂"
+      },
+      "x": 46.863,
+      "y": 52.463
+    },
+    {
+      "id": "country-SG",
+      "code": "SG",
+      "label": {
+        "en": "Singapore",
+        "zh": "新加坡"
+      },
+      "x": 77.685,
+      "y": 57.064
+    },
+    {
+      "id": "country-SX",
+      "code": "SX",
+      "label": {
+        "en": "Sint Maarten",
+        "zh": "荷属圣马丁"
+      },
+      "x": 33.181,
+      "y": 46.484
+    },
+    {
+      "id": "country-SK",
+      "code": "SK",
+      "label": {
+        "en": "Slovakia",
+        "zh": "斯洛伐克"
+      },
+      "x": 55.08,
+      "y": 27.01
+    },
+    {
+      "id": "country-SI",
+      "code": "SI",
+      "label": {
+        "en": "Slovenia",
+        "zh": "斯洛文尼亚"
+      },
+      "x": 53.977,
+      "y": 28.706
+    },
+    {
+      "id": "country-SB",
+      "code": "SB",
+      "label": {
+        "en": "Solomon Islands",
+        "zh": "所罗门群岛"
+      },
+      "x": 92.445,
+      "y": 63.026
+    },
+    {
+      "id": "country-SO",
+      "code": "SO",
+      "label": {
+        "en": "Somalia",
+        "zh": "索马里"
+      },
+      "x": 62.051,
+      "y": 55.667
+    },
+    {
+      "id": "country-SOL",
+      "code": "SOL",
+      "label": {
+        "en": "Somaliland",
+        "zh": "索马里兰"
+      },
+      "x": 62.462,
+      "y": 51.939
+    },
+    {
+      "id": "country-ZA",
+      "code": "ZA",
+      "label": {
+        "en": "South Africa",
+        "zh": "南非"
+      },
+      "x": 56.311,
+      "y": 76.781
+    },
+    {
+      "id": "country-GS",
+      "code": "GS",
+      "label": {
+        "en": "South Georgia and the South Sandwich Islands",
+        "zh": "南乔治亚和南桑威奇群岛"
+      },
+      "x": 41.716,
+      "y": 93.261
+    },
+    {
+      "id": "country-KR",
+      "code": "KR",
+      "label": {
+        "en": "South Korea",
+        "zh": "大韩民国"
+      },
+      "x": 84.168,
+      "y": 34.845
+    },
+    {
+      "id": "country-SS",
+      "code": "SS",
+      "label": {
+        "en": "South Sudan",
+        "zh": "南苏丹"
+      },
+      "x": 58.104,
+      "y": 53.343
+    },
+    {
+      "id": "country-ES",
+      "code": "ES",
+      "label": {
+        "en": "Spain",
+        "zh": "西班牙"
+      },
+      "x": 49.076,
+      "y": 32.494
+    },
+    {
+      "id": "country-LK",
+      "code": "LK",
+      "label": {
+        "en": "Sri Lanka",
+        "zh": "斯里兰卡"
+      },
+      "x": 71.521,
+      "y": 53.121
+    },
+    {
+      "id": "country-SD",
+      "code": "SD",
+      "label": {
+        "en": "Sudan",
+        "zh": "苏丹"
+      },
+      "x": 57.803,
+      "y": 47.569
+    },
+    {
+      "id": "country-SR",
+      "code": "SR",
+      "label": {
+        "en": "Suriname",
+        "zh": "苏里南"
+      },
+      "x": 35.09,
+      "y": 55.302
+    },
+    {
+      "id": "country-SE",
+      "code": "SE",
+      "label": {
+        "en": "Sweden",
+        "zh": "瑞典"
+      },
+      "x": 55.071,
+      "y": 16.145
+    },
+    {
+      "id": "country-CH",
+      "code": "CH",
+      "label": {
+        "en": "Switzerland",
+        "zh": "瑞士"
+      },
+      "x": 51.99,
+      "y": 28.289
+    },
+    {
+      "id": "country-SY",
+      "code": "SY",
+      "label": {
+        "en": "Syria",
+        "zh": "叙利亚"
+      },
+      "x": 60.207,
+      "y": 35.72
+    },
+    {
+      "id": "country-TW",
+      "code": "TW",
+      "label": {
+        "en": "Taiwan",
+        "zh": "台湾"
+      },
+      "x": 82.232,
+      "y": 42.924
+    },
+    {
+      "id": "country-TJ",
+      "code": "TJ",
+      "label": {
+        "en": "Tajikistan",
+        "zh": "塔吉克斯坦"
+      },
+      "x": 69.357,
+      "y": 33.694
+    },
+    {
+      "id": "country-TZ",
+      "code": "TZ",
+      "label": {
+        "en": "Tanzania",
+        "zh": "坦桑尼亚"
+      },
+      "x": 59.322,
+      "y": 61.771
+    },
+    {
+      "id": "country-TH",
+      "code": "TH",
+      "label": {
+        "en": "Thailand",
+        "zh": "泰国"
+      },
+      "x": 76.953,
+      "y": 48.122
+    },
+    {
+      "id": "country-BS",
+      "code": "BS",
+      "label": {
+        "en": "The Bahamas",
+        "zh": "巴哈马"
+      },
+      "x": 29.428,
+      "y": 41.18
+    },
+    {
+      "id": "country-GM",
+      "code": "GM",
+      "label": {
+        "en": "The Gambia",
+        "zh": "冈比亚"
+      },
+      "x": 46,
+      "y": 49.276
+    },
+    {
+      "id": "country-TG",
+      "code": "TG",
+      "label": {
+        "en": "Togo",
+        "zh": "多哥"
+      },
+      "x": 50.282,
+      "y": 52.343
+    },
+    {
+      "id": "country-TO",
+      "code": "TO",
+      "label": {
+        "en": "Tonga",
+        "zh": "汤加"
+      },
+      "x": 3.29,
+      "y": 71.388
+    },
+    {
+      "id": "country-TT",
+      "code": "TT",
+      "label": {
+        "en": "Trinidad and Tobago",
+        "zh": "特立尼达和多巴哥"
+      },
+      "x": 33.755,
+      "y": 50.952
+    },
+    {
+      "id": "country-TN",
+      "code": "TN",
+      "label": {
+        "en": "Tunisia",
+        "zh": "突尼斯"
+      },
+      "x": 52.402,
+      "y": 36.557
+    },
+    {
+      "id": "country-TR",
+      "code": "TR",
+      "label": {
+        "en": "Turkey",
+        "zh": "土耳其"
+      },
+      "x": 59.202,
+      "y": 32.967
+    },
+    {
+      "id": "country-CYN",
+      "code": "CYN",
+      "label": {
+        "en": "Turkish Republic of Northern Cyprus",
+        "zh": "北塞浦路斯土耳其共和国"
+      },
+      "x": 58.985,
+      "y": 35.587
+    },
+    {
+      "id": "country-TM",
+      "code": "TM",
+      "label": {
+        "en": "Turkmenistan",
+        "zh": "土库曼斯坦"
+      },
+      "x": 65.647,
+      "y": 32.644
+    },
+    {
+      "id": "country-TC",
+      "code": "TC",
+      "label": {
+        "en": "Turks and Caicos Islands",
+        "zh": "特克斯和凯科斯群岛"
+      },
+      "x": 30.866,
+      "y": 44.089
+    },
+    {
+      "id": "country-TV",
+      "code": "TV",
+      "label": {
+        "en": "Tuvalu",
+        "zh": "图瓦卢"
+      },
+      "x": 97.789,
+      "y": 63.333
+    },
+    {
+      "id": "country-UG",
+      "code": "UG",
+      "label": {
+        "en": "Uganda",
+        "zh": "乌干达"
+      },
+      "x": 58.786,
+      "y": 56.679
+    },
+    {
+      "id": "country-UA",
+      "code": "UA",
+      "label": {
+        "en": "Ukraine",
+        "zh": "乌克兰"
+      },
+      "x": 58.571,
+      "y": 26.382
+    },
+    {
+      "id": "country-AE",
+      "code": "AE",
+      "label": {
+        "en": "United Arab Emirates",
+        "zh": "阿拉伯联合酋长国"
+      },
+      "x": 64.546,
+      "y": 43.042
+    },
+    {
+      "id": "country-GB",
+      "code": "GB",
+      "label": {
+        "en": "United Kingdom",
+        "zh": "英国"
+      },
+      "x": 49.436,
+      "y": 23.413
+    },
+    {
+      "id": "country-US",
+      "code": "US",
+      "label": {
+        "en": "United States of America",
+        "zh": "美国"
+      },
+      "x": 24.005,
+      "y": 32.845
+    },
+    {
+      "id": "country-VI",
+      "code": "VI",
+      "label": {
+        "en": "United States Virgin Islands",
+        "zh": "美属维尔京群岛"
+      },
+      "x": 32.726,
+      "y": 46.671
+    },
+    {
+      "id": "country-UY",
+      "code": "UY",
+      "label": {
+        "en": "Uruguay",
+        "zh": "乌拉圭"
+      },
+      "x": 35.075,
+      "y": 78.844
+    },
+    {
+      "id": "country-UZ",
+      "code": "UZ",
+      "label": {
+        "en": "Uzbekistan",
+        "zh": "乌兹别克斯坦"
+      },
+      "x": 67.068,
+      "y": 31.477
+    },
+    {
+      "id": "country-VU",
+      "code": "VU",
+      "label": {
+        "en": "Vanuatu",
+        "zh": "瓦努阿图"
+      },
+      "x": 94.509,
+      "y": 67.684
+    },
+    {
+      "id": "country-VA",
+      "code": "VA",
+      "label": {
+        "en": "Vatican City",
+        "zh": "梵蒂冈"
+      },
+      "x": 53.321,
+      "y": 31.344
+    },
+    {
+      "id": "country-VE",
+      "code": "VE",
+      "label": {
+        "en": "Venezuela",
+        "zh": "委内瑞拉"
+      },
+      "x": 32.773,
+      "y": 53.374
+    },
+    {
+      "id": "country-VN",
+      "code": "VN",
+      "label": {
+        "en": "Vietnam",
+        "zh": "越南"
+      },
+      "x": 78.103,
+      "y": 44.153
+    },
+    {
+      "id": "country-WF",
+      "code": "WF",
+      "label": {
+        "en": "Wallis and Futuna",
+        "zh": "瓦利斯和富图纳"
+      },
+      "x": 2.497,
+      "y": 66.996
+    },
+    {
+      "id": "country-EH",
+      "code": "EH",
+      "label": {
+        "en": "Western Sahara",
+        "zh": "西撒哈拉"
+      },
+      "x": 46.632,
+      "y": 42.724
+    },
+    {
+      "id": "country-YE",
+      "code": "YE",
+      "label": {
+        "en": "Yemen",
+        "zh": "也门"
+      },
+      "x": 62.233,
+      "y": 48.206
+    },
+    {
+      "id": "country-ZM",
+      "code": "ZM",
+      "label": {
+        "en": "Zambia",
+        "zh": "赞比亚"
+      },
+      "x": 57.039,
+      "y": 67.233
+    },
+    {
+      "id": "country-ZW",
+      "code": "ZW",
+      "label": {
+        "en": "Zimbabwe",
+        "zh": "津巴布韦"
+      },
+      "x": 57.98,
+      "y": 69.93
+    }
+  ]
+}

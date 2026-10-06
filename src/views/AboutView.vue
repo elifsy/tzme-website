@@ -4,18 +4,23 @@ import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import SiteNav from '../components/SiteNav.vue'
+import WorldReachMap from '../components/WorldReachMap.vue'
 import { certificationSeed } from '../data/certifications.js'
 import { loadCertifications } from '../services/certifications.js'
+import { useGlobalReach } from '../services/globalReach.js'
+import { globalReachText } from '../data/globalReach.js'
 const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
+const { globalReach, loadGlobalReach } = useGlobalReach()
+const globalField = (name) => globalReachText(globalReach.value[name], locale.value)
 const certifications = ref(certificationSeed)
 const publishedCertifications = computed(() => certifications.value.filter((item) => item.status === 'published'))
 const featuredCertificate = computed(() => publishedCertifications.value.find((item) => item.image))
 const certificationField = (item, name) => locale.value === 'zh'
   ? item[`${name}Zh`] || item[`${name}En`] || ''
   : item[`${name}En`] || ''
-onMounted(async () => { certifications.value = await loadCertifications() })
+onMounted(async () => { loadGlobalReach(); certifications.value = await loadCertifications() })
 </script>
 
 <template>
@@ -131,28 +136,25 @@ onMounted(async () => { certifications.value = await loadCertifications() })
         </div>
       </section>
 
-      <section class="hc-sec" style="padding:0 0 96px">
+      <section class="hc-sec about-global" style="padding:0 0 96px" aria-labelledby="about-global-title">
         <div class="hc-w hc-global">
           <div>
-            <span class="hc-kick">{{ $t('site.globalReach') }}</span>
-            <h2 class="hc-h2" style="margin-top:18px;color:#fff">
-              {{ $t('site.engineeredInChina') }}<br />{{ $t('site.builtForTheWorld') }}</h2>
-            <div class="hc-map" style="margin-top:30px">
-              <img src="/assets/worldmap.png" alt="" />
+            <span class="hc-kick">{{ globalField('kicker') }}</span>
+            <h2 id="about-global-title" class="hc-h2" style="margin-top:18px;color:#fff">
+              {{ globalField('titleLine1') }}<template v-if="globalField('titleLine2')"><br />{{ globalField('titleLine2') }}</template></h2>
+            <p class="hc-p" style="margin-top:20px;max-width:520px">{{ globalField('description') }}</p>
+            <div class="hc-map" style="margin-top:34px">
+              <WorldReachMap v-if="globalReach.mapMode === 'points'" :points="globalReach.mapPoints"
+                :description="globalField('imageAlt')" :locale-code="locale" />
+              <el-image v-else :src="globalReach.image" :alt="globalField('imageAlt')" fit="contain" style="width:100%">
+                <template #error><div class="about-global-image-error">{{ globalField('imageAlt') }}</div></template>
+              </el-image>
             </div>
           </div>
           <div class="hc-gstats">
-            <div>
-              <div class="hc-stat">60<u>+</u></div>
-              <div class="hc-stat-cap">{{ $t('site.countriesAndRegions') }}</div>
-            </div>
-            <div>
-              <div class="hc-stat">100<u>+</u></div>
-              <div class="hc-stat-cap">{{ $t('site.globalProjects') }}</div>
-            </div>
-            <div>
-              <div class="hc-stat">5</div>
-              <div class="hc-stat-cap">{{ $t('site.continents') }}</div>
+            <div v-for="(statistic, index) in globalReach.statistics" :key="index">
+              <div class="hc-stat">{{ statistic.value }}<u v-if="statistic.suffix">{{ statistic.suffix }}</u></div>
+              <div class="hc-stat-cap">{{ globalReachText(statistic.label, locale) }}</div>
             </div>
           </div>
         </div>
@@ -173,6 +175,10 @@ onMounted(async () => { certifications.value = await loadCertifications() })
 </template>
 
 <style scoped>
+.about-global .hc-global > div { min-width: 0; }
+.about-global .hc-h2, .about-global .hc-p, .about-global .hc-stat, .about-global .hc-stat-cap { overflow-wrap: anywhere; }
+.about-global .hc-p { white-space: pre-line; }
+.about-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
 .about-intro { padding: 72px 0 56px; }
 .about-intro-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
 .about-intro-copy { min-width: 0; }
@@ -191,6 +197,7 @@ onMounted(async () => { certifications.value = await loadCertifications() })
   .about-intro-image { min-height: 0; aspect-ratio: 16 / 9; }
 }
 @media (max-width: 700px) {
+  .about-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .about-intro-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
   .about-intro-stats > div:nth-child(2n) { border-right: 0; }
   .about-intro-stats > div:nth-child(2n + 1) { padding-left: 0; }

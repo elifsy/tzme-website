@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "kicker": { "en": "Global", "zh": "全球业务" },
+  "titleLine1": { "en": "Engineered in China.", "zh": "中国设计。" },
+  "titleLine2": { "en": "Built for the world.", "zh": "服务世界。" },
+  "description": {
+    "en": "Working with industrial customers and partners across international markets.",
+    "zh": "与全球市场的工业客户和合作伙伴携手合作。"
+  },
+  "image": "/assets/worldmap.png",
+  "mapMode": "points",
+  "mapPoints": [],
+  "imageAlt": { "en": "Map of TZME's global markets", "zh": "TZME 全球市场分布地图" },
+  "statistics": [
+    { "value": "60", "suffix": "+", "label": { "en": "Countries & regions", "zh": "国家和地区" } },
+    { "value": "100", "suffix": "+", "label": { "en": "Global projects", "zh": "全球项目" } },
+    { "value": "5", "suffix": "", "label": { "en": "Continents", "zh": "大洲" } }
+  ],
+  "showButton": true,
+  "buttonText": { "en": "Our global reach", "zh": "了解全球业务" },
+  "buttonLink": "/about"
+}

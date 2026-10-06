@@ -1,16 +1,33 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
+import WorldReachMap from '../components/WorldReachMap.vue'
 import { useProjectCatalog } from '../services/projects.js'
 import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
+import { useGlobalReach } from '../services/globalReach.js'
+import { globalReachText, isGlobalReachUrl } from '../data/globalReach.js'
 const page = ref(null)
 const { menuItems, isMenuActive, navigateLink } = useDesignPage('hc-home', page)
 const { locale } = useI18n({ useScope: 'global' })
+const router = useRouter()
+const { globalReach, loadGlobalReach } = useGlobalReach()
+const globalField = (name) => globalReachText(globalReach.value[name], locale.value)
+function navigateGlobalLink(event) {
+  const path = globalReach.value.buttonLink
+  if (!isGlobalReachUrl(path)) return
+  if (event.ctrlKey || event.metaKey || event.shiftKey) {
+    window.open(path.startsWith('/') ? router.resolve(path).href : path, '_blank', 'noopener,noreferrer')
+    return
+  }
+  if (path.startsWith('/')) router.push(path)
+  else window.location.assign(path)
+}
 const { products, loadProducts } = useProductCatalog()
 const { homeProjects, loadProjects } = useProjectCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
@@ -21,7 +38,7 @@ const featuredProducts = computed(() => products.value
   .slice(0, MAX_HOME_PRODUCTS))
 const productField = (item, name) => localizedField(item, name, locale.value)
 const displayIndustry = (item, name) => industryField(item, name, locale.value)
-onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
+onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalReach() })
 </script>
 
 <template>
@@ -199,26 +216,32 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
               </section>
 
               <!-- 08 全球 -->
-              <section class="hc-sec">
+              <section v-if="globalReach.enabled" class="hc-sec home-global" aria-labelledby="home-global-title">
                 <div class="hc-w hc-global">
                   <div>
-                    <span class="hc-kick">{{ $t('site.global') }}</span>
-                    <h2 class="hc-h2" style="margin-top:18px;color:#fff">
-                      {{ $t('site.engineeredInChina') }}<br />{{ $t('site.builtForTheWorld') }}</h2>
+                    <span class="hc-kick">{{ globalField('kicker') }}</span>
+                    <h2 id="home-global-title" class="hc-h2" style="margin-top:18px;color:#fff">
+                      {{ globalField('titleLine1') }}<template v-if="globalField('titleLine2')"><br />{{ globalField('titleLine2') }}</template></h2>
                     <p class="hc-p" style="margin-top:20px;max-width:520px">
-                      {{ $t('site.workingWithIndustrialCustomersAndPartnersAcrossInternationalMarkets') }}</p>
+                      {{ globalField('description') }}</p>
                     <div class="hc-map" style="margin-top:34px">
-                      <img src="/assets/worldmap.png" alt="" />
+                      <WorldReachMap v-if="globalReach.mapMode === 'points'" :points="globalReach.mapPoints"
+                        :description="globalField('imageAlt')" :locale-code="locale" />
+                      <el-image v-else :src="globalReach.image" :alt="globalField('imageAlt')" fit="contain" style="width:100%">
+                        <template #error><div class="home-global-image-error">{{ globalField('imageAlt') }}</div></template>
+                      </el-image>
                     </div>
                   </div>
                   <div class="hc-gstats">
-                    <div><div class="hc-stat">60<u>+</u></div>
-                      <div class="hc-stat-cap">{{ $t('site.countriesAndRegions') }}</div></div>
-                    <div><div class="hc-stat">100<u>+</u></div>
-                      <div class="hc-stat-cap">{{ $t('site.globalProjects') }}</div></div>
-                    <div><div class="hc-stat">5</div>
-                      <div class="hc-stat-cap">{{ $t('site.continents') }}</div></div>
-                    <div style="padding-top:26px"><el-button class="hc-btn ghost sm">{{ $t('site.ourGlobalReach') }}<i>→</i></el-button></div>
+                    <div v-for="(statistic, index) in globalReach.statistics" :key="index">
+                      <div class="hc-stat">{{ statistic.value }}<u v-if="statistic.suffix">{{ statistic.suffix }}</u></div>
+                      <div class="hc-stat-cap">{{ globalReachText(statistic.label, locale) }}</div>
+                    </div>
+                    <div v-if="globalReach.showButton && isGlobalReachUrl(globalReach.buttonLink)" style="padding-top:26px">
+                      <el-button native-type="button" class="hc-btn ghost sm" @click.stop="navigateGlobalLink">
+                        {{ globalField('buttonText') }}<i aria-hidden="true">→</i>
+                      </el-button>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -290,6 +313,12 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
 </template>
 
 <style scoped>
+.home-global .hc-global > div { min-width: 0; }
+.home-global .hc-h2, .home-global .hc-p, .home-global .hc-stat, .home-global .hc-stat-cap { overflow-wrap: anywhere; }
+.home-global .hc-p { white-space: pre-line; }
+.home-global .hc-gstats .hc-btn { max-width: 100%; min-height: 38px; height: auto; padding: 10px 17px; white-space: normal; text-align: left; }
+.home-global .hc-gstats .hc-btn :deep(> span) { min-width: 0; max-width: 100%; line-height: 1.4; }
+.home-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
 .home-about { padding: 72px 0 56px; }
 .home-about-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
 .home-about-copy { min-width: 0; }
@@ -307,6 +336,8 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects() })
   .home-about-image { min-height: 0; aspect-ratio: 16 / 9; }
 }
 @media (max-width: 700px) {
+  .home-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-global .hc-gstats > div:last-child:has(.hc-btn) { grid-column: 1 / -1; }
   .home-about-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
   .home-about-stats > div:nth-child(2n) { border-right: 0; }
   .home-about-stats > div:last-child { grid-column: 1 / -1; padding-left: 0; }
