@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import ImageUpload from './ImageUpload.vue'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { apiRequest } from '../services/api.js'
 
@@ -11,6 +12,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const { certifications: records, loadCertifications } = useCertificationCatalog()
 const loading = ref(false)
 const saving = ref(false)
+const imageUploading = ref(false)
 const dialogOpen = ref(false)
 const editingLocale = ref('en')
 const publishedCount = computed(() => records.value.filter((item) => item.status === 'published').length)
@@ -58,6 +60,7 @@ async function persist(record, update) {
 }
 
 async function save() {
+  if (saving.value || imageUploading.value) return
   if (!form.titleEn.trim() || !form.titleZh.trim()) {
     ElMessage.warning(t('admin.bothTitlesRequired'))
     return
@@ -159,7 +162,7 @@ onMounted(load)
 
   <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.certEdit' : 'admin.certAdd')"
     :description="$t('admin.certDescription')" icon="CircleCheckFilled" width="min(1100px, calc(100vw - 40px))"
-    :status="form.status" :saving="saving" @save="save">
+    :status="form.status" :saving="saving" :save-disabled="imageUploading" @save="save">
     <el-form :model="form" label-position="top" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">
@@ -208,13 +211,8 @@ onMounted(load)
         <aside class="cms-editor-aside">
           <AdminEditorPanel step="03" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
             <el-form-item :label="$t('admin.certImage')">
-              <div class="cms-cover-control">
-                <el-image v-if="form.image" :src="form.image" fit="contain" class="cms-cover-image">
-                  <template #error><div class="cms-cover-fallback"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImageError') }}</span></div></template>
-                </el-image>
-                <div v-else class="cms-cover-empty"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImagePreview') }}</span><small>{{ $t('admin.editorImageHint') }}</small></div>
-                <el-input v-model="form.image" maxlength="500" :placeholder="$t('admin.imagePathPlaceholder')" />
-              </div>
+              <ImageUpload v-model="form.image" kind="certification" :active="dialogOpen" :context-key="form.id"
+                :disabled="saving" @uploading="imageUploading = $event" />
             </el-form-item>
             <el-form-item :label="$t('admin.status2')">
               <el-radio-group v-model="form.status" class="cms-status-options">

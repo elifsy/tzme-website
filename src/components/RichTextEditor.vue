@@ -6,6 +6,8 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { i18nChangeLanguage } from '@wangeditor/editor'
 import '@wangeditor/editor/dist/css/style.css'
 import { sanitizeRichText } from '../utils/richText.js'
+import { IMAGE_ACCEPT, MAX_IMAGE_SIZE, uploadImageFile, validateImageFile } from '../services/imageUpload.js'
+import { imageRecommendations } from '../config/imageUploads.js'
 
 const props = defineProps({ modelValue: { type: String, default: '' }, placeholder: { type: String, default: '' }, showTocHint: { type: Boolean, default: true } })
 const emit = defineEmits(['update:modelValue', 'uploading', 'fullscreen-change'])
@@ -30,18 +32,19 @@ watch(() => props.modelValue, (value) => {
 const toolbarConfig = {
   toolbarKeys: ['headerSelect', 'blockquote', '|', 'bold', 'italic', 'underline', 'through',
     'color', 'bgColor', 'fontSize', 'clearStyle', '|', 'bulletedList', 'numberedList',
-    'justifyLeft', 'justifyCenter', 'justifyRight', '|', 'insertLink', 'insertImage',
+    'justifyLeft', 'justifyCenter', 'justifyRight', '|', 'insertLink',
     'uploadImage', 'insertTable', 'divider', '|', 'undo', 'redo', 'fullScreen'],
 }
 const editorConfig = {
   placeholder: props.placeholder,
   scroll: true,
+  hoverbarKeys: { image: { menuKeys: ['imageWidth30', 'imageWidth50', 'imageWidth100', 'deleteImage'] } },
   MENU_CONF: {
     uploadImage: {
-      maxFileSize: 5 * 1024 * 1024,
-      allowedFileTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+      maxFileSize: MAX_IMAGE_SIZE,
+      allowedFileTypes: IMAGE_ACCEPT.split(','),
       async customUpload(file, insertFn) {
-        if (file.size > 5 * 1024 * 1024 || !['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
+        try { validateImageFile(file) } catch {
           ElMessage.warning(t('admin.richImageLimit'))
           return
         }
@@ -49,12 +52,7 @@ const editorConfig = {
         uploads.add(controller)
         emit('uploading', true)
         try {
-          const body = new FormData()
-          body.append('file', file)
-          const response = await fetch('/api/uploads/images', { method: 'POST', body, signal: controller.signal })
-          if (!response.ok) throw new Error(`HTTP ${response.status}`)
-          const result = await response.json()
-          if (!result.url) throw new Error('Missing image URL')
+          const result = await uploadImageFile(file, { signal: controller.signal })
           if (!destroyed) insertFn(result.url, file.name, '')
         } catch (error) {
           if (error.name !== 'AbortError' && !destroyed) ElMessage.error(t('admin.richImageUploadFailed'))
@@ -136,6 +134,7 @@ onBeforeUnmount(() => {
       </Teleport>
     </div>
     <p class="rich-editor-hint">{{ $t('admin.richEditorHint') }}</p>
+    <p class="rich-image-hint"><strong>{{ $t('admin.imageRecommendation', imageRecommendations.body) }}</strong> · {{ $t('admin.imageBodyHint') }}</p>
     <el-alert v-if="showTocHint" class="rich-editor-toc-hint" type="info" :closable="false" show-icon
       :title="$t('admin.articleTocRuleTitle')" :description="$t('admin.articleTocRuleDescription')" />
   </div>
@@ -156,6 +155,8 @@ onBeforeUnmount(() => {
 /* Keep the dialog's keyboard focus on visible editor controls while fullscreen is active. */
 .editor-dialog:has(> .rich-editor.w-e-full-screen-container) > :is(.el-dialog__header, .el-dialog__body, .el-dialog__footer) { visibility: hidden; }
 .rich-editor-hint { color: #909399; font-size: 12px; line-height: 1.6; margin: 8px 0 0; }
+.rich-image-hint { color: #455b73; font-size: 12px; line-height: 1.7; margin: 8px 0 0; }
+.rich-image-hint strong { color: #234c7e; font-weight: 600; }
 .rich-editor-toc-hint { margin-top: 12px; }
 @media (max-width: 640px) { .rich-editor-content { height: 320px; } }
 </style>

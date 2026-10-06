@@ -1,9 +1,10 @@
 <script setup>
-import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import ImageUpload from './ImageUpload.vue'
 import ProjectCard from './ProjectCard.vue'
 import { localizedField } from '../services/catalog.js'
 import {
@@ -32,14 +33,12 @@ const selectedHomeCount = computed(() => projects.value.filter((item) => item.sh
 const otherHomeCount = computed(() => projects.value.filter((item) => item.showOnHome && item.id !== form.id).length)
 const formHomeCount = computed(() => otherHomeCount.value + Number(form.showOnHome))
 const field = (item, name) => localizedField(item, name, locale.value)
-let uploadController
 
 async function load() {
   loading.value = true
   try { await loadProjects() } finally { loading.value = false }
 }
 function openEditor(item = null) {
-  uploadController?.abort()
   coverUploading.value = false
   editingLocale.value = locale.value === 'zh' ? 'zh' : 'en'
   bodyUploading.value = false
@@ -102,33 +101,6 @@ async function remove(item) {
   } catch { ElMessage.error(t('admin.apiWriteFailed')); }
   finally { busyId.value = '' }
 }
-function beforeUpload(file) {
-  if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
-    ElMessage.warning(t('admin.richImageLimit'))
-    return false
-  }
-  return true
-}
-async function uploadCover({ file }) {
-  coverUploading.value = true
-  const controller = new AbortController()
-  uploadController = controller
-  try {
-    const data = new FormData()
-    data.append('file', file)
-    const response = await fetch('/api/uploads/images', { method: 'POST', body: data, signal: controller.signal })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const result = await response.json()
-    if (!result.url) throw new Error('Missing image URL')
-    if (uploadController === controller && dialogOpen.value) form.image = result.url
-    return result
-  } catch (error) {
-    if (error.name !== 'AbortError') ElMessage.error(t('admin.richImageUploadFailed'))
-    throw error
-  } finally { if (uploadController === controller) coverUploading.value = false }
-}
-watch(dialogOpen, (open) => { if (!open) uploadController?.abort() })
-onBeforeUnmount(() => uploadController?.abort())
 defineExpose({ load, openEditor })
 onMounted(load)
 </script>
@@ -211,17 +183,8 @@ onMounted(load)
         <aside class="cms-editor-aside">
           <AdminEditorPanel step="03" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
             <el-form-item :label="$t('admin.editorDisplayImage')">
-              <div class="cms-cover-control">
-                <el-image v-if="form.image" :src="form.image" fit="cover" class="cms-cover-image">
-                  <template #error><div class="cms-cover-fallback"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImageError') }}</span></div></template>
-                </el-image>
-                <div v-else class="cms-cover-empty"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImagePreview') }}</span></div>
-                <el-input v-model="form.image" maxlength="500" :disabled="coverUploading" :placeholder="$t('admin.imagePathPlaceholder')" />
-                <el-upload accept="image/jpeg,image/png,image/gif,image/webp" :show-file-list="false" :before-upload="beforeUpload" :http-request="uploadCover" :disabled="coverUploading">
-                  <el-button :loading="coverUploading"><el-icon><Picture /></el-icon>{{ $t('admin.projectUploadCover') }}</el-button>
-                </el-upload>
-                <p class="cms-field-hint">{{ $t('admin.projectCoverUploadHint') }}</p>
-              </div>
+              <ImageUpload v-model="form.image" kind="project" :active="dialogOpen" :context-key="form.id"
+                :disabled="saving" @uploading="coverUploading = $event" />
             </el-form-item>
             <el-form-item :label="$t('admin.status2')">
               <el-radio-group v-model="form.status" class="cms-status-options">

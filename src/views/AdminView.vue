@@ -19,6 +19,7 @@ import GlobalReachManager from "../components/GlobalReachManager.vue";
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
 import AdminEditorPanel from "../components/AdminEditorPanel.vue";
+import ImageUpload from "../components/ImageUpload.vue";
 import { sanitizeRichText } from "../utils/richText.js";
 import { MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
 import { useArticleCatalog } from "../services/articles.js";
@@ -29,7 +30,9 @@ import { industryField, useIndustryCatalog } from "../services/industries.js";
 const route = useRoute();
 const router = useRouter();
 const RichTextEditor = defineAsyncComponent(() => import('../components/RichTextEditor.vue'));
-const imageUploading = ref(false);
+const bodyImageUploading = ref(false);
+const coverImageUploading = ref(false);
+const imageUploading = computed(() => bodyImageUploading.value || coverImageUploading.value);
 const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
@@ -775,7 +778,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                   <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleContentEnglish')">
                     <RichTextEditor v-if="modal && editingLocale === 'en'" :key="'en-' + locale"
                       v-model="form.contentEn" :placeholder="$t('admin.englishArticlePlaceholder')"
-                      @uploading="imageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
+                      @uploading="bodyImageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
                   </el-form-item>
                   <template v-if="kind === 'products'">
                     <el-form-item :label="$t('admin.productDescriptionEnglish')">
@@ -806,7 +809,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                   <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleChinese')">
                     <RichTextEditor v-if="modal && editingLocale === 'zh'" :key="'zh-' + locale"
                       v-model="form.contentZh" :placeholder="$t('admin.chineseArticlePlaceholder')"
-                      @uploading="imageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
+                      @uploading="bodyImageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
                   </el-form-item>
                   <template v-if="kind === 'products'">
                     <el-form-item :label="$t('admin.productDescriptionChinese')">
@@ -828,13 +831,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           <aside class="cms-editor-aside">
             <AdminEditorPanel step="02" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
               <el-form-item :label="$t('admin.editorDisplayImage')">
-                <div class="cms-cover-control">
-                  <el-image v-if="form.image" :src="form.image" fit="cover" class="cms-cover-image">
-                    <template #error><div class="cms-cover-fallback"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImageError') }}</span></div></template>
-                  </el-image>
-                  <div v-else class="cms-cover-empty"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImagePreview') }}</span><small>{{ $t('admin.editorImageHint') }}</small></div>
-                  <el-input v-model="form.image" :placeholder="$t('admin.imagePathPlaceholder')" />
-                </div>
+                <ImageUpload v-model="form.image" :kind="kind === 'products' ? 'product' : 'news'" :active="modal"
+                  :context-key="`${kind}-${form.id}`" :disabled="saving" @uploading="coverImageUploading = $event" />
               </el-form-item>
               <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
                 <el-select v-model="form.industries" multiple filterable collapse-tags collapse-tags-tooltip

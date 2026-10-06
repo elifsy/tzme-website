@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import ImageUpload from './ImageUpload.vue'
 import WorldReachMap from './WorldReachMap.vue'
 import { createGlobalReachSettings, globalReachText, isGlobalReachUrl, MAX_GLOBAL_POINTS } from '../data/globalReach.js'
 import { useSiteContent } from '../services/website.js'
@@ -57,7 +58,6 @@ const textFields = [
   { key: 'imageAlt', label: 'admin.globalImageAlt', max: 255 },
   { key: 'buttonText', label: 'admin.globalButtonText', max: 100 },
 ]
-let uploadController
 let loadVersion = 0
 let disposed = false
 
@@ -148,32 +148,7 @@ async function save() {
     if (!disposed) ElMessage.error(t('admin.globalSaveFailed'))
   } finally { if (!disposed) saving.value = false }
 }
-function beforeUpload(file) {
-  if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type) || file.size === 0 || file.size > 5 * 1024 * 1024) {
-    ElMessage.warning(t('admin.richImageLimit'))
-    return false
-  }
-  return true
-}
-async function uploadImage({ file }) {
-  uploading.value = true
-  const controller = new AbortController()
-  uploadController = controller
-  try {
-    const body = new FormData()
-    body.append('file', file)
-    const response = await fetch('/api/uploads/images', { method: 'POST', body, signal: controller.signal })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const result = await response.json()
-    if (!isGlobalReachUrl(result.url)) throw new Error('Invalid image URL')
-    if (!disposed && uploadController === controller) form.value.image = result.url
-    return result
-  } catch (error) {
-    if (!disposed && error.name !== 'AbortError') ElMessage.error(t('admin.richImageUploadFailed'))
-    throw error
-  } finally { if (!disposed && uploadController === controller) uploading.value = false }
-}
-onBeforeUnmount(() => { disposed = true; uploadController?.abort(); loadVersion++ })
+onBeforeUnmount(() => { disposed = true; loadVersion++ })
 onMounted(load)
 defineExpose({ load })
 </script>
@@ -259,17 +234,10 @@ defineExpose({ load })
               </div>
             </template>
             <template v-else>
-            <el-image :src="form.image" :alt="previewField('imageAlt')" fit="contain" class="global-map-preview">
-              <template #error><span class="global-image-error">{{ $t('admin.editorImageError') }}</span></template>
-            </el-image>
-            <el-form-item :label="$t('admin.imagePath')" required>
-              <el-input v-model="form.image" maxlength="500" :disabled="uploading" />
+            <el-form-item :label="$t('admin.globalMapImage')" required>
+              <ImageUpload v-model="form.image" kind="map" :clearable="false" :alt="previewField('imageAlt')"
+                :disabled="!connected || saving || loading" @uploading="uploading = $event" />
             </el-form-item>
-            <el-upload accept="image/jpeg,image/png,image/gif,image/webp" :show-file-list="false"
-              :before-upload="beforeUpload" :http-request="uploadImage" :disabled="uploading || saving || loading">
-              <el-button :loading="uploading" :disabled="saving || loading"><el-icon v-if="!uploading"><Picture /></el-icon>{{ $t('admin.globalUploadMap') }}</el-button>
-            </el-upload>
-            <p class="cms-field-hint">{{ $t('admin.globalUploadHint') }}</p>
             </template>
           </AdminEditorPanel>
           <AdminEditorPanel step="03" :title="$t('admin.globalStatistics')" :description="$t('admin.globalStatisticsHint')">
