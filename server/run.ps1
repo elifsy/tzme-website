@@ -2,9 +2,12 @@ $ErrorActionPreference = 'Stop'
 
 # Load user-level variables into this PowerShell process. Existing terminals do
 # not automatically inherit values added after they were opened.
-$env:JAVA_HOME = [Environment]::GetEnvironmentVariable('JAVA_HOME', 'User')
-$env:TZME_DB_USER = [Environment]::GetEnvironmentVariable('TZME_DB_USER', 'User')
-$env:TZME_DB_PASSWORD = [Environment]::GetEnvironmentVariable('TZME_DB_PASSWORD', 'User')
+foreach ($name in @('JAVA_HOME', 'TZME_DB_USER', 'TZME_DB_PASSWORD', 'TZME_DB_URL')) {
+    if (-not [Environment]::GetEnvironmentVariable($name, 'Process')) {
+        $value = [Environment]::GetEnvironmentVariable($name, 'User')
+        if ($value) { [Environment]::SetEnvironmentVariable($name, $value, 'Process') }
+    }
+}
 $mavenHome = [Environment]::GetEnvironmentVariable('MAVEN_HOME', 'User')
 
 if (-not $env:JAVA_HOME -or -not (Test-Path (Join-Path $env:JAVA_HOME 'bin\java.exe'))) {

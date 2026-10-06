@@ -2,16 +2,10 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { industrySeed } from '../data/industries.js'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
-import {
-  deleteIndustryLocally,
-  industryField,
-  markIndustrySynced,
-  saveIndustryLocally,
-  useIndustryCatalog,
-} from '../services/industries.js'
+import { industryField, useIndustryCatalog } from '../services/industries.js'
+import { apiRequest } from '../services/api.js'
 
 const props = defineProps({ products: { type: Array, default: () => [] } })
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -25,7 +19,7 @@ const form = reactive({
   sortOrder: 10, status: 'published',
 })
 const publishedCount = computed(() => industries.value.filter((item) => item.status === 'published').length)
-const defaultIds = new Set(industrySeed.map((item) => item.id))
+
 const field = (item, name) => industryField(item, name, locale.value)
 const productCount = (id) => props.products.filter((product) => product.industries?.includes(id) || product.industry === id).length
 
@@ -47,27 +41,11 @@ function openEditor(item = null) {
   dialogOpen.value = true
 }
 
-async function writeToApi(record, update) {
-  const options = {
-    method: update ? 'PUT' : 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(record),
-  }
-  let response = await fetch(`/api/industries${update ? `/${encodeURIComponent(record.id)}` : ''}`, options)
-  if (update && response.status === 404) response = await fetch('/api/industries', { ...options, method: 'POST' })
-  if (!response.ok) throw new Error(`HTTP ${response.status}`)
-  return response.json()
-}
-
 async function persist(record, update) {
-  saveIndustryLocally(record)
   try {
-    await writeToApi(record, update)
-    markIndustrySynced(record.id)
-    ElMessage.success(t('admin.contentSaved'))
-  } catch {
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'))
-  }
+    await apiRequest('/api/industries' + (update ? '/' + encodeURIComponent(record.id) : ''), { method: update ? 'PUT' : 'POST', body: record });
+    await load(); ElMessage.success(t('admin.contentSaved')); return true;
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); return false; }
 }
 
 async function save() {
@@ -83,9 +61,8 @@ async function save() {
     subtitleEn: form.subtitleEn.trim(), subtitleZh: form.subtitleZh.trim(),
     sortOrder: Number(form.sortOrder) || 0,
   }
-  await persist(record, Boolean(form.id))
-  saving.value = false
-  dialogOpen.value = false
+  try { if (await persist(record, Boolean(form.id))) dialogOpen.value = false }
+  finally { saving.value = false }
 }
 
 async function toggle(item) {
@@ -93,7 +70,7 @@ async function toggle(item) {
 }
 
 async function remove(item) {
-  if (defaultIds.has(item.id)) {
+  if (item.protectedSeed) {
     ElMessage.warning(t('admin.industryDefaultCannotDelete'))
     return
   }
@@ -109,18 +86,9 @@ async function remove(item) {
     )
   } catch { return }
   try {
-    const response = await fetch(`/api/industries/${encodeURIComponent(item.id)}`, { method: 'DELETE' })
-    if (response.status === 409) {
-      ElMessage.warning(t('admin.industryInUse'))
-      return
-    }
-    if (!response.ok && response.status !== 404) throw new Error(`HTTP ${response.status}`)
-    deleteIndustryLocally(item.id)
-    ElMessage.success(t('admin.contentDeleted'))
-  } catch {
-    deleteIndustryLocally(item.id)
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'))
-  }
+    await apiRequest('/api/industries/' + encodeURIComponent(item.id), { method: 'DELETE' });
+    await load(); ElMessage.success(t('admin.contentDeleted'));
+  } catch (error) { ElMessage.error(t(error.status === 409 ? 'admin.industryInUse' : 'admin.apiWriteFailed')); }
 }
 
 defineExpose({ load, openEditor })
@@ -156,7 +124,7 @@ onMounted(load)
           <el-button link :type="row.status === 'published' ? 'warning' : 'success'" @click="toggle(row)">
             {{ $t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish') }}
           </el-button>
-          <el-button v-if="!defaultIds.has(row.id)" link type="danger" :disabled="productCount(row.id) > 0"
+          <el-button v-if="!row.protectedSeed" link type="danger" :disabled="productCount(row.id) > 0"
             @click="remove(row)">{{ $t('admin.delete') }}</el-button>
         </template>
       </el-table-column>

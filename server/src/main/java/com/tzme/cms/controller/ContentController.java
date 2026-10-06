@@ -73,7 +73,9 @@ public class ContentController {
     public void delete(@PathVariable String type, @PathVariable String id) {
         Content existing = repository.findByIdAndType(id, type)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        repository.delete(existing);
+        existing.setStatus("deleted");
+        existing.setShowOnHome(false);
+        repository.save(existing);
     }
 
     private void enforceHomeLimit(String type, Content content) {

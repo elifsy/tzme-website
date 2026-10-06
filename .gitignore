@@ -26,6 +26,7 @@ server/src/main/resources/application-local.properties
 *.sqlite3
 *.dump
 *.sql.gz
+database/snapshots/
 
 # Editor and OS files
 .idea/

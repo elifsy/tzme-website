@@ -1,8 +1,9 @@
-import { computed, ref } from 'vue'
-import { articles as articleSeed } from '../data/content.js'
-import { mergeManagedContent } from './catalog.js'
+import { computed } from 'vue'
+import { createCollection } from './api.js'
+import { normalizeContent } from './catalog.js'
 
-const articles = ref(mergeManagedContent('articles', articleSeed))
+const catalog = createCollection('/api/articles', normalizeContent)
+const articles = catalog.records
 const publishedArticles = computed(() => articles.value
   .filter((item) => item.status === 'published')
   .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || a.id.localeCompare(b.id)))
@@ -27,16 +28,5 @@ export const articlePath = (id) => `/insights/${encodeURIComponent(id)}`
 export const articleDate = (date) => String(date || '').replaceAll('-', '.')
 
 export function useArticleCatalog() {
-  async function loadArticles() {
-    let remote = []
-    try {
-      const response = await fetch('/api/articles')
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const records = await response.json()
-      if (Array.isArray(records)) remote = records
-    } catch { /* Keep local edits and sample articles when the backend is unavailable. */ }
-    articles.value = mergeManagedContent('articles', articleSeed, remote)
-    return articles.value
-  }
-  return { articles, publishedArticles, newsCategories, loadArticles }
+  return { articles, publishedArticles, newsCategories, loadArticles: catalog.load, loading: catalog.loading }
 }

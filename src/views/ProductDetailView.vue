@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -45,7 +47,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
 
       <template v-if="!loading && product">
         <section class="hc-hero product-detail-hero">
-          <div class="hc-bleed"><img :src="product.image || '/assets/p-other-1.jpg'" :alt="field(product, 'title')" /></div>
+          <div class="hc-bleed"><img :src="product.image || siteAsset('/assets/p-other-1.jpg')" :alt="field(product, 'title')" /></div>
           <span class="hc-scrim"></span>
           <div class="hc-hero-in"><div class="hc-w">
             <span class="hc-kick">{{ field(product, 'category') }}<template v-for="item in productIndustries" :key="item.id"> · {{ industryField(item, 'title', locale) }}</template></span>
@@ -87,7 +89,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
             </div><router-link class="product-all-link" to="/solutions">{{ $t('site.allSolutions') }} →</router-link></div>
             <div class="hc-cards">
               <router-link v-for="item in related" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
-                <div class="im"><img :src="item.image || '/assets/p-other-1.jpg'" :alt="field(item, 'title')" /></div>
+                <div class="im"><img :src="item.image || siteAsset('/assets/p-other-1.jpg')" :alt="field(item, 'title')" /></div>
                 <div class="bd"><h3>{{ field(item, 'title') }}</h3><p>{{ field(item, 'summary') }}</p>
                   <span class="go">{{ $t('site.explore') }}<i>→</i></span></div>
               </router-link>
@@ -101,7 +103,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
       </section>
 
       <footer class="hc-foot"><div class="hc-foot-in">
-        <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
+        <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
         <span class="tag">{{ $t('site.productCenter') }}</span>
         <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
       </div></footer>

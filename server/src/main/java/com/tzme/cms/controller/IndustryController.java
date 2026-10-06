@@ -71,7 +71,7 @@ public class IndustryController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Default industries can be unpublished but not deleted");
         }
         for (Content product : contentRepository.findAllByTypeOrderByDateDesc("products")) {
-            if (product.getIndustries().contains(id)) {
+            if (!"deleted".equals(product.getStatus()) && product.getIndustries().contains(id)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Industry is in use by products");
             }
         }

@@ -3,11 +3,12 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { localeMessages } from '../i18n/locales/index.js'
 import { useSiteNavigation } from './useSiteNavigation.js'
+import { i18n } from '../i18n/index.js'
 
-const englishCopyByLocale = Object.fromEntries(Object.entries(localeMessages).map(([code, messages]) => [
-  code,
-  new Map(Object.entries(messages.site).map(([key, translated]) => [translated, localeMessages.en.site[key]])),
-]))
+function englishCopy(locale) {
+  const messages = i18n.global.getLocaleMessage(locale).site || {}
+  return new Map(Object.entries(messages).map(([key, translated]) => [translated, localeMessages.en.site[key]]))
+}
 
 export function useDesignPage(pageKey, page) {
   const { t, locale } = useI18n({ useScope: 'global' })
@@ -92,7 +93,7 @@ export function useDesignPage(pageKey, page) {
     root?.querySelectorAll('.hc-btn,.hc-lnk').forEach((control) => {
       if (control.closest('[data-site-nav]')) return
       const label = control.textContent.replace(/→/g, '').trim()
-      control.dataset.action = englishCopyByLocale[locale.value]?.get(label) || label
+      control.dataset.action = englishCopy(locale.value).get(label) || label
     })
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)

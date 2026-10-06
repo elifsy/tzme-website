@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { ref } from 'vue'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
@@ -38,19 +40,19 @@ useDesignPage('hc-contact', page)
                     </div>
                     <div style="display:flex;justify-content:space-between;gap:24px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
                       <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);flex:0 0 110px">{{ $t('site.telephone') }}</dt>
-                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">+86 22 2521 4991 / 2521 1565</dd>
+                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">{{ siteValue('text_1bdbc09db8a1') }}</dd>
                     </div>
                     <div style="display:flex;justify-content:space-between;gap:24px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
                       <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);flex:0 0 110px">{{ $t('site.fax') }}</dt>
-                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">+86 22 2521 1535</dd>
+                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">{{ siteValue('text_c9d5e797c268') }}</dd>
                     </div>
                     <div style="display:flex;justify-content:space-between;gap:24px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
                       <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);flex:0 0 110px">{{ $t('site.email2') }}</dt>
-                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">tzme@tzme.net · jyb@tzme.net</dd>
+                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">{{ siteValue('text_da9ede954e47') }}</dd>
                     </div>
                     <div style="display:flex;justify-content:space-between;gap:24px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
                       <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);flex:0 0 110px">{{ $t('site.website') }}</dt>
-                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">www.tzme.net</dd>
+                      <dd style="font-size:13px;color:var(--txt);text-align:right;line-height:1.7">{{ siteValue('text_24e69a35b122') }}</dd>
                     </div>
                     <div style="display:flex;justify-content:space-between;gap:24px;padding:15px 0;border-bottom:1px solid var(--line-d2)">
                       <dt style="font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);flex:0 0 110px">{{ $t('site.port') }}</dt>
@@ -107,8 +109,8 @@ useDesignPage('hc-contact', page)
 
               <footer class="hc-foot">
                 <div class="hc-foot-in">
-                  <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
-                  <span class="tag">+86 22 2521 4991 · tzme@tzme.net</span>
+                  <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
+                  <span class="tag">{{ siteValue('text_e01180155f68') }}</span>
                   <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
                   <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
                 </div>

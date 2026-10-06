@@ -36,6 +36,9 @@ public class Industry {
     }
 
     public String getId() { return id; }
+    public boolean isProtectedSeed() {
+        return java.util.Set.of("mining", "ports", "metallurgy", "energy", "construction").contains(id);
+    }
     public void setId(String value) { id = value; }
     public String getTitleEn() { return titleEn; }
     public void setTitleEn(String value) { titleEn = value; }

@@ -10,20 +10,20 @@ import {
   Promotion,
   Refresh,
 } from "@element-plus/icons-vue";
-import {
-  articles as articleSeed,
-  products as productSeed,
-} from "../data/content.js";
 import { setLocale } from "../i18n/index.js";
 import { availableLocales } from "../i18n/locales/index.js";
 import CertificationsManager from "../components/CertificationsManager.vue";
 import IndustriesManager from "../components/IndustriesManager.vue";
 import ProjectsManager from "../components/ProjectsManager.vue";
 import GlobalReachManager from "../components/GlobalReachManager.vue";
+import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
 import AdminEditorPanel from "../components/AdminEditorPanel.vue";
 import { sanitizeRichText } from "../utils/richText.js";
-import { MAX_HOME_PRODUCTS, mergeManagedContent } from "../services/catalog.js";
+import { MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
+import { useArticleCatalog } from "../services/articles.js";
+import { useInquiryCatalog } from "../services/inquiries.js";
+import { apiRequest, dataErrors } from "../services/api.js";
 import { industryField, useIndustryCatalog } from "../services/industries.js";
 
 const route = useRoute();
@@ -33,9 +33,9 @@ const imageUploading = ref(false);
 const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
-const products = ref([]);
-const articles = ref([]);
-const inquiries = ref([]);
+const { products, loadProducts } = useProductCatalog();
+const { articles, loadArticles } = useArticleCatalog();
+const { inquiries, loadInquiries } = useInquiryCatalog();
 const certManager = ref(null);
 const industryManager = ref(null);
 const projectManager = ref(null);
@@ -113,64 +113,18 @@ function industryOptionLabel(item) {
   const title = industryField(item, 'title', locale.value);
   return item.status === 'draft' ? `${title} (${t('admin.draft')})` : title;
 }
-function rememberEdit(type, id, action) {
-  const key = "tzme-content-edits";
-  let edits = {};
-  try {
-    edits = JSON.parse(localStorage.getItem(key)) || {};
-  } catch {}
-  edits[type] ||= {};
-  edits[type][id] = action;
-  localStorage.setItem(key, JSON.stringify(edits));
-}
 async function writeRecord(type, record, update) {
-  const options = {
-    method: update ? "PUT" : "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(record),
-  };
-  let response = await fetch(
-    `/api/${type}${update ? `/${encodeURIComponent(record.id)}` : ""}`,
-    options,
-  );
-  // Seed entries exist in the editor before they have been inserted into MySQL.
-  if (update && response.status === 404) {
-    response = await fetch(`/api/${type}`, { ...options, method: "POST" });
-  }
-  if (!response.ok) {
-    const error = new Error(`HTTP ${response.status}`);
-    error.status = response.status;
-    throw error;
-  }
-  return response.json();
+  return apiRequest('/api/' + type + (update ? '/' + encodeURIComponent(record.id) : ''), {
+    method: update ? 'PUT' : 'POST', body: record,
+  });
 }
-
+async function reloadType(type) {
+  return type === 'products' ? loadProducts() : type === 'articles' ? loadArticles() : loadInquiries();
+}
 async function load() {
   loading.value = true;
-  for (const [key, seed, dest] of [
-    ["products", productSeed, products],
-    ["articles", articleSeed, articles],
-    ["inquiries", [], inquiries],
-  ]) {
-    try {
-      const response = await fetch(`/api/${key}`);
-      if (!response.ok) throw new Error("API unavailable");
-      const remote = await response.json();
-      dest.value =
-        key === "inquiries" ? remote : mergeManagedContent(key, seed, remote);
-      localStorage.setItem(`tzme-${key}`, JSON.stringify(dest.value));
-    } catch {
-      try {
-        dest.value =
-          key === "inquiries"
-            ? JSON.parse(localStorage.getItem(`tzme-${key}`)) || seed
-            : mergeManagedContent(key, seed);
-      } catch {
-        dest.value = key === "inquiries" ? seed : mergeManagedContent(key, seed);
-      }
-    }
-  }
-  loading.value = false;
+  try { await Promise.all([loadProducts(), loadArticles(), loadInquiries()]); }
+  finally { loading.value = false; }
 }
 
 function openEditor(type, item) {
@@ -225,126 +179,52 @@ async function save() {
     return;
   }
   saving.value = true;
-  const items = kind.value === "products" ? products.value : articles.value;
   const record = {
-    ...form,
-    industries: [...form.industries],
-    id:
-      form.id ||
-      `${kind.value === "products" ? "product" : "article"}-${Date.now()}`,
-    title: form.titleEn,
-    category: form.categoryEn,
-    summary: form.summaryEn,
-    content: form.contentEn,
+    ...form, industries: [...form.industries],
+    id: form.id || (kind.value === 'products' ? 'product-' : 'article-') + crypto.randomUUID(),
+    title: form.titleEn, category: form.categoryEn, summary: form.summaryEn, content: form.contentEn,
   };
-  const index = items.findIndex((item) => item.id === record.id);
-  const previous = index >= 0 ? items[index] : null;
-  if (index < 0) items.unshift(record);
-  else items[index] = record;
-  localStorage.setItem(`tzme-${kind.value}`, JSON.stringify(items));
-  rememberEdit(kind.value, record.id, "save");
   try {
     await writeRecord(kind.value, record, Boolean(form.id));
-    rememberEdit(kind.value, record.id, "synced");
+    await reloadType(kind.value);
+    modal.value = false;
     ElMessage.success(t('admin.contentSaved'));
-  } catch (error) {
-    if (error.status === 400 && kind.value === 'products') {
-      if (previous) items[index] = previous;
-      else items.splice(items.findIndex((item) => item.id === record.id), 1);
-      localStorage.setItem('tzme-products', JSON.stringify(items));
-      rememberEdit('products', record.id, previous ? 'save' : 'delete');
-      ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
-      saving.value = false;
-      return;
-    }
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'));
-  }
-  saving.value = false;
-  modal.value = false;
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
+  finally { saving.value = false; }
 }
-
 async function setHomeFeatured(item, selected) {
   if (selected && homeProductCount.value >= MAX_HOME_PRODUCTS) {
-    ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
-    return;
+    ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS })); return;
   }
-  const previousSelected = item.showOnHome;
-  const previousOrder = item.homeOrder;
-  item.showOnHome = selected;
-  if (selected && !item.homeOrder) {
-    item.homeOrder = Math.max(0, ...products.value.map((product) => Number(product.homeOrder) || 0)) + 1;
-  }
-  localStorage.setItem('tzme-products', JSON.stringify(products.value));
-  rememberEdit('products', item.id, 'save');
-  try {
-    await writeRecord('products', item, true);
-    rememberEdit('products', item.id, 'synced');
-  } catch (error) {
-    if (error.status === 400) {
-      item.showOnHome = previousSelected;
-      item.homeOrder = previousOrder;
-      localStorage.setItem('tzme-products', JSON.stringify(products.value));
-      rememberEdit('products', item.id, 'save');
-      ElMessage.warning(t('admin.homeLimitReached', { max: MAX_HOME_PRODUCTS }));
-      return;
-    }
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'));
-  }
+  const record = { ...item, showOnHome: selected,
+    homeOrder: selected && !item.homeOrder ? Math.max(0, ...products.value.map((product) => Number(product.homeOrder) || 0)) + 1 : item.homeOrder };
+  try { await writeRecord('products', record, true); await loadProducts(); }
+  catch { ElMessage.error(t('admin.apiWriteFailed')); }
 }
-
 async function remove(type, item) {
   try {
-    await ElMessageBox.confirm(
-      t("admin.deleteConfirm", { title: field(item, "title") }),
-      t('admin.deleteContent'),
-      {
-        confirmButtonText: t('admin.delete'),
-        cancelButtonText: t('admin.cancel'),
-        type: "warning",
-      },
-    );
-  } catch {
-    return;
-  }
-  const list = type === "products" ? products : articles;
-  list.value = list.value.filter((record) => record.id !== item.id);
-  localStorage.setItem(`tzme-${type}`, JSON.stringify(list.value));
-  rememberEdit(type, item.id, "delete");
-  try {
-    await fetch(`/api/${type}/${encodeURIComponent(item.id)}`, {
-      method: "DELETE",
+    await ElMessageBox.confirm(t('admin.deleteConfirm', { title: field(item, 'title') }), t('admin.deleteContent'), {
+      confirmButtonText: t('admin.delete'), cancelButtonText: t('admin.cancel'), type: 'warning',
     });
-  } catch {}
-  ElMessage.success(t('admin.contentDeleted'));
+  } catch { return; }
+  try {
+    await apiRequest('/api/' + type + '/' + encodeURIComponent(item.id), { method: 'DELETE' });
+    await reloadType(type);
+    ElMessage.success(t('admin.contentDeleted'));
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
 }
-
 async function toggle(item, type) {
-  item.status = item.status === "published" ? "draft" : "published";
-  localStorage.setItem(
-    `tzme-${type}`,
-    JSON.stringify(type === "products" ? products.value : articles.value),
-  );
-  rememberEdit(type, item.id, "save");
+  const record = { ...item, status: item.status === 'published' ? 'draft' : 'published' };
   try {
-    await writeRecord(type, item, true);
-    rememberEdit(type, item.id, "synced");
-  } catch {}
-  ElMessage.success(
-    t(item.status === "published" ? "admin.contentPublished" : "admin.movedToDrafts"),
-  );
+    await writeRecord(type, record, true); await reloadType(type);
+    ElMessage.success(t(record.status === 'published' ? 'admin.contentPublished' : 'admin.movedToDrafts'));
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
 }
-
 async function updateInquiry(item, status) {
-  item.status = status;
-  localStorage.setItem("tzme-inquiries", JSON.stringify(inquiries.value));
   try {
-    await fetch(`/api/inquiries/${item.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(item),
-    });
-  } catch {}
-  ElMessage.success(t('admin.enquiryUpdated'));
+    await apiRequest('/api/inquiries/' + item.id, { method: 'PUT', body: { status } });
+    await loadInquiries(); ElMessage.success(t('admin.enquiryUpdated'));
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
 }
 
 function navigate(key) {
@@ -386,7 +266,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         </el-menu-item>
       </el-menu>
       <div class="admin-sidebar-foot">
-        <div><span class="online-dot" />{{ $t('admin.systemOperational') }}</div>
+        <div><span v-if="!dataErrors.size" class="online-dot" />{{ $t(dataErrors.size ? 'admin.databaseReadFailed' : 'admin.systemOperational') }}</div>
         <el-link href="/" target="_blank" :underline="false"
           ><el-icon><Link /></el-icon>{{ $t('admin.viewWebsite') }}</el-link
         >
@@ -423,6 +303,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
       </el-header>
 
       <el-main class="admin-content">
+        <LegacyDataMigration @migrated="refresh" />
         <div class="admin-heading">
           <div>
             <div class="admin-eyebrow">
@@ -479,8 +360,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 },
                 {
                   label: 'admin.websiteStatus',
-                  value: 'admin.online',
-                  hint: $t('admin.allSystemsOperational'),
+                  value: dataErrors.size ? 'admin.databaseUnavailable' : loading ? 'admin.databaseConnecting' : 'admin.online',
+                  hint: $t(dataErrors.size ? 'admin.databaseReadFailed' : 'admin.allSystemsOperational'),
                   icon: 'CircleCheckFilled',
                   tone: 'green',
                 },

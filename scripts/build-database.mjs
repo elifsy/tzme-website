@@ -1,0 +1,122 @@
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { products, articles } from '../src/data/content.js'
+import { industrySeed } from '../src/data/industries.js'
+import { certificationSeed } from '../src/data/certifications.js'
+import { projectSeed } from '../src/data/projects.js'
+import { localeMessages } from '../src/i18n/locales/index.js'
+
+const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
+const recordPath = 'database/baseline/records.json'
+const snapshot = existsSync('database/snapshots/current.json') ? readJson('database/snapshots/current.json').tables : {}
+const snake = (name) => name.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+function fields(record, names) {
+  return Object.fromEntries(names.map((name) => [snake(name), record[name] ?? null]))
+}
+const contentFields = ['id', 'type', 'title', 'titleEn', 'titleZh', 'category', 'categoryEn', 'categoryZh', 'industry',
+  'summary', 'summaryEn', 'summaryZh', 'image', 'status', 'date', 'content', 'contentEn', 'contentZh',
+  'featuresEn', 'featuresZh', 'specificationsEn', 'specificationsZh', 'showOnHome', 'homeOrder']
+const projectFields = ['id', 'titleEn', 'titleZh', 'industryEn', 'industryZh', 'locationEn', 'locationZh', 'imageAltEn', 'imageAltZh',
+  'summaryEn', 'summaryZh', 'contentEn', 'contentZh', 'capacityLabelEn', 'capacityLabelZh', 'capacityEn', 'capacityZh',
+  'technologyLabelEn', 'technologyLabelZh', 'technologyEn', 'technologyZh', 'scopeLabelEn', 'scopeLabelZh', 'scopeEn', 'scopeZh',
+  'image', 'status', 'sortOrder', 'showOnHome', 'homeOrder']
+function merge(table, base) {
+  const records = new Map(base.map((record) => [String(record.id), record]))
+  for (const row of snapshot[table] || []) {
+    const { db_id: ignored, ...saved } = row
+    const merged = { ...records.get(String(row.id)) }
+    for (const [key, value] of Object.entries(saved)) {
+      if (value !== null || merged[key] === undefined) merged[key] = value
+    }
+    if (table === 'site_content' && saved.industry_ids == null && saved.industry) merged.industry_ids = saved.industry
+    records.set(String(row.id), merged)
+  }
+  return [...records.values()]
+}
+let records
+if (existsSync(recordPath) && !process.argv.includes('--refresh-baseline')) records = readJson(recordPath)
+else {
+  records = {
+    industries: merge('industries', industrySeed.map((record) => fields(record, ['id', 'titleEn', 'titleZh', 'subtitleEn', 'subtitleZh', 'sortOrder', 'status']))),
+    site_content: merge('site_content', [...products.map((p) => ({ ...p, type: 'products' })), ...articles.map((a) => ({ ...a, type: 'articles' }))]
+      .map((record) => ({ ...fields(record, contentFields), industry_ids: (record.industries || []).join(',') }))),
+    certifications: merge('certifications', certificationSeed.map((record) => ({
+      ...fields(record, ['id', 'titleEn', 'titleZh', 'issuerEn', 'issuerZh', 'summaryEn', 'summaryZh', 'certificateNo', 'image', 'status', 'sortOrder']),
+      issued_at: record.issuedAt || null, expires_at: record.expiresAt || null,
+    }))),
+    projects: merge('projects', projectSeed.map((record) => fields(record, projectFields))),
+    home_global_settings: merge('home_global_settings', [{ id: 1, configuration: JSON.stringify(readJson('server/src/main/resources/home-global-defaults.json')) }]),
+    site_inquiries: snapshot.site_inquiries || [],
+  }
+  // Existing database selections take priority over the source seed selections.
+  const savedIds = new Set((snapshot.site_content || []).map((row) => row.id))
+  let homeCount = records.site_content.filter((row) => savedIds.has(row.id) && row.type === 'products' && row.show_on_home).length
+  for (const row of records.site_content) {
+    if (row.type === 'products' && row.show_on_home && !savedIds.has(row.id)) row.show_on_home = homeCount++ < 5
+  }
+  mkdirSync('database/baseline', { recursive: true })
+  writeFileSync(recordPath, JSON.stringify(records, null, 2) + '\n')
+}
+const baseline = readJson('database/baseline/site-settings.json')
+const settings = {
+  ...baseline, translations: Object.fromEntries(Object.entries(localeMessages).map(([code, messages]) => [code, messages.site])),
+  mapCountries: readJson('src/data/mapCountries.json').countries,
+}
+const tables = { ...records, site_settings: [{ id: 'website', configuration: JSON.stringify(settings) }] }
+function sqlValue(value) {
+  if (value === null || value === undefined) return 'NULL'
+  if (typeof value === 'boolean') return value ? '1' : '0'
+  if (typeof value === 'number') { if (!Number.isFinite(value)) throw new Error('Invalid number'); return String(value) }
+  if (value === '') return "''"
+  // UTF-8 hex literals preserve rich text/newlines in every SQL mode and shell.
+  return `CONVERT(0x${Buffer.from(String(value), 'utf8').toString('hex')} USING utf8mb4) COLLATE utf8mb4_unicode_ci`
+}
+const marker = '2026-10-database-baseline-v1'
+let data = '-- Generated by npm run db:build. Readable source: database/baseline/.\n'
+data += '-- Seeds run only once; existing rows and later admin edits are preserved.\nSET NAMES utf8mb4;\nSTART TRANSACTION;\n'
+for (const [table, rows] of Object.entries(tables)) {
+  data += `\n-- ${table}: ${rows.length} records\n`
+  for (const row of rows) {
+    const entries = Object.entries(row)
+    if (table === 'site_content') {
+      // Complete only absent legacy columns, preserving every non-null edit.
+      const additions = entries.filter(([key, value]) => key !== 'id' && value !== null)
+      data += `UPDATE \`${table}\` SET ${additions.map(([key, value]) => `\`${key}\` = COALESCE(\`${key}\`, ${sqlValue(value)})`).join(', ')}\n`
+      data += `WHERE id = ${sqlValue(row.id)} AND NOT EXISTS (SELECT 1 FROM app_migrations WHERE id = '${marker}');\n`
+    }
+    data += `INSERT INTO \`${table}\` (${entries.map(([key]) => `\`${key}\``).join(', ')})\nSELECT ${entries.map(([, value]) => sqlValue(value)).join(', ')}\n`
+    data += `WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id = '${marker}')\n`
+    data += `AND NOT EXISTS (SELECT 1 FROM \`${table}\` WHERE id = ${sqlValue(row.id)});\n`
+  }
+}
+data += `\nINSERT INTO app_migrations (id) SELECT '${marker}' WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id = '${marker}');\nCOMMIT;\n`
+const resources = 'server/src/main/resources/db'
+const schema = readFileSync(resolve(resources, '01-schema.sql'), 'utf8')
+// Keep the existing-database comment migration in sync with the schema.
+const commentMarker = '2026-10-column-comments-v1'
+let comments = '-- Generated by npm run db:build from 01-schema.sql.\n'
+comments += '-- 为已有数据库补充中文表和字段备注；版本标记确保只执行一次。\nSET NAMES utf8mb4;\n'
+comments += `SET @tzme_comments_done = EXISTS (SELECT 1 FROM app_migrations WHERE id = '${commentMarker}');\n`
+let columnCount = 0
+const definitions = [...schema.matchAll(/CREATE TABLE IF NOT EXISTS (\w+) \(([\s\S]*?)\) ENGINE=[^;]*?COMMENT='((?:[^']|'')+)';/g)]
+if (!definitions.length) throw new Error('No annotated tables found in schema')
+for (const [, table, body, tableComment] of definitions) {
+  const columns = body.trim().split(/\r?\n/).map((line) => line.trim().replace(/,$/, ''))
+  for (const column of columns) {
+    if (!/^[a-z_]+\s+/i.test(column) || !/\bCOMMENT\s+'/.test(column)) throw new Error(`Missing column comment: ${table}`)
+  }
+  columnCount += columns.length
+  const modifications = columns.map((column) => 'MODIFY COLUMN ' + column.replace(/\s+PRIMARY KEY\b|\s+UNIQUE\b/g, ''))
+  const statement = `ALTER TABLE \`${table}\`\n  ${[...modifications, `COMMENT='${tableComment}'`].join(',\n  ')}`
+  comments += `\nSET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', '${statement.replaceAll("'", "''")}');\n`
+  comments += 'PREPARE tzme_comments_statement FROM @tzme_comments_sql;\nEXECUTE tzme_comments_statement;\nDEALLOCATE PREPARE tzme_comments_statement;\n'
+}
+comments += `\nINSERT INTO app_migrations (id) SELECT '${commentMarker}' WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id = '${commentMarker}');\n`
+writeFileSync(resolve(resources, '03-comments.sql'), comments)
+mkdirSync('database/migrations', { recursive: true })
+writeFileSync('database/migrations/2026-10-column-comments.sql', comments)
+writeFileSync(resolve(resources, '02-data.sql'), data)
+writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + comments + '\n' + data)
+console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
+for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
+console.log('Saved database/install.sql and the Java SQL resources.')

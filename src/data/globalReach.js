@@ -1,9 +1,13 @@
-// Both Vite and Java use this file for the initial, bilingual configuration.
-import defaults from '../../server/src/main/resources/home-global-defaults.json'
-
-export function createGlobalReachSettings(value = defaults) {
-  const result = JSON.parse(JSON.stringify(value))
-  result.mapMode ??= result.image === defaults.image ? 'points' : 'image'
+// An empty editor form; published settings always come from the Java API.
+export function createGlobalReachSettings(value) {
+  const emptyText = () => ({ en: '', zh: '' })
+  const result = JSON.parse(JSON.stringify(value || {
+    enabled: false, showButton: false, image: '', buttonLink: '', mapMode: 'points', mapPoints: [],
+    kicker: emptyText(), titleLine1: emptyText(), titleLine2: emptyText(), description: emptyText(),
+    imageAlt: emptyText(), buttonText: emptyText(),
+    statistics: Array.from({ length: 3 }, () => ({ value: '', suffix: '', label: emptyText() })),
+  }))
+  result.mapMode ??= 'image'
   result.mapPoints ??= []
   return result
 }

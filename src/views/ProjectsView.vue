@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -90,7 +92,7 @@ onMounted(async () => { await loadProjects(); loading.value = false })
       </main>
 
       <footer class="hc-foot project-footer"><div class="hc-foot-in">
-        <div class="project-footer-brand"><router-link class="hc-logo" to="/" :aria-label="$t('site.brandHome')"><i aria-hidden="true"></i>TZME</router-link>
+        <div class="project-footer-brand"><router-link class="hc-logo" to="/" :aria-label="$t('site.brandHome')"><i aria-hidden="true"></i>{{ siteValue('text_8920f3d022b5') }}</router-link>
           <p>{{ $t('site.engineeredInChina') }} {{ $t('site.builtForTheWorld') }}</p></div>
         <nav class="project-footer-links" :aria-label="$t('site.footerNavigation')"><router-link v-for="item in menuItems" :key="item.key" :to="item.path" :aria-current="isMenuActive(item) ? 'page' : undefined">{{ item.label }}</router-link></nav>
         <LanguageSwitcher />

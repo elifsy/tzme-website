@@ -6,11 +6,9 @@ import com.tzme.cms.model.HomeGlobal;
 import com.tzme.cms.model.HomeGlobalSettings;
 import com.tzme.cms.repository.HomeGlobalRepository;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.HashSet;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -21,21 +19,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class HomeGlobalController {
     private final HomeGlobalRepository repository;
     private final ObjectMapper mapper;
-    private final HomeGlobalSettings defaults;
 
-    public HomeGlobalController(HomeGlobalRepository repository, ObjectMapper mapper) throws IOException {
+    public HomeGlobalController(HomeGlobalRepository repository, ObjectMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
-        try (var input = new ClassPathResource("home-global-defaults.json").getInputStream()) {
-            this.defaults = mapper.readValue(input, HomeGlobalSettings.class);
-        }
     }
 
     @GetMapping
     public HomeGlobalSettings get() throws JsonProcessingException {
-        var existing = repository.findById(1L);
-        return (existing.isPresent()
-                ? mapper.readValue(existing.get().getConfiguration(), HomeGlobalSettings.class) : defaults).withMapDefaults();
+        var existing = repository.findById(1L).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Import the database initialization SQL first"));
+        return mapper.readValue(existing.getConfiguration(), HomeGlobalSettings.class).withMapDefaults();
     }
 
     @PutMapping

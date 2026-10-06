@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -67,7 +69,7 @@ onMounted(() => { loadProducts(); loadIndustries() })
                   </div>
                   <div class="hc-cards" style="grid-template-columns:repeat(4,1fr)">
                     <router-link v-for="(item, index) in visibleProducts" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
-                      <div class="im"><img :src="item.image || '/assets/p-other-1.jpg'" :alt="productField(item, 'title')" /></div>
+                      <div class="im"><img :src="item.image || siteAsset('/assets/p-other-1.jpg')" :alt="productField(item, 'title')" /></div>
                       <div class="bd">
                         <span class="no">{{ String(index + 1).padStart(2, '0') }}</span>
                         <h3>{{ productField(item, 'title') }}</h3>
@@ -85,7 +87,7 @@ onMounted(() => { loadProducts(); loadIndustries() })
 
               <footer class="hc-foot">
                 <div class="hc-foot-in">
-                  <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
+                  <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
                   <span class="tag">{{ $t('site.solutionCount', { products: publishedProducts.length, categories: categoryCount }) }}</span>
                   <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
                   <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>

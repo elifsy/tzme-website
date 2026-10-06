@@ -1,26 +1,27 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import SiteNav from '../components/SiteNav.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
-import { certificationSeed } from '../data/certifications.js'
-import { loadCertifications } from '../services/certifications.js'
+import { useCertificationCatalog } from '../services/certifications.js'
 import { useGlobalReach } from '../services/globalReach.js'
 import { globalReachText } from '../data/globalReach.js'
 const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
 const { globalReach, loadGlobalReach } = useGlobalReach()
-const globalField = (name) => globalReachText(globalReach.value[name], locale.value)
-const certifications = ref(certificationSeed)
+const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
+const { certifications, loadCertifications } = useCertificationCatalog()
 const publishedCertifications = computed(() => certifications.value.filter((item) => item.status === 'published'))
 const featuredCertificate = computed(() => publishedCertifications.value.find((item) => item.image))
 const certificationField = (item, name) => locale.value === 'zh'
   ? item[`${name}Zh`] || item[`${name}En`] || ''
   : item[`${name}En`] || ''
-onMounted(async () => { loadGlobalReach(); certifications.value = await loadCertifications() })
+onMounted(() => { loadGlobalReach(); loadCertifications() })
 </script>
 
 <template>
@@ -41,24 +42,24 @@ onMounted(async () => { loadGlobalReach(); certifications.value = await loadCert
               {{ $t('site.roughly90OfOurOutputIsExportedMainlyToMiningHousesPort') }}</p>
             <div class="hc-band about-intro-stats">
               <div>
-                <div class="hc-stat">30,000<u>t</u></div>
+                <div class="hc-stat">{{ siteValue('text_6f7af8cfeebd') }}<u>{{ siteValue('text_8efd86fb78a5') }}</u></div>
                 <div class="hc-stat-cap">{{ $t('site.annualOutput') }}</div>
               </div>
               <div>
-                <div class="hc-stat">220,000<u>m²</u></div>
+                <div class="hc-stat">{{ siteValue('text_3957f15e6313') }}<u>{{ siteValue('text_6f6f0f6a0fb3') }}</u></div>
                 <div class="hc-stat-cap">{{ $t('site.siteArea5Bases') }}</div>
               </div>
               <div>
-                <div class="hc-stat">40<u>+</u></div>
+                <div class="hc-stat">{{ siteValue('text_af3e133428b9') }}<u>+</u></div>
                 <div class="hc-stat-cap">{{ $t('site.exportCountries') }}</div>
               </div>
               <div>
-                <div class="hc-stat">2002</div>
+                <div class="hc-stat">{{ siteValue('text_2e8c0277e396') }}</div>
                 <div class="hc-stat-cap">{{ $t('site.foundedInTianjin') }}</div>
               </div>
             </div>
           </div>
-          <div class="about-intro-image"><el-image src="/assets/rnd-2.jpg" alt="" fit="cover" /></div>
+          <div class="about-intro-image"><el-image :src="siteAsset('/assets/rnd-2.jpg')" alt="" fit="cover" /></div>
         </div>
       </section>
 
@@ -136,7 +137,7 @@ onMounted(async () => { loadGlobalReach(); certifications.value = await loadCert
         </div>
       </section>
 
-      <section class="hc-sec about-global" style="padding:0 0 96px" aria-labelledby="about-global-title">
+      <section v-if="globalReach" class="hc-sec about-global" style="padding:0 0 96px" aria-labelledby="about-global-title">
         <div class="hc-w hc-global">
           <div>
             <span class="hc-kick">{{ globalField('kicker') }}</span>
@@ -162,7 +163,7 @@ onMounted(async () => { loadGlobalReach(); certifications.value = await loadCert
 
       <footer class="hc-foot">
         <div class="hc-foot-in">
-          <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
+          <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
           <span class="tag">{{ $t('site.tianjinHeavySteelMachineryEquipmentCoLtd') }}</span>
           <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
           <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>

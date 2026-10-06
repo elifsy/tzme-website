@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { createGlobalReachSettings, MAX_GLOBAL_POINTS } from '../data/globalReach.js'
+import { apiRequest, dataErrors, registerDataLoader } from './api.js'
 
-const cacheKey = 'tzme-home-global-cache'
+const path = '/api/home-global'
 function isMapPoints(points) {
   return Array.isArray(points) && points.length <= MAX_GLOBAL_POINTS
     && new Set(points.map((point) => point?.id)).size === points.length
@@ -21,42 +22,28 @@ function isSettings(value) {
     && value.statistics.every((item) => item && typeof item.value === 'string' && typeof item.suffix === 'string'
       && typeof item.label?.en === 'string' && typeof item.label?.zh === 'string')
 }
-function cachedSettings() {
-  try {
-    const cached = JSON.parse(localStorage.getItem(cacheKey))
-    if (isSettings(cached)) return createGlobalReachSettings(cached)
-  } catch { /* Use defaults when no valid cache is available. */ }
-  return createGlobalReachSettings()
-}
-const settings = ref(cachedSettings())
-function remember(value) {
-  settings.value = createGlobalReachSettings(value)
-  try { localStorage.setItem(cacheKey, JSON.stringify(value)) } catch { /* Server persistence still succeeded. */ }
-}
+const settings = ref(null)
 export async function loadGlobalReach() {
   try {
-    const response = await fetch('/api/home-global')
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const value = await response.json()
+    const value = await apiRequest(path)
     if (!isSettings(value)) throw new Error('Invalid global reach settings')
-    remember(value)
+    settings.value = createGlobalReachSettings(value)
     return { settings: settings.value, connected: true, supportsPointMap: typeof value.mapMode === 'string' && Array.isArray(value.mapPoints) }
-  } catch {
-    return { settings: settings.value, connected: false }
+  } catch (error) {
+    settings.value = null
+    dataErrors.set(path, error.message)
+    return { settings: null, connected: false }
   }
 }
 export async function saveGlobalReach(value) {
-  const response = await fetch('/api/home-global', {
-    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value),
-  })
-  if (!response.ok) throw new Error(`HTTP ${response.status}`)
-  const saved = await response.json()
+  const saved = await apiRequest(path, { method: 'PUT', body: value })
   if (!isSettings(saved) || typeof saved.mapMode !== 'string' || !Array.isArray(saved.mapPoints)) {
     throw new Error('Restart the updated Java service before saving map points')
   }
-  remember(saved)
+  settings.value = createGlobalReachSettings(saved)
   return settings.value
 }
+registerDataLoader(path, loadGlobalReach)
 export function useGlobalReach() {
   return { globalReach: settings, loadGlobalReach }
 }

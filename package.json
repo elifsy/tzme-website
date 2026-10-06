@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "db:build": "node scripts/build-database.mjs",
+    "db:export": "node scripts/export-database.mjs",
+    "db:import": "node scripts/import-database.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

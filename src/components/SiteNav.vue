@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { ref, useId, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useSiteNavigation } from "../composables/useSiteNavigation.js";
@@ -33,8 +35,7 @@ watch(
         :aria-label="$t('site.brandHome')"
         @click="navigateLink($event, '/')"
       >
-        <i aria-hidden="true"></i>TZME
-      </a>
+        <i aria-hidden="true"></i>{{ siteValue('text_8920f3d022b5') }}</a>
       <nav class="hc-menu" :aria-label="$t('site.primaryNavigation')">
         <a
           v-for="item in menuItems"
@@ -70,7 +71,7 @@ watch(
   </header>
   <el-drawer
     v-model="drawerOpen"
-    title="TZME"
+    :title="siteValue('text_8920f3d022b5')"
     direction="rtl"
     size="min(320px, 85vw)"
     append-to-body

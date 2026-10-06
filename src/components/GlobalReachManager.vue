@@ -1,41 +1,49 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import WorldReachMap from './WorldReachMap.vue'
 import { createGlobalReachSettings, globalReachText, isGlobalReachUrl, MAX_GLOBAL_POINTS } from '../data/globalReach.js'
-import mapData from '../data/mapCountries.json'
+import { useSiteContent } from '../services/website.js'
 import { localeMessages } from '../i18n/locales/index.js'
 import { loadGlobalReach, saveGlobalReach, useGlobalReach } from '../services/globalReach.js'
 import '../style/admin-editor.css'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const { globalReach } = useGlobalReach()
+const { siteContent } = useSiteContent()
 const form = ref(createGlobalReachSettings(globalReach.value))
 const editingLocale = ref(locale.value === 'zh' ? 'zh' : 'en')
 const languages = [{ code: 'en', label: 'admin.english' }, { code: 'zh', label: 'admin.chinese' }]
 const loading = ref(false)
 const saving = ref(false)
 const uploading = ref(false)
-const connected = ref(true)
+const connected = ref(false)
 const needsApiUpdate = ref(false)
 const errors = ref([])
 const selectedPointId = ref('')
 const countrySearch = ref('')
 const countrySelect = ref(null)
 const mapEditor = ref(null)
+watch(globalReach, (value) => {
+  if (value && !connected.value && !loading.value) {
+    form.value = createGlobalReachSettings(value)
+    connected.value = true
+  }
+})
 const selectedPoint = computed(() => form.value.mapPoints.find((point) => point.id === selectedPointId.value))
-const countriesById = new Map(mapData.countries.map((country) => [country.id, country]))
-const countryOptions = computed(() => mapData.countries.filter((country) =>
+const countries = computed(() => siteContent.value?.mapCountries || [])
+const countriesById = computed(() => new Map(countries.value.map((country) => [country.id, country])))
+const countryOptions = computed(() => countries.value.filter((country) =>
   `${country.label.en} ${country.label.zh} ${country.code}`.toLowerCase().includes(countrySearch.value.trim().toLowerCase())))
 const selectedCountries = computed({
-  get: () => form.value.mapPoints.filter((point) => countriesById.has(point.id)).map((point) => point.id),
+  get: () => form.value.mapPoints.filter((point) => countriesById.value.has(point.id)).map((point) => point.id),
   set(ids) {
-    const customPoints = form.value.mapPoints.filter((point) => !countriesById.has(point.id))
+    const customPoints = form.value.mapPoints.filter((point) => !countriesById.value.has(point.id))
     if (customPoints.length + ids.length > MAX_GLOBAL_POINTS) { ElMessage.warning(t('admin.globalPointLimit', { max: MAX_GLOBAL_POINTS })); return }
     const previous = new Map(form.value.mapPoints.map((point) => [point.id, point]))
-    form.value.mapPoints = [...customPoints, ...ids.map((id) => previous.get(id) || cloneMapPoint(countriesById.get(id)))]
+    form.value.mapPoints = [...customPoints, ...ids.map((id) => previous.get(id) || cloneMapPoint(countriesById.value.get(id)))]
     if (!form.value.mapPoints.some((point) => point.id === selectedPointId.value)) selectedPointId.value = ''
   },
 })
@@ -62,7 +70,7 @@ async function load() {
     if (disposed || version !== loadVersion) return
     connected.value = result.connected
     needsApiUpdate.value = result.connected && !result.supportsPointMap
-    form.value = createGlobalReachSettings(result.settings)
+    if (result.settings) form.value = createGlobalReachSettings(result.settings)
     selectedPointId.value = ''
     errors.value = []
   } finally { if (!disposed && version === loadVersion) loading.value = false }
@@ -126,7 +134,7 @@ function removeMapPoint(id) {
   countrySelect.value?.focus()
 }
 async function save() {
-  if (saving.value || loading.value || uploading.value || !validate()) return
+  if (!connected.value || saving.value || loading.value || uploading.value || !validate()) return
   if (needsApiUpdate.value) { ElMessage.error(t('admin.globalMapApiUpdate')); return }
   saving.value = true
   try {
@@ -177,7 +185,7 @@ defineExpose({ load })
     <el-alert v-if="errors.length" type="error" show-icon :closable="false" :title="$t('admin.globalCheckFields')" role="alert">
       <ul class="global-errors"><li v-for="(message, index) in errors" :key="index">{{ message }}</li></ul>
     </el-alert>
-    <el-form label-position="top" class="global-form" :disabled="loading || saving">
+    <el-form label-position="top" class="global-form" :disabled="!connected || loading || saving">
       <div class="global-editor-grid">
         <div class="global-editor-main">
         <AdminEditorPanel step="01" :title="$t('admin.globalCopy')" :description="$t('admin.globalCopyHint')">

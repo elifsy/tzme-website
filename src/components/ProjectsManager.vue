@@ -7,11 +7,11 @@ import AdminEditorPanel from './AdminEditorPanel.vue'
 import ProjectCard from './ProjectCard.vue'
 import { localizedField } from '../services/catalog.js'
 import {
-  deleteProjectLocally, MAX_HOME_PROJECTS, normalizeProject, projectPath,
-  saveProjectLocally, useProjectCatalog,
+  MAX_HOME_PROJECTS, normalizeProject, projectPath, useProjectCatalog,
 } from '../services/projects.js'
+import { apiRequest } from '../services/api.js'
 import { sanitizeRichText } from '../utils/richText.js'
-import { localeMessages } from '../i18n/locales/index.js'
+import { i18n } from '../i18n/index.js'
 
 const RichTextEditor = defineAsyncComponent(() => import('./RichTextEditor.vue'))
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -47,21 +47,13 @@ function openEditor(item = null) {
   Object.assign(form, normalizeProject(item || {
     status: 'draft', sortOrder: (projects.value.length + 1) * 10, homeOrder: (projects.value.length + 1) * 10,
     ...Object.fromEntries(metricNames.flatMap((name) => ['en', 'zh'].map((code) => [
-      name + 'Label' + (code === 'zh' ? 'Zh' : 'En'), localeMessages[code].site[name],
+      name + 'Label' + (code === 'zh' ? 'Zh' : 'En'), i18n.global.getLocaleMessage(code).site[name],
     ]))),
   }), { id: item?.id || '' })
   dialogOpen.value = true
 }
 async function writeToApi(record, update) {
-  const options = { method: update ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record) }
-  let response = await fetch(`/api/projects${update ? `/${encodeURIComponent(record.id)}` : ''}`, options)
-  if (update && response.status === 404) response = await fetch('/api/projects', { ...options, method: 'POST' })
-  if (!response.ok) {
-    const error = new Error(`HTTP ${response.status}`)
-    error.rejected = response.status >= 400 && response.status < 500
-    throw error
-  }
-  return response.json()
+  return apiRequest('/api/projects' + (update ? '/' + encodeURIComponent(record.id) : ''), { method: update ? 'PUT' : 'POST', body: record });
 }
 async function persist(record, update) {
   if (record.showOnHome && projects.value.filter((item) => item.showOnHome && item.id !== record.id).length >= MAX_HOME_PROJECTS) {
@@ -69,17 +61,10 @@ async function persist(record, update) {
     return false
   }
   try {
-    const saved = await writeToApi(record, update)
-    saveProjectLocally(saved, true)
-    ElMessage.success(t('admin.contentSaved'))
-  } catch (error) {
-    if (error.rejected) {
-      ElMessage.error(t('admin.projectSaveRejected'))
-      return false
-    }
-    saveProjectLocally(record)
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'))
-  }
+    await writeToApi(record, update);
+    await loadProjects();
+    ElMessage.success(t('admin.contentSaved'));
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); return false; }
   return true
 }
 async function save() {
@@ -111,21 +96,11 @@ async function remove(item) {
   } catch { return }
   busyId.value = item.id
   try {
-    const response = await fetch(`/api/projects/${encodeURIComponent(item.id)}`, { method: 'DELETE' })
-    if (!response.ok && response.status !== 404) {
-      const error = new Error(`HTTP ${response.status}`)
-      error.rejected = response.status < 500
-      throw error
-    }
-    deleteProjectLocally(item.id)
-    ElMessage.success(t('admin.contentDeleted'))
-  } catch (error) {
-    if (error.rejected) ElMessage.error(t('admin.projectDeleteFailed'))
-    else {
-      deleteProjectLocally(item.id)
-      ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'))
-    }
-  } finally { busyId.value = '' }
+    await apiRequest('/api/projects/' + encodeURIComponent(item.id), { method: 'DELETE' });
+    await loadProjects();
+    ElMessage.success(t('admin.contentDeleted'));
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
+  finally { busyId.value = '' }
 }
 function beforeUpload(file) {
   if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {

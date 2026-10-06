@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -17,7 +19,7 @@ const { menuItems, isMenuActive, navigateLink } = useDesignPage('hc-home', page)
 const { locale } = useI18n({ useScope: 'global' })
 const router = useRouter()
 const { globalReach, loadGlobalReach } = useGlobalReach()
-const globalField = (name) => globalReachText(globalReach.value[name], locale.value)
+const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
 function navigateGlobalLink(event) {
   const path = globalReach.value.buttonLink
   if (!isGlobalReachUrl(path)) return
@@ -47,7 +49,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 
               <!-- Hero -->
               <section class="hc-hero hc-home-hero">
-                <div class="hc-bleed"><img src="/assets/hero-01.jpg" alt="" /></div>
+                <div class="hc-bleed"><img :src="siteAsset('/assets/hero-01.jpg')" alt="" /></div>
                 <span class="hc-scrim"></span>
               <SiteNav overlay />
                 <div class="hc-hero-in"><div class="hc-w">
@@ -72,7 +74,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                   <p class="hc-p" style="margin-top:20px;max-width:520px">
                     {{ $t('site.tzmeDeliversEngineeredEquipmentAndCustomisedIndustrialSolutionsForSomeOfThe') }}</p>
                   <div class="hc-band home-about-stats">
-                    <div><div class="hc-stat">20<u>+</u></div>
+                    <div><div class="hc-stat">{{ siteValue('text_91032ad7bbcb') }}<u>+</u></div>
                       <div class="hc-stat-cap">{{ $t('site.yearsOfExperience') }}</div></div>
                     <div><div class="hc-stat">{{ $t('site.global') }}</div>
                       <div class="hc-stat-cap">{{ $t('site.projectCapability') }}</div></div>
@@ -80,7 +82,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                       <div class="hc-stat-cap">{{ $t('site.engineeringAndManufacturing') }}</div></div>
                   </div>
                   </div>
-                  <div class="home-about-image"><el-image src="/assets/rnd-2.jpg" alt="" fit="cover" /></div>
+                  <div class="home-about-image"><el-image :src="siteAsset('/assets/rnd-2.jpg')" alt="" fit="cover" /></div>
                 </div>
               </section>
 
@@ -96,7 +98,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                   </div>
                   <div class="hc-cards">
                     <router-link v-for="(item, index) in featuredProducts" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
-                      <div class="im"><img :src="item.image || '/assets/p-other-1.jpg'" :alt="productField(item, 'title')" /></div>
+                      <div class="im"><img :src="item.image || siteAsset('/assets/p-other-1.jpg')" :alt="productField(item, 'title')" /></div>
                       <div class="bd">
                         <span class="no">{{ String(index + 1).padStart(2, '0') }}</span>
                         <h3>{{ productField(item, 'title') }}</h3>
@@ -110,7 +112,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 
               <!-- 04 行业 -->
               <section id="industries" class="hc-ind-sec">
-                <div class="hc-bleed"><img src="/assets/p-mining-4.jpg" alt="" /></div>
+                <div class="hc-bleed"><img :src="siteAsset('/assets/p-mining-4.jpg')" alt="" /></div>
                 <span class="hc-scrim"></span>
                 <div class="hc-ind-in">
                   <div class="hc-ind-grid">
@@ -134,7 +136,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 
               <!-- 05 流程 -->
               <section id="capabilities" class="hc-sec hc-light hc-cap">
-                <div class="hc-cap-bg"><img src="/assets/hero-03.jpg" alt="" /></div>
+                <div class="hc-cap-bg"><img :src="siteAsset('/assets/hero-03.jpg')" alt="" /></div>
                 <div class="hc-w hc-cap-in">
                   <span class="hc-kick">{{ $t('site.ourCapabilities') }}</span>
                   <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.fromConcept') }}<br />{{ $t('site.toReality') }}</h2>
@@ -143,32 +145,32 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                   <div class="hc-steps">
                 <div>
                   <span class="ic"><i></i></span>
-                  <div class="no">01</div>
+                  <div class="no">{{ siteValue('text_ddfe163345d3') }}</div>
                   <div class="lb">{{ $t('site.concept') }}</div>
                 </div>
                 <div>
                   <span class="ic"><i></i></span>
-                  <div class="no">02</div>
+                  <div class="no">{{ siteValue('text_bcac9d1d8eab') }}</div>
                   <div class="lb">{{ $t('site.engineering') }}</div>
                 </div>
                 <div>
                   <span class="ic"><i></i></span>
-                  <div class="no">03</div>
+                  <div class="no">{{ siteValue('text_3ea6c91e241f') }}</div>
                   <div class="lb">{{ $t('site.design') }}</div>
                 </div>
                 <div>
                   <span class="ic"><i></i></span>
-                  <div class="no">04</div>
+                  <div class="no">{{ siteValue('text_798f861ee74f') }}</div>
                   <div class="lb">{{ $t('site.fabrication') }}</div>
                 </div>
                 <div>
                   <span class="ic"><i></i></span>
-                  <div class="no">05</div>
+                  <div class="no">{{ siteValue('text_28a5c2818590') }}</div>
                   <div class="lb">{{ $t('site.assembly') }}</div>
                 </div>
                 <div>
                   <span class="ic"><i></i></span>
-                  <div class="no">06</div>
+                  <div class="no">{{ siteValue('text_7316b3d5fef9') }}</div>
                   <div class="lb">{{ $t('site.delivery') }}</div>
                 </div>
                   </div>
@@ -186,13 +188,13 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                     <div style="margin-top:30px"><el-button class="hc-btn ghost">{{ $t('site.ourFacilities') }}<i>→</i></el-button></div>
                   </div>
                   <div class="hc-tiles">
-                <div class="hc-tile"><img src="/assets/rnd-2.jpg" alt="" />
+                <div class="hc-tile"><img :src="siteAsset('/assets/rnd-2.jpg')" alt="" />
                   <span class="lb">{{ $t('site.largeScaleFabrication') }}</span></div>
-                <div class="hc-tile"><img src="/assets/rnd-1.jpg" alt="" />
+                <div class="hc-tile"><img :src="siteAsset('/assets/rnd-1.jpg')" alt="" />
                   <span class="lb">{{ $t('site.3dDesignAndSimulation') }}</span></div>
-                <div class="hc-tile"><img src="/assets/p-metal-1.jpg" alt="" />
+                <div class="hc-tile"><img :src="siteAsset('/assets/p-metal-1.jpg')" alt="" />
                   <span class="lb">{{ $t('site.weldingAndNdt') }}</span></div>
-                <div class="hc-tile"><img src="/assets/p-port-2.png" alt="" />
+                <div class="hc-tile"><img :src="siteAsset('/assets/p-port-2.png')" alt="" />
                   <span class="lb">{{ $t('site.assemblyAndTesting') }}</span></div>
                   </div>
                 </div>
@@ -216,7 +218,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
               </section>
 
               <!-- 08 全球 -->
-              <section v-if="globalReach.enabled" class="hc-sec home-global" aria-labelledby="home-global-title">
+              <section v-if="globalReach?.enabled" class="hc-sec home-global" aria-labelledby="home-global-title">
                 <div class="hc-w hc-global">
                   <div>
                     <span class="hc-kick">{{ globalField('kicker') }}</span>
@@ -248,7 +250,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 
               <!-- 09 询价 -->
               <section class="hc-cta">
-                <div class="hc-bleed"><img src="/assets/video-poster.jpg" alt="" /></div>
+                <div class="hc-bleed"><img :src="siteAsset('/assets/video-poster.jpg')" alt="" /></div>
                 <span class="hc-scrim"></span>
                 <div class="hc-w hc-cta-in">
                   <div>
@@ -259,8 +261,8 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                       {{ $t('site.tellUsWhatYouReTryingToBuildMoveOrSolve') }}</p>
                     <div style="margin-top:30px"><el-button class="hc-btn solid">{{ $t('site.startAProject') }}<i>→</i></el-button></div>
                     <div class="hc-cinfo">
-                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>tzme@tzme.net</div>
-                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 5h4l2 5-2.5 1.5a12 12 0 0 0 5 5L14 14l5 2v4a15 15 0 0 1-15-15Z"/></svg>+86 22 2521 4991</div>
+                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>{{ siteValue('text_a56db54942d8') }}</div>
+                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 5h4l2 5-2.5 1.5a12 12 0 0 0 5 5L14 14l5 2v4a15 15 0 0 1-15-15Z"/></svg>{{ siteValue('text_c94f3620b3d0') }}</div>
                     </div>
                   </div>
                   <div class="hc-form">
@@ -292,7 +294,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
               <!-- 10 页脚 -->
               <footer class="hc-foot">
                 <div class="hc-foot-in">
-                  <span class="hc-logo" style="font-size:19px"><i></i>TZME</span>
+                  <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
                   <span class="tag">{{ $t('site.heavyEngineeringBuiltAroundYourChallenge') }}</span>
                   <nav class="hc-foot-nav">
                     <a v-for="item in menuItems" :key="item.key" :href="item.path"

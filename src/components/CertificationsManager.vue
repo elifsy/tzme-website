@@ -4,16 +4,11 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
-import {
-  deleteCertificationLocally,
-  loadCertifications,
-  markCertificationSynced,
-  mergeCertifications,
-  saveCertificationLocally,
-} from '../services/certifications.js'
+import { useCertificationCatalog } from '../services/certifications.js'
+import { apiRequest } from '../services/api.js'
 
 const { t, locale } = useI18n({ useScope: 'global' })
-const records = ref(mergeCertifications())
+const { certifications: records, loadCertifications } = useCertificationCatalog()
 const loading = ref(false)
 const saving = ref(false)
 const dialogOpen = ref(false)
@@ -53,45 +48,13 @@ function openEditor(item = null) {
   dialogOpen.value = true
 }
 
-async function writeToApi(record, update) {
-  const payload = {
-    ...record,
-    issuedAt: record.issuedAt || null,
-    expiresAt: record.expiresAt || null,
-  }
-  const options = {
-    method: update ? 'PUT' : 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  }
-  let response = await fetch(
-    `/api/certifications${update ? `/${encodeURIComponent(record.id)}` : ''}`,
-    options,
-  )
-  // Seed records are visible before their first save to MySQL.
-  if (update && response.status === 404) {
-    response = await fetch('/api/certifications', { ...options, method: 'POST' })
-  }
-  if (!response.ok) throw new Error(`HTTP ${response.status}`)
-  return response.json()
-}
-
 async function persist(record, update) {
-  saveCertificationLocally(record)
-  const index = records.value.findIndex((item) => item.id === record.id)
-  if (index < 0) records.value.unshift(record)
-  else records.value[index] = record
-  records.value = [...records.value].sort((a, b) =>
-    (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0)
-    || (a.titleEn || '').localeCompare(b.titleEn || ''),
-  )
   try {
-    await writeToApi(record, update)
-    markCertificationSynced(record.id)
-    ElMessage.success(t('admin.contentSaved'))
-  } catch {
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'))
-  }
+    await apiRequest('/api/certifications' + (update ? '/' + encodeURIComponent(record.id) : ''), {
+      method: update ? 'PUT' : 'POST', body: { ...record, issuedAt: record.issuedAt || null, expiresAt: record.expiresAt || null },
+    });
+    await load(); ElMessage.success(t('admin.contentSaved')); return true;
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); return false; }
 }
 
 async function save() {
@@ -111,9 +74,8 @@ async function save() {
     titleZh: form.titleZh.trim(),
     sortOrder: Number(form.sortOrder) || 0,
   }
-  await persist(record, Boolean(form.id))
-  saving.value = false
-  dialogOpen.value = false
+  try { if (await persist(record, Boolean(form.id))) dialogOpen.value = false }
+  finally { saving.value = false }
 }
 
 async function toggle(item) {
@@ -135,15 +97,10 @@ async function remove(item) {
   } catch {
     return
   }
-  deleteCertificationLocally(item.id)
-  records.value = records.value.filter((record) => record.id !== item.id)
   try {
-    const response = await fetch(`/api/certifications/${encodeURIComponent(item.id)}`, { method: 'DELETE' })
-    if (!response.ok && response.status !== 404) throw new Error(`HTTP ${response.status}`)
-    ElMessage.success(t('admin.contentDeleted'))
-  } catch {
-    ElMessage.warning(t('admin.savedInThisBrowserBackendApiIsUnavailable'))
-  }
+    await apiRequest('/api/certifications/' + encodeURIComponent(item.id), { method: 'DELETE' });
+    await load(); ElMessage.success(t('admin.contentDeleted'));
+  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
 }
 
 defineExpose({ load, openEditor })

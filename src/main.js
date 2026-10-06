@@ -1,8 +1,6 @@
-import { createApp, h } from "vue";
-import { createRouter, createWebHistory, RouterView } from "vue-router";
-import { ElConfigProvider } from "element-plus";
-import elementEn from "element-plus/es/locale/lang/en";
-import elementZh from "element-plus/es/locale/lang/zh-cn";
+import { createApp } from "vue";
+import { createRouter, createWebHistory } from "vue-router";
+import App from './App.vue';
 import {
   ArrowRight,
   Box,
@@ -68,11 +66,7 @@ const router = createRouter({
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],
 });
-const app = createApp({
-  render: () => h(ElConfigProvider, {
-    locale: i18n.global.locale.value === "zh" ? elementZh : elementEn,
-  }, { default: () => h(RouterView) }),
-});
+const app = createApp(App);
 app.use(router);
 app.use(i18n);
 for (const [name, component] of Object.entries({

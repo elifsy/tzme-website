@@ -1,4 +1,6 @@
 <script setup>
+import { useSiteContent } from '../services/website.js'
+const { siteAsset, siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -69,7 +71,7 @@ onMounted(async () => { await loadArticles(); loading.value = false })
       </div></section>
       <section v-if="featured" class="news-featured-section"><div class="hc-w">
         <router-link :to="detailLink(featured.id)" class="news-featured">
-          <div class="news-featured-image"><img :src="featured.image || '/assets/rnd-1.jpg'" :alt="field(featured, 'title')" /></div>
+          <div class="news-featured-image"><img :src="featured.image || siteAsset('/assets/rnd-1.jpg')" :alt="field(featured, 'title')" /></div>
           <div class="news-featured-content">
             <div class="news-meta"><el-tag effect="plain">{{ field(featured, 'category') }}</el-tag><time :datetime="featured.date">{{ articleDate(featured.date) }}</time></div>
             <h2>{{ field(featured, 'title') }}</h2><p class="hc-p">{{ field(featured, 'summary') }}</p><span class="news-text-link">{{ $t('site.readNotice') }} →</span>
@@ -84,7 +86,7 @@ onMounted(async () => { await loadArticles(); loading.value = false })
           <router-link v-for="article in pageArticles" :key="article.id" :to="detailLink(article.id)" class="news-row">
             <time :datetime="article.date">{{ articleDate(article.date) }}</time>
             <div class="news-row-copy"><h2>{{ field(article, 'title') }}</h2><p>{{ field(article, 'summary') }}</p></div>
-            <span class="news-row-category">{{ field(article, 'category') }}</span><span class="news-row-arrow" aria-hidden="true">↗</span>
+            <span class="news-row-category">{{ field(article, 'category') }}</span><span class="news-row-arrow" aria-hidden="true">{{ siteValue('text_6564582d822d') }}</span>
           </router-link>
         </div>
         <el-empty v-else :description="$t(selectedCategory ? 'site.noNewsForCategory' : 'site.newsEmpty')">
@@ -94,7 +96,7 @@ onMounted(async () => { await loadArticles(); loading.value = false })
           :page-size="pageSize" :total="visibleArticles.length" :pager-count="5" layout="prev, pager, next" @current-change="changePage" />
       </div></section>
       <footer class="hc-foot"><div class="hc-foot-in">
-        <span class="hc-logo" style="font-size:19px"><i></i>TZME</span><span class="tag">{{ $t('site.newsroom') }}</span>
+        <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span><span class="tag">{{ $t('site.newsroom') }}</span>
         <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" /><span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
       </div></footer>
     </div>
