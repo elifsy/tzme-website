@@ -2,13 +2,22 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { contactText, contactWebsiteUrl, useContactSettings } from '../services/contactSettings.js'
-const props = defineProps({ includeHeadquarters: Boolean, aboutOnly: Boolean })
-const { locale } = useI18n({ useScope: 'global' })
+const props = defineProps({
+  includeHeadquarters: Boolean,
+  aboutOnly: Boolean,
+  configuration: { type: Object, default: null },
+  localeCode: { type: String, default: '' },
+})
+const { t, locale } = useI18n({ useScope: 'global' })
+const displayLocale = computed(() => props.localeCode || locale.value)
+const label = key => t(key, {}, { locale: displayLocale.value })
 const { contactSettings } = useContactSettings()
 const cards = computed(() => {
-  const config = contactSettings.value
+  const config = props.configuration || contactSettings.value
   if (!config) return []
-  const list = config.subsidiaries.filter(item => item.enabled && (!props.aboutOnly || item.showOnAbout))
+  const list = config.subsidiaries
+    .filter(item => props.aboutOnly ? item.showOnAbout : item.enabled)
+    .map(item => ({ id: item.id, name: item.name, address: item.address, phone: item.phone, email: item.email }))
   return props.includeHeadquarters ? [{ ...config.contact, id: 'headquarters', name: config.contact.headquarters, email: config.contact.emails.join(' · ') }, ...list] : list
 })
 </script>
@@ -16,10 +25,10 @@ const cards = computed(() => {
 <template>
   <div class="subsidiary-cards" :class="{ 'subsidiary-cards-wide': includeHeadquarters }">
     <article v-for="item in cards" :key="item.id" class="subsidiary-card">
-      <h3>{{ contactText(item.name, locale) }}</h3>
-      <p>{{ contactText(item.address, locale) }}</p>
-      <p v-if="item.phone"><span>{{ $t('site.telephone') }}:</span> {{ item.phone }}</p>
-      <p v-if="item.email"><span>{{ $t('site.email') }}:</span> {{ item.email }}</p>
+      <h3>{{ contactText(item.name, displayLocale) }}</h3>
+      <p>{{ contactText(item.address, displayLocale) }}</p>
+      <p v-if="item.phone"><span>{{ label('site.telephone') }}:</span> {{ item.phone }}</p>
+      <p v-if="item.email"><span>{{ label('site.email') }}:</span> {{ item.email }}</p>
       <p v-if="item.website"><a :href="contactWebsiteUrl(item.website)" target="_blank" rel="noopener noreferrer">{{ item.website }}</a></p>
     </article>
   </div>

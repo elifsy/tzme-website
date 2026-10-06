@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import SubsidiaryCards from './SubsidiaryCards.vue'
 import { apiRequest } from '../services/api.js'
 import { attachmentTypes, inquiryFieldLabels, saveContactSettings } from '../services/contactSettings.js'
 import { availableLocales } from '../i18n/locales/index.js'
@@ -14,6 +15,7 @@ const loading = ref(false)
 const saving = ref(false)
 const activeTab = ref('contact')
 const editingLocale = ref(locale.value)
+const subsidiaryPreviewPage = ref('contact')
 const error = ref('')
 const original = ref('')
 const dirty = computed(() => JSON.stringify(form.value) !== original.value)
@@ -32,7 +34,7 @@ async function load() {
 function addSubsidiary() {
   if (form.value.subsidiaries.length >= 50) return
   const text = () => Object.fromEntries(availableLocales.map(({ code }) => [code, '']))
-  form.value.subsidiaries.push({ id: crypto.randomUUID(), name: text(), address: text(), phone: '', email: '', website: '', enabled: true, showOnAbout: true })
+  form.value.subsidiaries.push({ id: crypto.randomUUID(), name: text(), address: text(), phone: '', email: '', enabled: true, showOnAbout: true })
 }
 function move(index, direction) {
   const items = form.value.subsidiaries
@@ -91,14 +93,30 @@ defineExpose({ load })
       </div>
       <div v-show="activeTab === 'subsidiaries'">
         <p class="contact-settings-help">{{ $t('contactAdmin.subsidiaryHint') }}</p>
-        <AdminEditorPanel v-for="(item, index) in form.subsidiaries" :key="item.id" :step="String(index + 1).padStart(2, '0')" :title="item.name[editingLocale] || $t('contactAdmin.newSubsidiary')" class="contact-subsidiary-panel">
-          <div class="contact-settings-grid contact-settings-grid-inside">
-            <div><el-form-item :label="$t('contactAdmin.subsidiaryName')" required><el-input v-model="item.name[editingLocale]" maxlength="255" /></el-form-item><el-form-item :label="$t('site.address')" required><el-input v-model="item.address[editingLocale]" type="textarea" :rows="3" maxlength="2000" /></el-form-item></div>
-            <div><el-form-item v-for="key in ['phone', 'email', 'website']" :key="key" :label="$t('contactAdmin.fields.' + key)"><el-input v-model="item[key]" :maxlength="key === 'website' ? 500 : 255" /></el-form-item></div>
+        <div class="contact-subsidiaries-layout">
+          <div class="contact-subsidiaries-config">
+            <AdminEditorPanel v-for="(item, index) in form.subsidiaries" :key="item.id" :step="String(index + 1).padStart(2, '0')" :title="item.name[editingLocale] || $t('contactAdmin.newSubsidiary')" class="contact-subsidiary-panel">
+              <div class="contact-settings-grid contact-settings-grid-inside">
+                <div><el-form-item :label="$t('contactAdmin.subsidiaryName')" required><el-input v-model="item.name[editingLocale]" maxlength="255" /></el-form-item><el-form-item :label="$t('site.address')" required><el-input v-model="item.address[editingLocale]" type="textarea" :rows="3" maxlength="2000" /></el-form-item></div>
+                <div><el-form-item v-for="key in ['phone', 'email']" :key="key" :label="$t('contactAdmin.fields.' + key)"><el-input v-model="item[key]" :maxlength="255" /></el-form-item></div>
+              </div>
+              <div class="contact-subsidiary-actions"><el-checkbox v-model="item.enabled">{{ $t('contactAdmin.visible') }}</el-checkbox><el-checkbox v-model="item.showOnAbout">{{ $t('contactAdmin.showOnAbout') }}</el-checkbox><el-button size="small" :disabled="index === 0" @click="move(index, -1)">{{ $t('contactAdmin.moveUp') }}</el-button><el-button size="small" :disabled="index === form.subsidiaries.length - 1" @click="move(index, 1)">{{ $t('contactAdmin.moveDown') }}</el-button><el-button size="small" type="danger" plain @click="form.subsidiaries.splice(index, 1)">{{ $t('admin.delete') }}</el-button></div>
+            </AdminEditorPanel>
+            <el-button type="primary" plain :disabled="form.subsidiaries.length >= 50" @click="addSubsidiary"><el-icon><Plus /></el-icon>{{ $t('contactAdmin.addSubsidiary') }}</el-button>
           </div>
-          <div class="contact-subsidiary-actions"><el-checkbox v-model="item.enabled">{{ $t('contactAdmin.visible') }}</el-checkbox><el-checkbox v-model="item.showOnAbout">{{ $t('contactAdmin.showOnAbout') }}</el-checkbox><el-button size="small" :disabled="index === 0" @click="move(index, -1)">{{ $t('contactAdmin.moveUp') }}</el-button><el-button size="small" :disabled="index === form.subsidiaries.length - 1" @click="move(index, 1)">{{ $t('contactAdmin.moveDown') }}</el-button><el-button size="small" type="danger" plain @click="form.subsidiaries.splice(index, 1)">{{ $t('admin.delete') }}</el-button></div>
-        </AdminEditorPanel>
-        <el-button type="primary" plain :disabled="form.subsidiaries.length >= 50" @click="addSubsidiary"><el-icon><Plus /></el-icon>{{ $t('contactAdmin.addSubsidiary') }}</el-button>
+          <aside class="contact-subsidiaries-preview" :aria-label="$t('contactAdmin.subsidiaryPreview')">
+            <AdminEditorPanel :title="$t('contactAdmin.subsidiaryPreview')" :description="$t('contactAdmin.subsidiaryPreviewHint')">
+              <el-radio-group v-model="subsidiaryPreviewPage" class="subsidiary-preview-pages" :aria-label="$t('contactAdmin.subsidiaryPreviewPage')">
+                <el-radio-button value="contact">{{ $t('contactAdmin.subsidiaryPreviewContact') }}</el-radio-button>
+                <el-radio-button value="about">{{ $t('contactAdmin.subsidiaryPreviewAbout') }}</el-radio-button>
+              </el-radio-group>
+              <div class="subsidiary-preview-body" tabindex="0" :aria-label="$t('contactAdmin.subsidiaryPreview')">
+                <SubsidiaryCards v-if="subsidiaryPreviewPage === 'about' || form.subsidiaries.some(item => item.enabled)" :configuration="form" :locale-code="editingLocale" :about-only="subsidiaryPreviewPage === 'about'" :include-headquarters="subsidiaryPreviewPage === 'about'" />
+                <el-empty v-else :image-size="72" :description="$t('contactAdmin.subsidiaryPreviewEmpty')" />
+              </div>
+            </AdminEditorPanel>
+          </aside>
+        </div>
       </div>
       <div v-show="activeTab === 'form'" class="contact-settings-grid">
         <AdminEditorPanel step="01" :title="$t('contactAdmin.formSettings')">
@@ -122,12 +140,23 @@ defineExpose({ load })
 <style scoped>
 .contact-settings-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
 .contact-settings-toolbar > .el-tabs { flex: 1; min-width: 0; }
-.contact-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
-.contact-settings-grid-inside { gap: 16px; }
+.contact-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
+.contact-settings-grid-inside { gap: 16px; align-items: start; }
 .contact-settings-form :deep(.el-select) { width: 100%; }
 .contact-settings-form :deep(.el-input-number) { width: min(180px, 100%); }
 .contact-settings-help { color: #4d637c; font-size: 13px; line-height: 1.8; margin: 0 0 20px; }
 .contact-subsidiary-panel { margin-bottom: 20px; }
+.contact-subsidiaries-layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+.contact-subsidiaries-config, .contact-subsidiaries-preview { min-width: 0; }
+.contact-subsidiaries-preview { position: sticky; top: 24px; }
+.contact-subsidiaries-preview :deep(.cms-panel-heading p) { color: #52667d; }
+.subsidiary-preview-pages { display: flex; width: 100%; margin-bottom: 18px; }
+.subsidiary-preview-pages :deep(.el-radio-button) { flex: 1; }
+.subsidiary-preview-pages :deep(.el-radio-button__inner) { display: block; padding: 10px 8px; }
+.subsidiary-preview-body { max-height: max(280px, calc(100dvh - 290px)); overflow-y: auto; scrollbar-gutter: stable; overscroll-behavior: contain; padding: 16px; background: var(--navy); border-radius: 10px; font-family: var(--f-cn); }
+.subsidiary-preview-body:focus-visible { outline: 2px solid var(--el-color-primary); outline-offset: 3px; }
+.subsidiary-preview-body :deep(.subsidiary-cards) { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
+.subsidiary-preview-body :deep(.el-empty__description p) { color: #c1cfdb; }
 .contact-subsidiary-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .contact-subsidiary-actions .el-button { margin-left: 0; }
 .contact-settings-switches { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 20px; }
@@ -135,5 +164,6 @@ defineExpose({ load })
 .contact-file-types .el-checkbox { margin-right: 0; }
 .contact-settings-unit { margin-left: 12px; }
 .contact-settings-footer { display: flex; justify-content: space-between; align-items: center; gap: 20px; background: #fff; border: 1px solid #dce5ef; border-radius: 10px; padding: 16px 20px; margin-top: 20px; color: #4d637c; font-size: 13px; }
-@media (max-width: 900px) { .contact-settings-grid { grid-template-columns: 1fr; } .contact-settings-toolbar { align-items: stretch; flex-direction: column; gap: 0; } }
+@media (max-width: 1100px) { .contact-subsidiaries-layout { grid-template-columns: minmax(0, 1fr) 320px; } .contact-subsidiaries-config .contact-settings-grid { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .contact-settings-grid, .contact-subsidiaries-layout { grid-template-columns: 1fr; } .contact-subsidiaries-preview { position: static; } .subsidiary-preview-body { max-height: none; } .contact-settings-toolbar { align-items: stretch; flex-direction: column; gap: 0; } }
 </style>

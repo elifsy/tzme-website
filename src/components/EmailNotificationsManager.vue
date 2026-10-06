@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { Promotion, View } from '@element-plus/icons-vue'
@@ -14,6 +14,7 @@ const { t } = useI18n({ useScope: 'global' })
 const { inquiries, loadInquiries } = useInquiryCatalog()
 const { mailSettings } = useMailSettings()
 const form = ref(null)
+const recipientListRef = ref(null)
 const loading = ref(false)
 const saving = ref(false)
 const notifying = ref(null)
@@ -39,6 +40,15 @@ async function load() {
     if (!disposed) { form.value = JSON.parse(JSON.stringify(value)); original.value = JSON.stringify(value) }
   } catch { if (!disposed) error.value = t('mailAdmin.loadFailed') }
   finally { if (!disposed) loading.value = false }
+}
+async function addRecipient() {
+  if (!form.value || saving.value || form.value.recipients.length >= 20) return
+  form.value.recipients.push({ email: '', enabled: false })
+  await nextTick()
+  const list = recipientListRef.value
+  if (disposed || !list) return
+  list.scrollTop = list.scrollHeight
+  list.querySelector('.mail-recipient:last-child input')?.focus({ preventScroll: true })
 }
 function validEmail(value) { return /^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/.test(value) }
 function validate() {
@@ -87,8 +97,10 @@ defineExpose({ load })
       <div class="mail-settings-grid">
         <AdminEditorPanel step="01" :title="$t('contactAdmin.recipients')" :description="$t('contactAdmin.mailHint')">
           <el-form-item :label="$t('contactAdmin.mailEnabled')"><el-switch v-model="form.enabled" /></el-form-item>
-          <div v-for="(recipient, index) in form.recipients" :key="index" class="mail-recipient"><el-input v-model="recipient.email" type="email" maxlength="255" :aria-label="$t('contactAdmin.recipientEmail')" /><el-switch v-model="recipient.enabled" :aria-label="$t('contactAdmin.recipientEnabled')" /><el-button text type="danger" @click="form.recipients.splice(index, 1)">{{ $t('admin.delete') }}</el-button></div>
-          <el-button plain type="primary" :disabled="form.recipients.length >= 20" @click="form.recipients.push({ email: '', enabled: true })">{{ $t('contactAdmin.addRecipient') }}</el-button>
+          <div v-if="form.recipients.length" ref="recipientListRef" class="mail-recipient-list" role="region" tabindex="0" :aria-label="$t('contactAdmin.recipients')">
+            <div v-for="(recipient, index) in form.recipients" :key="index" class="mail-recipient"><el-input v-model="recipient.email" type="email" maxlength="255" :aria-label="$t('contactAdmin.recipientEmail')" /><el-switch v-model="recipient.enabled" :aria-label="$t('contactAdmin.recipientEnabled')" /><el-button text type="danger" @click="form.recipients.splice(index, 1)">{{ $t('admin.delete') }}</el-button></div>
+          </div>
+          <el-button plain type="primary" :disabled="form.recipients.length >= 20" @click="addRecipient">{{ $t('contactAdmin.addRecipient') }}</el-button>
         </AdminEditorPanel>
         <AdminEditorPanel step="02" :title="$t('contactAdmin.smtp')" :description="$t('contactAdmin.smtpHint')">
           <el-form-item :label="$t('contactAdmin.smtpHost')"><el-input v-model="form.smtp.host" maxlength="255" placeholder="smtp.example.com" /></el-form-item>
@@ -133,11 +145,16 @@ defineExpose({ load })
 
 <style scoped>
 .mail-manager-tabs { margin-bottom: 20px; }
-.mail-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
-.mail-settings-grid-inside { gap: 16px; }
+.mail-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
+.mail-settings-grid-inside { gap: 16px; align-items: start; }
 .mail-notifications-manager :deep(.el-select) { width: 100%; }
 .mail-notifications-manager :deep(.el-input-number) { width: min(180px, 100%); }
+.mail-recipient-list { max-height: 240px; overflow-y: auto; scrollbar-gutter: stable; overscroll-behavior: contain; margin-bottom: 16px; padding: 3px 8px 3px 3px; }
+.mail-recipient-list:focus-visible { outline: 2px solid var(--el-color-primary); outline-offset: 2px; border-radius: 4px; }
 .mail-recipient { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+.mail-recipient:last-child { margin-bottom: 0; }
+.mail-recipient :deep(.el-input) { flex: 1; min-width: 0; }
+.mail-recipient :deep(.el-switch), .mail-recipient :deep(.el-button) { flex-shrink: 0; }
 .mail-settings-footer { display: flex; justify-content: space-between; align-items: center; gap: 20px; background: #fff; border: 1px solid #dce5ef; border-radius: 10px; padding: 16px 20px; margin-top: 20px; color: #4d637c; font-size: 13px; }
 .mail-records-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
 .mail-records-heading p { color: #52667d; font-size: 13px; margin: 6px 0 0; line-height: 1.7; }
