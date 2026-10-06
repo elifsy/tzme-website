@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
@@ -118,14 +119,21 @@ onMounted(load)
         <template #default="{ row }"><el-tag :type="row.status === 'published' ? 'success' : 'warning'" size="small">
           {{ $t(row.status === 'published' ? 'admin.published' : 'admin.draft') }}</el-tag></template>
       </el-table-column>
-      <el-table-column :label="$t('admin.actions')" width="185" align="right" fixed="right">
+      <el-table-column :label="$t('admin.actions')" width="150" align="right" fixed="right">
         <template #default="{ row }">
-          <el-button link type="primary" @click="openEditor(row)">{{ $t('admin.edit') }}</el-button>
-          <el-button link :type="row.status === 'published' ? 'warning' : 'success'" @click="toggle(row)">
-            {{ $t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish') }}
-          </el-button>
-          <el-button v-if="!row.protectedSeed" link type="danger" :disabled="productCount(row.id) > 0"
-            @click="remove(row)">{{ $t('admin.delete') }}</el-button>
+          <div class="industry-table-actions">
+            <el-tooltip :content="$t('admin.edit')" :trigger="['hover', 'focus']" placement="top">
+              <el-button link type="primary" :icon="Edit" :aria-label="$t('admin.edit')" @click="openEditor(row)" />
+            </el-tooltip>
+            <el-tooltip :content="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" :trigger="['hover', 'focus']" placement="top">
+              <el-button link :type="row.status === 'published' ? 'warning' : 'success'" :icon="Promotion" :aria-label="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" @click="toggle(row)" />
+            </el-tooltip>
+            <el-tooltip v-if="!row.protectedSeed" :content="$t(productCount(row.id) > 0 ? 'admin.industryInUse' : 'admin.delete')" :trigger="['hover', 'focus']" placement="top">
+              <span class="industry-action-trigger" :tabindex="productCount(row.id) > 0 ? 0 : undefined">
+                <el-button link type="danger" :icon="Delete" :aria-label="$t('admin.delete')" :disabled="productCount(row.id) > 0" @click="remove(row)" />
+              </span>
+            </el-tooltip>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -180,4 +188,8 @@ onMounted(load)
 <style scoped>
 .industry-manager-tip { margin-bottom: 16px; }
 .industry-table-subtitle { margin-top: 4px; color: #8893a1; font-size: 12px; }
+.industry-table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.industry-table-actions :deep(.el-button) { margin-left: 0; }
+.industry-action-trigger { display: inline-flex; }
+.industry-action-trigger:focus-visible { outline: 2px solid var(--el-color-primary); outline-offset: 2px; border-radius: 4px; }
 </style>

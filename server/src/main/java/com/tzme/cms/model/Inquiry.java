@@ -2,6 +2,8 @@ package com.tzme.cms.model;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "site_inquiries")
@@ -19,8 +21,17 @@ public class Inquiry {
     private String requirements;
     private String status = "new";
     private Instant createdAt = Instant.now();
+    @Column(length = 20) private String locale = "en";
+    @Column(columnDefinition = "TEXT") private String notes = "";
+    @Column(length = 32) private String mailStatus = "disabled";
+    @Column(columnDefinition = "TEXT") private String mailRecipients = "";
+    private int mailAttempts = 0;
+    @Column(length = 2000) private String mailError = "";
+    private Instant mailSentAt;
+    @JsonIgnore private Instant mailNextAttemptAt;
+    @Transient private List<InquiryAttachment> attachments = List.of();
 
-    protected Inquiry() {
+    public Inquiry() {
     }
 
     public Long getId() {
@@ -94,4 +105,22 @@ public class Inquiry {
     public Instant getCreatedAt() {
         return createdAt;
     }
+    public String getLocale() { return locale; }
+    public void setLocale(String value) { locale = value; }
+    public String getNotes() { return notes; }
+    public void setNotes(String value) { notes = value; }
+    public String getMailStatus() { return mailStatus; }
+    public void setMailStatus(String value) { mailStatus = value; }
+    public String getMailRecipients() { return mailRecipients; }
+    public void setMailRecipients(String value) { mailRecipients = value; }
+    public int getMailAttempts() { return mailAttempts; }
+    public void setMailAttempts(int value) { mailAttempts = value; }
+    public String getMailError() { return mailError; }
+    public void setMailError(String value) { mailError = value; }
+    public Instant getMailSentAt() { return mailSentAt; }
+    public void setMailSentAt(Instant value) { mailSentAt = value; }
+    public Instant getMailNextAttemptAt() { return mailNextAttemptAt; }
+    public void setMailNextAttemptAt(Instant value) { mailNextAttemptAt = value; }
+    public List<InquiryAttachment> getAttachments() { return attachments; }
+    public void setAttachments(List<InquiryAttachment> value) { attachments = value; }
 }

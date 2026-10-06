@@ -1,0 +1,142 @@
+{
+  "contact": {
+    "headquarters": {
+      "en": "Headquarters · Tanggu",
+      "zh": "总部 · 塘沽"
+    },
+    "address": {
+      "en": "No.139 Xiamen Road, Binhai New Area,\nTanggu, Tianjin 300459, China",
+      "zh": "滨海新区厦门路 139 号，\n中国天津塘沽 300459"
+    },
+    "phone": "+86 22 2521 4991 / 2521 1565",
+    "fax": "+86 22 2521 1535",
+    "emails": [
+      "tzme@tzme.net",
+      "jyb@tzme.net"
+    ],
+    "website": "www.tzme.net",
+    "port": {
+      "en": "10 km from Tianjin Port",
+      "zh": "距天津港 10 公里"
+    }
+  },
+  "subsidiaries": [
+    {
+      "id": "zhenhan",
+      "name": {
+        "en": "Tianjin Zhenhan Mechanical Equipment",
+        "zh": "天津振汉机械设备"
+      },
+      "address": {
+        "en": "No.9 Xuri Street, Yingcheng Industrial Park, Hangu, Binhai 300840",
+        "zh": "天津市滨海新区汉沽营城工业园旭日街 9 号，邮编 300840"
+      },
+      "phone": "",
+      "email": "",
+      "website": "",
+      "enabled": true,
+      "showOnAbout": true
+    },
+    {
+      "id": "greenland",
+      "name": {
+        "en": "Tianjin Greenland Mechanical Equipment",
+        "zh": "天津绿地机械设备"
+      },
+      "address": {
+        "en": "Lingang Port Area, Tianjin Free Trade Zone",
+        "zh": "天津自由贸易试验区临港港区"
+      },
+      "phone": "",
+      "email": "",
+      "website": "",
+      "enabled": true,
+      "showOnAbout": true
+    },
+    {
+      "id": "manufacturing",
+      "name": {
+        "en": "Manufacturing enquiries",
+        "zh": "制造业务咨询"
+      },
+      "address": {
+        "en": "Engineering review within two working days",
+        "zh": "两个工作日内完成工程评估"
+      },
+      "phone": "",
+      "email": "",
+      "website": "",
+      "enabled": true,
+      "showOnAbout": false
+    }
+  ],
+  "form": {
+    "enabled": true,
+    "showOnHome": true,
+    "showOnContact": true,
+    "title": {
+      "en": "03 / Enquiry form",
+      "zh": "03 / 咨询表单"
+    },
+    "buttonText": {
+      "en": "Send inquiry",
+      "zh": "发送咨询"
+    },
+    "successText": {
+      "en": "Your inquiry has been sent. We will contact you soon.",
+      "zh": "咨询已发送，我们会尽快与您联系。"
+    },
+    "closedText": {
+      "en": "Online inquiries are currently closed. Please contact us by email or phone.",
+      "zh": "在线咨询暂未开放，请通过邮箱或电话联系我们。"
+    },
+    "showPrivacy": true,
+    "privacyText": {
+      "en": "By sending you agree to our privacy policy.",
+      "zh": "提交即表示您同意我们的隐私政策。"
+    },
+    "requiredFields": [
+      "name",
+      "company",
+      "country",
+      "email",
+      "industry",
+      "requirements"
+    ]
+  },
+  "upload": {
+    "enabled": true,
+    "allowedExtensions": [
+      "pdf",
+      "dwg",
+      "xls",
+      "xlsx",
+      "jpg",
+      "jpeg",
+      "png"
+    ],
+    "maxFileSizeMb": 20,
+    "maxFiles": 5
+  },
+  "notification": {
+    "enabled": false,
+    "recipients": [
+      {
+        "email": "tzme@tzme.net",
+        "enabled": true
+      },
+      {
+        "email": "jyb@tzme.net",
+        "enabled": true
+      }
+    ],
+    "smtp": {
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from": "",
+      "security": "ssl"
+    }
+  }
+}

@@ -120,9 +120,29 @@ SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `site_
   MODIFY COLUMN phone VARCHAR(255) COMMENT ''联系人电话'',
   MODIFY COLUMN industry VARCHAR(255) COMMENT ''客户填写的所属行业'',
   MODIFY COLUMN requirements VARCHAR(6000) COMMENT ''客户提交的项目需求'',
-  MODIFY COLUMN status VARCHAR(255) COMMENT ''咨询处理状态：new 待联系，contacted 已联系'',
+  MODIFY COLUMN status VARCHAR(255) COMMENT ''咨询处理状态：new 待联系，contacted 已联系，closed 已完成'',
   MODIFY COLUMN created_at DATETIME(6) COMMENT ''咨询提交时间'',
+  MODIFY COLUMN locale VARCHAR(20) NOT NULL DEFAULT ''en'' COMMENT ''咨询提交时的界面语言'',
+  MODIFY COLUMN notes TEXT COMMENT ''后台维护的内部跟进备注，最多 6000 字符'',
+  MODIFY COLUMN mail_status VARCHAR(32) NOT NULL DEFAULT ''disabled'' COMMENT ''通知状态：disabled 关闭，pending 待发送，sending 发送中，sent 已发送，failed 失败'',
+  MODIFY COLUMN mail_recipients TEXT COMMENT ''本条咨询创建或重试时选中的通知收件邮箱，逗号分隔'',
+  MODIFY COLUMN mail_attempts INT NOT NULL DEFAULT 0 COMMENT ''本轮邮件通知已尝试发送次数，最多自动尝试三次'',
+  MODIFY COLUMN mail_error VARCHAR(2000) NOT NULL DEFAULT '''' COMMENT ''通知发送失败说明，不包含账号密码'',
+  MODIFY COLUMN mail_sent_at DATETIME(6) COMMENT ''邮件通知成功发送时间'',
+  MODIFY COLUMN mail_next_attempt_at DATETIME(6) COMMENT ''下次发送时间，发送中表示任务锁定的截止时间'',
   COMMENT=''官网客户咨询与处理状态''');
+PREPARE tzme_comments_statement FROM @tzme_comments_sql;
+EXECUTE tzme_comments_statement;
+DEALLOCATE PREPARE tzme_comments_statement;
+
+SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `inquiry_attachments`
+  MODIFY COLUMN id VARCHAR(36) NOT NULL COMMENT ''附件随机 UUID，同时用于附件下载地址'',
+  MODIFY COLUMN inquiry_id BIGINT COMMENT ''关联的咨询主键，未提交咨询时为空'',
+  MODIFY COLUMN original_name VARCHAR(255) COMMENT ''上传文件的原始名称，用于后台展示及下载'',
+  MODIFY COLUMN extension VARCHAR(20) COMMENT ''经过校验的文件扩展名'',
+  MODIFY COLUMN size BIGINT NOT NULL COMMENT ''附件大小，单位为字节'',
+  MODIFY COLUMN created_at DATETIME(6) COMMENT ''附件上传时间'',
+  COMMENT=''咨询附件元数据，文件保存在上传目录的 inquiries 子目录''');
 PREPARE tzme_comments_statement FROM @tzme_comments_sql;
 EXECUTE tzme_comments_statement;
 DEALLOCATE PREPARE tzme_comments_statement;
@@ -136,8 +156,8 @@ EXECUTE tzme_comments_statement;
 DEALLOCATE PREPARE tzme_comments_statement;
 
 SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `site_settings`
-  MODIFY COLUMN id VARCHAR(100) NOT NULL COMMENT ''官网配置标识，website 表示网站基础配置'',
-  MODIFY COLUMN configuration LONGTEXT NOT NULL COMMENT ''官网基础配置 JSON，包含多语言文案、图片地址、公司统计、联系方式和地图选项'',
+  MODIFY COLUMN id VARCHAR(100) NOT NULL COMMENT ''官网配置标识，website 为网站基础配置，contact 为联系与咨询配置'',
+  MODIFY COLUMN configuration LONGTEXT NOT NULL COMMENT ''配置 JSON；contact 包含中英文联系方式、下属企业、咨询表单、附件限制及私有邮件配置'',
   COMMENT=''官网多语言文案与基础展示配置''');
 PREPARE tzme_comments_statement FROM @tzme_comments_sql;
 EXECUTE tzme_comments_statement;

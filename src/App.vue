@@ -6,6 +6,7 @@ import { ElConfigProvider } from 'element-plus'
 import elementEn from 'element-plus/es/locale/lang/en'
 import elementZh from 'element-plus/es/locale/lang/zh-cn'
 import { loadWebsiteContent } from './services/website.js'
+import { loadContactSettings } from './services/contactSettings.js'
 import { dataErrors, retryFailedData } from './services/api.js'
 
 const { locale } = useI18n({ useScope: 'global' })
@@ -14,7 +15,7 @@ const loading = ref(true)
 const retrying = ref(false)
 async function initialize() {
   loading.value = true
-  try { ready.value = await loadWebsiteContent() }
+  try { ready.value = (await Promise.all([loadWebsiteContent(), loadContactSettings()])).every(Boolean) }
   finally { loading.value = false }
 }
 async function retry() {

@@ -1,4 +1,6 @@
+import { contactEn } from '../contact.js'
 export default {
+  ...contactEn,
   "site": {
     "globalMapLitLocations": "{count} highlighted locations",
     "skipToProjectContent": "Skip navigation and go to page content",

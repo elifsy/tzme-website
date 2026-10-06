@@ -11,6 +11,10 @@ defineProps({
   saving: Boolean,
   saveDisabled: Boolean,
   editorFullscreen: Boolean,
+  footerNote: { type: String, default: '' },
+  saveLabel: { type: String, default: '' },
+  showSave: { type: Boolean, default: true },
+  closeLabel: { type: String, default: '' },
 })
 const emit = defineEmits(['update:modelValue', 'save'])
 </script>
@@ -36,11 +40,11 @@ const emit = defineEmits(['update:modelValue', 'save'])
     <slot />
     <template #footer>
       <div class="cms-editor-footer">
-        <span class="cms-editor-footer-note"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.editorSaveNote') }}</span>
+        <span class="cms-editor-footer-note"><el-icon><CircleCheckFilled /></el-icon>{{ footerNote || $t('admin.editorSaveNote') }}</span>
         <div class="cms-editor-footer-actions">
-          <el-button @click="emit('update:modelValue', false)">{{ $t('admin.cancel') }}</el-button>
-          <el-button type="primary" :loading="saving" :disabled="saveDisabled" @click="emit('save')">
-            <el-icon v-if="!saving"><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}
+          <el-button @click="emit('update:modelValue', false)">{{ closeLabel || $t('admin.cancel') }}</el-button>
+          <el-button v-if="showSave" type="primary" :loading="saving" :disabled="saveDisabled" @click="emit('save')">
+            <el-icon v-if="!saving"><CircleCheckFilled /></el-icon>{{ saveLabel || $t('admin.saveContent') }}
           </el-button>
         </div>
       </div>

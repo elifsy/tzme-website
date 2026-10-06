@@ -2,13 +2,14 @@
 import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import ImageUpload from './ImageUpload.vue'
 import ProjectCard from './ProjectCard.vue'
 import { localizedField } from '../services/catalog.js'
 import {
-  MAX_HOME_PROJECTS, normalizeProject, projectPath, useProjectCatalog,
+  MAX_HOME_PROJECTS, normalizeProject, useProjectCatalog,
 } from '../services/projects.js'
 import { apiRequest } from '../services/api.js'
 import { sanitizeRichText } from '../utils/richText.js'
@@ -133,12 +134,27 @@ onMounted(load)
       <el-table-column :label="$t('admin.status')" width="100"><template #default="{ row }">
         <el-tag :type="row.status === 'published' ? 'success' : 'warning'" size="small">{{ $t(row.status === 'published' ? 'admin.published' : 'admin.draft') }}</el-tag>
       </template></el-table-column>
-      <el-table-column :label="$t('admin.actions')" width="210" align="right" fixed="right"><template #default="{ row }">
-        <el-button link type="primary" :disabled="Boolean(busyId)" @click="openEditor(row)">{{ $t('admin.edit') }}</el-button>
-        <router-link v-if="row.status === 'published'" :to="projectPath(row.id)" target="_blank" class="project-preview-link">{{ $t('admin.projectView') }}</router-link>
-        <el-button link :type="row.status === 'published' ? 'warning' : 'success'" :disabled="Boolean(busyId)" @click="toggle(row)">{{ $t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish') }}</el-button>
-        <el-button link type="danger" :disabled="Boolean(busyId)" @click="remove(row)">{{ $t('admin.delete') }}</el-button>
-      </template></el-table-column>
+      <el-table-column :label="$t('admin.actions')" width="150" align="right" fixed="right">
+        <template #default="{ row }">
+          <div class="project-table-actions">
+            <el-tooltip :content="$t('admin.edit')" :trigger="['hover', 'focus']" placement="top">
+              <span class="project-action-trigger" :tabindex="busyId ? 0 : undefined">
+                <el-button link type="primary" :icon="Edit" :aria-label="$t('admin.edit')" :disabled="Boolean(busyId)" @click="openEditor(row)" />
+              </span>
+            </el-tooltip>
+            <el-tooltip :content="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" :trigger="['hover', 'focus']" placement="top">
+              <span class="project-action-trigger" :tabindex="busyId ? 0 : undefined">
+                <el-button link :type="row.status === 'published' ? 'warning' : 'success'" :icon="Promotion" :aria-label="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" :disabled="Boolean(busyId)" @click="toggle(row)" />
+              </span>
+            </el-tooltip>
+            <el-tooltip :content="$t('admin.delete')" :trigger="['hover', 'focus']" placement="top">
+              <span class="project-action-trigger" :tabindex="busyId ? 0 : undefined">
+                <el-button link type="danger" :icon="Delete" :aria-label="$t('admin.delete')" :disabled="Boolean(busyId)" @click="remove(row)" />
+              </span>
+            </el-tooltip>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
   </el-card>
 
@@ -220,7 +236,9 @@ onMounted(load)
 .project-thumbnail { width: 62px; height: 46px; flex: none; border-radius: 5px; }
 .project-thumbnail-empty { display: grid; place-items: center; background: #eef3f8; color: #9baabd; font-size: 20px; }
 .project-table-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.project-preview-link { color: var(--el-color-primary); margin: 0 9px; text-decoration: none; font-size: 12px; }
+.project-table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.project-action-trigger { display: inline-flex; }
+.project-action-trigger:focus-visible { outline: 2px solid var(--el-color-primary); outline-offset: 2px; border-radius: 4px; }
 .project-metric-fields { border: 1px solid #e5ebf2; border-radius: 8px; padding: 14px 16px 0; margin-bottom: 18px; background: #fafcfe; }
 .project-metric-fields h4 { margin: 0 0 12px; font-size: 12px; color: #607284; font-weight: 600; }
 </style>

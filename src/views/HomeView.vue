@@ -9,6 +9,8 @@ import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
+import InquiryForm from '../components/InquiryForm.vue'
+import { contactText, useContactSettings } from '../services/contactSettings.js'
 import { useProjectCatalog } from '../services/projects.js'
 import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
@@ -17,6 +19,7 @@ import { globalReachText, isGlobalReachUrl } from '../data/globalReach.js'
 const page = ref(null)
 const { menuItems, isMenuActive, navigateLink } = useDesignPage('hc-home', page)
 const { locale } = useI18n({ useScope: 'global' })
+const { contactSettings } = useContactSettings()
 const router = useRouter()
 const { globalReach, loadGlobalReach } = useGlobalReach()
 const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
@@ -252,7 +255,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
               <section class="hc-cta">
                 <div class="hc-bleed"><img :src="siteAsset('/assets/video-poster.jpg')" alt="" /></div>
                 <span class="hc-scrim"></span>
-                <div class="hc-w hc-cta-in">
+                <div class="hc-w hc-cta-in" :class="{ 'home-contact-single': !contactSettings?.form.showOnHome }">
                   <div>
                     <span class="hc-kick">{{ $t('site.getInTouch') }}</span>
                     <h2 class="hc-h2" style="margin-top:18px;color:#fff">
@@ -261,33 +264,11 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                       {{ $t('site.tellUsWhatYouReTryingToBuildMoveOrSolve') }}</p>
                     <div style="margin-top:30px"><el-button class="hc-btn solid">{{ $t('site.startAProject') }}<i>→</i></el-button></div>
                     <div class="hc-cinfo">
-                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>{{ siteValue('text_a56db54942d8') }}</div>
-                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 5h4l2 5-2.5 1.5a12 12 0 0 0 5 5L14 14l5 2v4a15 15 0 0 1-15-15Z"/></svg>{{ siteValue('text_c94f3620b3d0') }}</div>
+                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>{{ contactSettings?.contact.emails.join(' · ') }}</div>
+                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 5h4l2 5-2.5 1.5a12 12 0 0 0 5 5L14 14l5 2v4a15 15 0 0 1-15-15Z"/></svg>{{ contactSettings?.contact.phone }}</div>
                     </div>
                   </div>
-                  <div class="hc-form">
-                    <div class="g2">
-                      <div class="hc-f"><label>{{ $t('site.name') }}</label><el-input :placeholder="$t('site.johnMiller')" /></div>
-                      <div class="hc-f"><label>{{ $t('site.company') }}</label><el-input :placeholder="$t('site.companyName')" /></div>
-                      <div class="hc-f"><label>{{ $t('site.country') }}</label><el-input :placeholder="$t('site.australia')" /></div>
-                      <div class="hc-f"><label>{{ $t('site.email') }}</label><el-input :placeholder="$t('site.youCompanyCom')" /></div>
-                      <div class="hc-f"><label>{{ $t('site.phone') }}</label><el-input :placeholder="$t('site.phonePlaceholder')" /></div>
-                      <div class="hc-f"><label>{{ $t('site.industry') }}</label><el-input :placeholder="$t('site.mining')" /></div>
-                    </div>
-                    <div class="hc-f"><label>{{ $t('site.projectRequirements') }}</label>
-                      <el-input type="textarea" :rows="3" :placeholder="$t('site.capacityMaterialHandledSiteConditionsRequiredDeliveryDate')" /></div>
-                    <div class="hc-upload">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 16V6m0 0L8.5 9.5M12 6l3.5 3.5M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
-                      <div>
-                        <div style="font-size:12px;color:var(--txt)">{{ $t('site.dragAndDropOrClickToUpload') }}</div>
-                        <div style="font-size:10.5px;color:var(--txt-3);margin-top:4px">
-                          {{ $t('site.max20MbPdfDwgXlsJpgPng') }}</div>
-                      </div>
-                    </div>
-                    <div style="display:flex;justify-content:flex-end">
-                      <el-button class="hc-btn solid">{{ $t('site.sendInquiry') }}<i>→</i></el-button>
-                    </div>
-                  </div>
+                  <InquiryForm placement="home" />
                 </div>
               </section>
 
@@ -306,7 +287,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                 </div>
                 <div class="hc-foot-bot">
                   <span>{{ $t('site.copyright') }}</span>
-                  <span>{{ $t('site.privacyPolicyTermsOfUseNo139XiamenRoadBinhaiNewArea') }}</span>
+                  <span>{{ $t('contactUi.footerTerms') }} · {{ contactText(contactSettings?.contact.address, locale) }}</span>
                 </div>
               </footer>
 
@@ -315,6 +296,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 </template>
 
 <style scoped>
+.home-contact-single { grid-template-columns: 1fr; }
 .home-global .hc-global > div { min-width: 0; }
 .home-global .hc-h2, .home-global .hc-p, .home-global .hc-stat, .home-global .hc-stat-cap { overflow-wrap: anywhere; }
 .home-global .hc-p { white-space: pre-line; }

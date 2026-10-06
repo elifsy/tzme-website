@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import ImageUpload from './ImageUpload.vue'
@@ -148,13 +149,19 @@ onMounted(load)
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('admin.actions')" width="175" align="right" fixed="right">
+      <el-table-column :label="$t('admin.actions')" width="150" align="right" fixed="right">
         <template #default="{ row }">
-          <el-button link type="primary" @click="openEditor(row)">{{ $t('admin.edit') }}</el-button>
-          <el-button link :type="row.status === 'published' ? 'warning' : 'success'" @click="toggle(row)">
-            {{ $t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish') }}
-          </el-button>
-          <el-button link type="danger" @click="remove(row)">{{ $t('admin.delete') }}</el-button>
+          <div class="cert-table-actions">
+            <el-tooltip :content="$t('admin.edit')" :trigger="['hover', 'focus']" placement="top">
+              <el-button link type="primary" :icon="Edit" :aria-label="$t('admin.edit')" @click="openEditor(row)" />
+            </el-tooltip>
+            <el-tooltip :content="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" :trigger="['hover', 'focus']" placement="top">
+              <el-button link :type="row.status === 'published' ? 'warning' : 'success'" :icon="Promotion" :aria-label="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" @click="toggle(row)" />
+            </el-tooltip>
+            <el-tooltip :content="$t('admin.delete')" :trigger="['hover', 'focus']" placement="top">
+              <el-button link type="danger" :icon="Delete" :aria-label="$t('admin.delete')" @click="remove(row)" />
+            </el-tooltip>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -236,4 +243,6 @@ onMounted(load)
 .cert-name-cell small { margin-top: 3px; overflow: hidden; color: #8995a1; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .cert-thumbnail { width: 48px; height: 48px; flex: none; border-radius: 4px; }
 .cert-thumbnail-empty { display: grid; place-items: center; background: #eef3f8; color: #9baabd; font-size: 20px; }
+.cert-table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.cert-table-actions :deep(.el-button) { margin-left: 0; }
 </style>

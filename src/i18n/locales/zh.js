@@ -1,4 +1,6 @@
+import { contactZh } from '../contact.js'
 export default {
+  ...contactZh,
   "site": {
     "globalMapLitLocations": "已点亮 {count} 个位置",
     "skipToProjectContent": "跳过导航，进入页面内容",

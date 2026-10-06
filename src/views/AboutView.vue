@@ -7,12 +7,15 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import SiteNav from '../components/SiteNav.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
+import SubsidiaryCards from '../components/SubsidiaryCards.vue'
+import { useContactSettings } from '../services/contactSettings.js'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { useGlobalReach } from '../services/globalReach.js'
 import { globalReachText } from '../data/globalReach.js'
 const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
+const { contactSettings } = useContactSettings()
 const { globalReach, loadGlobalReach } = useGlobalReach()
 const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
 const { certifications, loadCertifications } = useCertificationCatalog()
@@ -110,30 +113,11 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
           <div class="hc-shead">
             <div class="l">
               <span class="hc-kick">{{ $t('site.facilities') }}</span>
-              <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.threeSitesInTianjin') }}</h2>
+              <h2 class="hc-h2" style="margin-top:18px">{{ $t('contactUi.facilitiesTitle') }}</h2>
             </div>
             <span class="hc-lnk">{{ $t('site.bookAFactoryVisit') }}<i>→</i></span>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
-            <div style="padding:26px 26px;background:var(--navy-2);border:1px solid var(--line-d);border-radius:6px">
-              <div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em">{{
-                $t('site.headquartersTanggu') }}</div>
-              <div style="font-size:12.5px;color:var(--txt-2);margin-top:12px;line-height:1.8">{{
-                $t('site.no139XiamenRoadBinhaiNewArea') }}<br />{{ $t('site.tangguTianjin300459China') }}</div>
-            </div>
-            <div style="padding:26px 26px;background:var(--navy-2);border:1px solid var(--line-d);border-radius:6px">
-              <div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em">{{
-                $t('site.tianjinZhenhanMechanicalEquipment') }}</div>
-              <div style="font-size:12.5px;color:var(--txt-2);margin-top:12px;line-height:1.8">{{
-                $t('site.no9XuriStreetYingchengIndustrialPark') }}<br />{{ $t('site.hanguBinhai300840') }}</div>
-            </div>
-            <div style="padding:26px 26px;background:var(--navy-2);border:1px solid var(--line-d);border-radius:6px">
-              <div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em">{{
-                $t('site.tianjinGreenlandMechanicalEquipment') }}</div>
-              <div style="font-size:12.5px;color:var(--txt-2);margin-top:12px;line-height:1.8">{{
-                $t('site.lingangPortArea') }}<br />{{ $t('site.tianjinFreeTradeZone') }}</div>
-            </div>
-          </div>
+          <SubsidiaryCards v-if="contactSettings" include-headquarters about-only />
         </div>
       </section>
 

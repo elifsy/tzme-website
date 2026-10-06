@@ -20,6 +20,9 @@ import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
 import AdminEditorPanel from "../components/AdminEditorPanel.vue";
 import ImageUpload from "../components/ImageUpload.vue";
+import ContactSettingsManager from "../components/ContactSettingsManager.vue";
+import InquiriesManager from "../components/InquiriesManager.vue";
+import EmailNotificationsManager from "../components/EmailNotificationsManager.vue";
 import { sanitizeRichText } from "../utils/richText.js";
 import { MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
 import { useArticleCatalog } from "../services/articles.js";
@@ -43,6 +46,9 @@ const certManager = ref(null);
 const industryManager = ref(null);
 const projectManager = ref(null);
 const globalManager = ref(null);
+const contactManager = ref(null);
+const inquiriesManager = ref(null);
+const mailManager = ref(null);
 const { industries: industryRecords, loadIndustries } = useIndustryCatalog();
 const loading = ref(true);
 const modal = ref(false);
@@ -79,6 +85,8 @@ const titles = {
   articles: "admin.insights",
   certifications: "admin.certifications",
   inquiries: "admin.enquiries",
+  contact: "contactAdmin.title",
+  mail: "mailAdmin.title",
 };
 const navItems = [
   { key: "overview", label: "admin.overview", icon: "DataBoard" },
@@ -89,6 +97,8 @@ const navItems = [
   { key: "articles", label: "admin.insights", icon: "Document" },
   { key: "certifications", label: "admin.certifications", icon: "CircleCheckFilled" },
   { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
+  { key: "contact", label: "contactAdmin.title", icon: "EditPen" },
+  { key: "mail", label: "mailAdmin.title", icon: "Promotion" },
 ];
 const publishedProducts = computed(
   () => products.value.filter((item) => item.status === "published").length,
@@ -223,12 +233,6 @@ async function toggle(item, type) {
     ElMessage.success(t(record.status === 'published' ? 'admin.contentPublished' : 'admin.movedToDrafts'));
   } catch { ElMessage.error(t('admin.apiWriteFailed')); }
 }
-async function updateInquiry(item, status) {
-  try {
-    await apiRequest('/api/inquiries/' + item.id, { method: 'PUT', body: { status } });
-    await loadInquiries(); ElMessage.success(t('admin.enquiryUpdated'));
-  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
-}
 
 function navigate(key) {
   router.push(`/admin/${key === "overview" ? "" : key}`);
@@ -238,6 +242,9 @@ function refresh() {
   else if (tab.value === 'industries') industryManager.value?.load();
   else if (tab.value === 'projects') projectManager.value?.load();
   else if (tab.value === 'global') globalManager.value?.load();
+  else if (tab.value === 'contact') contactManager.value?.load();
+  else if (tab.value === 'inquiries') inquiriesManager.value?.load();
+  else if (tab.value === 'mail') mailManager.value?.load();
   else { load(); loadIndustries(); }
 }
 onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
@@ -264,6 +271,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           <el-badge
             v-if="item.key === 'inquiries' && newInquiries"
             :value="newInquiries"
+            :max="99"
+            :aria-label="$t('contactAdmin.newInquiryCount', { count: newInquiries })"
             class="menu-badge"
           />
         </el-menu-item>
@@ -318,6 +327,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 : tab === 'industries' ? 'admin.industryManagementDescription'
                 : tab === 'projects' ? 'admin.projectManagementDescription'
                 : tab === 'global' ? 'admin.homeGlobalDescription'
+                : tab === 'contact' ? 'contactAdmin.description'
+                : tab === 'mail' ? 'mailAdmin.description'
                 : 'admin.manageYourCorporateWebsiteContentAndEnquiries') }}
             </p>
           </div>
@@ -674,74 +685,9 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
         <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
 
-        <el-card
-          v-else-if="tab === 'inquiries'"
-          shadow="never"
-          class="table-card"
-        >
-          <template #header
-            ><div class="card-heading">
-              <div>
-                <strong>{{ $t('admin.customerEnquiries') }}</strong
-                ><small>{{
-                  $t('admin.messagesSubmittedThroughTheWebsiteContactForm')
-                }}</small>
-              </div>
-              <el-tag effect="plain" type="info"
-                >{{ inquiries.length }} {{ $t('admin.records') }}</el-tag
-              >
-            </div></template
-          >
-          <el-table
-            :data="inquiries"
-            v-loading="loading"
-            row-key="id"
-            :empty-text="$t('admin.noEnquiriesReceivedYet')"
-          >
-            <el-table-column :label="$t('admin.contact')" min-width="190"
-              ><template #default="{ row }"
-                ><strong>{{ row.name }}</strong
-                ><small class="table-sub"
-                  >{{ row.email }} · {{ row.phone }}</small
-                ></template
-              ></el-table-column
-            >
-            <el-table-column :label="$t('admin.companyAndIndustry')" min-width="190"
-              ><template #default="{ row }"
-                >{{ row.company
-                }}<small class="table-sub"
-                  >{{ row.country }} · {{ row.industry }}</small
-                ></template
-              ></el-table-column
-            >
-            <el-table-column
-              prop="requirements"
-              :label="$t('admin.requirements')"
-              min-width="220"
-              show-overflow-tooltip
-            />
-            <el-table-column :label="$t('admin.received')" width="130"
-              ><template #default="{ row }">{{
-                row.createdAt?.slice(0, 10)
-              }}</template></el-table-column
-            >
-            <el-table-column :label="$t('admin.status')" width="140"
-              ><template #default="{ row }"
-                ><el-tag
-                  :type="row.status === 'new' ? 'warning' : 'success'"
-                  class="clickable-tag"
-                  @click="
-                    updateInquiry(
-                      row,
-                      row.status === 'new' ? 'contacted' : 'new',
-                    )
-                  "
-                  >{{ $t(row.status === "new" ? "admin.new" : "admin.contacted") }}</el-tag
-                ></template
-              ></el-table-column
-            >
-          </el-table>
-        </el-card>
+        <InquiriesManager v-else-if="tab === 'inquiries'" ref="inquiriesManager" />
+        <ContactSettingsManager v-else-if="tab === 'contact'" ref="contactManager" />
+        <EmailNotificationsManager v-else-if="tab === 'mail'" ref="mailManager" />
 
         <footer class="admin-footer">
           {{ $t('admin.tzmeContentManagement') }}
@@ -926,6 +872,9 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   background: transparent;
 }
 .admin-menu .el-menu-item {
+  display: flex;
+  align-items: center;
+  line-height: 42px;
   height: 42px;
   margin: 3px 0;
   border-radius: 5px;
@@ -949,8 +898,24 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 }
 .menu-badge {
   margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 20px;
+  line-height: 1;
 }
 .menu-badge .el-badge__content {
+  position: static;
+  transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  min-width: 20px;
+  line-height: 20px;
+  padding: 0 6px;
+  box-sizing: border-box;
   border: 0;
 }
 .admin-sidebar-foot {
@@ -1362,6 +1327,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   .admin-menu .el-menu-item .el-icon {
     margin: 0;
   }
+  .admin-menu .menu-badge { position: absolute; right: 2px; top: 2px; height: 14px; margin-left: 0; }
+  .admin-menu .menu-badge .el-badge__content { height: 14px; min-width: 14px; line-height: 14px; padding: 0 4px; font-size: 10px; }
   .admin-main {
     margin-left: 58px;
   }

@@ -10,8 +10,11 @@
 | `../server/src/main/resources/db/02-data.sql` | Java 服务使用的初始化数据脚本 |
 | `../server/src/main/resources/db/03-comments.sql` | Java 服务使用的中文备注迁移脚本 |
 | `migrations/2026-10-column-comments.sql` | 已有数据库单独补充中文表和字段备注 |
+| `migrations/2026-10-contact-inquiries.sql` | 联系配置、咨询通知字段及附件表升级，保留已保存数据 |
+| `../server/src/main/resources/db/04-contact.sql` | Java 启动时执行的联系与咨询迁移 |
 | `baseline/records.json` | 可阅读的基础业务数据，包含现有 MySQL 的修改 |
 | `baseline/site-settings.json` | 官网图片地址、统计数字和联系方式等基础配置 |
+| `baseline/contact-settings.json` | 中英文联系方式、下属企业、咨询表单与附件限制；SMTP 通知默认关闭 |
 | `snapshots/` | 本机备份，已从 Git 排除 |
 
 业务数据包含 9 个产品、4 篇新闻、5 个行业、4 项资质、3 个项目、全球业务配置，以及中英文官网内容和 241 个地图位置选项。咨询记录使用数据库中的实际记录，没有生成示例咨询。
@@ -25,6 +28,14 @@ powershell -ExecutionPolicy Bypass -File scripts/database.ps1 -Action import -Sq
 ```
 
 Java 默认也会在启动时执行备注迁移。`app_migrations` 中的 `2026-10-column-comments-v1` 标记确保该迁移只执行一次。备注迁移保持原有字段类型、长度、空值约束、默认值和索引定义。
+
+联系与咨询功能升级：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/database.ps1 -Action import -SqlFile database/migrations/2026-10-contact-inquiries.sql
+```
+
+迁移新增咨询内部备注、邮件状态及附件元数据，初始化 `site_settings.contact`。它先判断字段和配置是否存在，重复执行不会覆盖后台修改；所有新增字段均包含中文备注。长文本使用 TEXT，避免 MySQL 单行长度限制。
 
 ## 新环境部署
 
@@ -88,7 +99,7 @@ node scripts/export-database.mjs
 npm run db:build
 ```
 
-这会读取 `baseline/records.json`、`baseline/site-settings.json`、`src/i18n/locales/en.js`、`zh.js` 和地图选项文件，生成 `install.sql` 及 Java 的 SQL 资源。
+这会读取 `baseline/records.json`、`baseline/site-settings.json`、`baseline/contact-settings.json`、`src/i18n/locales/en.js`、`zh.js` 和地图选项文件，生成 `install.sql` 及 Java 的 SQL 资源。
 
 需要将后台后续保存的数据更新为新的基础数据时，先导出数据库，再执行：
 
@@ -97,6 +108,8 @@ node scripts/build-database.mjs --refresh-baseline
 ```
 
 此命令会更新基础 JSON 和 SQL 文件，应在提交前检查内容。它不会修改数据库，已有数据库也不会因重新生成 SQL 而被覆盖。完整备份和上传图片用于迁移已有站点；基础 SQL 用于初始化新站点。
+
+更新联系配置基础数据时会自动清空 SMTP 密码并关闭邮件通知，避免将凭据提交 Git 或在新环境误发通知。完整数据库备份仍包含实际配置，必须妥善保存。咨询附件文件不包含在 SQL 中，迁移时请同时复制上传目录的 `inquiries/`。
 
 ## 旧版浏览器修改和图片
 

@@ -96,6 +96,9 @@ npm run db:build
 - 项目：卡片全部字段、中英文富文本详情、图片、排序，首页最多 3 个。
 - 全球业务：官网首页和关于我们共用配置，支持图片或点亮地图，中英文位置名称，最多 100 个位置。
 - 咨询：客户提交到数据库，后台查看并维护处理状态。
+- 联系与咨询配置：维护中英文总部信息、联系邮箱、下属企业及排序，统一更新首页、联系我们与关于我们；配置咨询表单显示位置、开关、必填项、按钮文案和提交提示。
+- 咨询附件：官网真实上传和下载，允许类型、单个文件大小（1～50 MB）、数量（1～10 个）及开关均由后台配置；后台只读查看客户信息和附件，仅修改处理状态，服务端也拒绝修改客户提交内容。
+- 邮件通知：独立入口 `/admin/mail`，配置 SMTP 发件邮箱及最多 20 个收件邮箱，可分别启用。咨询先保存，通知异步发送并最多自动尝试 3 次；在发送记录中查看状态并再次通知。
 
 地图轮廓为本地 SVG 渲染资源。位置选项初始化后由数据库提供，运行时不依赖第三方地图服务。增加语言时，在 `src/i18n/locales/` 新增语言文件并注册，同时为数据库业务字段和 `site_settings.translations` 增加相应语言内容。
 
@@ -116,6 +119,18 @@ npm run db:build
 
 已有图片会继续显示。上传完成后需要保存当前表单，图片才会应用到官网；移除图片只会清空表单中的图片引用。图片文件通过 Java 上传接口保存在 `TZME_UPLOAD_DIR`，数据库保存图片地址。部署与备份时需同时保留上传目录，单独导入 SQL 不包含上传的图片文件。
 
+## 联系与咨询配置
+
+联系配置：`/admin/contact`；咨询管理：`/admin/inquiries`；邮件通知：`/admin/mail`。初始配置沿用目前官网信息，保存在 `database/baseline/contact-settings.json`，运行时读取 MySQL 中的 `site_settings`，标识为 `contact`。
+
+联系方式与通知收件邮箱分别维护。联系邮箱公开展示在网站；在独立的“邮件通知”功能中配置 SMTP 服务器、端口、连接安全方式、发件邮箱、账号和密码或授权码，再选择收件邮箱并启用通知。保存后的密码不回显，留空保留已有密码，也可以勾选清除。两处配置分别保存，保留对方已保存的内容。
+
+通知每 15 秒从数据库队列处理，失败最多尝试 3 次；关闭通知不会影响咨询入库。邮件正文包含客户原始咨询内容与附件名称，附件通过后台下载。在“邮件通知 → 发送记录”中点击“再次通知”，发送给当前启用的邮箱。SMTP 尚未配置时默认不发送邮件。发送结果只更新通知字段，允许同时维护咨询的处理状态。
+
+附件通过 `/api/inquiry-attachments` 上传，文件保存在 `TZME_UPLOAD_DIR/inquiries/`，元数据保存在 `inquiry_attachments`。服务器核对文件扩展名、格式特征、大小与关联数量。上传目录需与数据库一起备份。Java 和 Nginx 的请求上限设为 51 MB；普通后台图片仍限制为 5 MB。
+
+已有数据库升级脚本为 `database/migrations/2026-10-contact-inquiries.sql`，可重复执行并保留已保存配置。Java 启动时也会自动执行迁移；修改后请重新启动 Java 服务。本机迁移前的备份为 `database/snapshots/before-contact.sql`。
+
 ## API
 
 | 数据 | 接口 |
@@ -127,7 +142,11 @@ npm run db:build
 | 项目 | `GET/POST /api/projects`，`PUT/DELETE /api/projects/{id}` |
 | 全球业务 | `GET/PUT /api/home-global` |
 | 官网内容 | `GET /api/site-settings` |
-| 咨询 | `GET/POST /api/inquiries`，`PUT /api/inquiries/{id}` |
+| 咨询 | `GET/POST /api/inquiries`，`PUT /api/inquiries/{id}` 仅接受 `{ "status": "new/contacted/closed" }` |
+| 咨询再次通知 | `POST /api/inquiries/{id}/notify` |
+| 联系配置 | `GET /api/contact-settings`，`GET/PUT /api/contact-settings/admin` |
+| 邮件通知配置 | `GET/PUT /api/mail-settings`，密码不回显 |
+| 咨询附件 | `POST /api/inquiry-attachments`，`GET /api/inquiry-attachments/{id}` |
 | 图片 | `POST /api/uploads/images`，`GET /api/uploads/images/{filename}` |
 
 管理后台现阶段沿用原有内容管理功能，尚未实现登录和权限控制。
