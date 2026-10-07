@@ -4,15 +4,18 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import SubsidiaryCards from './SubsidiaryCards.vue'
+import SocialLinksEditor from './SocialLinksEditor.vue'
 import { apiRequest } from '../services/api.js'
 import { attachmentTypes, inquiryFieldLabels, saveContactSettings } from '../services/contactSettings.js'
 import { availableLocales } from '../i18n/locales/index.js'
+import { ensureSocialLinkLocales, MAX_SOCIAL_LINKS, socialPlatforms, validSocialIcon, validSocialUrl } from '../data/socialLinks.js'
 import '../style/admin-editor.css'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const form = ref(null)
 const loading = ref(false)
 const saving = ref(false)
+const socialUploading = ref(false)
 const activeTab = ref('contact')
 const editingLocale = ref(locale.value)
 const subsidiaryPreviewPage = ref('contact')
@@ -23,11 +26,11 @@ const bilingualContact = ['headquarters', 'address', 'port']
 const bilingualForm = ['title', 'buttonText', 'successText', 'closedText', 'privacyText']
 let disposed = false
 async function load() {
-  if (loading.value || saving.value) return
+  if (loading.value || saving.value || socialUploading.value) return
   loading.value = true; error.value = ''
   try {
     const value = await apiRequest('/api/contact-settings/admin')
-    if (!disposed) { form.value = value; original.value = JSON.stringify(value) }
+    if (!disposed) { form.value = ensureSocialLinkLocales(value, availableLocales.map(item => item.code)); original.value = JSON.stringify(form.value) }
   } catch { if (!disposed) error.value = t('contactAdmin.loadFailed') }
   finally { if (!disposed) loading.value = false }
 }
@@ -51,10 +54,16 @@ function validate() {
   }
   if (value.contact.emails.some(email => !validEmail(email)) || value.subsidiaries.some(item => item.email && !validEmail(item.email))) return t('contactAdmin.emailInvalid')
   if (value.upload.enabled && !value.upload.allowedExtensions.length) return t('contactAdmin.selectTypes')
+  for (const links of Object.values(value.contact.socialLinks)) {
+    if (!Array.isArray(links) || links.length > MAX_SOCIAL_LINKS || links.some(item => !socialPlatforms.includes(item.platform) || (item.enabled && !item.url.trim()) || (item.url.trim() && !validSocialUrl(item.url.trim())))) return t('contactAdmin.socialInvalid', { max: MAX_SOCIAL_LINKS })
+    if (links.some(item => item.platform === 'link' && item.enabled && !item.label.trim())) return t('contactAdmin.socialCustomNameRequired')
+    if (links.some(item => !validSocialIcon(item.icon ?? ''))) return t('contactAdmin.socialCustomIconInvalid')
+  }
   return ''
 }
 async function save() {
   if (!form.value || saving.value || loading.value) return
+  if (socialUploading.value) { ElMessage.info(t('contactAdmin.socialIconUploading')); return }
   const message = validate()
   if (message) { ElMessage.warning(message); return }
   saving.value = true
@@ -76,7 +85,7 @@ defineExpose({ load })
     <el-alert v-if="error" :title="error" type="error" show-icon :closable="false"><el-button @click="load">{{ $t('admin.retryDatabase') }}</el-button></el-alert>
     <el-form v-if="form" label-position="top" :disabled="saving" class="contact-settings-form" @submit.prevent="save">
       <div class="contact-settings-toolbar">
-        <el-tabs v-model="activeTab"><el-tab-pane v-for="key in ['contact', 'subsidiaries', 'form']" :key="key" :name="key" :label="$t('contactAdmin.tabs.' + key)" /></el-tabs>
+        <el-tabs v-model="activeTab"><el-tab-pane v-for="key in ['contact', 'subsidiaries', 'social', 'form']" :key="key" :name="key" :label="$t('contactAdmin.tabs.' + key)" /></el-tabs>
         <el-radio-group v-model="editingLocale" size="small"><el-radio-button v-for="language in availableLocales" :key="language.code" :value="language.code">{{ language.label }}</el-radio-button></el-radio-group>
       </div>
       <div v-show="activeTab === 'contact'" class="contact-settings-grid">
@@ -118,6 +127,7 @@ defineExpose({ load })
           </aside>
         </div>
       </div>
+      <SocialLinksEditor v-show="activeTab === 'social'" v-model="form.contact.socialLinks[editingLocale]" :locale-code="editingLocale" :disabled="saving" :active="activeTab === 'social'" @uploading="socialUploading = $event" />
       <div v-show="activeTab === 'form'" class="contact-settings-grid">
         <AdminEditorPanel step="01" :title="$t('contactAdmin.formSettings')">
           <div class="contact-settings-switches"><el-checkbox v-model="form.form.enabled">{{ $t('contactAdmin.formEnabled') }}</el-checkbox><el-checkbox v-model="form.form.showOnHome">{{ $t('contactAdmin.showOnHome') }}</el-checkbox><el-checkbox v-model="form.form.showOnContact">{{ $t('contactAdmin.showOnContact') }}</el-checkbox></div>
@@ -132,7 +142,7 @@ defineExpose({ load })
           <el-form-item :label="$t('contactAdmin.maxFiles')"><el-input-number v-model="form.upload.maxFiles" :min="1" :max="10" :precision="0" controls-position="right" /></el-form-item>
         </AdminEditorPanel>
       </div>
-      <div class="contact-settings-footer"><span>{{ $t(dirty ? 'contactAdmin.unsaved' : 'admin.editorSaveNote') }}</span><el-button type="primary" :loading="saving" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}</el-button></div>
+      <div class="contact-settings-footer"><span>{{ $t(socialUploading ? 'contactAdmin.socialIconUploading' : dirty ? 'contactAdmin.unsaved' : 'admin.editorSaveNote') }}</span><el-button type="primary" :loading="saving" :disabled="socialUploading" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}</el-button></div>
     </el-form>
   </div>
 </template>

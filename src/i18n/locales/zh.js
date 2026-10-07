@@ -444,6 +444,7 @@ export default {
     "imageProjectHint": "建议使用 16:9 横图，保留设备与现场全貌，主体居中并留出裁切空间。",
     "imageCertificateHint": "建议使用 A4 竖图，保留证书原始比例，确保文字清晰。",
     "imageMapHint": "建议使用横向地图，透明 PNG 更适合深色背景。",
+    "imageSocialIconHint": "建议使用正方形透明 PNG，图标居中并保留少量留白。深色页脚建议使用浅色图标，避免细小文字；未上传时使用默认链接图标。",
     "imageBodyHint": "建议保持原图比例，高度可按内容调整。",
     "imageFormatHint": "支持 JPG / PNG / GIF / WebP，单张不超过 5 MB。推荐尺寸供参考，也可上传其他尺寸。",
     "imageSaveHint": "上传完成后点击保存，图片才会应用到官网。",

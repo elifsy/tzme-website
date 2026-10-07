@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { localeMessages } from '../src/i18n/locales/index.js'
+import { initialSocialLinks } from '../src/data/socialLinks.js'
 
 const target = 'database/baseline/contact-settings.json'
 if (!existsSync(target)) {
@@ -12,6 +13,7 @@ if (!existsSync(target)) {
       headquarters: translated('headquartersTanggu'), address: joined('no139XiamenRoadBinhaiNewArea', 'tangguTianjin300459China'),
       phone: values.text_1bdbc09db8a1, fax: values.text_c9d5e797c268,
       emails: values.text_da9ede954e47.split(/\s*[·;,]\s*/).filter(Boolean), website: values.text_24e69a35b122, port: translated('10KmFromTianjinPort'),
+      socialLinks: initialSocialLinks(),
     },
     subsidiaries: [
       { id: 'zhenhan', name: translated('tianjinZhenhanMechanicalEquipment'), address: translated('no9XuriStreetYingchengIndustrialParkHanguBinhai300840'), phone: '', email: '', website: '', enabled: true, showOnAbout: true },

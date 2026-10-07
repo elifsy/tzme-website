@@ -5,6 +5,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
@@ -150,7 +151,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
           <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
           <span class="tag">{{ $t('site.tianjinHeavySteelMachineryEquipmentCoLtd') }}</span>
           <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-          <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
+          <SocialLinks />
         </div>
       </footer>
 

@@ -5,6 +5,7 @@ import { useSiteContent } from '../services/website.js'
 import { contactText, contactWebsiteUrl, useContactSettings } from '../services/contactSettings.js'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
@@ -50,6 +51,7 @@ useDesignPage('hc-contact', page)
         <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
         <span v-if="contact" class="tag">{{ contact.phone }} · {{ contact.emails.join(' · ') }}</span>
         <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
+        <SocialLinks />
       </div></footer>
     </div>
   </main>

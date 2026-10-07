@@ -9,6 +9,7 @@ import { localizedField } from '../services/catalog.js'
 import { articleCategoryKey, articleDate, articlePath, useArticleCatalog } from '../services/articles.js'
 import { sanitizeRichText } from '../utils/richText.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 
 const page = ref(null)
@@ -85,6 +86,7 @@ watch(() => route.params.id, () => window.scrollTo({ top: 0, behavior: 'instant'
       <footer class="hc-foot"><div class="hc-foot-in">
         <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span><span class="tag">{{ $t('site.newsroom') }}</span>
         <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
+        <SocialLinks />
       </div></footer>
     </div>
 

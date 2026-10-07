@@ -78,33 +78,40 @@ onBeforeUnmount(() => { disposed = true; cancelUpload() })
       </el-image>
       <div v-else class="image-upload-empty"><el-icon><Picture /></el-icon><span>{{ $t('admin.editorImagePreview') }}</span></div>
     </div>
-    <el-upload drag :accept="IMAGE_ACCEPT" :show-file-list="false" :before-upload="beforeUpload" :http-request="upload"
-      :disabled="disabled || uploading || !active" class="image-upload-picker">
-      <el-button type="primary" plain :loading="uploading" :disabled="disabled || uploading || !active">
-        <el-icon v-if="!uploading"><UploadFilled /></el-icon>{{ $t(modelValue ? 'admin.imageReplace' : 'admin.imageChoose') }}
-      </el-button>
-      <span class="image-upload-drop-hint">{{ $t('admin.imageDropHint') }}</span>
-    </el-upload>
-    <div v-if="modelValue" class="image-upload-current" aria-live="polite">
-      <span v-if="dimensions">{{ $t('admin.imageCurrentDimensions', dimensions) }}</span>
-      <el-button v-if="clearable" text type="danger" size="small" :disabled="disabled || uploading || !active" @click="emit('update:modelValue', '')">
-        {{ $t('admin.imageRemove') }}
-      </el-button>
-    </div>
-    <div class="image-upload-guidance">
-      <strong>{{ $t('admin.imageRecommendation', recommendation) }}</strong>
-      <p>{{ $t(recommendation.hint) }}</p>
-      <p>{{ $t('admin.imageFormatHint') }}</p>
-      <p>{{ $t('admin.imageSaveHint') }}</p>
+    <div class="image-upload-details">
+      <el-upload drag :accept="IMAGE_ACCEPT" :show-file-list="false" :before-upload="beforeUpload" :http-request="upload"
+        :disabled="disabled || uploading || !active" class="image-upload-picker">
+        <el-button type="primary" plain :loading="uploading" :disabled="disabled || uploading || !active">
+          <el-icon v-if="!uploading"><UploadFilled /></el-icon>{{ $t(modelValue ? 'admin.imageReplace' : 'admin.imageChoose') }}
+        </el-button>
+        <span class="image-upload-drop-hint">{{ $t('admin.imageDropHint') }}</span>
+      </el-upload>
+      <div v-if="modelValue" class="image-upload-current" aria-live="polite">
+        <span v-if="dimensions">{{ $t('admin.imageCurrentDimensions', dimensions) }}</span>
+        <el-button v-if="clearable" text type="danger" size="small" :disabled="disabled || uploading || !active" @click="emit('update:modelValue', '')">
+          {{ $t('admin.imageRemove') }}
+        </el-button>
+      </div>
+      <div class="image-upload-guidance">
+        <strong>{{ $t('admin.imageRecommendation', recommendation) }}</strong>
+        <p>{{ $t(recommendation.hint) }}</p>
+        <p>{{ $t('admin.imageFormatHint') }}</p>
+        <p>{{ $t('admin.imageSaveHint') }}</p>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .image-upload { display: flex; flex-direction: column; gap: 10px; width: 100%; min-width: 0; }
+.image-upload-details { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .image-upload-preview { height: 160px; overflow: hidden; border: 1px solid #dfe7f0; border-radius: 9px; background: #f3f6fa; }
 .image-upload-certification .image-upload-preview { height: 240px; }
 .image-upload-map .image-upload-preview { height: auto; aspect-ratio: 16 / 7; }
+.image-upload-socialIcon { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.image-upload-socialIcon .image-upload-preview { display: flex; align-items: center; justify-content: center; height: auto; min-height: 128px; background: #06131c; }
+.image-upload-socialIcon .image-upload-empty { color: #c1cfdb; }
+.image-upload-socialIcon .image-upload-preview > .el-image { width: 64px; height: 64px; flex-shrink: 0; }
 .image-upload-preview > .el-image { display: block; width: 100%; height: 100%; }
 .image-upload-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; height: 100%; padding: 16px; box-sizing: border-box; color: #52657c; font-size: 12px; text-align: center; }
 .image-upload-empty .el-icon { font-size: 28px; }
@@ -117,4 +124,8 @@ onBeforeUnmount(() => { disposed = true; cancelUpload() })
 .image-upload-guidance { padding: 12px; border: 1px solid #dce7f5; border-radius: 8px; background: #f2f7fd; }
 .image-upload-guidance strong { display: block; color: #234c7e; font-size: 12px; font-weight: 600; line-height: 1.6; }
 .image-upload-guidance p { margin: 5px 0 0; color: #455b73; font-size: 12px; line-height: 1.7; }
+@media (max-width: 600px) {
+  .image-upload-socialIcon { grid-template-columns: minmax(0, 1fr); }
+  .image-upload-socialIcon .image-upload-preview { height: 128px; }
+}
 </style>

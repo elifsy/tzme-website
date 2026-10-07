@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
@@ -283,7 +284,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                       @click="navigateLink($event, item.path)">{{ item.label }}</a>
                   </nav>
                   <LanguageSwitcher style="color:var(--txt-2)" />
-                  <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
+                  <SocialLinks />
                 </div>
                 <div class="hc-foot-bot">
                   <span>{{ $t('site.copyright') }}</span>

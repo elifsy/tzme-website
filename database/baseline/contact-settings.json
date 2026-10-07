@@ -18,6 +18,60 @@
     "port": {
       "en": "10 km from Tianjin Port",
       "zh": "距天津港 10 公里"
+    },
+    "socialLinks": {
+      "en": [
+        {
+          "id": "social-en-linkedin",
+          "platform": "linkedin",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-en-youtube",
+          "platform": "youtube",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-en-x",
+          "platform": "x",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        }
+      ],
+      "zh": [
+        {
+          "id": "social-zh-wechat",
+          "platform": "wechat",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-zh-weibo",
+          "platform": "weibo",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-zh-bilibili",
+          "platform": "bilibili",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        }
+      ]
     }
   },
   "subsidiaries": [

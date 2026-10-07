@@ -22,16 +22,12 @@ export function useDesignPage(pageKey, page) {
     const root = page.value
     const target = event.target instanceof Element ? event.target : null
     if (!root || !target || target.closest('[data-site-nav]')) return
-    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico,.hc-soc>span')
+    const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico')
     if (!control || !root.contains(control)) return
     event.preventDefault()
 
     if (control.matches('.hc-logo')) return goTo('/')
     if (control.matches('.hc-ico')) return goTo('/solutions')
-    if (control.matches('.hc-soc>span')) {
-      ElMessage.info(t('contactUi.contactEmailNotice', { email: contactEmail() }))
-      return
-    }
 
     const label = (control.dataset.action || control.textContent).replace(/→/g, '').trim().toLowerCase()
     if (label.includes('all project')) return goTo('/projects')
@@ -48,7 +44,7 @@ export function useDesignPage(pageKey, page) {
   function onKeydown(event) {
     if (!['Enter', ' '].includes(event.key)) return
     if (!(event.target instanceof Element) || event.target.closest('[data-site-nav],a,button,input,textarea,select')) return
-    if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico,.hc-soc>span')) onClick(event)
+    if (event.target.matches('.hc-logo,.hc-lnk,.hc-ico')) onClick(event)
   }
 
   onMounted(() => {
@@ -60,7 +56,7 @@ export function useDesignPage(pageKey, page) {
     })
     root?.addEventListener('click', onClick)
     root?.addEventListener('keydown', onKeydown)
-    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico,.hc-soc>span').forEach((control) => {
+    root?.querySelectorAll('.hc-logo,.hc-lnk,.hc-ico').forEach((control) => {
       if (control.closest('[data-site-nav]') || control.matches('a,button')) return
       control.tabIndex = 0
       control.setAttribute('role', 'link')

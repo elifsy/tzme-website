@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { apiRequest, dataErrors, registerDataLoader } from './api.js'
+import { validSocialUrl } from '../data/socialLinks.js'
 
 const settings = ref(null)
 export async function loadContactSettings() {
@@ -18,6 +19,13 @@ registerDataLoader('/api/contact-settings', loadContactSettings)
 export function useContactSettings() { return { contactSettings: settings, loadContactSettings } }
 export async function saveContactSettings(value) {
   const body = Object.fromEntries(['contact', 'subsidiaries', 'form', 'upload'].map(key => [key, value[key]]))
+  body.contact = {
+    ...body.contact,
+    socialLinks: Object.fromEntries(Object.entries(body.contact.socialLinks || {}).map(([code, links]) => [code, links.map(item => {
+      const url = item.url.trim()
+      return { ...item, label: item.label.trim(), icon: (item.icon || '').trim(), url: validSocialUrl(url) ? new URL(url).href : url }
+    })])),
+  }
   const saved = await apiRequest('/api/contact-settings/admin', { method: 'PUT', body })
   const { notification, ...publicSettings } = saved
   settings.value = publicSettings

@@ -12,9 +12,11 @@
 | `migrations/2026-10-column-comments.sql` | 已有数据库单独补充中文表和字段备注 |
 | `migrations/2026-10-contact-inquiries.sql` | 联系配置、咨询通知字段及附件表升级，保留已保存数据 |
 | `../server/src/main/resources/db/04-contact.sql` | Java 启动时执行的联系与咨询迁移 |
+| `migrations/2026-10-social-links.sql` | 初始化各语言页脚社交链接，仅补充缺失配置 |
+| `../server/src/main/resources/db/05-social-links.sql` | Java 启动时执行的社交链接迁移 |
 | `baseline/records.json` | 可阅读的基础业务数据，包含现有 MySQL 的修改 |
 | `baseline/site-settings.json` | 官网图片地址、统计数字和联系方式等基础配置 |
-| `baseline/contact-settings.json` | 中英文联系方式、下属企业、咨询表单与附件限制；SMTP 通知默认关闭 |
+| `baseline/contact-settings.json` | 中英文联系方式、下属企业、各语言社交链接、咨询表单与附件限制；SMTP 通知默认关闭 |
 | `snapshots/` | 本机备份，已从 Git 排除 |
 
 业务数据包含 9 个产品、4 篇新闻、5 个行业、4 项资质、3 个项目、全球业务配置，以及中英文官网内容和 241 个地图位置选项。咨询记录使用数据库中的实际记录，没有生成示例咨询。
@@ -36,6 +38,10 @@ powershell -ExecutionPolicy Bypass -File scripts/database.ps1 -Action import -Sq
 ```
 
 迁移新增咨询内部备注、邮件状态及附件元数据，初始化 `site_settings.contact`。它先判断字段和配置是否存在，重复执行不会覆盖后台修改；所有新增字段均包含中文备注。长文本使用 TEXT，避免 MySQL 单行长度限制。
+
+页脚社交链接升级：Java 重启时自动执行 `05-social-links.sql`，也可以单独导入 `migrations/2026-10-social-links.sql`。该脚本只在 `site_settings` 中 `id='contact'` 的配置缺少 `contact.socialLinks` 时补充语言列表，保留原有配置和后台修改。初始条目不包含任何公司账号地址，默认关闭展示；在后台分别填写中文和英文链接后开启并保存。
+
+“其他链接”的自定义名称保存在条目的 `label` 中，自定义图标上传地址保存在 `icon` 中，各语言独立维护。旧条目缺少 `icon` 时使用默认图标，无需变更数据库表结构。图片文件保存在上传目录，部署时需连同数据库一起备份和迁移。
 
 ## 新环境部署
 

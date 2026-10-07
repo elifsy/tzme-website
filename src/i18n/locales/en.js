@@ -444,6 +444,7 @@ export default {
     "imageProjectHint": "Use a 16:9 landscape image showing the equipment and site, with the subject centered and room for cropping.",
     "imageCertificateHint": "Use an A4 portrait image. Preserve the certificate's original proportions and keep the text clear.",
     "imageMapHint": "Use a landscape map. A transparent PNG works well on the dark background.",
+    "imageSocialIconHint": "Use a square transparent PNG with a centered symbol and a little padding. Light icons suit the dark footer; avoid small text. Without an upload, the default link icon is used.",
     "imageBodyHint": "Keep the original proportions and adjust the height to suit the content.",
     "imageFormatHint": "JPG / PNG / GIF / WebP, up to 5 MB per image. These dimensions are recommendations; other sizes are accepted.",
     "imageSaveHint": "Save after uploading to apply the image to the website.",

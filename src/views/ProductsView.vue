@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
@@ -90,7 +91,7 @@ onMounted(() => { loadProducts(); loadIndustries() })
                   <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
                   <span class="tag">{{ $t('site.solutionCount', { products: publishedProducts.length, categories: categoryCount }) }}</span>
                   <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-                  <span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
+                  <SocialLinks />
                 </div>
               </footer>
 

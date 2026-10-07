@@ -8,6 +8,7 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import { localizedField } from '../services/catalog.js'
 import { articleCategoryKey, articleDate, articlePath, useArticleCatalog } from '../services/articles.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 
 const page = ref(null)
@@ -97,7 +98,7 @@ onMounted(async () => { await loadArticles(); loading.value = false })
       </div></section>
       <footer class="hc-foot"><div class="hc-foot-in">
         <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span><span class="tag">{{ $t('site.newsroom') }}</span>
-        <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" /><span class="hc-soc"><span>in</span><span>▶</span><span>✕</span></span>
+        <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" /><SocialLinks />
       </div></footer>
     </div>
 

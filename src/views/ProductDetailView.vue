@@ -8,6 +8,7 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 
 const page = ref(null)
@@ -106,6 +107,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
         <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
         <span class="tag">{{ $t('site.productCenter') }}</span>
         <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
+        <SocialLinks />
       </div></footer>
     </div>
 

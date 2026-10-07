@@ -10,6 +10,7 @@ import { focusProjectContent } from '../utils/projectNavigation.js'
 import { localizedField } from '../services/catalog.js'
 import { projectPath, useProjectCatalog } from '../services/projects.js'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 
@@ -96,6 +97,7 @@ onMounted(async () => { await loadProjects(); loading.value = false })
           <p>{{ $t('site.engineeredInChina') }} {{ $t('site.builtForTheWorld') }}</p></div>
         <nav class="project-footer-links" :aria-label="$t('site.footerNavigation')"><router-link v-for="item in menuItems" :key="item.key" :to="item.path" :aria-current="isMenuActive(item) ? 'page' : undefined">{{ item.label }}</router-link></nav>
         <LanguageSwitcher />
+        <SocialLinks />
       </div></footer>
     </div>
 

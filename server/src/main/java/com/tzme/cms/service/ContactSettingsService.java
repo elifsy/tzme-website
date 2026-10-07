@@ -8,12 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import java.net.URI;
 import java.util.*;
 
 @Service
 public class ContactSettingsService {
     public static final Set<String> FILE_TYPES = Set.of("pdf", "dwg", "dxf", "xls", "xlsx", "doc", "docx", "jpg", "jpeg", "png", "webp", "zip", "txt");
     public static final Set<String> FORM_FIELDS = Set.of("name", "company", "country", "email", "phone", "industry", "requirements");
+    private static final Set<String> SOCIAL_PLATFORMS = Set.of("linkedin", "youtube", "x", "wechat", "weibo", "bilibili", "facebook", "instagram", "link");
     private final SiteSettingsRepository repository;
     private final ObjectMapper mapper;
     public ContactSettingsService(SiteSettingsRepository repository, ObjectMapper mapper) {
@@ -45,12 +47,15 @@ public class ContactSettingsService {
     public ObjectNode save(ObjectNode input) {
         var row = repository.findForUpdate("contact").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         var value = parse(row.getConfiguration());
+        var storedSocialLinks = value.path("contact").get("socialLinks");
         var keys = Set.of("contact", "subsidiaries", "form", "upload");
         input.fieldNames().forEachRemaining(key -> { if (!keys.contains(key)) invalid("Unknown contact configuration field"); });
         for (String key : keys) {
             if (!input.has(key)) invalid("Contact configuration is incomplete");
             value.set(key, input.get(key).deepCopy());
         }
+        // Preserve social links when an older client updates contact information.
+        if (storedSocialLinks != null && value.path("contact") instanceof ObjectNode contact && !contact.has("socialLinks")) contact.set("socialLinks", storedSocialLinks);
         validateContact(value);
         try {
             row.setConfiguration(mapper.writeValueAsString(value)); repository.save(row);
@@ -86,6 +91,7 @@ public class ContactSettingsService {
         text(contact, "phone", 255); text(contact, "fax", 255); website(contact.path("website").asText());
         if (!contact.path("emails").isArray() || contact.path("emails").size() > 10) invalid("Maximum 10 contact emails");
         for (var email : contact.path("emails")) if (!validEmail(email.asText())) invalid("Invalid contact email");
+        validateSocialLinks(contact.path("socialLinks"));
         if (!value.path("subsidiaries").isArray() || value.path("subsidiaries").size() > 50) invalid("Maximum 50 subsidiaries");
         var ids = new HashSet<String>();
         for (var item : value.path("subsidiaries")) {
@@ -104,6 +110,36 @@ public class ContactSettingsService {
         if (upload.path("maxFiles").asInt() < 1 || upload.path("maxFiles").asInt() > 10) invalid("File count must be 1 to 10");
         if (!upload.path("allowedExtensions").isArray() || (upload.path("enabled").asBoolean() && upload.path("allowedExtensions").isEmpty())) invalid("Select permitted file types");
         for (var extension : upload.path("allowedExtensions")) if (!FILE_TYPES.contains(extension.asText())) invalid("Unsupported file type");
+    }
+    private void validateSocialLinks(JsonNode locales) {
+        if (locales.isMissingNode()) return;
+        if (!locales.isObject() || locales.size() > 30) invalid("Invalid social link languages");
+        locales.fields().forEachRemaining(entry -> {
+            if (!entry.getKey().matches("[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*")) invalid("Invalid social link language");
+            var links = entry.getValue();
+            if (!links.isArray() || links.size() > 8) invalid("Maximum 8 social links per language");
+            var ids = new HashSet<String>();
+            for (var link : links) {
+                if (!link.isObject() || !link.path("id").asText().matches("[a-zA-Z0-9-]{1,100}") || !ids.add(link.path("id").asText())) invalid("Invalid social link ID");
+                if (!SOCIAL_PLATFORMS.contains(link.path("platform").asText())) invalid("Invalid social platform");
+                if (!link.path("enabled").isBoolean()) invalid("Invalid social link visibility");
+                text(link, "label", 100); text(link, "url", 1000);
+                var icon = link.path("icon");
+                if (!icon.isMissingNode() && !icon.isTextual()) invalid("Invalid custom social icon");
+                if (!icon.asText().isEmpty() && !icon.asText().matches("/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)")) invalid("Custom social icons must be uploaded images");
+                if (link.path("platform").asText().equals("link") && link.path("enabled").asBoolean() && link.path("label").asText().isBlank()) invalid("A visible custom link requires a name");
+                String url = link.path("url").asText().trim();
+                if ((link.path("enabled").asBoolean() || !url.isEmpty()) && !validSocialUrl(url)) invalid("A visible social link requires a complete HTTP or HTTPS URL");
+            }
+        });
+    }
+    private static boolean validSocialUrl(String value) {
+        try {
+            if (value.matches(".*\\s.*")) return false;
+            var uri = URI.create(value);
+            return Set.of("http", "https").contains(Optional.ofNullable(uri.getScheme()).orElse("").toLowerCase(Locale.ROOT))
+                && uri.getHost() != null && uri.getRawUserInfo() == null;
+        } catch (IllegalArgumentException error) { return false; }
     }
     private void validateNotification(JsonNode notification) {
         if (!notification.path("recipients").isArray() || notification.path("recipients").size() > 20) invalid("Maximum 20 recipients");

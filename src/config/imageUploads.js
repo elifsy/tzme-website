@@ -5,5 +5,6 @@ export const imageRecommendations = {
   project: { width: 1600, height: 900, fit: 'cover', hint: 'admin.imageProjectHint' },
   certification: { width: 1240, height: 1754, fit: 'contain', hint: 'admin.imageCertificateHint' },
   map: { width: 1600, height: 700, fit: 'contain', hint: 'admin.imageMapHint' },
+  socialIcon: { width: 128, height: 128, fit: 'contain', hint: 'admin.imageSocialIconHint' },
   body: { width: 1200, height: 800, fit: 'contain', hint: 'admin.imageBodyHint' },
 }
