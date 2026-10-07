@@ -92,6 +92,13 @@ public class CertificationController {
         if (!"published".equals(input.getStatus()) && !"draft".equals(input.getStatus())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid publication status");
         }
+        if (input.getImage() != null) {
+            input.setImage(input.getImage().trim());
+        }
+        if ("published".equals(input.getStatus())
+                && (input.getImage() == null || input.getImage().isBlank())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A certificate image is required before publishing");
+        }
         if (input.getIssuedAt() != null && input.getExpiresAt() != null
                 && input.getExpiresAt().isBefore(input.getIssuedAt())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Expiry date must follow issue date");

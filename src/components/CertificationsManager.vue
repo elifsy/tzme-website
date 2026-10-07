@@ -16,7 +16,9 @@ const saving = ref(false)
 const imageUploading = ref(false)
 const dialogOpen = ref(false)
 const editingLocale = ref('en')
-const publishedCount = computed(() => records.value.filter((item) => item.status === 'published').length)
+const hasCertificateImage = (item) => typeof item.image === 'string' && Boolean(item.image.trim())
+const publishedCount = computed(() => records.value.filter((item) => item.status === 'published' && hasCertificateImage(item)).length)
+const missingPublishedImages = computed(() => records.value.filter((item) => item.status === 'published' && !hasCertificateImage(item)).length)
 const form = reactive({
   id: '', titleEn: '', titleZh: '', summaryEn: '', summaryZh: '',
   issuerEn: '', issuerZh: '', certificateNo: '', issuedAt: '', expiresAt: '',
@@ -70,12 +72,17 @@ async function save() {
     ElMessage.warning(t('admin.certInvalidDateRange'))
     return
   }
+  if (form.status === 'published' && !hasCertificateImage(form)) {
+    ElMessage.warning(t('admin.certImageRequired'))
+    return
+  }
   saving.value = true
   const record = {
     ...form,
     id: form.id || `cert-${Date.now()}`,
     titleEn: form.titleEn.trim(),
     titleZh: form.titleZh.trim(),
+    image: form.image.trim(),
     sortOrder: Number(form.sortOrder) || 0,
   }
   try { if (await persist(record, Boolean(form.id))) dialogOpen.value = false }
@@ -84,6 +91,11 @@ async function save() {
 
 async function toggle(item) {
   const record = { ...item, status: item.status === 'published' ? 'draft' : 'published' }
+  if (record.status === 'published' && !hasCertificateImage(record)) {
+    ElMessage.warning(t('admin.certImageRequired'))
+    openEditor(record)
+    return
+  }
   await persist(record, true)
 }
 
@@ -122,13 +134,17 @@ onMounted(load)
         <el-button type="primary" @click="openEditor()">{{ $t('admin.certAdd') }}</el-button>
       </div>
     </template>
+    <el-alert v-if="missingPublishedImages" class="cert-image-alert" type="warning" show-icon :closable="false"
+      :title="$t('admin.certMissingImages', { count: missingPublishedImages })" />
     <el-table :data="records" v-loading="loading" row-key="id" :empty-text="$t('admin.certEmpty')">
       <el-table-column :label="$t('admin.certName')" min-width="230">
         <template #default="{ row }">
           <div class="cert-name-cell">
             <el-image v-if="row.image" :src="row.image" fit="cover" class="cert-thumbnail" />
             <span v-else class="cert-thumbnail cert-thumbnail-empty"><el-icon><Picture /></el-icon></span>
-            <span><strong>{{ field(row, 'title') }}</strong><small>{{ field(row, 'summary') }}</small></span>
+            <span><strong>{{ field(row, 'title') }}</strong><small>{{ field(row, 'summary') }}</small>
+              <el-tag v-if="!hasCertificateImage(row)" class="cert-image-missing" type="warning" size="small">{{ $t('admin.certImageMissing') }}</el-tag>
+            </span>
           </div>
         </template>
       </el-table-column>
@@ -217,9 +233,10 @@ onMounted(load)
         </div>
         <aside class="cms-editor-aside">
           <AdminEditorPanel step="03" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
-            <el-form-item :label="$t('admin.certImage')">
+            <el-form-item :label="$t('admin.certImage')" :required="form.status === 'published'">
               <ImageUpload v-model="form.image" kind="certification" :active="dialogOpen" :context-key="form.id"
                 :disabled="saving" @uploading="imageUploading = $event" />
+              <p class="cert-image-requirement">{{ $t('admin.certImageRequirement') }}</p>
             </el-form-item>
             <el-form-item :label="$t('admin.status2')">
               <el-radio-group v-model="form.status" class="cms-status-options">
@@ -245,4 +262,7 @@ onMounted(load)
 .cert-thumbnail-empty { display: grid; place-items: center; background: #eef3f8; color: #9baabd; font-size: 20px; }
 .cert-table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 .cert-table-actions :deep(.el-button) { margin-left: 0; }
+.cert-image-alert { margin-bottom: 16px; }
+.cert-image-missing { margin-top: 5px; }
+.cert-image-requirement { margin-top: 10px; color: #53647b; font-size: 12px; line-height: 1.75; }
 </style>

@@ -533,6 +533,10 @@ export default {
     "certExpiresAt": "Expiry date",
     "certSelectDate": "Select date",
     "certImage": "Certificate image",
+    "certImageRequired": "Upload a certificate image before publishing.",
+    "certImageRequirement": "A certificate image is required for website display. Upload a clear scan or photo of the complete certificate. You can save as a draft while preparing the image.",
+    "certImageMissing": "Image needed",
+    "certMissingImages": "{count} published certifications need images. They will appear on the website after their images are uploaded.",
     "certInvalidDateRange": "Expiry date must be on or after the issue date.",
     "overview": "Overview",
     "products": "Products",
@@ -642,5 +646,21 @@ export default {
     "chineseSummaryPlaceholder": "Chinese summary shown on the website",
     "chineseArticlePlaceholder": "Write the Chinese article",
     "imagePathPlaceholder": "Select an image to upload"
+  },
+  certificationUi: {
+    viewImage: 'View full image',
+    previewCertificate: 'View the full image of {title}',
+    imageUnavailable: 'Certificate image unavailable',
+    count: '{count} total',
+    previewHint: 'Select a certificate image to enlarge it',
+    pageRange: '{start}–{end} of {total}',
+    paginationLabel: 'Certification pagination',
+    emptyGallery: 'No certificates are available to display yet',
+    viewDetails: 'Details',
+    detailsLabel: 'View details of {title}',
+    detailsTitle: 'Certification details',
+    issuer: 'Issuing body',
+    number: 'Certificate number',
+    issuedAt: 'Issue date',
   }
 }

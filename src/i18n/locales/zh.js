@@ -533,6 +533,10 @@ export default {
     "certExpiresAt": "到期日期",
     "certSelectDate": "选择日期",
     "certImage": "证书图片",
+    "certImageRequired": "请先上传证书图片，再发布资质认证。",
+    "certImageRequirement": "官网展示的资质必须有证书图片。请上传完整、清晰的证书扫描件或照片；图片尚未准备好时，可先保存为草稿。",
+    "certImageMissing": "待补图片",
+    "certMissingImages": "有 {count} 项已发布资质缺少证书图片，补齐图片后才会显示在官网。",
     "certInvalidDateRange": "到期日期不能早于颁发日期。",
     "overview": "概览",
     "products": "产品",
@@ -642,5 +646,21 @@ export default {
     "chineseSummaryPlaceholder": "网站展示的中文简介",
     "chineseArticlePlaceholder": "请输入中文正文",
     "imagePathPlaceholder": "请选择要上传的图片"
+  },
+  certificationUi: {
+    viewImage: '查看大图',
+    previewCertificate: '查看“{title}”证书大图',
+    imageUnavailable: '证书图片暂时无法显示',
+    count: '共 {count} 项',
+    previewHint: '点击证书图片可放大查看',
+    pageRange: '第 {start}–{end} 项，共 {total} 项',
+    paginationLabel: '资质认证分页',
+    emptyGallery: '暂无可展示的证书',
+    viewDetails: '详情',
+    detailsLabel: '查看“{title}”的完整资质信息',
+    detailsTitle: '资质详情',
+    issuer: '颁发机构',
+    number: '证书编号',
+    issuedAt: '颁发日期',
   }
 }
