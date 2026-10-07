@@ -66,9 +66,9 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                     {{ $t('site.engineeredFor') }}<br />{{ $t('site.theWorldSToughest') }}<br />{{ $t('site.challenges') }}</h1>
                   <p class="hc-p" style="margin-top:22px;max-width:520px">
                     {{ $t('site.customBuiltHeavyMachineryAndIndustrialEquipmentEngineeredForDemandingApplicationsWorl') }}</p>
-                  <div style="display:flex;gap:14px;margin-top:34px">
-                    <el-button class="hc-btn solid">{{ $t('site.exploreSolutions') }}<i>→</i></el-button>
-                    <el-button class="hc-btn ghost">{{ $t('site.startAProject') }}</el-button>
+                  <div class="home-hero-actions">
+                    <el-button class="hc-btn solid">{{ $t('site.exploreSolutions') }}<i aria-hidden="true">→</i></el-button>
+                    <el-button type="primary" class="hc-btn home-project-button">{{ $t('site.startAProject') }}<i aria-hidden="true">→</i></el-button>
                   </div>
                 </div></div>
               </section>
@@ -153,7 +153,6 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                     <h2 class="hc-h2" style="margin-top:18px;color:#fff">{{ $t('site.builtForScale') }}</h2>
                     <p class="hc-p" style="margin-top:20px;max-width:420px">
                       {{ $t('site.largeScaleEngineeringRequiresMoreThanDesignItRequiresManufacturingCapabilityPrecision') }}</p>
-                    <div style="margin-top:30px"><el-button class="hc-btn ghost">{{ $t('site.ourFacilities') }}<i>→</i></el-button></div>
                   </div>
                   <div class="hc-tiles">
                 <div class="hc-tile"><img :src="siteAsset('/assets/rnd-2.jpg')" alt="" />
@@ -227,7 +226,6 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                       {{ $t('site.haveAChallenge') }}<br />{{ $t('site.thatNeedsEngineering') }}</h2>
                     <p class="hc-p" style="margin-top:20px;max-width:420px">
                       {{ $t('site.tellUsWhatYouReTryingToBuildMoveOrSolve') }}</p>
-                    <div style="margin-top:30px"><el-button class="hc-btn solid">{{ $t('site.startAProject') }}<i>→</i></el-button></div>
                     <div class="hc-cinfo">
                       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>{{ contactSettings?.contact.emails.join(' · ') }}</div>
                       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 5h4l2 5-2.5 1.5a12 12 0 0 0 5 5L14 14l5 2v4a15 15 0 0 1-15-15Z"/></svg>{{ contactSettings?.contact.phone }}</div>
@@ -261,6 +259,55 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 </template>
 
 <style scoped>
+.home-hero-actions { display: flex; flex-wrap: wrap; align-items: stretch; gap: 14px; margin-top: 34px; }
+.home-hero-actions .hc-btn.el-button {
+  min-width: min(100%, 150px);
+  max-width: 100%;
+  min-height: 48px;
+  height: auto;
+  padding: 12px 22px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.5;
+  text-transform: none;
+  white-space: normal;
+  transition: background-color .18s, border-color .18s, box-shadow .18s;
+}
+.home-hero-actions .hc-btn.el-button :deep(> span) { min-width: 0; max-width: 100%; line-height: 1.5; }
+.home-hero-actions .hc-btn.el-button :deep(i) { flex-shrink: 0; font-size: 16px; }
+.home-hero-actions .home-project-button.el-button {
+  --el-button-text-color: #fff;
+  --el-button-bg-color: #075cac;
+  --el-button-border-color: #a4d7f7;
+  --el-button-hover-text-color: #fff;
+  --el-button-hover-bg-color: #126ab8;
+  --el-button-hover-border-color: #d3edff;
+  --el-button-active-text-color: #fff;
+  --el-button-active-bg-color: #064b8e;
+  --el-button-active-border-color: #a4d7f7;
+  border: 1px solid #a4d7f7;
+  background: #075cac;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+}
+.home-hero-actions .home-project-button.el-button:hover { border-color: #d3edff; background: #126ab8; color: #fff; }
+.home-hero-actions .home-project-button.el-button:active { border-color: #a4d7f7; background: #064b8e; color: #fff; }
+.home-hero-actions .hc-btn.el-button.solid:hover { border-color: #e4eef7; background: #e4eef7; color: #0b263b; }
+.home-hero-actions .hc-btn.el-button.solid:active { border-color: #cbddeb; background: #cbddeb; color: #0b263b; }
+.home-hero-actions .hc-btn.el-button:focus-visible { outline: 3px solid #f6b44d; outline-offset: 4px; }
+@media (max-width: 480px) {
+  .home-hero-actions { gap: 12px; }
+  .home-hero-actions .hc-btn.el-button { flex: 1 1 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-actions .hc-btn.el-button { transition: none; }
+}
+@media (forced-colors: active) {
+  .home-hero-actions .home-project-button.el-button { border-color: ButtonText; background: ButtonFace; color: ButtonText; box-shadow: none; }
+  .home-hero-actions .hc-btn.el-button:focus-visible { outline-color: Highlight; }
+}
 .hc-ind .home-industry-icon { display: inline-flex; align-items: center; justify-content: center; }
 .hc-ind .home-industry-icon::before { content: none; }
 .home-contact-single { grid-template-columns: 1fr; }

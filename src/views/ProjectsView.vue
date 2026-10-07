@@ -57,29 +57,34 @@ onMounted(async () => { await loadProjects(); loading.value = false })
       <SiteNav />
 
       <main id="projects-main" tabindex="-1" aria-labelledby="projects-page-title">
-        <section class="hc-sec projects-intro" aria-labelledby="projects-page-title"><div class="hc-w projects-intro-heading">
-          <div class="projects-intro-copy">
-            <span class="hc-kick">{{ $t('site.projectCount', { count: publishedProjects.length }) }}</span>
-            <h1 id="projects-page-title" class="hc-h2">{{ $t('site.realProjectsLastingValue') }}</h1>
+        <section class="hc-sec projects-intro catalog-intro catalog-intro-projects" aria-labelledby="projects-page-title">
+          <el-image v-if="siteAsset('/assets/p-port-1.jpg')" class="catalog-intro-image"
+            :src="siteAsset('/assets/p-port-1.jpg')" fit="cover" alt="" aria-hidden="true">
+            <template #error><div class="catalog-intro-image-fallback"></div></template>
+          </el-image>
+          <div class="hc-w projects-intro-heading catalog-intro-content">
+            <div class="projects-intro-copy catalog-intro-copy">
+              <span class="hc-kick">{{ $t('site.projectCount', { count: publishedProjects.length }) }}</span>
+              <h1 id="projects-page-title" class="hc-h2">{{ $t('site.navProjects') }}</h1>
+            </div>
+            <p class="hc-p projects-intro-description catalog-intro-description">{{ $t('site.projectsIntro') }}</p>
           </div>
-          <el-button type="primary" class="site-filter-button" @click="focusProjectContent('project-list')">{{ $t('site.browseProjects') }}<el-icon aria-hidden="true"><ArrowRight /></el-icon></el-button>
-        </div></section>
+        </section>
 
         <section id="project-list" class="hc-sec project-list-section" tabindex="-1" aria-labelledby="projects-list-title" :aria-busy="loading"><div class="hc-w">
-          <div class="projects-section-heading">
-            <div><span class="hc-kick">{{ $t('site.allProjects') }}</span><h2 id="projects-list-title">{{ $t('site.projects') }}</h2></div>
-            <p role="status" aria-live="polite" aria-atomic="true">{{ $t('site.projectCount', { count: filtered.length }) }}</p>
-          </div>
           <div class="projects-list-toolbar">
+            <div class="projects-list-heading"><h2 id="projects-list-title">{{ $t('site.allProjects') }}</h2>
+              <p role="status" aria-live="polite" aria-atomic="true">{{ $t('site.projectCount', { count: filtered.length }) }}</p>
+            </div>
             <div class="projects-search-field">
-              <label for="project-search">{{ $t('site.searchProjectsLabel') }}</label>
+              <label for="project-search" class="projects-visually-hidden">{{ $t('site.searchProjectsLabel') }}</label>
               <div class="projects-search-row">
                 <el-input id="project-search" v-model="search" class="projects-search" aria-describedby="project-search-hint" :placeholder="$t('site.searchProjects')">
                   <template #prefix><el-icon aria-hidden="true"><Search /></el-icon></template>
                 </el-input>
                 <el-button v-if="search" class="site-filter-button" @click="clearSearch">{{ $t('site.clearProjectSearch') }}</el-button>
               </div>
-              <p id="project-search-hint">{{ $t('site.projectSearchHint') }}</p>
+              <p id="project-search-hint" class="projects-visually-hidden">{{ $t('site.projectSearchHint') }}</p>
             </div>
           </div>
           <el-skeleton v-if="loading && !pageProjects.length" :rows="6" animated />

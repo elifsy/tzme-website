@@ -9,7 +9,7 @@ import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
-const { siteValue } = useSiteContent()
+const { siteAsset, siteValue } = useSiteContent()
 const { locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
 const contact = computed(() => contactSettings.value?.contact)
@@ -21,10 +21,14 @@ useDesignPage('hc-contact', page)
   <main ref="page" class="design-site">
     <div class="hc-page">
       <SiteNav />
-      <section class="hc-sec contact-intro">
-        <div class="hc-w contact-intro-layout">
-          <div><span class="hc-kick">{{ $t('site.getInTouchReplyWithin2WorkingDays') }}</span><h2 class="hc-h2">{{ $t('site.contactUs') }}</h2></div>
-          <p class="hc-p">{{ $t('site.sendADutyStatementADrawingSetOrJustACapacityRequirement') }}</p>
+      <section class="hc-sec contact-intro catalog-intro catalog-intro-contact" aria-labelledby="contact-page-title">
+        <el-image v-if="siteAsset('/assets/video-poster.jpg')" class="catalog-intro-image"
+          :src="siteAsset('/assets/video-poster.jpg')" fit="cover" alt="" aria-hidden="true">
+          <template #error><div class="catalog-intro-image-fallback"></div></template>
+        </el-image>
+        <div class="hc-w catalog-intro-content">
+          <div class="catalog-intro-copy"><span class="hc-kick">{{ $t('site.getInTouchReplyWithin2WorkingDays') }}</span><h1 id="contact-page-title" class="hc-h2">{{ $t('site.contactUs') }}</h1></div>
+          <p class="hc-p catalog-intro-description">{{ $t('site.sendADutyStatementADrawingSetOrJustACapacityRequirement') }}</p>
         </div>
       </section>
       <section class="contact-main">
@@ -58,10 +62,6 @@ useDesignPage('hc-contact', page)
 </template>
 
 <style scoped>
-.contact-intro { padding: 72px 0 56px; }
-.contact-intro-layout { display: flex; justify-content: space-between; align-items: flex-end; gap: 60px; }
-.contact-intro .hc-h2 { margin-top: 18px; color: #fff; font-size: 52px; }
-.contact-intro .hc-p { max-width: 400px; }
 .contact-main { border-top: 1px solid var(--line-d2); }
 .contact-layout { padding-top: 64px; padding-bottom: 96px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 600px); gap: 64px; align-items: start; }
 .contact-layout-single { grid-template-columns: 1fr; }
@@ -72,5 +72,4 @@ useDesignPage('hc-contact', page)
 .contact-details a { display: block; color: #a8d1f3; }
 .contact-subsidiaries-title { display: block; margin-top: 46px; }
 @media (max-width: 1050px) { .contact-layout { grid-template-columns: 1fr; gap: 40px; } }
-@media (max-width: 700px) { .contact-intro-layout { align-items: flex-start; flex-direction: column; gap: 20px; } .contact-intro .hc-h2 { font-size: 38px; } }
 </style>

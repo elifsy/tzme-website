@@ -34,15 +34,19 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
 
       <SiteNav />
 
-      <section class="hc-sec about-intro">
-        <div class="hc-w about-intro-layout">
+      <section class="hc-sec about-intro catalog-intro catalog-intro-about" aria-labelledby="about-page-title">
+        <el-image v-if="siteAsset('/assets/hero-03.jpg')" class="catalog-intro-image"
+          :src="siteAsset('/assets/hero-03.jpg')" fit="cover" alt="" aria-hidden="true">
+          <template #error><div class="catalog-intro-image-fallback"></div></template>
+        </el-image>
+        <div class="hc-w catalog-intro-foreground">
           <div class="about-intro-copy">
             <span class="hc-kick">{{ $t('site.aboutTzme') }}</span>
-            <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.engineering') }}<br />{{ $t('site.withoutLimits') }}
-            </h2>
-            <p class="hc-p" style="margin-top:20px;max-width:540px">
+            <h1 id="about-page-title" class="hc-h2">{{ $t('site.engineering') }}<br />{{ $t('site.withoutLimits') }}
+            </h1>
+            <p class="hc-p catalog-intro-description" style="margin-top:20px;max-width:540px">
               {{ $t('site.tianjinHeavySteelMachineryEquipmentCoLtdDesignsFabricatesAndDeliversEngineered') }}</p>
-            <p class="hc-p" style="margin-top:18px;max-width:540px">
+            <p class="hc-p catalog-intro-description" style="margin-top:18px;max-width:540px">
               {{ $t('site.roughly90OfOurOutputIsExportedMainlyToMiningHousesPort') }}</p>
             <div class="hc-band about-intro-stats">
               <div>
@@ -63,7 +67,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
               </div>
             </div>
           </div>
-          <div class="about-intro-image"><el-image :src="siteAsset('/assets/rnd-2.jpg')" alt="" fit="cover" /></div>
         </div>
       </section>
 
@@ -165,12 +168,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
 .about-global .hc-h2, .about-global .hc-p, .about-global .hc-stat, .about-global .hc-stat-cap { overflow-wrap: anywhere; }
 .about-global .hc-p { white-space: pre-line; }
 .about-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
-.about-intro { padding: 72px 0 56px; }
-.about-intro-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
-.about-intro-copy { min-width: 0; }
-.about-intro .hc-h2 { color: var(--txt); }
-.about-intro-image { position: relative; align-self: stretch; min-width: 0; min-height: 360px; overflow: hidden; border: 1px solid var(--line-d); border-radius: 4px; }
-.about-intro-image .el-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.about-intro-copy { min-width: 0; width: min(100%, 720px); }
 .about-intro-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 40px; }
 .about-intro-stats > div, .about-intro-stats > div + div { min-width: 0; padding: 24px 10px 4px; }
 .about-intro-stats > div:first-child { padding-left: 0; }
@@ -178,10 +176,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
 .about-intro-stats .hc-stat { font-size: clamp(22px, 2vw, 30px); white-space: nowrap; }
 .about-intro-stats .hc-stat u { font-size: 12px; }
 .about-intro-stats .hc-stat-cap { color: #bccddb; font-size: 12px; }
-@media (max-width: 960px) {
-  .about-intro-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .about-intro-image { min-height: 0; aspect-ratio: 16 / 9; }
-}
 @media (max-width: 700px) {
   .about-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .about-intro-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }

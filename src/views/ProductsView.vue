@@ -44,15 +44,17 @@ onMounted(() => { loadProducts(); loadIndustries() })
 
               <SiteNav />
 
-              <section class="hc-sec" style="padding:72px 0 60px">
-                <div class="hc-w" style="display:grid;grid-template-columns:1fr 380px;gap:80px;
-                     align-items:flex-end">
-                  <div>
+              <section class="hc-sec catalog-intro catalog-intro-products" aria-labelledby="products-page-title">
+                <el-image v-if="siteAsset('/assets/hero-02.jpg')" class="catalog-intro-image"
+                  :src="siteAsset('/assets/hero-02.jpg')" fit="cover" alt="" aria-hidden="true">
+                  <template #error><div class="catalog-intro-image-fallback"></div></template>
+                </el-image>
+                <div class="hc-w catalog-intro-content">
+                  <div class="catalog-intro-copy">
                     <span class="hc-kick">{{ $t('site.solutionCount', { products: publishedProducts.length, categories: categoryCount }) }}</span>
-                    <h2 class="hc-h2" style="margin-top:18px;color:#fff;font-size:52px">
-                      {{ $t('site.whatWeEngineer') }}</h2>
+                    <h1 id="products-page-title" class="hc-h2">{{ $t('site.whatWeEngineer') }}</h1>
                   </div>
-                  <p class="hc-p">
+                  <p class="hc-p catalog-intro-description">
                     {{ $t('site.everyUnitIsEngineeredToOrderCapacityGeometryAndDriveConfigurationAre') }}</p>
                 </div>
               </section>

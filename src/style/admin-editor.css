@@ -75,6 +75,9 @@
 .cms-status-options .el-radio-button { flex: 1; }
 .cms-status-options .el-radio-button__inner { display: block; padding: 10px 8px; font-size: 12px; }
 .cms-field-hint { margin: 9px 0 0; color: #99a6b7; font-size: 11px; line-height: 1.75; }
+.cms-specification-help { width: 100%; margin-top: 10px; color: #53647b; font-size: 12px; line-height: 1.75; }
+.cms-specification-help p { margin: 0; }
+.cms-specification-example { display: block; margin-top: 8px; padding-left: 10px; border-left: 2px solid #b9cfe8; color: #334e65; font: inherit; white-space: pre-line; overflow-wrap: anywhere; }
 .cms-switch-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 12px; }
 .cms-switch-row strong { font-size: 12px; color: #53647b; font-weight: 500; }
 .cms-home-count { color: #8b9bb1; font-size: 11px; line-height: 1.8; margin: 0 0 18px; }

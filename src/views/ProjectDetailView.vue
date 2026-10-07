@@ -1,6 +1,6 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -48,15 +48,7 @@ const body = computed(() => {
       normalized.id = `project-section-${index + 1}`
       normalized.tabIndex = -1
       normalized.className = 'project-content-section-title'
-      const number = document.createElement('span')
-      number.className = 'project-section-number'
-      number.setAttribute('aria-hidden', 'true')
-      number.textContent = String(sections.length + 1).padStart(2, '0')
-      const text = document.createElement('span')
-      text.className = 'project-section-title-text'
-      text.append(...normalized.childNodes)
-      normalized.append(number, text)
-      sections.push({ id: normalized.id, title, number: number.textContent })
+      sections.push({ id: normalized.id, title })
     }
     heading.replaceWith(normalized)
   }
@@ -99,11 +91,10 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
             </div>
             <div class="project-detail-hero-grid" :class="{ 'project-detail-hero-no-image': !project.image }">
               <div class="project-detail-hero-copy">
-                <span class="hc-kick">{{ $t('site.navProjects') }}</span>
                 <h1 id="project-title">{{ field('title') }}</h1>
                 <div class="project-detail-tags">
-                  <el-tag v-if="field('industry')" effect="plain" round>{{ field('industry') }}</el-tag>
-                  <el-tag v-if="field('location')" effect="plain" round>{{ field('location') }}</el-tag>
+                  <el-tag v-if="field('industry')" effect="plain">{{ field('industry') }}</el-tag>
+                  <el-tag v-if="field('location')" effect="plain">{{ field('location') }}</el-tag>
                 </div>
                 <p v-if="field('summary')" class="project-detail-lead">{{ field('summary') }}</p>
               </div>
@@ -120,7 +111,6 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
 
           <section class="hc-sec project-detail-content" aria-labelledby="project-details-title"><div class="hc-w">
             <div class="project-content-heading">
-              <span class="hc-kick">{{ $t('site.navProjects') }}</span>
               <h2 id="project-details-title">{{ $t('site.projectDetails') }}</h2>
             </div>
             <div class="project-detail-layout">
@@ -139,14 +129,13 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
                     <ol>
                       <li v-for="section in body.sections" :key="section.id">
                         <a :href="`#${section.id}`" @click.prevent="focusProjectContent(section.id)">
-                          <span class="project-toc-number" aria-hidden="true">{{ section.number }}</span><span>{{ section.title }}</span>
+                          {{ section.title }}
                         </a>
                       </li>
                     </ol>
                   </nav>
                 </el-card>
                 <el-card class="project-contact-panel" shadow="never">
-                  <div class="project-contact-eyebrow"><el-icon aria-hidden="true"><ChatDotRound /></el-icon><span>{{ $t('site.projectContactEyebrow') }}</span></div>
                   <h3 id="project-contact-title">{{ $t('site.projectContactTitle') }}</h3>
                   <p>{{ $t('site.projectContactText') }}</p>
                   <el-button type="primary" class="site-filter-button" @click="goTo('/contact')">{{ $t('site.contactUs') }}<el-icon aria-hidden="true"><ArrowRight /></el-icon></el-button>

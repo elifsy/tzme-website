@@ -58,10 +58,19 @@ onMounted(async () => { await loadArticles(); loading.value = false })
   <main ref="page" class="design-site news-page">
     <div class="hc-page">
       <SiteNav />
-      <section class="hc-sec news-intro"><div class="hc-w news-section-heading">
-        <div><span class="hc-kick">{{ $t('site.newsCount', { count: publishedArticles.length }) }}</span><h1 class="hc-h2">{{ $t('site.newsAndInsights') }}</h1></div>
-        <router-link class="news-text-link" to="/contact">{{ $t('site.subscribeToUpdates') }} →</router-link>
-      </div></section>
+      <section class="hc-sec news-intro catalog-intro catalog-intro-news" aria-labelledby="news-page-title">
+        <el-image v-if="siteAsset('/assets/hero-01.jpg')" class="catalog-intro-image"
+          :src="siteAsset('/assets/hero-01.jpg')" fit="cover" alt="" aria-hidden="true">
+          <template #error><div class="catalog-intro-image-fallback"></div></template>
+        </el-image>
+        <div class="hc-w news-section-heading catalog-intro-content">
+          <div class="catalog-intro-copy">
+            <span class="hc-kick">{{ $t('site.newsCount', { count: publishedArticles.length }) }}</span>
+            <h1 id="news-page-title" class="hc-h2">{{ $t('site.newsAndInsights') }}</h1>
+          </div>
+          <router-link class="news-text-link catalog-intro-action" to="/contact">{{ $t('site.subscribeToUpdates') }} →</router-link>
+        </div>
+      </section>
       <section class="news-filter-section"><div class="hc-w news-category-filter">
         <span class="hc-kick">{{ $t('site.filterNewsByCategory') }}</span>
         <div class="news-category-options" role="group" :aria-label="$t('site.filterNewsByCategory')">

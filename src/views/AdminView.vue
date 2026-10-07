@@ -749,7 +749,12 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                         <el-input v-model="form.featuresEn" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
                       </el-form-item>
                       <el-form-item :label="$t('admin.productSpecificationsEnglish')">
-                        <el-input v-model="form.specificationsEn" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+                        <el-input v-model="form.specificationsEn" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')"
+                          aria-describedby="product-specifications-en-help" />
+                        <div id="product-specifications-en-help" class="cms-specification-help">
+                          <p>{{ $t('admin.productSpecificationsHint') }}</p>
+                          <code class="cms-specification-example">{{ $t('admin.productSpecificationsExampleEnglish') }}</code>
+                        </div>
                       </el-form-item>
                     </div>
                   </template>
@@ -780,7 +785,12 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                         <el-input v-model="form.featuresZh" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
                       </el-form-item>
                       <el-form-item :label="$t('admin.productSpecificationsChinese')">
-                        <el-input v-model="form.specificationsZh" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')" />
+                        <el-input v-model="form.specificationsZh" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')"
+                          aria-describedby="product-specifications-zh-help" />
+                        <div id="product-specifications-zh-help" class="cms-specification-help">
+                          <p>{{ $t('admin.productSpecificationsHint') }}</p>
+                          <code class="cms-specification-example">{{ $t('admin.productSpecificationsExampleChinese') }}</code>
+                        </div>
                       </el-form-item>
                     </div>
                   </template>

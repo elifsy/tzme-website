@@ -1,0 +1,115 @@
+/* Industrial photographs and a shared intro treatment for the public pages. */
+.design-site .catalog-intro {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: 400px;
+  padding: 80px 0 64px;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+.design-site .catalog-intro-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: .88;
+  filter: saturate(.65) contrast(1.08);
+  pointer-events: none;
+}
+.catalog-intro-image .el-image__inner { object-position: center 54%; }
+.catalog-intro-products .catalog-intro-image .el-image__inner { object-position: center 58%; }
+.catalog-intro-about .catalog-intro-image .el-image__inner { object-position: 65% center; }
+.catalog-intro-news .catalog-intro-image .el-image__inner { object-position: center 48%; }
+.catalog-intro-contact .catalog-intro-image .el-image__inner { object-position: center 58%; }
+.catalog-intro-image-fallback { width: 100%; height: 100%; background: var(--navy); }
+
+.catalog-intro::before,
+.catalog-intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.catalog-intro::before {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(6, 19, 28, .94) 0%, rgba(6, 19, 28, .78) 35%, rgba(6, 19, 28, .32) 65%, rgba(6, 19, 28, .7) 100%),
+    linear-gradient(0deg, #06131c 0%, rgba(6, 19, 28, .55) 22%, rgba(6, 19, 28, .08) 65%, rgba(6, 19, 28, .24) 100%);
+}
+.catalog-intro::after {
+  z-index: 2;
+  background-image:
+    linear-gradient(rgba(164, 215, 247, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(164, 215, 247, .045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(90deg, transparent 25%, #000 70%, transparent);
+}
+
+.design-site .catalog-intro-content,
+.design-site .catalog-intro-foreground {
+  position: relative;
+  z-index: 3;
+}
+.design-site .catalog-intro-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
+  align-items: end;
+  gap: clamp(32px, 6vw, 80px);
+}
+.catalog-intro-copy { min-width: 0; }
+.catalog-intro .hc-kick { color: #a4d7f7; line-height: 1.7; }
+.design-site .catalog-intro .hc-h2 {
+  margin-top: 18px;
+  color: #fff;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.design-site .catalog-intro-description {
+  max-width: none;
+  color: #e1eaf2;
+  font-size: 14.5px;
+  line-height: 1.85;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .25);
+}
+.catalog-intro .catalog-intro-action {
+  display: inline-flex;
+  justify-self: end;
+  align-items: center;
+  min-height: 44px;
+  color: #c5e3ff;
+  text-underline-offset: 5px;
+}
+.catalog-intro .catalog-intro-action:hover { color: #fff; text-decoration: underline; }
+.catalog-intro .catalog-intro-action:focus-visible { outline: 3px solid #f6b44d; outline-offset: 4px; }
+
+@media (max-width: 900px) {
+  .design-site .catalog-intro { min-height: 360px; padding: 64px 0 48px; }
+  .design-site .catalog-intro-content { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .design-site .catalog-intro-description { max-width: 580px; }
+  .catalog-intro .catalog-intro-action { justify-self: start; }
+  .catalog-intro::before {
+    background:
+      linear-gradient(90deg, rgba(6, 19, 28, .88), rgba(6, 19, 28, .45)),
+      linear-gradient(0deg, #06131c 0%, rgba(6, 19, 28, .65) 32%, rgba(6, 19, 28, .1) 100%);
+  }
+}
+@media (max-width: 600px) {
+  .design-site .catalog-intro { min-height: 320px; padding: 56px 0 40px; }
+  .catalog-intro-image .el-image__inner { object-position: 58% center; }
+  .catalog-intro-products .catalog-intro-image .el-image__inner { object-position: 60% center; }
+  .catalog-intro-about .catalog-intro-image .el-image__inner { object-position: 65% center; }
+  .design-site .catalog-intro .hc-h2 { margin-top: 14px; }
+}
+@media (forced-colors: active) {
+  .design-site .catalog-intro { background: Canvas; }
+  .design-site .catalog-intro-image, .catalog-intro::before, .catalog-intro::after { display: none; }
+  .design-site .catalog-intro :is(.hc-kick, .hc-h2, .catalog-intro-description, .hc-stat, .hc-stat-cap) { color: CanvasText; text-shadow: none; }
+  .catalog-intro .catalog-intro-action { color: LinkText; }
+  .catalog-intro .catalog-intro-action:focus-visible { outline-color: Highlight; }
+}
