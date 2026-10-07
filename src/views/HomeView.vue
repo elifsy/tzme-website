@@ -13,6 +13,9 @@ import WorldReachMap from '../components/WorldReachMap.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import IndustryIcon from '../components/IndustryIcon.vue'
 import HomeCapabilitiesSection from '../components/HomeCapabilitiesSection.vue'
+import AboutTzmeContent from '../components/AboutTzmeContent.vue'
+import { useAboutTzme } from '../services/aboutTzme.js'
+import { aboutText } from '../data/aboutTzme.js'
 import { useCapabilities } from '../services/capabilities.js'
 import { contactText, useContactSettings } from '../services/contactSettings.js'
 import { useProjectCatalog } from '../services/projects.js'
@@ -41,6 +44,7 @@ const { products, loadProducts } = useProductCatalog()
 const { homeProjects, loadProjects } = useProjectCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
 const { capabilities, loadCapabilities } = useCapabilities()
+const { aboutTzme, loadAboutTzme } = useAboutTzme()
 const publishedIndustries = computed(() => industries.value.filter((item) => item.status === 'published'))
 const featuredProducts = computed(() => products.value
   .filter((item) => item.status === 'published' && item.showOnHome)
@@ -48,7 +52,7 @@ const featuredProducts = computed(() => products.value
   .slice(0, MAX_HOME_PRODUCTS))
 const productField = (item, name) => localizedField(item, name, locale.value)
 const displayIndustry = (item, name) => industryField(item, name, locale.value)
-onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalReach(); loadCapabilities() })
+onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalReach(); loadCapabilities(); loadAboutTzme() })
 </script>
 
 <template>
@@ -74,23 +78,12 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
               </section>
 
               <!-- 02 简介 -->
-              <section class="hc-sec home-about">
-                <div class="hc-w home-about-layout">
+              <section v-if="aboutTzme" class="hc-sec home-about" aria-labelledby="home-about-title">
+                <div class="hc-w home-about-layout" :class="{ 'home-about-without-image': !aboutTzme.home.image }">
                   <div class="home-about-copy">
-                  <span class="hc-kick">{{ $t('site.aboutTzme') }}</span>
-                  <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.engineering') }}<br />{{ $t('site.withoutLimits') }}</h2>
-                  <p class="hc-p" style="margin-top:20px;max-width:520px">
-                    {{ $t('site.tzmeDeliversEngineeredEquipmentAndCustomisedIndustrialSolutionsForSomeOfThe') }}</p>
-                  <div class="hc-band home-about-stats">
-                    <div><div class="hc-stat">{{ siteValue('text_91032ad7bbcb') }}<u>+</u></div>
-                      <div class="hc-stat-cap">{{ $t('site.yearsOfExperience') }}</div></div>
-                    <div><div class="hc-stat">{{ $t('site.global') }}</div>
-                      <div class="hc-stat-cap">{{ $t('site.projectCapability') }}</div></div>
-                    <div><div class="hc-stat">{{ $t('site.endToEnd') }}</div>
-                      <div class="hc-stat-cap">{{ $t('site.engineeringAndManufacturing') }}</div></div>
+                    <AboutTzmeContent :configuration="aboutTzme.home" :locale-code="locale" heading-id="home-about-title" />
                   </div>
-                  </div>
-                  <div class="home-about-image"><el-image :src="siteAsset('/assets/rnd-2.jpg')" alt="" fit="cover" /></div>
+                  <div v-if="aboutTzme.home.image" class="home-about-image"><el-image :src="aboutTzme.home.image" :alt="aboutText(aboutTzme.home.imageAlt, locale)" fit="cover" /></div>
                 </div>
               </section>
 
@@ -319,16 +312,10 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 .home-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
 .home-about { padding: 72px 0 56px; }
 .home-about-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
+.home-about-layout.home-about-without-image { grid-template-columns: minmax(0, 1fr); }
 .home-about-copy { min-width: 0; }
-.home-about .hc-h2 { color: var(--txt); }
 .home-about-image { position: relative; align-self: stretch; min-width: 0; min-height: 360px; overflow: hidden; border: 1px solid var(--line-d); border-radius: 4px; }
 .home-about-image .el-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-.home-about-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 40px; }
-.home-about-stats > div, .home-about-stats > div + div { min-width: 0; padding: 24px 10px 4px; }
-.home-about-stats > div:first-child { padding-left: 0; }
-.home-about-stats > div:last-child { padding-right: 0; }
-.home-about-stats .hc-stat { font-size: clamp(22px, 2vw, 30px); }
-.home-about-stats .hc-stat-cap { color: #bccddb; font-size: 12px; }
 @media (max-width: 960px) {
   .home-about-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .home-about-image { min-height: 0; aspect-ratio: 16 / 9; }
@@ -336,8 +323,5 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 @media (max-width: 700px) {
   .home-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .home-global .hc-gstats > div:last-child:has(.hc-btn) { grid-column: 1 / -1; }
-  .home-about-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
-  .home-about-stats > div:nth-child(2n) { border-right: 0; }
-  .home-about-stats > div:last-child { grid-column: 1 / -1; padding-left: 0; }
 }
 </style>

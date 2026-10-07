@@ -50,6 +50,10 @@ powershell -ExecutionPolicy Bypass -File scripts/database.ps1 -Action import -Sq
 
 ## 新环境部署
 
+首页与关于我们页的“关于 TZME”配置保存在 `site_settings` 的 `id='about-tzme'` 中，分别使用 `home` 和 `about`。两处各维护中英文小标题、两行标题、两段介绍、图片说明以及固定 4 个词条；每个词条包含数字或短语、单位或后缀和说明，数组顺序就是展示顺序。首页第四个基础词条使用原关于我们页的创立年份，不新增编造的业务数据。
+
+Java 启动时自动执行 `09-about-tzme.sql`；也可手动导入 `migrations/2026-10-about-tzme.sql`。首次升级从已有官网配置提取原文案、数值与图片，重复执行保留后台修改。关闭 SQL 自动初始化的环境需要手动导入迁移。后台入口为“关于 TZME 配置”，两个页面和中英文一起保存。基础数据保存在 `baseline/about-tzme.json`，`db:build -- --refresh-baseline` 会从已导出的快照更新它；数据库导出也会包含此配置。
+
 首页能力配置存放在 `site_settings` 中 `id='capabilities'` 的 JSON：栏目小标题、两行标题、说明、背景与最多 8 个流程步骤。Java 启动时执行 `07-home-capabilities.sql`，也可以单独导入对应迁移。首次初始化从现有官网配置提取首页文案与背景，缺失时使用基础数据；已有能力配置保留原值，重复执行不会覆盖后台修改。导出脚本会一同备份此配置；使用 `db:build -- --refresh-baseline` 时也会保存到对应基础数据 JSON。
 
 行业图标保存在 `industries.icon`，该字段包含中文备注；中英文共用图片，名称和说明仍分别维护。Java 启动时自动执行 `06-industry-icons.sql`，也可单独导入 `migrations/2026-10-industry-icons.sql`。迁移检查字段是否存在，首次升级仅为空的五个预设行业补充默认图标，重复执行保留后台上传、替换和清除的结果。默认 SVG 随前端静态资源部署，后台上传图片与上传目录一起备份。
@@ -114,7 +118,7 @@ node scripts/export-database.mjs
 npm run db:build
 ```
 
-这会读取 `baseline/records.json`、`baseline/site-settings.json`、`baseline/contact-settings.json`、`src/i18n/locales/en.js`、`zh.js` 和地图选项文件，生成 `install.sql` 及 Java 的 SQL 资源。
+这会读取 `baseline/records.json`、`baseline/site-settings.json`、`baseline/contact-settings.json`、`baseline/home-capabilities.json`、`baseline/about-tzme.json`、语言配置和地图选项文件，生成 `install.sql` 及 Java 的 SQL 资源。
 
 需要将后台后续保存的数据更新为新的基础数据时，先导出数据库，再执行：
 

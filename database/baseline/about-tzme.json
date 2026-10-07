@@ -1,0 +1,172 @@
+{
+  "home": {
+    "kicker": {
+      "en": "About TZME",
+      "zh": "关于 TZME"
+    },
+    "titleLine1": {
+      "en": "Engineering",
+      "zh": "工程设计"
+    },
+    "titleLine2": {
+      "en": "without limits.",
+      "zh": "不设边界。"
+    },
+    "description": {
+      "en": "TZME delivers engineered equipment and customised industrial solutions for some of the world's most demanding operating environments.",
+      "zh": "TZME 为全球严苛作业环境提供工程装备和定制化工业解决方案。"
+    },
+    "description2": {
+      "en": "",
+      "zh": ""
+    },
+    "image": "/assets/rnd-2.jpg",
+    "imageAlt": {
+      "en": "",
+      "zh": ""
+    },
+    "entries": [
+      {
+        "value": {
+          "en": "20",
+          "zh": "20"
+        },
+        "suffix": {
+          "en": "+",
+          "zh": "+"
+        },
+        "label": {
+          "en": "Years of experience",
+          "zh": "行业经验"
+        }
+      },
+      {
+        "value": {
+          "en": "Global",
+          "zh": "全球业务"
+        },
+        "suffix": {
+          "en": "",
+          "zh": ""
+        },
+        "label": {
+          "en": "Project capability",
+          "zh": "项目交付能力"
+        }
+      },
+      {
+        "value": {
+          "en": "End-to-end",
+          "zh": "全流程"
+        },
+        "suffix": {
+          "en": "",
+          "zh": ""
+        },
+        "label": {
+          "en": "Engineering & manufacturing",
+          "zh": "工程设计与制造"
+        }
+      },
+      {
+        "value": {
+          "en": "2002",
+          "zh": "2002"
+        },
+        "suffix": {
+          "en": "",
+          "zh": ""
+        },
+        "label": {
+          "en": "Founded in Tianjin",
+          "zh": "创立于天津"
+        }
+      }
+    ]
+  },
+  "about": {
+    "kicker": {
+      "en": "About TZME",
+      "zh": "关于 TZME"
+    },
+    "titleLine1": {
+      "en": "Engineering",
+      "zh": "工程设计"
+    },
+    "titleLine2": {
+      "en": "without limits.",
+      "zh": "不设边界。"
+    },
+    "description": {
+      "en": "Tianjin Heavy Steel Machinery Equipment Co., Ltd. designs, fabricates and delivers engineered-to-order heavy steel equipment. Our work starts from a client's duty statement or drawing set and ends with a commissioned machine on site — design, welding, machining, trial assembly, export packing and erection supervision are all handled in-house.",
+      "zh": "天津重型钢结构机械设备有限公司设计、制造并交付按需定制的重型钢结构装备。从客户的工况要求或图纸开始，到设备在现场完成调试，设计、焊接、机加工、试装、出口包装和安装监督均由我们自主完成。"
+    },
+    "description2": {
+      "en": "Roughly 90 % of our output is exported, mainly to mining houses, port operators and EPC contractors in Australia, Europe and North America.",
+      "zh": "约 90% 的产品出口，主要服务于澳大利亚、欧洲和北美的矿业企业、港口运营商及 EPC 承包商。"
+    },
+    "image": "/assets/hero-03.jpg",
+    "imageAlt": {
+      "en": "",
+      "zh": ""
+    },
+    "entries": [
+      {
+        "value": {
+          "en": "30,000",
+          "zh": "30,000"
+        },
+        "suffix": {
+          "en": "t",
+          "zh": "t"
+        },
+        "label": {
+          "en": "Annual output",
+          "zh": "年产量"
+        }
+      },
+      {
+        "value": {
+          "en": "220,000",
+          "zh": "220,000"
+        },
+        "suffix": {
+          "en": "m²",
+          "zh": "m²"
+        },
+        "label": {
+          "en": "Site area · 5 bases",
+          "zh": "场地面积 · 5 个基地"
+        }
+      },
+      {
+        "value": {
+          "en": "40",
+          "zh": "40"
+        },
+        "suffix": {
+          "en": "+",
+          "zh": "+"
+        },
+        "label": {
+          "en": "Export countries",
+          "zh": "出口国家"
+        }
+      },
+      {
+        "value": {
+          "en": "2002",
+          "zh": "2002"
+        },
+        "suffix": {
+          "en": "",
+          "zh": ""
+        },
+        "label": {
+          "en": "Founded in Tianjin",
+          "zh": "创立于天津"
+        }
+      }
+    ]
+  }
+}

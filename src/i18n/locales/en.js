@@ -1,9 +1,11 @@
 import { contactEn } from '../contact.js'
 import { capabilitiesEn } from '../capabilities.js'
+import { aboutTzmeEn } from '../aboutTzme.js'
 import { analyticsEn } from '../analytics.js'
 export default {
   ...contactEn,
   ...capabilitiesEn,
+  ...aboutTzmeEn,
   ...analyticsEn,
   "site": {
     "globalMapLitLocations": "{count} highlighted locations",

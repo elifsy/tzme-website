@@ -1,9 +1,11 @@
 import { contactZh } from '../contact.js'
 import { capabilitiesZh } from '../capabilities.js'
+import { aboutTzmeZh } from '../aboutTzme.js'
 import { analyticsZh } from '../analytics.js'
 export default {
   ...contactZh,
   ...capabilitiesZh,
+  ...aboutTzmeZh,
   ...analyticsZh,
   "site": {
     "globalMapLitLocations": "已点亮 {count} 个位置",

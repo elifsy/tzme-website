@@ -1,6 +1,6 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Picture, ZoomIn } from '@element-plus/icons-vue'
@@ -10,6 +10,9 @@ import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
+import AboutTzmeContent from '../components/AboutTzmeContent.vue'
+import { useAboutTzme } from '../services/aboutTzme.js'
+import { aboutText } from '../data/aboutTzme.js'
 import { useContactSettings } from '../services/contactSettings.js'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { useGlobalReach } from '../services/globalReach.js'
@@ -19,6 +22,7 @@ const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
+const { aboutTzme, loadAboutTzme } = useAboutTzme()
 const { globalReach, loadGlobalReach } = useGlobalReach()
 const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
 const { certifications, loadCertifications } = useCertificationCatalog()
@@ -61,7 +65,7 @@ function previewCertificate(id) { certificateImageRefs.get(id)?.showPreview() }
 const certificationField = (item, name) => locale.value === 'zh'
   ? item[`${name}Zh`] || item[`${name}En`] || ''
   : item[`${name}En`] || ''
-onMounted(() => { loadGlobalReach(); loadCertifications() })
+onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
 </script>
 
 <template>
@@ -70,38 +74,14 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
 
       <SiteNav />
 
-      <section class="hc-sec about-intro catalog-intro catalog-intro-about" aria-labelledby="about-page-title">
-        <el-image v-if="siteAsset('/assets/hero-03.jpg')" class="catalog-intro-image"
-          :src="siteAsset('/assets/hero-03.jpg')" fit="cover" alt="" aria-hidden="true">
+      <section v-if="aboutTzme" class="hc-sec about-intro catalog-intro catalog-intro-about" aria-labelledby="about-page-title">
+        <el-image v-if="aboutTzme.about.image" class="catalog-intro-image"
+          :src="aboutTzme.about.image" fit="cover" :alt="aboutText(aboutTzme.about.imageAlt, locale)" :aria-hidden="!aboutText(aboutTzme.about.imageAlt, locale)">
           <template #error><div class="catalog-intro-image-fallback"></div></template>
         </el-image>
         <div class="hc-w catalog-intro-foreground">
           <div class="about-intro-copy">
-            <span class="hc-kick">{{ $t('site.aboutTzme') }}</span>
-            <h1 id="about-page-title" class="hc-h2">{{ $t('site.engineering') }}<br />{{ $t('site.withoutLimits') }}
-            </h1>
-            <p class="hc-p catalog-intro-description" style="margin-top:20px;max-width:540px">
-              {{ $t('site.tianjinHeavySteelMachineryEquipmentCoLtdDesignsFabricatesAndDeliversEngineered') }}</p>
-            <p class="hc-p catalog-intro-description" style="margin-top:18px;max-width:540px">
-              {{ $t('site.roughly90OfOurOutputIsExportedMainlyToMiningHousesPort') }}</p>
-            <div class="hc-band about-intro-stats">
-              <div>
-                <div class="hc-stat">{{ siteValue('text_6f7af8cfeebd') }}<u>{{ siteValue('text_8efd86fb78a5') }}</u></div>
-                <div class="hc-stat-cap">{{ $t('site.annualOutput') }}</div>
-              </div>
-              <div>
-                <div class="hc-stat">{{ siteValue('text_3957f15e6313') }}<u>{{ siteValue('text_6f6f0f6a0fb3') }}</u></div>
-                <div class="hc-stat-cap">{{ $t('site.siteArea5Bases') }}</div>
-              </div>
-              <div>
-                <div class="hc-stat">{{ siteValue('text_af3e133428b9') }}<u>+</u></div>
-                <div class="hc-stat-cap">{{ $t('site.exportCountries') }}</div>
-              </div>
-              <div>
-                <div class="hc-stat">{{ siteValue('text_2e8c0277e396') }}</div>
-                <div class="hc-stat-cap">{{ $t('site.foundedInTianjin') }}</div>
-              </div>
-            </div>
+            <AboutTzmeContent :configuration="aboutTzme.about" :locale-code="locale" heading-tag="h1" heading-id="about-page-title" />
           </div>
         </div>
       </section>
@@ -312,17 +292,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications() })
 .about-global .hc-p { white-space: pre-line; }
 .about-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
 .about-intro-copy { min-width: 0; width: min(100%, 720px); }
-.about-intro-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 40px; }
-.about-intro-stats > div, .about-intro-stats > div + div { min-width: 0; padding: 24px 10px 4px; }
-.about-intro-stats > div:first-child { padding-left: 0; }
-.about-intro-stats > div:last-child { padding-right: 0; }
-.about-intro-stats .hc-stat { font-size: clamp(22px, 2vw, 30px); white-space: nowrap; }
-.about-intro-stats .hc-stat u { font-size: 12px; }
-.about-intro-stats .hc-stat-cap { color: #bccddb; font-size: 12px; }
 @media (max-width: 700px) {
   .about-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .about-intro-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
-  .about-intro-stats > div:nth-child(2n) { border-right: 0; }
-  .about-intro-stats > div:nth-child(2n + 1) { padding-left: 0; }
 }
 </style>

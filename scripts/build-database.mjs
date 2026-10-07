@@ -7,6 +7,7 @@ import { projectSeed } from '../src/data/projects.js'
 import { localeMessages } from '../src/i18n/locales/index.js'
 import './build-contact-baseline.mjs'
 import './build-capabilities-baseline.mjs'
+import './build-about-baseline.mjs'
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
 const recordPath = 'database/baseline/records.json'
@@ -85,6 +86,12 @@ if (process.argv.includes('--refresh-baseline')) {
   if (saved) writeFileSync(capabilitiesPath, JSON.stringify(typeof saved.configuration === 'string' ? JSON.parse(saved.configuration) : saved.configuration, null, 2) + '\n')
 }
 const capabilities = readJson(capabilitiesPath)
+const aboutPath = 'database/baseline/about-tzme.json'
+if (process.argv.includes('--refresh-baseline')) {
+  const saved = (snapshot.site_settings || []).find(row => row.id === 'about-tzme')
+  if (saved) writeFileSync(aboutPath, JSON.stringify(typeof saved.configuration === 'string' ? JSON.parse(saved.configuration) : saved.configuration, null, 2) + '\n')
+}
+const aboutTzme = readJson(aboutPath)
 if (contact.notification?.smtp?.password) throw new Error('Do not put SMTP credentials into committed baseline data')
 const tables = { ...records, site_settings: [{ id: 'website', configuration: JSON.stringify(settings) }] }
 function sqlValue(value) {
@@ -188,6 +195,45 @@ capabilitiesMigration += "WHERE NOT EXISTS (SELECT 1 FROM site_settings WHERE id
 capabilitiesMigration += "INSERT INTO app_migrations (id) SELECT '2026-10-home-capabilities-v1' WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-10-home-capabilities-v1');\nCOMMIT;\n"
 writeFileSync(resolve(resources, '07-home-capabilities.sql'), capabilitiesMigration)
 writeFileSync('database/migrations/2026-10-home-capabilities.sql', capabilitiesMigration)
+// Separate configurations for the two About TZME sections, with exactly four entries each.
+// Extract existing database content on first upgrade; subsequent runs preserve admin edits.
+const aboutSources = {
+  'home.kicker': ['translation', 'aboutTzme'], 'home.titleLine1': ['translation', 'engineering'],
+  'home.titleLine2': ['translation', 'withoutLimits'],
+  'home.description': ['translation', 'tzmeDeliversEngineeredEquipmentAndCustomisedIndustrialSolutionsForSomeOfThe'],
+  'home.entries[0].value': ['value', 'text_91032ad7bbcb'], 'home.entries[0].label': ['translation', 'yearsOfExperience'],
+  'home.entries[1].value': ['translation', 'global'], 'home.entries[1].label': ['translation', 'projectCapability'],
+  'home.entries[2].value': ['translation', 'endToEnd'], 'home.entries[2].label': ['translation', 'engineeringAndManufacturing'],
+  'home.entries[3].value': ['value', 'text_2e8c0277e396'], 'home.entries[3].label': ['translation', 'foundedInTianjin'],
+  'about.kicker': ['translation', 'aboutTzme'], 'about.titleLine1': ['translation', 'engineering'],
+  'about.titleLine2': ['translation', 'withoutLimits'],
+  'about.description': ['translation', 'tianjinHeavySteelMachineryEquipmentCoLtdDesignsFabricatesAndDeliversEngineered'],
+  'about.description2': ['translation', 'roughly90OfOurOutputIsExportedMainlyToMiningHousesPort'],
+  'about.entries[0].value': ['value', 'text_6f7af8cfeebd'], 'about.entries[0].suffix': ['value', 'text_8efd86fb78a5'],
+  'about.entries[0].label': ['translation', 'annualOutput'],
+  'about.entries[1].value': ['value', 'text_3957f15e6313'], 'about.entries[1].suffix': ['value', 'text_6f6f0f6a0fb3'],
+  'about.entries[1].label': ['translation', 'siteArea5Bases'],
+  'about.entries[2].value': ['value', 'text_af3e133428b9'], 'about.entries[2].label': ['translation', 'exportCountries'],
+  'about.entries[3].value': ['value', 'text_2e8c0277e396'], 'about.entries[3].label': ['translation', 'foundedInTianjin'],
+}
+const aboutChanges = []
+for (const [target, [type, source]] of Object.entries(aboutSources)) {
+  for (const code of Object.keys(aboutTzme[target.split('.')[0]].kicker)) {
+    const destination = `$.${target}."${code}"`
+    const origin = type === 'translation' ? `$.translations."${code}".${source}` : `$.values."${source}"`
+    aboutChanges.push(`'${destination}', COALESCE(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(website.configuration, '${origin}')), 'null'), JSON_UNQUOTE(JSON_EXTRACT(about_seed.configuration, '${destination}')))`)
+  }
+}
+for (const [key, image] of [['home', '/assets/rnd-2.jpg'], ['about', '/assets/hero-03.jpg']]) {
+  aboutChanges.push(`'$.${key}.image', COALESCE(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(website.configuration, '$.assets."${image}"')), 'null'), JSON_UNQUOTE(JSON_EXTRACT(about_seed.configuration, '$.${key}.image')))`)
+}
+let aboutMigration = '-- 关于 TZME：分别配置首页与关于我们页，每处固定四个词条。首次提取原文案与图片，重复执行保留后台修改。\nSET NAMES utf8mb4;\nSTART TRANSACTION;\n'
+aboutMigration += `INSERT INTO site_settings (id, configuration)\nSELECT 'about-tzme', JSON_SET(about_seed.configuration,\n  ${aboutChanges.join(',\n  ')})\n`
+aboutMigration += `FROM (SELECT CAST(${sqlValue(JSON.stringify(aboutTzme))} AS JSON) AS configuration) AS about_seed\nLEFT JOIN site_settings AS website ON website.id='website'\n`
+aboutMigration += "WHERE NOT EXISTS (SELECT 1 FROM site_settings WHERE id='about-tzme');\n"
+aboutMigration += "INSERT INTO app_migrations (id) SELECT '2026-10-about-tzme-v1' WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-10-about-tzme-v1');\nCOMMIT;\n"
+writeFileSync(resolve(resources, '09-about-tzme.sql'), aboutMigration)
+writeFileSync('database/migrations/2026-10-about-tzme.sql', aboutMigration)
 const analyticsDefinition = schema.match(/CREATE TABLE IF NOT EXISTS site_analytics_events \([\s\S]*?;/)[0]
 const analyticsMigration = '-- 官网访问埋点：新增匿名事件表，默认开启采集，不生成模拟访问数据。\nSET NAMES utf8mb4;\n' + analyticsDefinition + '\n' +
   `INSERT INTO site_settings (id,configuration) SELECT 'analytics','{"enabled":true}' WHERE NOT EXISTS (SELECT 1 FROM site_settings WHERE id='analytics');\n` +
@@ -218,7 +264,7 @@ writeFileSync(resolve(resources, '03-comments.sql'), comments)
 mkdirSync('database/migrations', { recursive: true })
 writeFileSync('database/migrations/2026-10-column-comments.sql', comments)
 writeFileSync(resolve(resources, '02-data.sql'), data)
-writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + contactMigration + '\n' + socialMigration + '\n' + industryIconMigration + '\n' + capabilitiesMigration + '\n' + analyticsMigration + '\n' + comments + '\n' + data)
+writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + contactMigration + '\n' + socialMigration + '\n' + industryIconMigration + '\n' + capabilitiesMigration + '\n' + analyticsMigration + '\n' + aboutMigration + '\n' + comments + '\n' + data)
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

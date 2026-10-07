@@ -17,6 +17,7 @@ import IndustriesManager from "../components/IndustriesManager.vue";
 import ProjectsManager from "../components/ProjectsManager.vue";
 import GlobalReachManager from "../components/GlobalReachManager.vue";
 import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
+import AboutTzmeManager from "../components/AboutTzmeManager.vue";
 import AnalyticsManager from "../components/AnalyticsManager.vue";
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
@@ -49,6 +50,7 @@ const industryManager = ref(null);
 const projectManager = ref(null);
 const globalManager = ref(null);
 const capabilitiesManager = ref(null);
+const aboutManager = ref(null);
 const analyticsManager = ref(null);
 const contactManager = ref(null);
 const inquiriesManager = ref(null);
@@ -87,6 +89,7 @@ const titles = {
   projects: "admin.projects",
   global: "admin.homeGlobal",
   capabilities: "capabilitiesAdmin.title",
+  about: "aboutTzmeAdmin.title",
   analytics: "analyticsAdmin.title",
   articles: "admin.insights",
   certifications: "admin.certifications",
@@ -102,6 +105,7 @@ const navItems = [
   { key: "projects", label: "admin.projects", icon: "DataBoard" },
   { key: "global", label: "admin.homeGlobal", icon: "Picture" },
   { key: "capabilities", label: "capabilitiesAdmin.title", icon: "DataBoard" },
+  { key: "about", label: "aboutTzmeAdmin.title", icon: "OfficeBuilding" },
   { key: "articles", label: "admin.insights", icon: "Document" },
   { key: "certifications", label: "admin.certifications", icon: "CircleCheckFilled" },
   { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
@@ -251,6 +255,7 @@ function refresh() {
   else if (tab.value === 'projects') projectManager.value?.load();
   else if (tab.value === 'global') globalManager.value?.load();
   else if (tab.value === 'capabilities') capabilitiesManager.value?.load();
+  else if (tab.value === 'about') aboutManager.value?.load();
   else if (tab.value === 'analytics') analyticsManager.value?.load();
   else if (tab.value === 'contact') contactManager.value?.load();
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
@@ -338,6 +343,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 : tab === 'projects' ? 'admin.projectManagementDescription'
                 : tab === 'global' ? 'admin.homeGlobalDescription'
                 : tab === 'capabilities' ? 'capabilitiesAdmin.description'
+                : tab === 'about' ? 'aboutTzmeAdmin.description'
                 : tab === 'analytics' ? 'analyticsAdmin.description'
                 : tab === 'contact' ? 'contactAdmin.description'
                 : tab === 'mail' ? 'mailAdmin.description'
@@ -695,6 +701,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <ProjectsManager v-else-if="tab === 'projects'" ref="projectManager" />
         <GlobalReachManager v-else-if="tab === 'global'" ref="globalManager" />
         <HomeCapabilitiesManager v-else-if="tab === 'capabilities'" ref="capabilitiesManager" />
+        <AboutTzmeManager v-else-if="tab === 'about'" ref="aboutManager" />
         <AnalyticsManager v-else-if="tab === 'analytics'" ref="analyticsManager" />
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
         <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
