@@ -16,6 +16,7 @@ import CertificationsManager from "../components/CertificationsManager.vue";
 import IndustriesManager from "../components/IndustriesManager.vue";
 import ProjectsManager from "../components/ProjectsManager.vue";
 import GlobalReachManager from "../components/GlobalReachManager.vue";
+import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
 import AdminEditorPanel from "../components/AdminEditorPanel.vue";
@@ -46,6 +47,7 @@ const certManager = ref(null);
 const industryManager = ref(null);
 const projectManager = ref(null);
 const globalManager = ref(null);
+const capabilitiesManager = ref(null);
 const contactManager = ref(null);
 const inquiriesManager = ref(null);
 const mailManager = ref(null);
@@ -82,6 +84,7 @@ const titles = {
   industries: "admin.industryManagement",
   projects: "admin.projects",
   global: "admin.homeGlobal",
+  capabilities: "capabilitiesAdmin.title",
   articles: "admin.insights",
   certifications: "admin.certifications",
   inquiries: "admin.enquiries",
@@ -94,6 +97,7 @@ const navItems = [
   { key: "industries", label: "admin.industryManagement", icon: "DataBoard" },
   { key: "projects", label: "admin.projects", icon: "DataBoard" },
   { key: "global", label: "admin.homeGlobal", icon: "Picture" },
+  { key: "capabilities", label: "capabilitiesAdmin.title", icon: "DataBoard" },
   { key: "articles", label: "admin.insights", icon: "Document" },
   { key: "certifications", label: "admin.certifications", icon: "CircleCheckFilled" },
   { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
@@ -242,6 +246,7 @@ function refresh() {
   else if (tab.value === 'industries') industryManager.value?.load();
   else if (tab.value === 'projects') projectManager.value?.load();
   else if (tab.value === 'global') globalManager.value?.load();
+  else if (tab.value === 'capabilities') capabilitiesManager.value?.load();
   else if (tab.value === 'contact') contactManager.value?.load();
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
   else if (tab.value === 'mail') mailManager.value?.load();
@@ -327,6 +332,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 : tab === 'industries' ? 'admin.industryManagementDescription'
                 : tab === 'projects' ? 'admin.projectManagementDescription'
                 : tab === 'global' ? 'admin.homeGlobalDescription'
+                : tab === 'capabilities' ? 'capabilitiesAdmin.description'
                 : tab === 'contact' ? 'contactAdmin.description'
                 : tab === 'mail' ? 'mailAdmin.description'
                 : 'admin.manageYourCorporateWebsiteContentAndEnquiries') }}
@@ -682,6 +688,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 
         <ProjectsManager v-else-if="tab === 'projects'" ref="projectManager" />
         <GlobalReachManager v-else-if="tab === 'global'" ref="globalManager" />
+        <HomeCapabilitiesManager v-else-if="tab === 'capabilities'" ref="capabilitiesManager" />
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
         <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
 

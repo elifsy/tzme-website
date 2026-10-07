@@ -7,5 +7,7 @@ export const imageRecommendations = {
   map: { width: 1600, height: 700, fit: 'contain', hint: 'admin.imageMapHint' },
   socialIcon: { width: 128, height: 128, fit: 'contain', hint: 'admin.imageSocialIconHint' },
   industryIcon: { width: 128, height: 128, fit: 'contain', hint: 'admin.imageIndustryIconHint' },
+  capabilityIcon: { width: 128, height: 128, fit: 'contain', hint: 'admin.imageCapabilityIconHint' },
+  capabilityBackground: { width: 1600, height: 900, fit: 'cover', hint: 'admin.imageCapabilityBackgroundHint' },
   body: { width: 1200, height: 800, fit: 'contain', hint: 'admin.imageBodyHint' },
 }

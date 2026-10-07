@@ -1,0 +1,92 @@
+{
+  "enabled": true,
+  "kicker": {
+    "en": "Our capabilities",
+    "zh": "我们的能力"
+  },
+  "titleLine1": {
+    "en": "From concept",
+    "zh": "从概念"
+  },
+  "titleLine2": {
+    "en": "to reality.",
+    "zh": "到现实。"
+  },
+  "description": {
+    "en": "From initial concept to final commissioning, our engineering and manufacturing capabilities are built around the specific requirements of every project.",
+    "zh": "从初步构想到最终调试，我们的工程设计和制造能力始终围绕每个项目的具体需求展开。"
+  },
+  "image": "/assets/hero-03.jpg",
+  "imageAlt": {
+    "en": "",
+    "zh": ""
+  },
+  "steps": [
+    {
+      "id": "capability-concept",
+      "label": {
+        "en": "Concept",
+        "zh": "概念方案"
+      },
+      "enabled": true,
+      "iconMode": "preset",
+      "iconName": "idea",
+      "icon": ""
+    },
+    {
+      "id": "capability-engineering",
+      "label": {
+        "en": "Engineering",
+        "zh": "工程设计"
+      },
+      "enabled": true,
+      "iconMode": "preset",
+      "iconName": "engineering",
+      "icon": ""
+    },
+    {
+      "id": "capability-design",
+      "label": {
+        "en": "Design",
+        "zh": "设计"
+      },
+      "enabled": true,
+      "iconMode": "preset",
+      "iconName": "design",
+      "icon": ""
+    },
+    {
+      "id": "capability-fabrication",
+      "label": {
+        "en": "Fabrication",
+        "zh": "制造"
+      },
+      "enabled": true,
+      "iconMode": "preset",
+      "iconName": "fabrication",
+      "icon": ""
+    },
+    {
+      "id": "capability-assembly",
+      "label": {
+        "en": "Assembly",
+        "zh": "装配"
+      },
+      "enabled": true,
+      "iconMode": "preset",
+      "iconName": "assembly",
+      "icon": ""
+    },
+    {
+      "id": "capability-delivery",
+      "label": {
+        "en": "Delivery",
+        "zh": "交付"
+      },
+      "enabled": true,
+      "iconMode": "preset",
+      "iconName": "delivery",
+      "icon": ""
+    }
+  ]
+}

@@ -16,9 +16,12 @@
 | `../server/src/main/resources/db/05-social-links.sql` | Java 启动时执行的社交链接迁移 |
 | `migrations/2026-10-industry-icons.sql` | 增加行业图标字段并首次初始化预设行业图标 |
 | `../server/src/main/resources/db/06-industry-icons.sql` | Java 启动时执行的行业图标迁移 |
+| `migrations/2026-10-home-capabilities.sql` | 首次初始化首页能力文案、背景及流程步骤，保留已有配置 |
+| `../server/src/main/resources/db/07-home-capabilities.sql` | Java 启动时执行的首页能力配置迁移 |
 | `baseline/records.json` | 可阅读的基础业务数据，包含现有 MySQL 的修改 |
 | `baseline/site-settings.json` | 官网图片地址、统计数字和联系方式等基础配置 |
 | `baseline/contact-settings.json` | 中英文联系方式、下属企业、各语言社交链接、咨询表单与附件限制；SMTP 通知默认关闭 |
+| `baseline/home-capabilities.json` | 首页能力区域的中英文内容、背景及六个基础流程步骤 |
 | `snapshots/` | 本机备份，已从 Git 排除 |
 
 业务数据包含 9 个产品、4 篇新闻、5 个行业、4 项资质、3 个项目、全球业务配置，以及中英文官网内容和 241 个地图位置选项。咨询记录使用数据库中的实际记录，没有生成示例咨询。
@@ -46,6 +49,8 @@ powershell -ExecutionPolicy Bypass -File scripts/database.ps1 -Action import -Sq
 “其他链接”的自定义名称保存在条目的 `label` 中，自定义图标上传地址保存在 `icon` 中，各语言独立维护。旧条目缺少 `icon` 时使用默认图标，无需变更数据库表结构。图片文件保存在上传目录，部署时需连同数据库一起备份和迁移。
 
 ## 新环境部署
+
+首页能力配置存放在 `site_settings` 中 `id='capabilities'` 的 JSON：栏目小标题、两行标题、说明、背景与最多 8 个流程步骤。Java 启动时执行 `07-home-capabilities.sql`，也可以单独导入对应迁移。首次初始化从现有官网配置提取首页文案与背景，缺失时使用基础数据；已有能力配置保留原值，重复执行不会覆盖后台修改。导出脚本会一同备份此配置；使用 `db:build -- --refresh-baseline` 时也会保存到对应基础数据 JSON。
 
 行业图标保存在 `industries.icon`，该字段包含中文备注；中英文共用图片，名称和说明仍分别维护。Java 启动时自动执行 `06-industry-icons.sql`，也可单独导入 `migrations/2026-10-industry-icons.sql`。迁移检查字段是否存在，首次升级仅为空的五个预设行业补充默认图标，重复执行保留后台上传、替换和清除的结果。默认 SVG 随前端静态资源部署，后台上传图片与上传目录一起备份。
 

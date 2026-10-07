@@ -1,6 +1,8 @@
 import { contactEn } from '../contact.js'
+import { capabilitiesEn } from '../capabilities.js'
 export default {
   ...contactEn,
+  ...capabilitiesEn,
   "site": {
     "globalMapLitLocations": "{count} highlighted locations",
     "skipToProjectContent": "Skip navigation and go to page content",
@@ -446,6 +448,8 @@ export default {
     "imageMapHint": "Use a landscape map. A transparent PNG works well on the dark background.",
     "imageSocialIconHint": "Use a square transparent PNG with a centered symbol and a little padding. Light icons suit the dark footer; avoid small text. Without an upload, the default link icon is used.",
     "imageIndustryIconHint": "Use a square transparent PNG with a centered symbol and a little padding. Choose a light icon for the dark homepage background and avoid small text. Clearing the image uses a generic industry icon.",
+    "imageCapabilityIconHint": "Use a square transparent PNG with a centered symbol and a little padding. Choose a dark or blue icon for the light capabilities background and avoid small text.",
+    "imageCapabilityBackgroundHint": "Use a 16:9 landscape image with the subject on the right and room for text on the left. The image is cropped on the right; clearing it uses a plain background.",
     "imageBodyHint": "Keep the original proportions and adjust the height to suit the content.",
     "imageFormatHint": "JPG / PNG / GIF / WebP, up to 5 MB per image. These dimensions are recommendations; other sizes are accepted.",
     "imageSaveHint": "Save after uploading to apply the image to the website.",

@@ -132,6 +132,6 @@ CREATE TABLE IF NOT EXISTS home_global_settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='首页与关于我们共用的全球业务配置';
 
 CREATE TABLE IF NOT EXISTS site_settings (
-  id VARCHAR(100) NOT NULL PRIMARY KEY COMMENT '官网配置标识，website 为网站基础配置，contact 为联系与咨询配置',
-  configuration LONGTEXT NOT NULL COMMENT '配置 JSON；contact 包含中英文联系方式、下属企业、咨询表单、附件限制及私有邮件配置'
+  id VARCHAR(100) NOT NULL PRIMARY KEY COMMENT '官网配置标识：website 网站基础配置，contact 联系与咨询配置，capabilities 首页能力配置',
+  configuration LONGTEXT NOT NULL COMMENT '配置 JSON：website 多语言文案与图片，contact 联系、咨询和私有邮件配置，capabilities 中英文能力文案、流程步骤及图标'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='官网多语言文案与基础展示配置';

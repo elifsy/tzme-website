@@ -157,8 +157,8 @@ EXECUTE tzme_comments_statement;
 DEALLOCATE PREPARE tzme_comments_statement;
 
 SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `site_settings`
-  MODIFY COLUMN id VARCHAR(100) NOT NULL COMMENT ''官网配置标识，website 为网站基础配置，contact 为联系与咨询配置'',
-  MODIFY COLUMN configuration LONGTEXT NOT NULL COMMENT ''配置 JSON；contact 包含中英文联系方式、下属企业、咨询表单、附件限制及私有邮件配置'',
+  MODIFY COLUMN id VARCHAR(100) NOT NULL COMMENT ''官网配置标识：website 网站基础配置，contact 联系与咨询配置，capabilities 首页能力配置'',
+  MODIFY COLUMN configuration LONGTEXT NOT NULL COMMENT ''配置 JSON：website 多语言文案与图片，contact 联系、咨询和私有邮件配置，capabilities 中英文能力文案、流程步骤及图标'',
   COMMENT=''官网多语言文案与基础展示配置''');
 PREPARE tzme_comments_statement FROM @tzme_comments_sql;
 EXECUTE tzme_comments_statement;

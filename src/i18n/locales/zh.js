@@ -1,6 +1,8 @@
 import { contactZh } from '../contact.js'
+import { capabilitiesZh } from '../capabilities.js'
 export default {
   ...contactZh,
+  ...capabilitiesZh,
   "site": {
     "globalMapLitLocations": "已点亮 {count} 个位置",
     "skipToProjectContent": "跳过导航，进入页面内容",
@@ -446,6 +448,8 @@ export default {
     "imageMapHint": "建议使用横向地图，透明 PNG 更适合深色背景。",
     "imageSocialIconHint": "建议使用正方形透明 PNG，图标居中并保留少量留白。深色页脚建议使用浅色图标，避免细小文字；未上传时使用默认链接图标。",
     "imageIndustryIconHint": "建议使用正方形透明 PNG，图标居中并留少量留白。首页背景较深，建议使用浅色图标，避免细小文字；清除图片后使用通用行业图标。",
+    "imageCapabilityIconHint": "建议使用正方形透明 PNG，图标居中并留少量留白。能力区域为浅色背景，建议使用深色或蓝色图标，避免细小文字。",
+    "imageCapabilityBackgroundHint": "建议使用 16:9 横图，主体靠右放置，文字区域留在左侧。图片会在右侧裁切显示，清除后使用纯色背景。",
     "imageBodyHint": "建议保持原图比例，高度可按内容调整。",
     "imageFormatHint": "支持 JPG / PNG / GIF / WebP，单张不超过 5 MB。推荐尺寸供参考，也可上传其他尺寸。",
     "imageSaveHint": "上传完成后点击保存，图片才会应用到官网。",

@@ -127,6 +127,14 @@ npm run db:build
 
 图标地址保存在 `industries.icon`，带中文字段备注。Java 重启时自动执行 `06-industry-icons.sql`，已有数据库也可单独导入 `database/migrations/2026-10-industry-icons.sql`。迁移只在首次升级时补充缺失的默认图标，保留自定义图片及之后的清除操作；全量部署 SQL 已同步更新。
 
+## 首页能力配置
+
+入口为 `/admin/capabilities`（侧栏“首页能力配置”）。可分别维护中英文栏目小标题、两行主标题、说明和步骤名称；支持区域显示开关、背景图片上传，以及最多 8 个流程步骤的新增、删除、排序和隐藏。展示编号按可见步骤的顺序自动生成。新增步骤默认隐藏，填写中英文名称后开启展示；区域开启时至少保留一个可见步骤。
+
+步骤可选择内置图标或上传自定义图片，图标与展示状态中英文共用。推荐图标 128 × 128 px 的透明深色或蓝色 PNG，背景图推荐 1600 × 900 px，上传最大 5 MB。左侧配置、右侧实时预览，切换编辑语言会同步切换预览；上传完成后保存才会应用到首页。
+
+配置通过 `/api/home-capabilities` 读写 MySQL `site_settings` 中 `id='capabilities'` 的独立 JSON，不影响联系和邮件配置。基础数据保存在 `database/baseline/home-capabilities.json`，保留现有六个流程步骤。Java 重启时自动执行 `07-home-capabilities.sql`，也可单独导入 `database/migrations/2026-10-home-capabilities.sql`；首次初始化优先沿用数据库中首页原有文案与图片，重复执行保留后台修改。全量部署 SQL 已更新。
+
 ## 联系与咨询配置
 
 联系配置：`/admin/contact`；咨询管理：`/admin/inquiries`；邮件通知：`/admin/mail`。初始配置沿用目前官网信息，保存在 `database/baseline/contact-settings.json`，运行时读取 MySQL 中的 `site_settings`，标识为 `contact`。

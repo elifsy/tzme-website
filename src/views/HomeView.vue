@@ -12,6 +12,8 @@ import ProjectCard from '../components/ProjectCard.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import IndustryIcon from '../components/IndustryIcon.vue'
+import HomeCapabilitiesSection from '../components/HomeCapabilitiesSection.vue'
+import { useCapabilities } from '../services/capabilities.js'
 import { contactText, useContactSettings } from '../services/contactSettings.js'
 import { useProjectCatalog } from '../services/projects.js'
 import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
@@ -38,6 +40,7 @@ function navigateGlobalLink(event) {
 const { products, loadProducts } = useProductCatalog()
 const { homeProjects, loadProjects } = useProjectCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
+const { capabilities, loadCapabilities } = useCapabilities()
 const publishedIndustries = computed(() => industries.value.filter((item) => item.status === 'published'))
 const featuredProducts = computed(() => products.value
   .filter((item) => item.status === 'published' && item.showOnHome)
@@ -45,7 +48,7 @@ const featuredProducts = computed(() => products.value
   .slice(0, MAX_HOME_PRODUCTS))
 const productField = (item, name) => localizedField(item, name, locale.value)
 const displayIndustry = (item, name) => industryField(item, name, locale.value)
-onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalReach() })
+onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalReach(); loadCapabilities() })
 </script>
 
 <template>
@@ -140,47 +143,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
               </section>
 
               <!-- 05 流程 -->
-              <section id="capabilities" class="hc-sec hc-light hc-cap">
-                <div class="hc-cap-bg"><img :src="siteAsset('/assets/hero-03.jpg')" alt="" /></div>
-                <div class="hc-w hc-cap-in">
-                  <span class="hc-kick">{{ $t('site.ourCapabilities') }}</span>
-                  <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.fromConcept') }}<br />{{ $t('site.toReality') }}</h2>
-                  <p class="hc-p" style="margin-top:20px;max-width:440px">
-                    {{ $t('site.fromInitialConceptToFinalCommissioningOurEngineeringAndManufacturingCapabilitiesAre') }}</p>
-                  <div class="hc-steps">
-                <div>
-                  <span class="ic"><i></i></span>
-                  <div class="no">{{ siteValue('text_ddfe163345d3') }}</div>
-                  <div class="lb">{{ $t('site.concept') }}</div>
-                </div>
-                <div>
-                  <span class="ic"><i></i></span>
-                  <div class="no">{{ siteValue('text_bcac9d1d8eab') }}</div>
-                  <div class="lb">{{ $t('site.engineering') }}</div>
-                </div>
-                <div>
-                  <span class="ic"><i></i></span>
-                  <div class="no">{{ siteValue('text_3ea6c91e241f') }}</div>
-                  <div class="lb">{{ $t('site.design') }}</div>
-                </div>
-                <div>
-                  <span class="ic"><i></i></span>
-                  <div class="no">{{ siteValue('text_798f861ee74f') }}</div>
-                  <div class="lb">{{ $t('site.fabrication') }}</div>
-                </div>
-                <div>
-                  <span class="ic"><i></i></span>
-                  <div class="no">{{ siteValue('text_28a5c2818590') }}</div>
-                  <div class="lb">{{ $t('site.assembly') }}</div>
-                </div>
-                <div>
-                  <span class="ic"><i></i></span>
-                  <div class="no">{{ siteValue('text_7316b3d5fef9') }}</div>
-                  <div class="lb">{{ $t('site.delivery') }}</div>
-                </div>
-                  </div>
-                </div>
-              </section>
+              <HomeCapabilitiesSection :configuration="capabilities" :locale-code="locale" />
 
               <!-- 06 制造能力 -->
               <section class="hc-sec hc-deep">
