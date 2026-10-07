@@ -112,6 +112,25 @@ PREPARE tzme_comments_statement FROM @tzme_comments_sql;
 EXECUTE tzme_comments_statement;
 DEALLOCATE PREPARE tzme_comments_statement;
 
+SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `site_analytics_events`
+  MODIFY COLUMN id CHAR(36) NOT NULL COMMENT ''埋点事件唯一标识，重复上报按此标识去重'',
+  MODIFY COLUMN visitor_id CHAR(36) NOT NULL COMMENT ''匿名访客标识，同一浏览器本地保存，不包含客户身份'',
+  MODIFY COLUMN session_id CHAR(36) NOT NULL COMMENT ''匿名访问会话标识，连续三十分钟无操作后重新生成'',
+  MODIFY COLUMN event_name VARCHAR(32) NOT NULL COMMENT ''事件名称，包含浏览、停留、点击、筛选和咨询转化'',
+  MODIFY COLUMN page_path VARCHAR(500) NOT NULL COMMENT ''官网页面路径，不保存查询参数和锚点'',
+  MODIFY COLUMN page_key VARCHAR(32) NOT NULL COMMENT ''页面类型，首页、列表页及产品项目新闻详情页'',
+  MODIFY COLUMN locale VARCHAR(20) NOT NULL COMMENT ''事件发生时的页面语言代码'',
+  MODIFY COLUMN device VARCHAR(16) NOT NULL COMMENT ''设备类型：desktop 桌面、tablet 平板、mobile 手机'',
+  MODIFY COLUMN referrer_host VARCHAR(255) NOT NULL COMMENT ''首次访问来源域名，直接访问记录为 direct，不保存完整链接'',
+  MODIFY COLUMN target VARCHAR(255) NOT NULL COMMENT ''操作目标业务标识，不保存咨询内容及联系方式'',
+  MODIFY COLUMN duration_seconds INT NOT NULL DEFAULT 0 COMMENT ''页面在前台可见的累计停留秒数，停留事件重复上报取最大值'',
+  MODIFY COLUMN scroll_depth TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT ''页面最大滚动深度百分比，范围零至一百'',
+  MODIFY COLUMN occurred_at DATETIME(3) NOT NULL COMMENT ''服务端接收事件时间，按 UTC 保存，后台按北京时间汇总'',
+  COMMENT=''官网匿名访问埋点和咨询转化分析记录''');
+PREPARE tzme_comments_statement FROM @tzme_comments_sql;
+EXECUTE tzme_comments_statement;
+DEALLOCATE PREPARE tzme_comments_statement;
+
 SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `site_inquiries`
   MODIFY COLUMN id BIGINT NOT NULL AUTO_INCREMENT COMMENT ''咨询记录自增主键'',
   MODIFY COLUMN name VARCHAR(255) COMMENT ''联系人姓名'',

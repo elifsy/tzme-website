@@ -153,6 +153,19 @@ npm run db:build
 
 已有数据库升级脚本为 `database/migrations/2026-10-contact-inquiries.sql`，可重复执行并保留已保存配置。Java 启动时也会自动执行迁移；修改后请重新启动 Java 服务。本机迁移前的备份为 `database/snapshots/before-contact.sql`。
 
+## 官网埋点与数据分析
+
+后台入口：`/admin/analytics`（侧栏“网站数据分析”）。默认开启官网采集，可以在分析页暂停或恢复，已有数据始终保留。官网每分钟更新一次采集开关。
+
+- 自动采集官网页面浏览、前台可见停留时间、最大滚动深度、导航与主要按钮点击、内容详情点击、行业与新闻分类筛选、翻页、社交及联系方式点击、语言切换。
+- 咨询表单记录开始填写、发起提交和失败；成功咨询由 Java 在咨询入库事务提交后记录，后台修改处理状态不会改变成功数。不会记录表单内容、邮箱、电话或 IP。
+- 支持近 7 / 30 / 90 天、自定义日期（最多 366 天）、语言和设备筛选；展示 PV、UV、访问次数、平均停留、跳出率、咨询数与转化率。
+- 趋势图支持鼠标和键盘查看每天的数据、切换表格和导出 CSV；同时展示咨询转化路径、热门页面与操作、来源域名、语言及设备分布。事件明细使用 Element Plus 分页，每页 20 条。
+
+访客按浏览器本地匿名标识去重；会话按标签页标识、30 分钟无操作划分。统计按北京时间汇总，以服务器接收时间为准。筛选、翻页和同页切换语言不额外增加 PV；平均停留只计算已上报的页面前台可见时间。浏览器禁止跟踪或网络中断可能导致少计，统计口径在分析页有说明。
+
+数据保存到 MySQL `site_analytics_events`，字段均带中文备注，采集开关保存于 `site_settings` 的 `analytics` 配置。Java 默认启动时执行 `08-analytics.sql` 创建表及索引，部署 SQL 已同步更新；若关闭了应用自动初始化，请先执行 `database/migrations/2026-10-analytics.sql`。分析只显示实际采集数据，没有模拟历史访问。修改后重新启动 Java 并刷新官网及后台。
+
 ## API
 
 | 数据 | 接口 |
@@ -170,5 +183,9 @@ npm run db:build
 | 邮件通知配置 | `GET/PUT /api/mail-settings`，密码不回显 |
 | 咨询附件 | `POST /api/inquiry-attachments`，`GET /api/inquiry-attachments/{id}` |
 | 图片 | `POST /api/uploads/images`，`GET /api/uploads/images/{filename}` |
+| 埋点上报 | `POST /api/analytics/events`，每批最多 20 条，按事件 ID 去重 |
+| 采集开关 | `GET/PUT /api/analytics/config` |
+| 分析报告 | `GET /api/analytics/report?from=YYYY-MM-DD&to=YYYY-MM-DD&locale=zh&device=desktop` |
+| 事件明细 | `GET /api/analytics/events`，支持报告筛选条件、`page` 和事件名称 `name` |
 
 管理后台现阶段沿用原有内容管理功能，尚未实现登录和权限控制。

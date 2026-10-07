@@ -126,6 +126,14 @@ node scripts/build-database.mjs --refresh-baseline
 
 更新联系配置基础数据时会自动清空 SMTP 密码并关闭邮件通知，避免将凭据提交 Git 或在新环境误发通知。完整数据库备份仍包含实际配置，必须妥善保存。咨询附件文件不包含在 SQL 中，迁移时请同时复制上传目录的 `inquiries/`。
 
+## 官网埋点
+
+`database/migrations/2026-10-analytics.sql` 创建 `site_analytics_events` 表、事件时间/会话/页面索引，并初始化 `site_settings` 中的 `analytics` 采集开关。脚本可重复执行，不清空访问数据、不覆盖已保存的采集状态。Java 默认启动时自动执行对应的 `db/08-analytics.sql`；使用 `TZME_SQL_INIT_MODE=never` 的环境需要手动导入迁移或更新后的全量 `install.sql`。
+
+事件记录全部来自实际官网访问，不作为基础示例数据写入 `baseline/records.json`，也不会用模拟数据填充报表。所有字段都有中文备注。UTC 接收时间保存到 `occurred_at`，后台按北京时间汇总。事件 ID 用于去重；停留事件按同一 ID 更新累计可见时间与滚动深度的最大值。
+
+`npm run db:build` 同步生成该迁移与全量部署 SQL；`node scripts/export-database.mjs` 的完整 SQL 备份包含埋点记录及采集开关。匿名访客标识在浏览器本地保存，会话标识按标签页保存，不包含咨询表单个人信息。
+
 ## 旧版浏览器修改和图片
 
 旧版可能只将修改存入浏览器。用原浏览器打开管理后台，发现未同步记录时会出现迁移提示，可以查看、导出 JSON，再导入 MySQL。失败记录继续保留以便重试；页面展示和普通保存均不使用浏览器业务缓存。迁移完成后再导出数据库，即可将这些修改包含在 SQL 备份中。

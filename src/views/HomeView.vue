@@ -133,7 +133,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                     </div>
                     <div class="hc-ind">
                       <router-link v-for="industry in publishedIndustries" :key="industry.id" class="hc-ind-item"
-                        :to="{ path: '/solutions', query: { industry: industry.id } }">
+                        :to="{ path: '/solutions', query: { industry: industry.id } }" data-analytics-event="industry_filter" :data-analytics-target="industry.id">
                         <span class="ic home-industry-icon"><IndustryIcon :icon="industry.icon || ''" /></span>
                         <div><b>{{ displayIndustry(industry, 'title') }}</b><u>{{ displayIndustry(industry, 'subtitle') }}</u></div>
                       </router-link>

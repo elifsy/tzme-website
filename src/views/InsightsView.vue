@@ -2,6 +2,7 @@
 import { useSiteContent } from '../services/website.js'
 const { siteAsset, siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, ref } from 'vue'
+import { trackEvent } from '../services/analytics.js'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
@@ -38,12 +39,14 @@ const detailLink = (id) => ({ path: articlePath(id), query: {
 } })
 function setCategory(id) {
   if (id === selectedCategory.value) return
+  trackEvent('news_filter', id || 'all')
   const query = { ...route.query, page: 1 }
   if (id) query.category = id
   else delete query.category
   router.push({ path: '/insights', query })
 }
 async function changePage(value) {
+  trackEvent('pagination', `news:${value}`)
   await router.replace({ path: '/insights', query: { ...route.query, page: Math.min(pageCount.value, value) } })
   await nextTick()
   document.getElementById('news-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' })

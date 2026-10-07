@@ -5,6 +5,7 @@ import com.tzme.cms.repository.InquiryRepository;
 import com.tzme.cms.repository.InquiryAttachmentRepository;
 import com.tzme.cms.service.ContactSettingsService;
 import com.tzme.cms.service.InquiryNotificationService;
+import com.tzme.cms.service.AnalyticsService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +20,11 @@ public class InquiryController {
     private final InquiryAttachmentRepository files;
     private final ContactSettingsService settings;
     private final InquiryNotificationService notification;
+    private final AnalyticsService analytics;
 
-    public InquiryController(InquiryRepository repository, InquiryAttachmentRepository files, ContactSettingsService settings, InquiryNotificationService notification) {
+    public InquiryController(InquiryRepository repository, InquiryAttachmentRepository files, ContactSettingsService settings, InquiryNotificationService notification, AnalyticsService analytics) {
         this.repository = repository; this.files = files; this.settings = settings; this.notification = notification;
+        this.analytics = analytics;
     }
 
     @GetMapping
@@ -57,6 +60,7 @@ public class InquiryController {
             file.setInquiryId(item.getId()); files.save(file);
         }
         notification.enqueue(item, config); repository.save(item);
+        analytics.inquirySaved(input.get("analytics"), locale, item.getId());
         return Map.of("id", item.getId(), "createdAt", item.getCreatedAt());
     }
 

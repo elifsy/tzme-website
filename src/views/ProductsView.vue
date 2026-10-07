@@ -2,6 +2,7 @@
 import { useSiteContent } from '../services/website.js'
 const { siteAsset, siteValue } = useSiteContent()
 import { computed, onMounted, ref } from 'vue'
+import { trackEvent } from '../services/analytics.js'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useDesignPage } from '../composables/useDesignPage.js'
@@ -27,6 +28,8 @@ const categoryCount = computed(() => new Set(publishedProducts.value.map((item) 
 const productField = (item, name) => localizedField(item, name, locale.value)
 const displayIndustry = (item) => industryField(item, 'title', locale.value)
 function setIndustry(id) {
+  if (id === selectedIndustry.value) return
+  trackEvent('industry_filter', id || 'all')
   const query = { ...route.query }
   if (id) query.industry = id
   else delete query.industry

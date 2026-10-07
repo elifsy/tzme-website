@@ -2,6 +2,7 @@
 import { useSiteContent } from '../services/website.js'
 const { siteAsset, siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, ref } from 'vue'
+import { trackEvent } from '../services/analytics.js'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Search } from '@element-plus/icons-vue'
@@ -36,6 +37,7 @@ const currentPage = computed(() => Math.min(pageCount.value, Math.max(1, Math.fl
 const pageProjects = computed(() => filtered.value.slice((currentPage.value - 1) * pageSize, currentPage.value * pageSize))
 const detailLink = (id) => ({ path: projectPath(id), query: { page: currentPage.value, ...(search.value ? { q: search.value } : {}) } })
 async function changePage(value) {
+  trackEvent('pagination', `projects:${value}`)
   await router.replace({ path: '/projects', query: { ...route.query, page: value } })
   await nextTick()
   focusProjectContent('project-list')

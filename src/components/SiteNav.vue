@@ -62,6 +62,7 @@ watch(
           class="hc-btn sm"
           :class="overlay ? 'ghost' : 'solid'"
           style="height: 34px"
+          data-analytics-event="cta_click" data-analytics-target="nav-contact"
           @click.stop="navigateTo('/contact')"
         >
           {{ $t("site.contactUs") }}<i aria-hidden="true">→</i>
@@ -89,6 +90,7 @@ watch(
         text
         :type="isMenuActive(item) ? 'primary' : 'default'"
         :aria-current="isMenuActive(item) ? 'page' : undefined"
+        data-analytics-event="navigation_click" :data-analytics-target="item.path"
         @click="navigateTo(item.path)"
         >{{ item.label }}</el-button
       >

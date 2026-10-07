@@ -26,6 +26,7 @@ import "./style/design-adapter.css";
 import "./style/news.css";
 import "./style/projects.css";
 import { i18n } from "./i18n/index.js";
+import { installAnalytics } from "./services/analytics.js";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -69,6 +70,7 @@ const router = createRouter({
 const app = createApp(App);
 app.use(router);
 app.use(i18n);
+installAnalytics(router, i18n.global.locale);
 for (const [name, component] of Object.entries({
   ArrowRight,
   Box,

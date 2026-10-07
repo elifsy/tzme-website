@@ -1,8 +1,10 @@
 import { contactEn } from '../contact.js'
 import { capabilitiesEn } from '../capabilities.js'
+import { analyticsEn } from '../analytics.js'
 export default {
   ...contactEn,
   ...capabilitiesEn,
+  ...analyticsEn,
   "site": {
     "globalMapLitLocations": "{count} highlighted locations",
     "skipToProjectContent": "Skip navigation and go to page content",

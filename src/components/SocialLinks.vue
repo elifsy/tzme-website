@@ -18,7 +18,7 @@ const label = item => item.label?.trim() || t(`contactAdmin.socialPlatforms.${it
 <template>
   <div v-if="visibleLinks.length" class="hc-soc social-links" role="group" :aria-label="$t('contactUi.socialLinks')">
     <el-tooltip v-for="item in visibleLinks" :key="item.id" :content="label(item)" :trigger="['hover', 'focus']" placement="top">
-      <el-button :tag="preview ? 'button' : 'a'" :href="preview ? undefined : item.url" :target="preview ? undefined : '_blank'" :rel="preview ? undefined : 'noopener noreferrer'" :aria-label="label(item)" class="social-link">
+      <el-button :tag="preview ? 'button' : 'a'" :href="preview ? undefined : item.url" :target="preview ? undefined : '_blank'" :rel="preview ? undefined : 'noopener noreferrer'" :aria-label="label(item)" class="social-link" :data-analytics-event="preview ? undefined : 'social_click'" :data-analytics-target="`${item.platform}:${item.id}`">
         <SocialLinkIcon :platform="item.platform" :icon="item.icon || ''" />
       </el-button>
     </el-tooltip>

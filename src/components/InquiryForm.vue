@@ -6,8 +6,9 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { apiRequest } from '../services/api.js'
 import { contactText, inquiryFieldLabels, useContactSettings } from '../services/contactSettings.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
+import { inquiryAnalyticsContext, trackEvent } from '../services/analytics.js'
 
-defineProps({ placement: { type: String, default: 'contact' } })
+const props = defineProps({ placement: { type: String, default: 'contact' } })
 const { t, locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
 const { industries, loadIndustries } = useIndustryCatalog()
@@ -29,6 +30,12 @@ const rules = computed(() => Object.fromEntries(Object.keys(inquiryFieldLabels).
 // Clear messages from the previous language without resetting the entered values.
 watch(locale, () => formRef.value?.clearValidate(), { flush: 'post' })
 let disposed = false
+let started = false
+function trackStart(event) {
+  if (started || !event.target.closest('input,textarea,.el-select')) return
+  started = true
+  trackEvent('inquiry_start', props.placement)
+}
 function beforeUpload(file) {
   const extension = file.name.split('.').pop().toLowerCase()
   if (!config.value.upload.allowedExtensions.includes(extension) || file.size <= 0 || file.size > config.value.upload.maxFileSizeMb * 1024 * 1024) {
@@ -68,14 +75,17 @@ async function submit() {
   try { await formRef.value.validate() } catch { return }
   if (disposed || submitting.value) return
   submitting.value = true
+  trackEvent('inquiry_submit', props.placement)
   try {
     const values = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]))
-    await apiRequest('/api/inquiries', { method: 'POST', body: { ...values, locale: locale.value, attachmentIds: fileList.value.filter(file => file.status === 'success').map(file => file.response.id) } })
+    await apiRequest('/api/inquiries', { method: 'POST', body: { ...values, locale: locale.value, analytics: inquiryAnalyticsContext(), attachmentIds: fileList.value.filter(file => file.status === 'success').map(file => file.response.id) } })
     if (disposed) return
     Object.keys(form).forEach(key => { form[key] = '' })
+    started = false
     fileList.value = []; uploadRef.value?.clearFiles(); formRef.value.clearValidate()
     ElMessage.success(contactText(config.value.form.successText, locale.value))
   } catch {
+    trackEvent('inquiry_error', props.placement)
     if (!disposed) ElMessage.error(t('contactUi.submitFailed', { email: config.value.contact.emails.join(' / ') || config.value.contact.phone }))
   } finally { if (!disposed) submitting.value = false }
 }
@@ -84,7 +94,7 @@ onBeforeUnmount(() => { disposed = true; uploads.forEach(request => request.abor
 </script>
 
 <template>
-  <div v-if="config && config.form[placement === 'home' ? 'showOnHome' : 'showOnContact']" class="hc-form inquiry-form" @click.stop @keydown.stop>
+  <div v-if="config && config.form[placement === 'home' ? 'showOnHome' : 'showOnContact']" class="hc-form inquiry-form" @click.stop @keydown.stop @focusin="trackStart">
     <template v-if="config.form.enabled">
       <span class="hc-kick inquiry-form-title">{{ contactText(config.form.title, locale) }}</span>
       <el-form ref="formRef" :model="form" :rules="rules" :validate-on-rule-change="false" label-position="top" :disabled="submitting" @submit.prevent="submit">
