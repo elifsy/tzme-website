@@ -49,6 +49,7 @@ SET @tzme_comments_sql = IF(@tzme_comments_done, 'SELECT 1', 'ALTER TABLE `indus
   MODIFY COLUMN title_zh VARCHAR(255) NOT NULL COMMENT ''中文行业名称'',
   MODIFY COLUMN subtitle_en VARCHAR(1000) COMMENT ''英文行业简短说明'',
   MODIFY COLUMN subtitle_zh VARCHAR(1000) COMMENT ''中文行业简短说明'',
+  MODIFY COLUMN icon VARCHAR(500) DEFAULT '''' COMMENT ''首页服务行业图标图片地址，中英文共用，支持预设图标或上传图片，空值使用通用图标'',
   MODIFY COLUMN sort_order INT NOT NULL COMMENT ''行业展示顺序，数值越小越靠前'',
   MODIFY COLUMN status VARCHAR(255) NOT NULL COMMENT ''发布状态：published 已发布，draft 草稿，deleted 已删除'',
   COMMENT=''服务行业，关联首页行业展示和产品筛选''');

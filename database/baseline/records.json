@@ -7,7 +7,8 @@
       "subtitle_en": "Mining & bulk materials",
       "subtitle_zh": "矿山与散料",
       "sort_order": 10,
-      "status": "published"
+      "status": "published",
+      "icon": "/assets/industry-icons/mining.svg"
     },
     {
       "id": "ports",
@@ -16,7 +17,8 @@
       "subtitle_en": "Ports & terminals",
       "subtitle_zh": "港口与码头",
       "sort_order": 20,
-      "status": "published"
+      "status": "published",
+      "icon": "/assets/industry-icons/ports.svg"
     },
     {
       "id": "metallurgy",
@@ -25,7 +27,8 @@
       "subtitle_en": "Steel & metallurgy",
       "subtitle_zh": "钢铁与冶金",
       "sort_order": 30,
-      "status": "published"
+      "status": "published",
+      "icon": "/assets/industry-icons/metallurgy.svg"
     },
     {
       "id": "energy",
@@ -34,7 +37,8 @@
       "subtitle_en": "Energy & industrial infrastructure",
       "subtitle_zh": "能源与工业基础设施",
       "sort_order": 40,
-      "status": "published"
+      "status": "published",
+      "icon": "/assets/industry-icons/energy.svg"
     },
     {
       "id": "construction",
@@ -43,7 +47,8 @@
       "subtitle_en": "Construction & heavy infrastructure",
       "subtitle_zh": "建筑与重型基础设施",
       "sort_order": 50,
-      "status": "published"
+      "status": "published",
+      "icon": "/assets/industry-icons/construction.svg"
     }
   ],
   "site_content": [

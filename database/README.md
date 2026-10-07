@@ -14,6 +14,8 @@
 | `../server/src/main/resources/db/04-contact.sql` | Java 启动时执行的联系与咨询迁移 |
 | `migrations/2026-10-social-links.sql` | 初始化各语言页脚社交链接，仅补充缺失配置 |
 | `../server/src/main/resources/db/05-social-links.sql` | Java 启动时执行的社交链接迁移 |
+| `migrations/2026-10-industry-icons.sql` | 增加行业图标字段并首次初始化预设行业图标 |
+| `../server/src/main/resources/db/06-industry-icons.sql` | Java 启动时执行的行业图标迁移 |
 | `baseline/records.json` | 可阅读的基础业务数据，包含现有 MySQL 的修改 |
 | `baseline/site-settings.json` | 官网图片地址、统计数字和联系方式等基础配置 |
 | `baseline/contact-settings.json` | 中英文联系方式、下属企业、各语言社交链接、咨询表单与附件限制；SMTP 通知默认关闭 |
@@ -44,6 +46,8 @@ powershell -ExecutionPolicy Bypass -File scripts/database.ps1 -Action import -Sq
 “其他链接”的自定义名称保存在条目的 `label` 中，自定义图标上传地址保存在 `icon` 中，各语言独立维护。旧条目缺少 `icon` 时使用默认图标，无需变更数据库表结构。图片文件保存在上传目录，部署时需连同数据库一起备份和迁移。
 
 ## 新环境部署
+
+行业图标保存在 `industries.icon`，该字段包含中文备注；中英文共用图片，名称和说明仍分别维护。Java 启动时自动执行 `06-industry-icons.sql`，也可单独导入 `migrations/2026-10-industry-icons.sql`。迁移检查字段是否存在，首次升级仅为空的五个预设行业补充默认图标，重复执行保留后台上传、替换和清除的结果。默认 SVG 随前端静态资源部署，后台上传图片与上传目录一起备份。
 
 使用 MySQL 8，先执行 `00-create-database.sql`，再选择目标数据库执行 `install.sql`。也可以使用数据库管理工具导入，文件编码为 UTF-8。
 

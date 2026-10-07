@@ -19,6 +19,8 @@ public class Industry {
     private String subtitleEn;
     @Column(length = 1000)
     private String subtitleZh;
+    @Column(length = 500)
+    private String icon;
     private int sortOrder;
     @Column(nullable = false)
     private String status = "published";
@@ -48,6 +50,8 @@ public class Industry {
     public void setSubtitleEn(String value) { subtitleEn = value; }
     public String getSubtitleZh() { return subtitleZh; }
     public void setSubtitleZh(String value) { subtitleZh = value; }
+    public String getIcon() { return icon; }
+    public void setIcon(String value) { icon = value; }
     public int getSortOrder() { return sortOrder; }
     public void setSortOrder(int value) { sortOrder = value; }
     public String getStatus() { return status; }

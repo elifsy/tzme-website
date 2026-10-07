@@ -11,6 +11,7 @@ import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
 import InquiryForm from '../components/InquiryForm.vue'
+import IndustryIcon from '../components/IndustryIcon.vue'
 import { contactText, useContactSettings } from '../services/contactSettings.js'
 import { useProjectCatalog } from '../services/projects.js'
 import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
@@ -130,7 +131,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
                     <div class="hc-ind">
                       <router-link v-for="industry in publishedIndustries" :key="industry.id" class="hc-ind-item"
                         :to="{ path: '/solutions', query: { industry: industry.id } }">
-                        <span class="ic"></span>
+                        <span class="ic home-industry-icon"><IndustryIcon :icon="industry.icon || ''" /></span>
                         <div><b>{{ displayIndustry(industry, 'title') }}</b><u>{{ displayIndustry(industry, 'subtitle') }}</u></div>
                       </router-link>
                     </div>
@@ -297,6 +298,8 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalRe
 </template>
 
 <style scoped>
+.hc-ind .home-industry-icon { display: inline-flex; align-items: center; justify-content: center; }
+.hc-ind .home-industry-icon::before { content: none; }
 .home-contact-single { grid-template-columns: 1fr; }
 .home-global .hc-global > div { min-width: 0; }
 .home-global .hc-h2, .home-global .hc-p, .home-global .hc-stat, .home-global .hc-stat-cap { overflow-wrap: anywhere; }

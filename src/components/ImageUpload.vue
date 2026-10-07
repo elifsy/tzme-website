@@ -108,10 +108,10 @@ onBeforeUnmount(() => { disposed = true; cancelUpload() })
 .image-upload-preview { height: 160px; overflow: hidden; border: 1px solid #dfe7f0; border-radius: 9px; background: #f3f6fa; }
 .image-upload-certification .image-upload-preview { height: 240px; }
 .image-upload-map .image-upload-preview { height: auto; aspect-ratio: 16 / 7; }
-.image-upload-socialIcon { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 16px; align-items: stretch; }
-.image-upload-socialIcon .image-upload-preview { display: flex; align-items: center; justify-content: center; height: auto; min-height: 128px; background: #06131c; }
-.image-upload-socialIcon .image-upload-empty { color: #c1cfdb; }
-.image-upload-socialIcon .image-upload-preview > .el-image { width: 64px; height: 64px; flex-shrink: 0; }
+.image-upload-socialIcon, .image-upload-industryIcon { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.image-upload-socialIcon .image-upload-preview, .image-upload-industryIcon .image-upload-preview { display: flex; align-items: center; justify-content: center; height: auto; min-height: 128px; background: #06131c; }
+.image-upload-socialIcon .image-upload-empty, .image-upload-industryIcon .image-upload-empty { color: #c1cfdb; }
+.image-upload-socialIcon .image-upload-preview > .el-image, .image-upload-industryIcon .image-upload-preview > .el-image { width: 64px; height: 64px; flex-shrink: 0; }
 .image-upload-preview > .el-image { display: block; width: 100%; height: 100%; }
 .image-upload-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; height: 100%; padding: 16px; box-sizing: border-box; color: #52657c; font-size: 12px; text-align: center; }
 .image-upload-empty .el-icon { font-size: 28px; }
@@ -125,7 +125,7 @@ onBeforeUnmount(() => { disposed = true; cancelUpload() })
 .image-upload-guidance strong { display: block; color: #234c7e; font-size: 12px; font-weight: 600; line-height: 1.6; }
 .image-upload-guidance p { margin: 5px 0 0; color: #455b73; font-size: 12px; line-height: 1.7; }
 @media (max-width: 600px) {
-  .image-upload-socialIcon { grid-template-columns: minmax(0, 1fr); }
-  .image-upload-socialIcon .image-upload-preview { height: 128px; }
+  .image-upload-socialIcon, .image-upload-industryIcon { grid-template-columns: minmax(0, 1fr); }
+  .image-upload-socialIcon .image-upload-preview, .image-upload-industryIcon .image-upload-preview { height: 128px; }
 }
 </style>

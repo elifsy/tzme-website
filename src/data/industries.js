@@ -15,6 +15,7 @@ export const industrySeed = defaults.map(([id, titleKey, subtitleKey], index) =>
   titleZh: zh.site[titleKey],
   subtitleEn: en.site[subtitleKey],
   subtitleZh: zh.site[subtitleKey],
+  icon: `/assets/industry-icons/${id}.svg`,
   sortOrder: (index + 1) * 10,
   status: 'published',
 }))

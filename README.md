@@ -119,6 +119,14 @@ npm run db:build
 
 已有图片会继续显示。上传完成后需要保存当前表单，图片才会应用到官网；移除图片只会清空表单中的图片引用。图片文件通过 Java 上传接口保存在 `TZME_UPLOAD_DIR`，数据库保存图片地址。部署与备份时需同时保留上传目录，单独导入 SQL 不包含上传的图片文件。
 
+## 行业图标
+
+在后台“行业管理”的新增或编辑弹窗中上传行业图标，左侧维护内容与图片，右侧预览首页行业条目。图标显示在首页“服务行业”的名称左侧，中英文共用；原有行业点击跳转和产品筛选仍使用行业 ID。
+
+推荐 128 × 128 px 的透明浅色 PNG，支持 JPG / PNG / GIF / WebP，最大 5 MB。上传完成后保存才会应用到官网；可替换或清除图片，清除后使用通用行业图标。现有五个行业提供随项目部署的默认图标。
+
+图标地址保存在 `industries.icon`，带中文字段备注。Java 重启时自动执行 `06-industry-icons.sql`，已有数据库也可单独导入 `database/migrations/2026-10-industry-icons.sql`。迁移只在首次升级时补充缺失的默认图标，保留自定义图片及之后的清除操作；全量部署 SQL 已同步更新。
+
 ## 联系与咨询配置
 
 联系配置：`/admin/contact`；咨询管理：`/admin/inquiries`；邮件通知：`/admin/mail`。初始配置沿用目前官网信息，保存在 `database/baseline/contact-settings.json`，运行时读取 MySQL 中的 `site_settings`，标识为 `contact`。

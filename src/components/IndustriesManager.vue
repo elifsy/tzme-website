@@ -5,6 +5,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import ImageUpload from './ImageUpload.vue'
+import IndustryIcon from './IndustryIcon.vue'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import { apiRequest } from '../services/api.js'
 
@@ -13,10 +15,11 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const { industries, loadIndustries } = useIndustryCatalog()
 const loading = ref(false)
 const saving = ref(false)
+const iconUploading = ref(false)
 const dialogOpen = ref(false)
 const editingLocale = ref('en')
 const form = reactive({
-  id: '', titleEn: '', titleZh: '', subtitleEn: '', subtitleZh: '',
+  id: '', titleEn: '', titleZh: '', subtitleEn: '', subtitleZh: '', icon: '',
   sortOrder: 10, status: 'published',
 })
 const publishedCount = computed(() => industries.value.filter((item) => item.status === 'published').length)
@@ -31,11 +34,14 @@ async function load() {
 }
 
 function openEditor(item = null) {
+  if (saving.value) return
+  iconUploading.value = false
   editingLocale.value = locale.value === 'zh' ? 'zh' : 'en'
   Object.assign(form, {
     id: item?.id || '',
     titleEn: item?.titleEn || '', titleZh: item?.titleZh || '',
     subtitleEn: item?.subtitleEn || '', subtitleZh: item?.subtitleZh || '',
+    icon: item?.icon || '',
     sortOrder: Number(item?.sortOrder ?? (industries.value.length + 1) * 10),
     status: item?.status || 'published',
   })
@@ -50,6 +56,7 @@ async function persist(record, update) {
 }
 
 async function save() {
+  if (!dialogOpen.value || saving.value || loading.value || iconUploading.value) return
   if (!form.titleEn.trim() || !form.titleZh.trim()) {
     ElMessage.warning(t('admin.bothTitlesRequired'))
     return
@@ -108,8 +115,10 @@ onMounted(load)
     <el-alert type="info" :closable="false" class="industry-manager-tip" :title="$t('admin.industryVisibilityHint')" />
     <el-table :data="industries" v-loading="loading" row-key="id" :empty-text="$t('admin.noIndustries')">
       <el-table-column :label="$t('admin.productIndustry')" min-width="220">
-        <template #default="{ row }"><strong>{{ field(row, 'title') }}</strong>
-          <div class="industry-table-subtitle">{{ field(row, 'subtitle') }}</div></template>
+        <template #default="{ row }"><div class="industry-table-name">
+          <span class="industry-table-icon"><IndustryIcon :icon="row.icon || ''" /></span>
+          <div><strong>{{ field(row, 'title') }}</strong><div class="industry-table-subtitle">{{ field(row, 'subtitle') }}</div></div>
+        </div></template>
       </el-table-column>
       <el-table-column :label="$t('admin.linkedProducts')" width="120">
         <template #default="{ row }">{{ productCount(row.id) }}</template>
@@ -141,8 +150,8 @@ onMounted(load)
 
   <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.editIndustry' : 'admin.addIndustry')"
     :description="$t('admin.industryManagementDescription')" icon="DataBoard" width="min(980px, calc(100vw - 40px))"
-    :status="form.status" :saving="saving" @save="save">
-    <el-form :model="form" label-position="top" @submit.prevent="save">
+    :status="form.status" :saving="saving" :save-disabled="iconUploading || loading" :footer-note="iconUploading ? $t('admin.industryIconUploading') : ''" @save="save">
+    <el-form :model="form" label-position="top" :disabled="saving" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">
           <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
@@ -165,9 +174,12 @@ onMounted(load)
               </el-tab-pane>
             </el-tabs>
           </AdminEditorPanel>
+          <AdminEditorPanel step="02" :title="$t('admin.industryIcon')" :description="$t('admin.industryIconDescription')">
+            <ImageUpload v-model="form.icon" kind="industryIcon" :active="dialogOpen" :context-key="form.id || 'new-industry'" :disabled="saving" :alt="industryField(form, 'title', editingLocale)" @uploading="iconUploading = $event" />
+          </AdminEditorPanel>
         </div>
         <aside class="cms-editor-aside">
-          <AdminEditorPanel step="02" :title="$t('admin.editorIndustrySettings')" :description="$t('admin.industryVisibilityHint')">
+          <AdminEditorPanel step="03" :title="$t('admin.editorIndustrySettings')" :description="$t('admin.industryVisibilityHint')">
             <el-form-item :label="$t('admin.industryOrder')">
               <el-input-number v-model="form.sortOrder" :min="0" :max="9999" controls-position="right" />
             </el-form-item>
@@ -179,6 +191,12 @@ onMounted(load)
               <p class="cms-field-hint">{{ $t(form.status === 'published' ? 'admin.editorPublishedHint' : 'admin.editorDraftHint') }}</p>
             </el-form-item>
           </AdminEditorPanel>
+          <AdminEditorPanel step="04" :title="$t('admin.industryIconPreview')">
+            <div class="industry-home-preview">
+              <span class="industry-table-icon"><IndustryIcon :icon="form.icon" /></span>
+              <div><strong>{{ industryField(form, 'title', editingLocale) || $t('admin.productIndustry') }}</strong><p>{{ industryField(form, 'subtitle', editingLocale) }}</p></div>
+            </div>
+          </AdminEditorPanel>
         </aside>
       </div>
     </el-form>
@@ -187,6 +205,12 @@ onMounted(load)
 
 <style scoped>
 .industry-manager-tip { margin-bottom: 16px; }
+.industry-table-name { display: flex; align-items: center; gap: 12px; }
+.industry-table-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex-shrink: 0; border: 1px solid #476276; border-radius: 7px; background: #06131c; }
+.industry-home-preview { display: flex; align-items: center; gap: 12px; padding: 18px 14px; border-radius: 9px; background: #06131c; overflow-wrap: anywhere; }
+.industry-home-preview > div { min-width: 0; }
+.industry-home-preview strong { color: #fff; font-size: 13px; }
+.industry-home-preview p { margin: 4px 0 0; color: #bccddb; font-size: 12px; line-height: 1.7; }
 .industry-table-subtitle { margin-top: 4px; color: #8893a1; font-size: 12px; }
 .industry-table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 .industry-table-actions :deep(.el-button) { margin-left: 0; }

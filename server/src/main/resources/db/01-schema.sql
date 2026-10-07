@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS industries (
   title_zh VARCHAR(255) NOT NULL COMMENT '中文行业名称',
   subtitle_en VARCHAR(1000) COMMENT '英文行业简短说明',
   subtitle_zh VARCHAR(1000) COMMENT '中文行业简短说明',
+  icon VARCHAR(500) DEFAULT '' COMMENT '首页服务行业图标图片地址，中英文共用，支持预设图标或上传图片，空值使用通用图标',
   sort_order INT NOT NULL COMMENT '行业展示顺序，数值越小越靠前',
   status VARCHAR(255) NOT NULL COMMENT '发布状态：published 已发布，draft 草稿，deleted 已删除'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='服务行业，关联首页行业展示和产品筛选';

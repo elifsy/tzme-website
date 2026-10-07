@@ -40,6 +40,7 @@ public class IndustryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Industry create(@RequestBody Industry input) {
+        if (input.getIcon() == null) input.setIcon("");
         validate(input);
         if (input.getId() == null || input.getId().isBlank()) {
             input.setId("industry-" + UUID.randomUUID());
@@ -59,6 +60,8 @@ public class IndustryController {
         existing.setTitleZh(input.getTitleZh());
         existing.setSubtitleEn(input.getSubtitleEn());
         existing.setSubtitleZh(input.getSubtitleZh());
+        // An omitted icon from an older client preserves the saved image.
+        if (input.getIcon() != null) existing.setIcon(input.getIcon());
         existing.setSortOrder(input.getSortOrder());
         existing.setStatus(input.getStatus());
         return repository.save(existing);
@@ -88,6 +91,15 @@ public class IndustryController {
         }
         input.setTitleEn(input.getTitleEn().trim());
         input.setTitleZh(input.getTitleZh().trim());
+        if (input.getIcon() != null) {
+            String icon = input.getIcon().trim();
+            boolean uploaded = icon.matches("/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)");
+            boolean preset = INITIAL_IDS.stream().anyMatch(id -> icon.equals("/assets/industry-icons/" + id + ".svg"));
+            if (!icon.isEmpty() && !uploaded && !preset) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select an uploaded industry icon");
+            }
+            input.setIcon(icon);
+        }
         if (input.getStatus() == null || input.getStatus().isBlank()) input.setStatus("published");
         if (!Set.of("published", "draft").contains(input.getStatus())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid publication status");
