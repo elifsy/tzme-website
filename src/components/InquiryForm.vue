@@ -15,6 +15,9 @@ const { industries, loadIndustries } = useIndustryCatalog()
 const activeIndustries = computed(() => industries.value.filter(item => item.status === 'published'))
 const config = computed(() => contactSettings.value)
 const form = reactive(Object.fromEntries(Object.keys(inquiryFieldLabels).map(key => [key, ''])))
+const OTHER_INDUSTRY = '__tzme_other_industry__'
+const industrySelection = ref('')
+const isOtherIndustry = computed(() => industrySelection.value === OTHER_INDUSTRY)
 const formRef = ref(null)
 const fileList = ref([])
 const submitting = ref(false)
@@ -24,13 +27,18 @@ const inProgress = computed(() => fileList.value.some(file => ['ready', 'uploadi
 const hasFailed = computed(() => fileList.value.some(file => file.status === 'fail'))
 const accept = computed(() => config.value?.upload.allowedExtensions.map(value => `.${value}`).join(',') || '')
 const rules = computed(() => Object.fromEntries(Object.keys(inquiryFieldLabels).map(key => [key, [
-  ...(config.value?.form.requiredFields.includes(key) ? [{ required: true, whitespace: true, message: t('contactUi.required', { field: t(inquiryFieldLabels[key]) }), trigger: 'blur' }] : []),
+  ...(config.value?.form.requiredFields.includes(key) || (key === 'industry' && isOtherIndustry.value) ? [{ required: true, whitespace: true, message: t('contactUi.required', { field: t(inquiryFieldLabels[key]) }), trigger: 'blur' }] : []),
   ...(key === 'email' ? [{ type: 'email', message: t('site.inquiryInvalidEmail'), trigger: 'blur' }] : []),
 ]])))
 // Clear messages from the previous language without resetting the entered values.
 watch(locale, () => formRef.value?.clearValidate(), { flush: 'post' })
 let disposed = false
 let started = false
+function selectIndustry(value) {
+  // The option marker stays in the UI; the inquiry stores the entered industry.
+  form.industry = value === OTHER_INDUSTRY ? '' : value || ''
+  formRef.value?.clearValidate('industry')
+}
 function trackStart(event) {
   if (started || !event.target.closest('input,textarea,.el-select')) return
   started = true
@@ -81,6 +89,7 @@ async function submit() {
     await apiRequest('/api/inquiries', { method: 'POST', body: { ...values, locale: locale.value, analytics: inquiryAnalyticsContext(), attachmentIds: fileList.value.filter(file => file.status === 'success').map(file => file.response.id) } })
     if (disposed) return
     Object.keys(form).forEach(key => { form[key] = '' })
+    industrySelection.value = ''
     started = false
     fileList.value = []; uploadRef.value?.clearFiles(); formRef.value.clearValidate()
     ElMessage.success(contactText(config.value.form.successText, locale.value))
@@ -100,9 +109,15 @@ onBeforeUnmount(() => { disposed = true; uploads.forEach(request => request.abor
       <el-form ref="formRef" :model="form" :rules="rules" :validate-on-rule-change="false" label-position="top" :disabled="submitting" @submit.prevent="submit">
         <div class="inquiry-fields">
           <el-form-item v-for="key in ['name', 'company', 'country', 'email', 'phone', 'industry']" :key="key" :prop="key" :label="$t(inquiryFieldLabels[key])">
-            <el-select v-if="key === 'industry'" v-model="form.industry" filterable allow-create default-first-option clearable :placeholder="$t('contactUi.industryPlaceholder')">
-              <el-option v-for="industry in activeIndustries" :key="industry.id" :label="industryField(industry, 'title', locale)" :value="industryField(industry, 'title', locale)" />
-            </el-select>
+            <template v-if="key === 'industry'">
+              <el-select v-model="industrySelection" filterable default-first-option clearable :validate-event="false"
+                :placeholder="$t('contactUi.industryPlaceholder')" @change="selectIndustry">
+                <el-option v-for="industry in activeIndustries" :key="industry.id" :label="industryField(industry, 'title', locale)" :value="industryField(industry, 'title', locale)" />
+                <el-option :value="OTHER_INDUSTRY" :label="$t('contactUi.otherIndustry')" />
+              </el-select>
+              <el-input v-if="isOtherIndustry" v-model="form.industry" class="inquiry-industry-custom" maxlength="255" autocomplete="off"
+                :aria-label="$t(inquiryFieldLabels.industry)" :placeholder="$t('contactUi.otherIndustryPlaceholder')" />
+            </template>
             <el-input v-else v-model="form[key]" :type="key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'" maxlength="255" :autocomplete="{ name: 'name', company: 'organization', country: 'country-name', email: 'email', phone: 'tel' }[key]" :placeholder="$t(inquiryFieldLabels[key])" />
           </el-form-item>
         </div>
@@ -134,6 +149,7 @@ onBeforeUnmount(() => { disposed = true; uploads.forEach(request => request.abor
 .inquiry-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
 .inquiry-form :deep(.el-form-item__label) { color: #dce6ef; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
 .inquiry-form :deep(.el-select) { width: 100%; }
+.inquiry-industry-custom { width: 100%; margin-top: 10px; }
 .inquiry-form :deep(.el-input__wrapper), .inquiry-form :deep(.el-select__wrapper), .inquiry-form :deep(.el-textarea__inner) { background: #112a3a; box-shadow: 0 0 0 1px #476276 inset; color: #f3f7fb; }
 .inquiry-form :deep(.el-input__inner), .inquiry-form :deep(.el-select__selected-item) { color: #f3f7fb; }
 .inquiry-form :deep(.el-input__inner::placeholder), .inquiry-form :deep(.el-textarea__inner::placeholder), .inquiry-form :deep(.el-select__placeholder) { color: #aebfce; }

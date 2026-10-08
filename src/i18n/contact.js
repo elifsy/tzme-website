@@ -1,6 +1,7 @@
 export const contactZh = {
   contactUi: {
-    required: '请填写{field}', attachments: '项目附件', industryPlaceholder: '选择或输入所属行业',
+    required: '请填写{field}', attachments: '项目附件', industryPlaceholder: '请选择所属行业',
+    otherIndustry: '其他', otherIndustryPlaceholder: '请填写所属行业',
     fileInvalid: '支持 {types}，单个文件需大于 0 且不超过 {size} MB。',
     fileCount: '每条咨询最多上传 {count} 个附件。',
     uploadHint: '支持 {types}；单个文件不超过 {size} MB，最多 {count} 个附件。',
@@ -45,7 +46,8 @@ export const contactZh = {
 
 export const contactEn = {
   contactUi: {
-    required: 'Please enter {field}', attachments: 'Project attachments', industryPlaceholder: 'Select or enter an industry',
+    required: 'Please enter {field}', attachments: 'Project attachments', industryPlaceholder: 'Select an industry',
+    otherIndustry: 'Other', otherIndustryPlaceholder: 'Enter your industry',
     fileInvalid: 'Accepted: {types}. Files must be larger than 0 and no more than {size} MB.',
     fileCount: 'Upload up to {count} attachments per inquiry.', uploadHint: 'Accepted: {types}. Up to {size} MB per file and {count} attachments.',
     uploadFailed: 'Attachment upload failed. Select the file again to retry.', uploading: 'Uploading attachments. Wait for completion before sending.',
