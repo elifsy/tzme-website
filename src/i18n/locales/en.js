@@ -649,6 +649,12 @@ export default {
     "chineseArticlePlaceholder": "Write the Chinese article",
     "imagePathPlaceholder": "Select an image to upload"
   },
+  adminNavigation: {
+    label: 'Admin navigation', home: 'TZME administration overview',
+    collapse: 'Collapse sidebar', expand: 'Expand sidebar',
+    groups: { workspace: 'Workspace', content: 'Content management', pages: 'Page settings', communication: 'Customer communication' },
+    labels: { about: 'About TZME', capabilities: 'Our capabilities', global: 'Global reach', contact: 'Contact & enquiries' },
+  },
   certificationUi: {
     viewImage: 'View full image',
     previewCertificate: 'View the full image of {title}',

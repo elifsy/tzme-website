@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineAsyncComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -18,6 +18,7 @@ import ProjectsManager from "../components/ProjectsManager.vue";
 import GlobalReachManager from "../components/GlobalReachManager.vue";
 import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
 import AboutTzmeManager from "../components/AboutTzmeManager.vue";
+import AdminSidebar from "../components/AdminSidebar.vue";
 import AnalyticsManager from "../components/AnalyticsManager.vue";
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
@@ -42,6 +43,44 @@ const imageUploading = computed(() => bodyImageUploading.value || coverImageUplo
 const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
+const sidebarPreferenceKey = 'tzme-admin-sidebar-collapsed';
+const sidebarMedia = window.matchMedia('(max-width: 680px)');
+const smallSidebarScreen = ref(sidebarMedia.matches);
+const mobileSidebarExpanded = ref(false);
+const sidebarCollapsed = ref(readSidebarPreference());
+let sidebarPreferenceTimer;
+const isSidebarCollapsed = computed(() => smallSidebarScreen.value ? !mobileSidebarExpanded.value : sidebarCollapsed.value);
+const mobileSidebarOpen = computed(() => smallSidebarScreen.value && mobileSidebarExpanded.value);
+function readSidebarPreference() {
+  try { return localStorage.getItem(sidebarPreferenceKey) === 'true'; }
+  catch { return false; }
+}
+function toggleSidebar() {
+  if (smallSidebarScreen.value) mobileSidebarExpanded.value = !mobileSidebarExpanded.value;
+  else sidebarCollapsed.value = !sidebarCollapsed.value;
+}
+function closeMobileSidebar() { mobileSidebarExpanded.value = false; }
+function updateSidebarScreen(event) {
+  smallSidebarScreen.value = event.matches;
+  closeMobileSidebar();
+}
+function saveSidebarPreference() {
+  sidebarPreferenceTimer = undefined;
+  try { localStorage.setItem(sidebarPreferenceKey, String(sidebarCollapsed.value)); }
+  catch { /* Continue to support toggling when browser storage is unavailable. */ }
+}
+watch(sidebarCollapsed, () => {
+  clearTimeout(sidebarPreferenceTimer);
+  sidebarPreferenceTimer = setTimeout(saveSidebarPreference, 200);
+}, { flush: 'post' });
+onMounted(() => sidebarMedia.addEventListener('change', updateSidebarScreen));
+onBeforeUnmount(() => {
+  sidebarMedia.removeEventListener('change', updateSidebarScreen);
+  if (sidebarPreferenceTimer !== undefined) {
+    clearTimeout(sidebarPreferenceTimer);
+    saveSidebarPreference();
+  }
+});
 const { products, loadProducts } = useProductCatalog();
 const { articles, loadArticles } = useArticleCatalog();
 const { inquiries, loadInquiries } = useInquiryCatalog();
@@ -97,21 +136,6 @@ const titles = {
   contact: "contactAdmin.title",
   mail: "mailAdmin.title",
 };
-const navItems = [
-  { key: "overview", label: "admin.overview", icon: "DataBoard" },
-  { key: "analytics", label: "analyticsAdmin.title", icon: "DataBoard" },
-  { key: "products", label: "admin.products", icon: "Box" },
-  { key: "industries", label: "admin.industryManagement", icon: "DataBoard" },
-  { key: "projects", label: "admin.projects", icon: "DataBoard" },
-  { key: "global", label: "admin.homeGlobal", icon: "Picture" },
-  { key: "capabilities", label: "capabilitiesAdmin.title", icon: "DataBoard" },
-  { key: "about", label: "aboutTzmeAdmin.title", icon: "OfficeBuilding" },
-  { key: "articles", label: "admin.insights", icon: "Document" },
-  { key: "certifications", label: "admin.certifications", icon: "CircleCheckFilled" },
-  { key: "inquiries", label: "admin.enquiries", icon: "ChatDotRound" },
-  { key: "contact", label: "contactAdmin.title", icon: "EditPen" },
-  { key: "mail", label: "mailAdmin.title", icon: "Promotion" },
-];
 const publishedProducts = computed(
   () => products.value.filter((item) => item.status === "published").length,
 );
@@ -247,6 +271,7 @@ async function toggle(item, type) {
 }
 
 function navigate(key) {
+  closeMobileSidebar();
   router.push(`/admin/${key === "overview" ? "" : key}`);
 }
 function refresh() {
@@ -266,41 +291,13 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 </script>
 
 <template>
-  <el-container class="admin-shell">
-    <el-aside class="admin-sidebar" width="244px">
-      <router-link to="/admin" class="admin-brand">
-        <span class="admin-brand-mark">T</span>
-        <span
-          >TZME<small>{{ $t('admin.management') }}</small></span
-        >
-      </router-link>
-      <div class="admin-menu-label">{{ $t('admin.workspace') }}</div>
-      <el-menu class="admin-menu" :default-active="tab" @select="navigate">
-        <el-menu-item
-          v-for="item in navItems"
-          :key="item.key"
-          :index="item.key"
-        >
-          <el-icon><component :is="item.icon" /></el-icon>
-          <span>{{ $t(item.label) }}</span>
-          <el-badge
-            v-if="item.key === 'inquiries' && newInquiries"
-            :value="newInquiries"
-            :max="99"
-            :aria-label="$t('contactAdmin.newInquiryCount', { count: newInquiries })"
-            class="menu-badge"
-          />
-        </el-menu-item>
-      </el-menu>
-      <div class="admin-sidebar-foot">
-        <div><span v-if="!dataErrors.size" class="online-dot" />{{ $t(dataErrors.size ? 'admin.databaseReadFailed' : 'admin.systemOperational') }}</div>
-        <el-link href="/" target="_blank" :underline="false"
-          ><el-icon><Link /></el-icon>{{ $t('admin.viewWebsite') }}</el-link
-        >
-      </div>
-    </el-aside>
+  <el-container class="admin-shell" :class="{ 'admin-sidebar-collapsed': isSidebarCollapsed }" @keydown.esc="closeMobileSidebar">
+    <AdminSidebar :active-key="tab" :new-inquiries="newInquiries" :database-ready="!dataErrors.size"
+      :collapsed="isSidebarCollapsed" @select="navigate" @toggle="toggleSidebar" @close="closeMobileSidebar" />
+    <button v-if="mobileSidebarOpen" type="button" class="admin-sidebar-overlay" tabindex="-1"
+      :aria-label="$t('adminNavigation.collapse')" @click="closeMobileSidebar" />
 
-    <el-container class="admin-main">
+    <el-container class="admin-main" :inert="mobileSidebarOpen || undefined">
       <el-header class="admin-topbar" height="62px">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item>TZME</el-breadcrumb-item>
@@ -845,6 +842,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 <style>
 .admin-shell {
   --el-color-primary: #2f74d0;
+  --admin-sidebar-width: 244px;
+  --admin-sidebar-compact-width: 64px;
   min-height: 100vh;
   background: #f4f6f9;
   color: #16212d;
@@ -852,130 +851,12 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   font-size: 13px;
   line-height: 1.5;
 }
-.admin-sidebar {
-  height: 100vh;
-  position: fixed;
-  inset: 0 auto 0 0;
-  z-index: 5;
-  background: #111e2b;
-  color: #cbd5df;
-  padding: 22px 14px;
-  display: flex;
-  flex-direction: column;
-}
-.admin-brand {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 0 9px 25px;
-  color: #f4f8fc;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-}
-.admin-brand-mark {
-  height: 32px;
-  width: 32px;
-  display: grid;
-  place-items: center;
-  border-radius: 5px;
-  background: #e96727;
-  color: #fff;
-  font-size: 14px;
-}
-.admin-brand small {
-  display: block;
-  color: #718093;
-  font-size: 8px;
-  letter-spacing: 0.19em;
-}
-.admin-menu-label {
-  padding: 17px 10px 8px;
-  color: #8190a1;
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 0.15em;
-}
-.admin-menu.el-menu {
-  border: 0;
-  background: transparent;
-}
-.admin-menu .el-menu-item {
-  display: flex;
-  align-items: center;
-  line-height: 42px;
-  height: 42px;
-  margin: 3px 0;
-  border-radius: 5px;
-  color: #aab6c3;
-  font-size: 12px;
-}
-.admin-menu .el-menu-item .el-icon {
-  font-size: 16px;
-  color: #8493a4;
-}
-.admin-menu .el-menu-item:hover {
-  background: #1a2a3a;
-  color: #fff;
-}
-.admin-menu .el-menu-item.is-active {
-  background: #233a50;
-  color: #fff;
-}
-.admin-menu .el-menu-item.is-active .el-icon {
-  color: #71b5fa;
-}
-.menu-badge {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  height: 20px;
-  line-height: 1;
-}
-.menu-badge .el-badge__content {
-  position: static;
-  transform: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
-  min-width: 20px;
-  line-height: 20px;
-  padding: 0 6px;
-  box-sizing: border-box;
-  border: 0;
-}
-.admin-sidebar-foot {
-  margin-top: auto;
-  border-top: 1px solid #293745;
-  padding: 14px 8px 2px;
-  font-size: 10px;
-  color: #94a2b1;
-}
-.online-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 7px;
-  border-radius: 50%;
-  background: #37bd87;
-}
-.admin-sidebar-foot .el-link {
-  margin: 12px 0 0 12px;
-  color: #c0cbd5;
-  font-size: 10px;
-}
-.admin-sidebar-foot .el-link .el-icon {
-  margin-right: 6px;
-}
+.admin-shell.admin-sidebar-collapsed { --admin-sidebar-width: var(--admin-sidebar-compact-width); }
 .admin-main {
   min-height: 100vh;
-  margin-left: 244px;
+  margin-left: var(--admin-content-offset, var(--admin-sidebar-width));
 }
+.admin-sidebar-overlay { position: fixed; inset: 0; z-index: 5; width: 100%; height: 100%; padding: 0; border: 0; background: rgba(9, 22, 36, .45); cursor: pointer; }
 .admin-topbar.el-header {
   position: sticky;
   top: 0;
@@ -1327,42 +1208,13 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   max-width: calc(100vw - 32px);
 }
 @media (max-width: 1050px) {
-  .admin-sidebar {
-    width: 205px;
-  }
-  .admin-main {
-    margin-left: 205px;
-  }
+  .admin-shell { --admin-sidebar-width: 205px; }
   .admin-content.el-main {
     padding: 26px 22px 10px;
   }
 }
 @media (max-width: 680px) {
-  .admin-sidebar {
-    width: 58px;
-    padding: 18px 6px;
-  }
-  .admin-brand {
-    padding: 0 5px 22px;
-  }
-  .admin-brand > span:not(.admin-brand-mark),
-  .admin-menu-label,
-  .admin-menu .el-menu-item span,
-  .admin-sidebar-foot {
-    display: none;
-  }
-  .admin-menu .el-menu-item {
-    justify-content: center;
-    padding: 0 !important;
-  }
-  .admin-menu .el-menu-item .el-icon {
-    margin: 0;
-  }
-  .admin-menu .menu-badge { position: absolute; right: 2px; top: 2px; height: 14px; margin-left: 0; }
-  .admin-menu .menu-badge .el-badge__content { height: 14px; min-width: 14px; line-height: 14px; padding: 0 4px; font-size: 10px; }
-  .admin-main {
-    margin-left: 58px;
-  }
+  .admin-shell { --admin-sidebar-width: 244px; --admin-sidebar-compact-width: 58px; --admin-content-offset: 58px; }
   .admin-topbar.el-header {
     height: 54px !important;
     padding: 0 12px;

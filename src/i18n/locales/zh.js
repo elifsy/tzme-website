@@ -649,6 +649,12 @@ export default {
     "chineseArticlePlaceholder": "请输入中文正文",
     "imagePathPlaceholder": "请选择要上传的图片"
   },
+  adminNavigation: {
+    label: '后台功能导航', home: 'TZME 管理后台概览',
+    collapse: '收起侧边栏', expand: '展开侧边栏',
+    groups: { workspace: '工作台', content: '内容管理', pages: '页面配置', communication: '客户沟通' },
+    labels: { about: '关于 TZME', capabilities: '我们的能力', global: '全球布局', contact: '联系与咨询' },
+  },
   certificationUi: {
     viewImage: '查看大图',
     previewCertificate: '查看“{title}”证书大图',
