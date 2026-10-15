@@ -1,10 +1,11 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteValue } = useSiteContent()
 import { ref, useId, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useSiteNavigation } from "../composables/useSiteNavigation.js";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
+import SiteLogo from "./SiteLogo.vue";
 
 defineProps({ overlay: { type: Boolean, default: false } });
 
@@ -35,7 +36,8 @@ watch(
         :aria-label="$t('site.brandHome')"
         @click="navigateLink($event, '/')"
       >
-        <i aria-hidden="true"></i>{{ siteValue('text_8920f3d022b5') }}</a>
+        <SiteLogo />
+      </a>
       <nav class="hc-menu" :aria-label="$t('site.primaryNavigation')">
         <a
           v-for="item in menuItems"
@@ -59,9 +61,8 @@ watch(
         >
         <LanguageSwitcher />
         <el-button
-          class="hc-btn sm"
+          class="hc-btn sm site-nav-contact"
           :class="overlay ? 'ghost' : 'solid'"
-          style="height: 34px"
           data-analytics-event="cta_click" data-analytics-target="nav-contact"
           @click.stop="navigateTo('/contact')"
         >

@@ -1,0 +1,390 @@
+{
+  "company": {
+    "nameZh": "天津重钢机械装备股份有限公司",
+    "nameEn": "TZME (Tianjin) Co., Ltd.",
+    "founded": "2002",
+    "stockCode": "430274",
+    "bases": "6",
+    "area": "450,000",
+    "capacity": "45,000+",
+    "countries": "60+",
+    "shore": "225",
+    "introZh": "公司是一家主要面向国际市场的非标机械装备定制服务商，主要产品有港口机械、矿山机械、造桥机械、旅游观光设施及其他大型连续搬运装备、起重机械、冶金设备、压力容器、环保设备和特种船舶等，年综合生产能力达4.5万吨以上。公司保有一批国际知名的高端客户，产品出口到美国、德国、澳大利亚、巴西、日本、南非、加拿大、丹麦、韩国等六十多个国家和地区。",
+    "introEn": "Established in 2002, TZME provides custom-built, non-standard machinery and equipment for international markets. Six production bases support engineering, fabrication, assembly and project delivery.",
+    "visionZh": "成为世界非标机械装备制造业领跑者。",
+    "visionEn": "To become the world leader in non-standard mechanical equipment manufacturing.",
+    "missionZh": "为员工谋幸福，让更多“有灵魂 会说话”的产品服务世界。",
+    "missionEn": "To seek happiness for employees; let more high-quality products serve the world.",
+    "valuesZh": "客户至上、爱岗敬业、精益求精、诚信团结、反省担当、主动创新。",
+    "valuesEn": "Customer orientation, dedication, continuous improvement, integrity and unity, responsibility and innovation."
+  },
+  "contact": {
+    "headquarters": {
+      "zh": "天津总部",
+      "en": "Tianjin headquarters"
+    },
+    "address": {
+      "zh": "天津市滨海新区宁海西路577号\n海鑫广场1号楼6F / 8F / 9F",
+      "en": "No. 577, Ninghai West Road, Binhai New Area, Tianjin\nHaixin Plaza, Building 1, Floors 6 / 8 / 9"
+    },
+    "phone": "+86 22 2521 4991 / 2521 1565",
+    "fax": "+86 22 2521 1535",
+    "emails": [
+      "jyb@tzme.net"
+    ],
+    "website": "www.tzmeglobal.com",
+    "port": {
+      "en": "10 km from Tianjin Port",
+      "zh": "距天津港 10 公里"
+    },
+    "socialLinks": {
+      "en": [
+        {
+          "id": "social-en-linkedin",
+          "platform": "linkedin",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-en-youtube",
+          "platform": "youtube",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-en-x",
+          "platform": "x",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        }
+      ],
+      "zh": [
+        {
+          "id": "social-zh-wechat",
+          "platform": "wechat",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-zh-weibo",
+          "platform": "weibo",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        },
+        {
+          "id": "social-zh-bilibili",
+          "platform": "bilibili",
+          "label": "",
+          "url": "",
+          "enabled": false,
+          "icon": ""
+        }
+      ]
+    }
+  },
+  "facilities": [
+    {
+      "titleZh": "格林兰制造基地",
+      "titleEn": "Greenland manufacturing base",
+      "image": "/assets/tzme-j/factories/greenland-aerial.jpg",
+      "descriptionZh": "临港制造与总装基地，衔接大型设备整机发运。",
+      "descriptionEn": "Coastal manufacturing and assembly for large equipment delivery."
+    },
+    {
+      "titleZh": "振汉工厂",
+      "titleEn": "Zhenhan factory",
+      "image": "/assets/tzme-j/factories/zhenhan-aerial.jpg",
+      "descriptionZh": "结构制造、装配与工程装备生产现场。",
+      "descriptionEn": "Structural fabrication, assembly and equipment manufacturing."
+    },
+    {
+      "titleZh": "天津总部",
+      "titleEn": "Tianjin headquarters",
+      "image": "/assets/tzme-j/factories/headquarters.jpg",
+      "descriptionZh": "工程项目执行与客户协作的中心。",
+      "descriptionEn": "Project execution and customer collaboration."
+    }
+  ],
+  "products": [
+    {
+      "id": "grab-ship-unloader",
+      "type": "products",
+      "titleZh": "抓斗卸船机",
+      "titleEn": "Grab ship unloader",
+      "categoryZh": "港口",
+      "categoryEn": "Ports",
+      "industries": [
+        "ports"
+      ],
+      "image": "/assets/tzme-j/products/grab-unloader.jpg",
+      "summaryZh": "面向大规模港口散货卸载的工程装备，可根据现场需求定制。",
+      "summaryEn": "Custom-engineered equipment for large-scale bulk cargo unloading.",
+      "contentZh": "由主体承载结构、行走机构、门架、臂架和机械平台等组成，可提供结构制作、装配调试及整机交付。",
+      "contentEn": "Structural fabrication, assembly, commissioning and complete-unit delivery for demanding port applications.",
+      "featuresZh": "主体承载结构与机械平台\n电气控制系统安装\n出厂前装配、调试与测试\n整机运输与项目交付",
+      "featuresEn": "Load-bearing structures and machinery platform\nElectrical system integration\nFactory assembly, commissioning and testing\nComplete-unit delivery",
+      "specificationsZh": "案例参考：土耳其抓斗卸船机\n处理能力：2,000 t/h（项目案例）\n交付方式：整机发运\n配置：根据项目需求定制",
+      "specificationsEn": "Reference: Turkey grab ship unloader\nCapacity: 2,000 t/h (reference project)\nDelivery: Complete-unit shipment\nConfiguration: Engineered to project requirements",
+      "gallery": [
+        "/assets/tzme-j/products/grab-unloader.jpg",
+        "/assets/tzme-j/projects/turkey-unloader-01.jpg",
+        "/assets/tzme-j/projects/turkey-unloader-02.jpg"
+      ]
+    },
+    {
+      "id": "pipe-rack",
+      "titleZh": "模块化管廊",
+      "titleEn": "Modular pipe racks",
+      "categoryZh": "能源基础设施",
+      "categoryEn": "Energy infrastructure",
+      "industries": [
+        "energy"
+      ],
+      "image": "/assets/tzme-j/products/pipe-rack.jpg",
+      "summaryZh": "用于集中敷设电力、通信、给排水等多种管线的综合通道设施，广泛应用于城市基础设施建设。公司生产的管廊采用预制模块化设计，具有施工速度快、使用寿命长、维护方便等特点，能够有效提升城市地下空间的利用效率。",
+      "summaryEn": "Custom structural fabrication and assembly tailored to project conditions and technical requirements.",
+      "contentZh": "用于集中敷设电力、通信、给排水等多种管线的综合通道设施，广泛应用于城市基础设施建设。公司生产的管廊采用预制模块化设计，具有施工速度快、使用寿命长、维护方便等特点，能够有效提升城市地下空间的利用效率。",
+      "contentEn": "Engineering and manufacturing shaped around the project’s structure, assembly and delivery requirements.",
+      "featuresZh": "预制模块化：采用预制模块化设计，便于快速施工和安装。\n耐久性强：使用高性能混凝土和防腐材料，确保长期稳定运行。\n空间优化：合理布局管线，最大化利用地下空间，减少重复施工。\n智能化管理：配备智能监测系统，实时监控管廊运行状态，提升管理效率。",
+      "featuresEn": "Custom structural fabrication\nFactory assembly and quality control\nDelivery aligned with project requirements",
+      "specificationsZh": "应用：能源基础设施\n服务范围：设计、制造与装配\n配置：根据项目要求定制",
+      "specificationsEn": "Application: Energy infrastructure\nScope: Engineering, fabrication and assembly\nConfiguration: Project-specific",
+      "gallery": [
+        "/assets/tzme-j/products/pipe-rack.jpg",
+        "/assets/tzme-j/factories/greenland-aerial.jpg"
+      ]
+    },
+    {
+      "id": "rotor-sail",
+      "titleZh": "旋筒帆",
+      "titleEn": "Rotor sails",
+      "categoryZh": "海洋工程",
+      "categoryEn": "Marine engineering",
+      "industries": [
+        "energy"
+      ],
+      "image": "/assets/tzme-j/products/rotor-sail.jpg",
+      "summaryZh": "结合项目工况与技术要求，提供定制化的结构制造与装配交付。",
+      "summaryEn": "Custom structural fabrication and assembly tailored to project conditions and technical requirements.",
+      "contentZh": "围绕客户项目的结构、装配与交付需求，开展工程设计与制造。",
+      "contentEn": "Engineering and manufacturing shaped around the project’s structure, assembly and delivery requirements.",
+      "featuresZh": "定制化结构制造\n工厂装配与质量控制\n根据项目需求交付",
+      "featuresEn": "Custom structural fabrication\nFactory assembly and quality control\nDelivery aligned with project requirements",
+      "specificationsZh": "应用：海洋工程\n服务范围：设计、制造与装配\n配置：根据项目要求定制",
+      "specificationsEn": "Application: Marine engineering\nScope: Engineering, fabrication and assembly\nConfiguration: Project-specific",
+      "gallery": [
+        "/assets/tzme-j/products/rotor-sail.jpg",
+        "/assets/tzme-j/factories/greenland-aerial.jpg"
+      ]
+    }
+  ],
+  "articles": [
+    {
+      "id": "canada-energy",
+      "titleZh": "跨越洲际，连接能源未来：重钢机械助力中加工程合作",
+      "titleEn": "Bridging continents, building energy futures",
+      "categoryZh": "公司新闻",
+      "categoryEn": "Company news",
+      "date": "",
+      "image": "/assets/tzme-j/news/canada-energy.jpg",
+      "summaryZh": "以模块化预制、制造与系统集成能力，服务加拿大能源与港口基础设施建设。",
+      "summaryEn": "Modular fabrication and system integration for Canadian energy and port infrastructure.",
+      "contentZh": "<h2>连接能源与工程需求</h2><p>重钢机械以大型装备制造和模块化预制能力，参与加拿大能源及港口基础设施项目。</p><h2>模块化制造与项目执行</h2><p>在 REEF 项目中，公司承担大型管廊模块的制造，将复杂的现场建设环节转化为可控的工厂预制与集成作业。</p><p>通过全过程质量控制、客户技术标准对齐与机电系统集成，支撑复杂国际工程的协同执行。</p><h2>从制造基地到项目现场</h2><p>制造基地的模块预制、装配和发运，连接客户的现场工程需求与中国制造能力。</p>",
+      "contentEn": "<h2>Connecting energy and engineering</h2><p>TZME participates in Canadian energy and port infrastructure through large-scale fabrication and modular prefabrication.</p><h2>Modular manufacturing</h2><p>For the REEF project, TZME manufactures pipeline-gallery modules, moving complex site work into controlled factory fabrication and integration.</p><h2>From factory to project site</h2><p>Full-process quality control, technical alignment and integrated execution support demanding international projects.</p>"
+    },
+    {
+      "id": "annual-gala",
+      "titleZh": "重钢机械 2026 主题年会圆满举行",
+      "titleEn": "TZME’s 2026 themed annual conference",
+      "categoryZh": "公司新闻",
+      "categoryEn": "Company news",
+      "date": "",
+      "image": "/assets/tzme-j/news/annual-gala.jpg",
+      "summaryZh": "回顾发展历程，凝聚团队力量，共同开启新的工程与制造篇章。",
+      "summaryEn": "Reflecting on the journey and bringing teams together for the next chapter.",
+      "contentZh": "<h2>凝聚团队，共启新篇</h2><p>公司于 2 月 3 日举办主题年会，公司领导、员工及客户与合作伙伴代表共同回顾过往、展望未来。</p><h2>协作与共同成长</h2><p>年会呈现了各部门准备的节目，并对过去一年作出贡献的供应商与合作伙伴进行表彰。</p><h2>以制造与工程继续前行</h2><p>公司将继续围绕非标机械装备定制业务，以专业团队、制造能力与协作精神服务客户项目。</p>",
+      "contentEn": "<h2>Teams together for a new chapter</h2><p>On February 3, TZME held its themed annual conference with employees and representatives from clients and partner organisations.</p><h2>Collaboration and shared growth</h2><p>Departments presented performances, and suppliers and partners were recognised for their contributions during the past year.</p><h2>Engineering and manufacturing ahead</h2><p>TZME continues to serve custom equipment projects through dedicated teams, manufacturing capability and collaboration.</p>"
+    }
+  ],
+  "projects": [
+    {
+      "id": "turkey-grab-unloader",
+      "titleZh": "土耳其抓斗卸船机",
+      "titleEn": "Grab ship unloader for Turkey",
+      "industryZh": "港口与码头",
+      "industryEn": "Ports & terminals",
+      "locationZh": "土耳其",
+      "locationEn": "Turkey",
+      "summaryZh": "面向土耳其港口散货卸载需求，完成大型抓斗卸船机的结构制作、装配调试与整机交付。",
+      "summaryEn": "Large-scale grab ship unloader fabrication, assembly, commissioning and complete-unit delivery for Turkey.",
+      "image": "/assets/tzme-j/projects/turkey-unloader-01.jpg",
+      "gallery": [
+        "/assets/tzme-j/projects/turkey-unloader-01.jpg",
+        "/assets/tzme-j/projects/turkey-unloader-02.jpg",
+        "/assets/tzme-j/projects/turkey-unloader-03.jpg"
+      ],
+      "capacityLabelZh": "处理能力",
+      "capacityLabelEn": "Handling capacity",
+      "capacityZh": "2,000 t/h",
+      "capacityEn": "2,000 t/h",
+      "technologyLabelZh": "技术方案",
+      "technologyLabelEn": "Technology",
+      "technologyZh": "抓斗卸船机",
+      "technologyEn": "Grab ship unloader",
+      "scopeLabelZh": "交付方式",
+      "scopeLabelEn": "Delivery",
+      "scopeZh": "整机发运",
+      "scopeEn": "Complete-unit shipment",
+      "contentZh": "<h2>项目概况</h2><p>本项目为抓斗式卸船机的制作和安装，设备最终使用地点土耳其伊斯德米尔•奥亚克港，当地环境温度+0 °C / +45 °C，</p><p>该抓斗卸船机的工作能力突出，每小时工作能力可达2000吨，能充分满足港口大规模、高效率的散货卸载需求，有效提升港口货物周转效率，减少船舶滞港时间，为港口运营提供强有力的设备支撑。</p><h2>设备与制造范围</h2><p>每台卸船机总重量约 2,050 吨。结构制作部分约 1,400 吨，电气安装部分约 650 吨。</p><p>设备长度约 96.4 米，宽度约 31.5 米，高度约 61.5 米。</p><h2>装配与整机交付</h2><p>本项目的交货条件明确为整机发货，这意味着设备在出厂前需完成所有部组的组装、调试以及性能测试，确保设备整体性能达标后，以完整的整机形式运输至土耳其伊斯德米尔・奥亚克港。这种交货方式可大幅减少设备在港口现场的组装工作量，缩短安装周期，降低现场安装风险，确保设备能够快速投入港口作业。</p>",
+      "contentEn": "<h2>Project overview</h2><p>Manufacturing and installation of a grab-type ship unloader for Turkey, with a handling capacity of up to 2,000 tons per hour.</p><h2>Equipment and manufacturing scope</h2><p>Each unloader weighs approximately 2,050 tonnes, comprising 1,400 tonnes of structural fabrication and 650 tonnes of electrical installation. Overall dimensions are approximately 96.4 m × 31.5 m × 61.5 m.</p><h2>Assembly and complete-unit delivery</h2><p>Assembly, commissioning and performance tests take place before shipment, reducing the work required at the destination.</p>"
+    }
+  ],
+  "certificates": [
+    {
+      "id": "iso-9001",
+      "title": "ISO 9001",
+      "summaryZh": "质量管理体系",
+      "summaryEn": "Quality management",
+      "file": "/assets/tzme-j/certificates/iso-9001.pdf"
+    },
+    {
+      "id": "iso-14001",
+      "title": "ISO 14001",
+      "summaryZh": "环境管理体系",
+      "summaryEn": "Environmental management",
+      "file": "/assets/tzme-j/certificates/iso-14001.pdf"
+    },
+    {
+      "id": "iso-45001",
+      "title": "ISO 45001",
+      "summaryZh": "职业健康与安全",
+      "summaryEn": "Occupational health & safety",
+      "file": "/assets/tzme-j/certificates/iso-45001.pdf"
+    },
+    {
+      "id": "en-1090-1",
+      "title": "EN 1090-1",
+      "summaryZh": "钢结构与符合性评定",
+      "summaryEn": "Structural steel conformity",
+      "file": "/assets/tzme-j/certificates/en-1090-1.pdf"
+    },
+    {
+      "id": "en-1090-2",
+      "title": "EN 1090-2",
+      "summaryZh": "钢结构执行",
+      "summaryEn": "Execution of steel structures",
+      "file": "/assets/tzme-j/certificates/en-1090-2.pdf"
+    },
+    {
+      "id": "iso-3834",
+      "title": "ISO 3834-2",
+      "summaryZh": "焊接质量要求",
+      "summaryEn": "Welding quality requirements",
+      "file": "/assets/tzme-j/certificates/iso-3834.pdf"
+    },
+    {
+      "id": "aisc",
+      "title": "AISC",
+      "summaryZh": "钢结构制造资质",
+      "summaryEn": "Structural steel fabrication",
+      "file": "/assets/tzme-j/certificates/aisc.pdf"
+    },
+    {
+      "id": "asme",
+      "title": "ASME",
+      "summaryZh": "压力容器与管线",
+      "summaryEn": "Pressure vessels & piping",
+      "file": "/assets/tzme-j/certificates/asme.pdf"
+    },
+    {
+      "id": "cwb",
+      "title": "CWB",
+      "summaryZh": "焊接认证",
+      "summaryEn": "Welding certification",
+      "file": "/assets/tzme-j/certificates/cwb.pdf"
+    },
+    {
+      "id": "corrosion",
+      "title": "EN 1090-2 / Corrosion",
+      "summaryZh": "防腐蚀保护",
+      "summaryEn": "Corrosion protection",
+      "file": "/assets/tzme-j/certificates/corrosion.pdf"
+    },
+    {
+      "id": "pressure-license",
+      "title": "压力容器生产许可",
+      "summaryZh": "特种设备生产许可",
+      "summaryEn": "Pressure vessel production licence",
+      "file": "/assets/tzme-j/certificates/pressure-license.pdf"
+    },
+    {
+      "id": "crane-license",
+      "title": "起重机械生产许可",
+      "summaryZh": "特种设备生产许可",
+      "summaryEn": "Lifting equipment production licence",
+      "file": "/assets/tzme-j/certificates/crane-license.pdf"
+    }
+  ],
+  "images": [
+    {
+      "id": "material-handling",
+      "image": "/assets/tzme-j/products/stacker-reclaimer.jpg"
+    },
+    {
+      "id": "mining-equipment",
+      "image": "/assets/tzme-j/products/bucket-wheel-excavator.jpg"
+    },
+    {
+      "id": "conveying",
+      "image": "/assets/tzme-j/products/belt-conveyor.jpg"
+    },
+    {
+      "id": "port-machinery",
+      "image": "/assets/tzme-j/products/rbct-shiploader.jpg"
+    },
+    {
+      "id": "bridge-equipment",
+      "image": "/assets/tzme-j/products/bridge-equipment.jpg"
+    },
+    {
+      "id": "metallurgy",
+      "image": "/assets/tzme-j/products/metallurgy.jpg"
+    },
+    {
+      "id": "environmental",
+      "image": "/assets/tzme-j/products/environmental.jpg"
+    },
+    {
+      "id": "custom-engineering",
+      "image": "/assets/tzme-j/factories/welding-detail.jpg"
+    },
+    {
+      "id": "tourism",
+      "image": "/assets/tzme-j/products/tourism.jpg"
+    }
+  ],
+  "projectImages": [
+    {
+      "id": "port-material-handling",
+      "image": "/assets/p-port-1.jpg"
+    },
+    {
+      "id": "mining-material-handling",
+      "image": "/assets/p-mining-2.jpg"
+    },
+    {
+      "id": "heavy-industrial-equipment",
+      "image": "/assets/p-metal-1.jpg"
+    }
+  ]
+}

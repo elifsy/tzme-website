@@ -1,14 +1,13 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteAsset } = useSiteContent()
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 
 const page = ref(null)
@@ -18,8 +17,10 @@ const { goTo } = useDesignPage('hc-detail', page)
 const { products, loadProducts } = useProductCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
 const loading = ref(true)
+const imageRef = ref(null)
 const productId = computed(() => route.params.id === 'ship-loader' ? 'port-machinery' : route.params.id)
 const product = computed(() => products.value.find((item) => item.id === productId.value && item.status === 'published'))
+const listLink = computed(() => typeof route.query.from === 'string' && /^\/solutions(?:\?|$)/.test(route.query.from) ? route.query.from : '/solutions')
 const productIndustries = computed(() => (product.value?.industries || [])
   .map((id) => industries.value.find((item) => item.id === id && item.status === 'published'))
   .filter(Boolean))
@@ -48,14 +49,12 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
 
       <template v-if="!loading && product">
         <section class="hc-hero product-detail-hero">
-          <div class="hc-bleed"><img :src="product.image || siteAsset('/assets/p-other-1.jpg')" :alt="field(product, 'title')" /></div>
-          <span class="hc-scrim"></span>
-          <div class="hc-hero-in"><div class="hc-w">
+          <div class="hc-w"><router-link class="j-detail-back" :to="listLink">← {{ $t('site.backToProducts') }}</router-link><div class="j-detail-top"><div>
             <span class="hc-kick">{{ field(product, 'category') }}<template v-for="item in productIndustries" :key="item.id"> · {{ industryField(item, 'title', locale) }}</template></span>
             <h1 class="hc-h1">{{ field(product, 'title') }}</h1>
             <p class="hc-p">{{ field(product, 'summary') }}</p>
             <el-button class="hc-btn solid" @click.stop="goTo('/contact')">{{ $t('site.requestAQuote') }}<i>→</i></el-button>
-          </div></div>
+          </div><div class="j-detail-photo"><el-image ref="imageRef" :src="product.image || siteAsset('/assets/p-other-1.jpg')" :alt="field(product, 'title')" :preview-src-list="[product.image || siteAsset('/assets/p-other-1.jpg')]" fit="cover" preview-teleported hide-on-click-modal tabindex="0" role="button" @keydown.enter.prevent="imageRef?.showPreview()" @keydown.space.prevent="imageRef?.showPreview()" /></div></div></div>
         </section>
 
         <section class="hc-sec product-detail-content">
@@ -103,12 +102,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
         <el-button type="primary" @click="goTo('/solutions')">{{ $t('site.backToProducts') }}</el-button>
       </section>
 
-      <footer class="hc-foot"><div class="hc-foot-in">
-        <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
-        <span class="tag">{{ $t('site.productCenter') }}</span>
-        <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-        <SocialLinks />
-      </div></footer>
+      <SiteFooter />
     </div>
 
   </main>

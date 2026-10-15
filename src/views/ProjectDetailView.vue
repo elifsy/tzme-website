@@ -1,6 +1,4 @@
 <script setup>
-import { useSiteContent } from '../services/website.js'
-const { siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -9,18 +7,20 @@ import { focusProjectContent } from '../utils/projectNavigation.js'
 import { localizedField } from '../services/catalog.js'
 import { useProjectCatalog } from '../services/projects.js'
 import { sanitizeRichText } from '../utils/richText.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
+import { projectGalleries } from '../data/jDesign.js'
 
 const page = ref(null)
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
-const { goTo, menuItems, isMenuActive } = useDesignPage('hc-project-detail', page)
+const { goTo } = useDesignPage('hc-project-detail', page)
 const { publishedProjects, loadProjects } = useProjectCatalog()
 const loading = ref(true)
 const project = computed(() => publishedProjects.value.find((item) => item.id === route.params.id))
+const gallery = computed(() => [...new Set([project.value?.image, ...(projectGalleries[project.value?.id] || [])].filter(Boolean))])
+const galleryRefs = new Map()
 const field = (name) => localizedField(project.value, name, locale.value)
 const metrics = computed(() => ['capacity', 'technology', 'scope'].map((name) => ({ name, label: field(`${name}Label`), value: field(name) })))
 const body = computed(() => {
@@ -99,9 +99,10 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
                 <p v-if="field('summary')" class="project-detail-lead">{{ field('summary') }}</p>
               </div>
               <div v-if="project.image" class="project-detail-cover">
-                <el-image :src="project.image" :alt="field('imageAlt') || field('title')" fit="cover">
+                <el-image :src="project.image" :alt="field('imageAlt') || field('title')" fit="cover" :preview-src-list="gallery" preview-teleported hide-on-click-modal>
                   <template #error><div class="project-image-fallback"><el-icon><Picture /></el-icon></div></template>
                 </el-image>
+                <div v-if="gallery.length > 1" class="j-gallery-thumbs"><el-image v-for="(image,index) in gallery" :key="image" :ref="el => el ? galleryRefs.set(index,el) : galleryRefs.delete(index)" :src="image" :alt="`${field('title')} ${index+1}`" fit="cover" :preview-src-list="gallery" :initial-index="index" preview-teleported hide-on-click-modal tabindex="0" role="button" @keydown.enter.prevent="galleryRefs.get(index)?.showPreview()" @keydown.space.prevent="galleryRefs.get(index)?.showPreview()" /></div>
               </div>
             </div>
             <dl class="project-detail-metrics" :aria-label="$t('site.projectKeyFacts')">
@@ -157,13 +158,7 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
         </section>
       </main>
 
-      <footer class="hc-foot project-footer"><div class="hc-foot-in">
-        <div class="project-footer-brand"><router-link class="hc-logo" to="/" :aria-label="$t('site.brandHome')"><i aria-hidden="true"></i>{{ siteValue('text_8920f3d022b5') }}</router-link>
-          <p>{{ $t('site.engineeredInChina') }} {{ $t('site.builtForTheWorld') }}</p></div>
-        <nav class="project-footer-links" :aria-label="$t('site.footerNavigation')"><router-link v-for="item in menuItems" :key="item.key" :to="item.path" :aria-current="isMenuActive(item) ? 'page' : undefined">{{ item.label }}</router-link></nav>
-        <LanguageSwitcher />
-        <SocialLinks />
-      </div></footer>
+      <SiteFooter />
     </div>
 
   </div>

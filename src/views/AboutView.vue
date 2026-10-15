@@ -1,12 +1,9 @@
 <script setup>
-import { useSiteContent } from '../services/website.js'
-const { siteValue } = useSiteContent()
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Picture, ZoomIn } from '@element-plus/icons-vue'
 import { useDesignPage } from '../composables/useDesignPage.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
@@ -18,6 +15,9 @@ import { useCertificationCatalog } from '../services/certifications.js'
 import { useGlobalReach } from '../services/globalReach.js'
 import { globalReachText } from '../data/globalReach.js'
 import { trackEvent } from '../services/analytics.js'
+import ManufacturingFilm from '../components/ManufacturingFilm.vue'
+import { isPdf } from '../data/jDesign.js'
+import { jCompany, jFacilities } from '../data/jCompany.js'
 const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
@@ -31,7 +31,7 @@ const publishedCertifications = computed(() => certifications.value.filter((item
 const certificateMedia = window.matchMedia('(max-width: 1100px)')
 const compactCertificates = ref(certificateMedia.matches)
 const certificatePage = ref(1)
-const certificatePageSize = computed(() => compactCertificates.value ? 2 : 4)
+const certificatePageSize = computed(() => compactCertificates.value ? 4 : 8)
 const certificatePageStart = computed(() => (certificatePage.value - 1) * certificatePageSize.value)
 const certificatePageEnd = computed(() => Math.min(certificatePageStart.value + certificatePageSize.value, publishedCertifications.value.length))
 const visibleCertificates = computed(() => publishedCertifications.value.slice(certificatePageStart.value, certificatePageEnd.value))
@@ -55,13 +55,13 @@ const certificateDetailsOpen = computed({
   get: () => Boolean(certificateDetails.value),
   set: (value) => { if (!value) certificateDetailsId.value = '' },
 })
-const certificatePreviewSources = computed(() => publishedCertifications.value.map((item) => item.image))
+const certificatePreviewSources = computed(() => publishedCertifications.value.filter(item => !isPdf(item.image)).map((item) => item.image))
 const certificateImageRefs = new Map()
 function setCertificateImageRef(id, instance) {
   if (instance) certificateImageRefs.set(id, instance)
   else certificateImageRefs.delete(id)
 }
-function previewCertificate(id) { certificateImageRefs.get(id)?.showPreview() }
+function previewCertificate(id) { const item = publishedCertifications.value.find(item => item.id === id); if (isPdf(item?.image)) certificateDetailsId.value = id; else certificateImageRefs.get(id)?.showPreview() }
 const certificationField = (item, name) => locale.value === 'zh'
   ? item[`${name}Zh`] || item[`${name}En`] || ''
   : item[`${name}En`] || ''
@@ -86,6 +86,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
         </div>
       </section>
 
+      <section class="hc-sec j-soft"><div class="hc-w"><div class="j-culture-grid"><div><span class="hc-kick">01 / {{ locale === 'zh' ? '企业愿景' : 'VISION' }}</span><h3>{{ locale === 'zh' ? jCompany.visionZh : jCompany.visionEn }}</h3></div><div><span class="hc-kick">02 / {{ locale === 'zh' ? '我们的使命' : 'MISSION' }}</span><h3>{{ locale === 'zh' ? jCompany.missionZh : jCompany.missionEn }}</h3></div></div><p class="j-values">{{ locale === 'zh' ? '价值观 / ' + jCompany.valuesZh : 'Values / ' + jCompany.valuesEn }}</p></div></section>
       <section class="hc-sec hc-light certifications-section" aria-labelledby="certificates-title">
         <div class="hc-w">
           <div class="hc-shead">
@@ -104,10 +105,11 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
             <div class="certificate-gallery" :class="{ 'certificate-gallery-paged': publishedCertifications.length > certificatePageSize }">
               <article v-for="certificate in visibleCertificates" :key="certificate.id" class="certificate-card">
                 <div class="certificate-preview">
-                  <el-image :ref="(instance) => setCertificateImageRef(certificate.id, instance)"
+                  <button v-if="isPdf(certificate.image)" type="button" class="j-pdf-cover" @click="certificateDetailsId = certificate.id"><el-icon><Document /></el-icon><strong>{{ certificationField(certificate,'title') }}</strong><small>CERTIFICATE / PDF</small></button>
+                  <el-image v-else :ref="(instance) => setCertificateImageRef(certificate.id, instance)"
                     class="certificate-preview-image" :src="certificate.image" fit="contain"
                     :alt="certificationField(certificate, 'title')" :preview-src-list="certificatePreviewSources"
-                    :initial-index="publishedCertifications.findIndex((item) => item.id === certificate.id)"
+                    :initial-index="certificatePreviewSources.indexOf(certificate.image)"
                     preview-teleported hide-on-click-modal>
                     <template #error><div class="certificate-image-error"><el-icon aria-hidden="true"><Picture /></el-icon><span>{{ $t('certificationUi.imageUnavailable') }}</span></div></template>
                     <template #viewer-error><div class="certificate-viewer-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
@@ -145,15 +147,17 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
         </div>
       </section>
 
-      <section class="hc-sec">
+      <section class="hc-sec j-soft">
         <div class="hc-w">
           <div class="hc-shead">
             <div class="l">
               <span class="hc-kick">{{ $t('site.facilities') }}</span>
               <h2 class="hc-h2" style="margin-top:18px">{{ $t('contactUi.facilitiesTitle') }}</h2>
             </div>
-            <span class="hc-lnk">{{ $t('site.bookAFactoryVisit') }}<i>→</i></span>
+            <router-link class="j-link" to="/contact">{{ $t('site.bookAFactoryVisit') }}<i>→</i></router-link>
           </div>
+          <div class="j-facility-grid"><article v-for="facility in jFacilities" :key="facility.image"><el-image :src="facility.image" :alt="locale === 'zh' ? facility.titleZh : facility.titleEn" :preview-src-list="[facility.image]" fit="cover" preview-teleported hide-on-click-modal/><h3>{{ locale === 'zh' ? facility.titleZh : facility.titleEn }}</h3><p class="hc-p">{{ locale === 'zh' ? facility.descriptionZh : facility.descriptionEn }}</p></article></div>
+          <div class="j-about-film"><ManufacturingFilm /></div>
           <SubsidiaryCards v-if="contactSettings" include-headquarters about-only />
         </div>
       </section>
@@ -182,14 +186,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
         </div>
       </section>
 
-      <footer class="hc-foot">
-        <div class="hc-foot-in">
-          <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
-          <span class="tag">{{ $t('site.tianjinHeavySteelMachineryEquipmentCoLtd') }}</span>
-          <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-          <SocialLinks />
-        </div>
-      </footer>
+      <SiteFooter />
 
     </div>
 
@@ -204,15 +201,16 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
           <div v-if="certificateDetails.issuedAt"><dt>{{ $t('certificationUi.issuedAt') }}</dt><dd>{{ certificateDetails.issuedAt }}</dd></div>
           <div v-if="certificateDetails.expiresAt"><dt>{{ $t('site.certValidThrough') }}</dt><dd>{{ certificateDetails.expiresAt }}</dd></div>
         </dl>
-        <el-image v-if="hasCertificateImage(certificateDetails)" ref="certificateDetailsImage" class="certificate-details-image"
+        <template v-if="isPdf(certificateDetails.image)"><a class="j-link" :href="certificateDetails.image" target="_blank" rel="noopener">{{ locale === 'zh' ? '新窗口查看原件' : 'Open original document' }} ↗</a><iframe class="j-certificate-pdf" :src="certificateDetails.image" :title="certificationField(certificateDetails,'title')" /></template>
+        <el-image v-else-if="hasCertificateImage(certificateDetails)" ref="certificateDetailsImage" class="certificate-details-image"
           :src="certificateDetails.image" :alt="certificationField(certificateDetails, 'title')" fit="contain"
           :preview-src-list="certificatePreviewSources"
-          :initial-index="publishedCertifications.findIndex((item) => item.id === certificateDetails.id)"
+          :initial-index="certificatePreviewSources.indexOf(certificateDetails.image)"
           preview-teleported hide-on-click-modal>
           <template #error><div class="certificate-image-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
           <template #viewer-error><div class="certificate-viewer-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
         </el-image>
-        <el-button v-if="hasCertificateImage(certificateDetails)" class="certificate-details-image-button" text :icon="ZoomIn"
+        <el-button v-if="hasCertificateImage(certificateDetails) && !isPdf(certificateDetails.image)" class="certificate-details-image-button" text :icon="ZoomIn"
           :aria-label="$t('certificationUi.previewCertificate', { title: certificationField(certificateDetails, 'title') })"
           @click.stop="certificateDetailsImage?.showPreview()">{{ $t('certificationUi.viewImage') }}</el-button>
       </div>

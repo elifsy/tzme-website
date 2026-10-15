@@ -1,327 +1,69 @@
 <script setup>
-import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import { useDesignPage } from '../composables/useDesignPage.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
 import SiteNav from '../components/SiteNav.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import ProjectCard from '../components/ProjectCard.vue'
+import IndustryIcon from '../components/IndustryIcon.vue'
 import WorldReachMap from '../components/WorldReachMap.vue'
 import InquiryForm from '../components/InquiryForm.vue'
-import IndustryIcon from '../components/IndustryIcon.vue'
-import HomeCapabilitiesSection from '../components/HomeCapabilitiesSection.vue'
 import AboutTzmeContent from '../components/AboutTzmeContent.vue'
+import HomeCapabilitiesSection from '../components/HomeCapabilitiesSection.vue'
+import ManufacturingFilm from '../components/ManufacturingFilm.vue'
 import { useAboutTzme } from '../services/aboutTzme.js'
-import { aboutText } from '../data/aboutTzme.js'
 import { useCapabilities } from '../services/capabilities.js'
-import { contactText, useContactSettings } from '../services/contactSettings.js'
-import { useProjectCatalog } from '../services/projects.js'
 import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
-import { industryField, useIndustryCatalog } from '../services/industries.js'
+import { useProjectCatalog } from '../services/projects.js'
+import { useArticleCatalog, articlePath } from '../services/articles.js'
+import { useIndustryCatalog, industryField } from '../services/industries.js'
 import { useGlobalReach } from '../services/globalReach.js'
 import { globalReachText, isGlobalReachUrl } from '../data/globalReach.js'
-const page = ref(null)
-const { menuItems, isMenuActive, navigateLink } = useDesignPage('hc-home', page)
+import { useContactSettings } from '../services/contactSettings.js'
+import { jAssets, jBanners } from '../data/jDesign.js'
+import { trackEvent } from '../services/analytics.js'
 const { locale } = useI18n({ useScope: 'global' })
-const { contactSettings } = useContactSettings()
-const router = useRouter()
-const { globalReach, loadGlobalReach } = useGlobalReach()
-const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
-function navigateGlobalLink(event) {
-  const path = globalReach.value.buttonLink
-  if (!isGlobalReachUrl(path)) return
-  if (event.ctrlKey || event.metaKey || event.shiftKey) {
-    window.open(path.startsWith('/') ? router.resolve(path).href : path, '_blank', 'noopener,noreferrer')
-    return
-  }
-  if (path.startsWith('/')) router.push(path)
-  else window.location.assign(path)
-}
+const text = (zh, en) => locale.value === 'zh' ? zh : en
+const field = (item, name) => localizedField(item, name, locale.value)
+const slide = ref(0)
+const banner = computed(() => jBanners[slide.value])
+function changeSlide(value) { slide.value = (value + jBanners.length) % jBanners.length; trackEvent('cta_click', 'banner-' + (slide.value + 1)) }
 const { products, loadProducts } = useProductCatalog()
 const { homeProjects, loadProjects } = useProjectCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
+const { publishedArticles, loadArticles } = useArticleCatalog()
 const { capabilities, loadCapabilities } = useCapabilities()
 const { aboutTzme, loadAboutTzme } = useAboutTzme()
-const publishedIndustries = computed(() => industries.value.filter((item) => item.status === 'published'))
-const featuredProducts = computed(() => products.value
-  .filter((item) => item.status === 'published' && item.showOnHome)
-  .sort((a, b) => (Number(a.homeOrder) || 999) - (Number(b.homeOrder) || 999))
-  .slice(0, MAX_HOME_PRODUCTS))
-const productField = (item, name) => localizedField(item, name, locale.value)
-const displayIndustry = (item, name) => industryField(item, name, locale.value)
-onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadGlobalReach(); loadCapabilities(); loadAboutTzme() })
+const { globalReach, loadGlobalReach } = useGlobalReach()
+const { contactSettings } = useContactSettings()
+const activeIndustries = computed(() => industries.value.filter(item => item.status === 'published'))
+const quickIndustries = computed(() => ['ports', 'mining', 'metallurgy'].map(id => activeIndustries.value.find(item => item.id === id)).filter(Boolean))
+const featuredProducts = computed(() => products.value.filter(item => item.status === 'published' && item.showOnHome)
+  .sort((a,b) => (Number(a.homeOrder) || 999) - (Number(b.homeOrder) || 999)).slice(0, MAX_HOME_PRODUCTS))
+const latestNews = computed(() => [...publishedArticles.value].sort((a,b) => Number(['canada-energy','annual-gala'].includes(b.id)) - Number(['canada-energy','annual-gala'].includes(a.id))).slice(0,3))
+const globalField = name => globalReachText(globalReach.value?.[name], locale.value)
+onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadArticles(); loadCapabilities(); loadAboutTzme(); loadGlobalReach() })
 </script>
 
 <template>
-<main ref="page" class="design-site">
-<div class="hc-page">
-
-              <!-- Hero -->
-              <section class="hc-hero hc-home-hero">
-                <div class="hc-bleed"><img :src="siteAsset('/assets/hero-01.jpg')" alt="" /></div>
-                <span class="hc-scrim"></span>
-              <SiteNav overlay />
-                <div class="hc-hero-in"><div class="hc-w">
-                  <span class="hc-kick">{{ $t('site.heavyEngineeringBuiltAroundYourChallenge') }}</span>
-                  <h1 class="hc-h1" style="margin-top:22px;max-width:820px">
-                    {{ $t('site.engineeredFor') }}<br />{{ $t('site.theWorldSToughest') }}<br />{{ $t('site.challenges') }}</h1>
-                  <p class="hc-p" style="margin-top:22px;max-width:520px">
-                    {{ $t('site.customBuiltHeavyMachineryAndIndustrialEquipmentEngineeredForDemandingApplicationsWorl') }}</p>
-                  <div class="home-hero-actions">
-                    <el-button class="hc-btn solid">{{ $t('site.exploreSolutions') }}<i aria-hidden="true">→</i></el-button>
-                    <el-button type="primary" class="hc-btn home-project-button">{{ $t('site.startAProject') }}<i aria-hidden="true">→</i></el-button>
-                  </div>
-                </div></div>
-              </section>
-
-              <!-- 02 简介 -->
-              <section v-if="aboutTzme" class="hc-sec home-about" aria-labelledby="home-about-title">
-                <div class="hc-w home-about-layout" :class="{ 'home-about-without-image': !aboutTzme.home.image }">
-                  <div class="home-about-copy">
-                    <AboutTzmeContent :configuration="aboutTzme.home" :locale-code="locale" heading-id="home-about-title" />
-                  </div>
-                  <div v-if="aboutTzme.home.image" class="home-about-image"><el-image :src="aboutTzme.home.image" :alt="aboutText(aboutTzme.home.imageAlt, locale)" fit="cover" /></div>
-                </div>
-              </section>
-
-              <!-- 03 服务分类 -->
-              <section class="hc-sec">
-                <div class="hc-w">
-                  <div class="hc-shead">
-                    <div class="l">
-                      <span class="hc-kick">{{ $t('site.ourSolutions') }}</span>
-                      <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.whatWeEngineer') }}</h2>
-                    </div>
-                    <span class="hc-lnk">{{ $t('site.allSolutions') }}<i>→</i></span>
-                  </div>
-                  <div class="hc-cards">
-                    <router-link v-for="(item, index) in featuredProducts" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`">
-                      <div class="im"><img :src="item.image || siteAsset('/assets/p-other-1.jpg')" :alt="productField(item, 'title')" /></div>
-                      <div class="bd">
-                        <span class="no">{{ String(index + 1).padStart(2, '0') }}</span>
-                        <h3>{{ productField(item, 'title') }}</h3>
-                        <p>{{ productField(item, 'summary') }}</p>
-                        <span class="go">{{ $t('site.explore') }}<i>→</i></span>
-                      </div>
-                    </router-link>
-                  </div>
-                </div>
-              </section>
-
-              <!-- 04 行业 -->
-              <section id="industries" class="hc-ind-sec">
-                <div class="hc-bleed"><img :src="siteAsset('/assets/p-mining-4.jpg')" alt="" /></div>
-                <span class="hc-scrim"></span>
-                <div class="hc-ind-in">
-                  <div class="hc-ind-grid">
-                    <div>
-                      <span class="hc-kick">{{ $t('site.industries') }}</span>
-                      <h2 class="hc-h2" style="margin-top:18px;color:#fff">{{ $t('site.engineeredFor') }}<br />{{ $t('site.yourIndustry') }}</h2>
-                      <p class="hc-p" style="margin-top:20px;max-width:420px;color:var(--txt-2)">
-                        {{ $t('site.weUnderstandTheUniqueChallengesOfYourIndustryAndDeliverSolutionsThat') }}</p>
-                      <div style="margin-top:30px"><router-link class="hc-lnk" to="/solutions" @click.stop>{{ $t('site.exploreAllIndustries') }}<i>→</i></router-link></div>
-                    </div>
-                    <div class="hc-ind">
-                      <router-link v-for="industry in publishedIndustries" :key="industry.id" class="hc-ind-item"
-                        :to="{ path: '/solutions', query: { industry: industry.id } }" data-analytics-event="industry_filter" :data-analytics-target="industry.id">
-                        <span class="ic home-industry-icon"><IndustryIcon :icon="industry.icon || ''" /></span>
-                        <div><b>{{ displayIndustry(industry, 'title') }}</b><u>{{ displayIndustry(industry, 'subtitle') }}</u></div>
-                      </router-link>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <!-- 05 流程 -->
-              <HomeCapabilitiesSection :configuration="capabilities" :locale-code="locale" />
-
-              <!-- 06 制造能力 -->
-              <section class="hc-sec hc-deep">
-                <div class="hc-w hc-scale">
-                  <div>
-                    <span class="hc-kick">{{ $t('site.manufacturing') }}</span>
-                    <h2 class="hc-h2" style="margin-top:18px;color:#fff">{{ $t('site.builtForScale') }}</h2>
-                    <p class="hc-p" style="margin-top:20px;max-width:420px">
-                      {{ $t('site.largeScaleEngineeringRequiresMoreThanDesignItRequiresManufacturingCapabilityPrecision') }}</p>
-                  </div>
-                  <div class="hc-tiles">
-                <div class="hc-tile"><img :src="siteAsset('/assets/rnd-2.jpg')" alt="" />
-                  <span class="lb">{{ $t('site.largeScaleFabrication') }}</span></div>
-                <div class="hc-tile"><img :src="siteAsset('/assets/rnd-1.jpg')" alt="" />
-                  <span class="lb">{{ $t('site.3dDesignAndSimulation') }}</span></div>
-                <div class="hc-tile"><img :src="siteAsset('/assets/p-metal-1.jpg')" alt="" />
-                  <span class="lb">{{ $t('site.weldingAndNdt') }}</span></div>
-                <div class="hc-tile"><img :src="siteAsset('/assets/p-port-2.png')" alt="" />
-                  <span class="lb">{{ $t('site.assemblyAndTesting') }}</span></div>
-                  </div>
-                </div>
-              </section>
-
-              <!-- 07 案例 -->
-              <section id="projects" class="hc-sec hc-white home-selected-projects">
-                <div class="hc-w">
-                  <div class="hc-shead">
-                    <div class="l">
-                      <span class="hc-kick">{{ $t('site.selectedProjects') }}</span>
-                      <h2 class="hc-h2" style="margin-top:18px">{{ $t('site.realProjectsLastingValue') }}</h2>
-                    </div>
-                    <router-link class="hc-lnk" to="/projects">{{ $t('site.viewAllProjects') }}<i>→</i></router-link>
-                  </div>
-                  <div v-if="homeProjects.length" class="hc-proj">
-                    <ProjectCard v-for="project in homeProjects" :key="project.id" :project="project" />
-                  </div>
-                  <el-empty v-else :description="$t('site.projectsEmpty')" />
-                </div>
-              </section>
-
-              <!-- 08 全球 -->
-              <section v-if="globalReach?.enabled" class="hc-sec home-global" aria-labelledby="home-global-title">
-                <div class="hc-w hc-global">
-                  <div>
-                    <span class="hc-kick">{{ globalField('kicker') }}</span>
-                    <h2 id="home-global-title" class="hc-h2" style="margin-top:18px;color:#fff">
-                      {{ globalField('titleLine1') }}<template v-if="globalField('titleLine2')"><br />{{ globalField('titleLine2') }}</template></h2>
-                    <p class="hc-p" style="margin-top:20px;max-width:520px">
-                      {{ globalField('description') }}</p>
-                    <div class="hc-map" style="margin-top:34px">
-                      <WorldReachMap v-if="globalReach.mapMode === 'points'" :points="globalReach.mapPoints"
-                        :description="globalField('imageAlt')" :locale-code="locale" />
-                      <el-image v-else :src="globalReach.image" :alt="globalField('imageAlt')" fit="contain" style="width:100%">
-                        <template #error><div class="home-global-image-error">{{ globalField('imageAlt') }}</div></template>
-                      </el-image>
-                    </div>
-                  </div>
-                  <div class="hc-gstats">
-                    <div v-for="(statistic, index) in globalReach.statistics" :key="index">
-                      <div class="hc-stat">{{ statistic.value }}<u v-if="statistic.suffix">{{ statistic.suffix }}</u></div>
-                      <div class="hc-stat-cap">{{ globalReachText(statistic.label, locale) }}</div>
-                    </div>
-                    <div v-if="globalReach.showButton && isGlobalReachUrl(globalReach.buttonLink)" style="padding-top:26px">
-                      <el-button native-type="button" class="hc-btn ghost sm" @click.stop="navigateGlobalLink">
-                        {{ globalField('buttonText') }}<i aria-hidden="true">→</i>
-                      </el-button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <!-- 09 询价 -->
-              <section class="hc-cta">
-                <div class="hc-bleed"><img :src="siteAsset('/assets/video-poster.jpg')" alt="" /></div>
-                <span class="hc-scrim"></span>
-                <div class="hc-w hc-cta-in" :class="{ 'home-contact-single': !contactSettings?.form.showOnHome }">
-                  <div>
-                    <span class="hc-kick">{{ $t('site.getInTouch') }}</span>
-                    <h2 class="hc-h2" style="margin-top:18px;color:#fff">
-                      {{ $t('site.haveAChallenge') }}<br />{{ $t('site.thatNeedsEngineering') }}</h2>
-                    <p class="hc-p" style="margin-top:20px;max-width:420px">
-                      {{ $t('site.tellUsWhatYouReTryingToBuildMoveOrSolve') }}</p>
-                    <div class="hc-cinfo">
-                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>{{ contactSettings?.contact.emails.join(' · ') }}</div>
-                      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 5h4l2 5-2.5 1.5a12 12 0 0 0 5 5L14 14l5 2v4a15 15 0 0 1-15-15Z"/></svg>{{ contactSettings?.contact.phone }}</div>
-                    </div>
-                  </div>
-                  <InquiryForm placement="home" />
-                </div>
-              </section>
-
-              <!-- 10 页脚 -->
-              <footer class="hc-foot">
-                <div class="hc-foot-in">
-                  <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
-                  <span class="tag">{{ $t('site.heavyEngineeringBuiltAroundYourChallenge') }}</span>
-                  <nav class="hc-foot-nav">
-                    <a v-for="item in menuItems" :key="item.key" :href="item.path"
-                      :aria-current="isMenuActive(item) ? 'page' : undefined"
-                      @click="navigateLink($event, item.path)">{{ item.label }}</a>
-                  </nav>
-                  <LanguageSwitcher style="color:var(--txt-2)" />
-                  <SocialLinks />
-                </div>
-                <div class="hc-foot-bot">
-                  <span>{{ $t('site.copyright') }}</span>
-                  <span>{{ $t('contactUi.footerTerms') }} · {{ contactText(contactSettings?.contact.address, locale) }}</span>
-                </div>
-              </footer>
-
-            </div>
-</main>
+  <div class="design-site j-home"><div class="hc-page">
+    <SiteNav />
+    <main id="main-content">
+      <section class="j-hero" aria-roledescription="carousel" :aria-label="text('首页横幅','Homepage banners')" :data-slide="slide">
+        <img class="j-hero-photo" :src="banner.image" :alt="text('重钢机械港口、制造与装备现场','TZME port equipment and manufacturing')" fetchpriority="high" />
+        <div class="j-hero-copy" aria-live="polite"><h1>{{ banner.title[locale] || banner.title.en }}</h1><span class="j-rule"></span><p v-if="banner.subtitle">{{ banner.subtitle[locale] || banner.subtitle.en }}</p><router-link :to="banner.to" class="j-button" data-analytics-event="cta_click" :data-analytics-target="`banner-${slide + 1}`">{{ banner.button[locale] || banner.button.en }}<span aria-hidden="true">→</span></router-link></div>
+        <div class="j-hero-controls"><button type="button" :aria-label="text('上一张横幅','Previous banner')" @click="changeSlide(slide - 1)">←</button><button v-for="(item,index) in jBanners" :key="index" type="button" :aria-label="text('切换横幅','Select banner') + ' ' + (index+1)" :aria-pressed="slide === index" @click="changeSlide(index)">{{ String(index+1).padStart(2,'0') }}</button><button type="button" :aria-label="text('下一张横幅','Next banner')" @click="changeSlide(slide + 1)">→</button></div>
+      </section>
+      <section class="j-industry-strip"><div class="hc-w"><router-link v-for="industry in quickIndustries" :key="industry.id" :to="{ path:'/solutions',query:{industry:industry.id} }" data-analytics-event="industry_filter" :data-analytics-target="industry.id"><IndustryIcon :icon="industry.icon"/><div><strong>{{ industryField(industry,'title',locale) }}</strong><small>{{ industryField(industry,'subtitle',locale) }}</small></div><span aria-hidden="true">→</span></router-link></div></section>
+      <section v-if="aboutTzme" class="hc-sec j-manufacturing"><div class="hc-w j-split"><div><AboutTzmeContent :configuration="aboutTzme.home" :locale-code="locale" /><router-link class="j-link" to="/about">{{ text('走进重钢机械','Discover TZME') }}<span>→</span></router-link></div><figure><div class="j-factory-photo"><img :src="aboutTzme.home.image || jAssets.factory" :alt="text('格林兰制造基地实景','Greenland manufacturing base')" loading="lazy"/><ManufacturingFilm /></div><figcaption>TIANJIN / ENGINEERING · FABRICATION · DELIVERY</figcaption></figure></div></section>
+      <section class="hc-sec j-port-feature"><div class="hc-w j-split reverse"><img :src="jAssets.harbor" :alt="text('港口装卸设备实景','Port material handling')" loading="lazy"/><div><span class="hc-kick">PORT MATERIAL HANDLING</span><h2 class="hc-h2">{{ text('让每一次搬运，\n更稳妥。','Move every load\nwith confidence.') }}</h2><span class="j-rule"></span><p class="hc-p">{{ text('面向港口物料搬运的实际需求，提供定制化的卸船机、装船机、堆取料机及相关配套设备，衔接装备制造与现场作业。','Custom ship unloaders, ship loaders, stackers, reclaimers and supporting equipment shaped around real port handling requirements.') }}</p><router-link class="j-button" :to="{path:'/solutions',query:{industry:'ports'}}">{{ text('港口物料搬运','Port material handling') }}<span>→</span></router-link></div></div></section>
+      <section class="hc-sec j-soft"><div class="hc-w"><div class="hc-shead"><div><span class="hc-kick">OUR EQUIPMENT</span><h2 class="hc-h2">{{ text('为复杂工况，\n打造适用的装备。','Equipment shaped\nfor demanding applications.') }}</h2></div><router-link class="j-link" to="/solutions">{{ text('全部产品与方案','All products & solutions') }}<span>→</span></router-link></div><div class="hc-cards"><router-link v-for="item in featuredProducts" :key="item.id" class="hc-card" :to="`/solutions/${item.id}`"><div class="im"><img :src="item.image" :alt="field(item,'title')" loading="lazy"/></div><div class="bd"><span class="j-card-meta">{{ field(item,'category') }}</span><h3>{{ field(item,'title') }}</h3><p>{{ field(item,'summary') }}</p><span class="go">{{ text('了解产品与方案','Explore equipment') }}<i>→</i></span></div></router-link></div></div></section>
+      <section id="industries" class="hc-sec"><div class="hc-w"><span class="hc-kick">INDUSTRIES WE SERVE</span><h2 class="hc-h2">{{ text('理解行业，回应挑战。','Understanding industries. Engineering solutions.') }}</h2><div class="j-industry-grid"><router-link v-for="industry in activeIndustries" :key="industry.id" :to="{path:'/solutions',query:{industry:industry.id}}" data-analytics-event="industry_filter" :data-analytics-target="industry.id"><IndustryIcon :icon="industry.icon"/><strong>{{ industryField(industry,'title',locale) }} ↗</strong><small>{{ industryField(industry,'subtitle',locale) }}</small></router-link></div></div></section>
+      <HomeCapabilitiesSection :configuration="capabilities" :locale-code="locale" />
+      <section id="projects" class="hc-sec"><div class="hc-w"><div class="hc-shead"><div><span class="hc-kick">SELECTED PROJECTS</span><h2 class="hc-h2">{{ text('真实项目，持久价值。','Real projects. Lasting value.') }}</h2></div><router-link class="j-link" to="/projects">{{ $t('site.viewAllProjects') }}<span>→</span></router-link></div><div v-if="homeProjects.length" class="hc-proj"><ProjectCard v-for="project in homeProjects" :key="project.id" :project="project"/></div><el-empty v-else :description="$t('site.projectsEmpty')"/></div></section>
+      <section class="j-quality-strip hc-w"><router-link v-for="title in ['ISO 9001','ISO 14001','ISO 45001','EN 1090','ISO 3834']" :key="title" to="/about#certificates-title">{{ title }}</router-link><router-link class="j-link" to="/about#certificates-title">{{ text('资质与质量体系','Quality & certifications') }} ↗</router-link></section>
+      <section v-if="globalReach?.enabled" class="hc-sec j-global j-soft"><div class="hc-w hc-global"><div><span class="hc-kick">{{ globalField('kicker') }}</span><h2 class="hc-h2">{{ globalField('titleLine1') }}<br v-if="globalField('titleLine2')"/>{{ globalField('titleLine2') }}</h2><div class="hc-map"><WorldReachMap v-if="globalReach.mapMode === 'points'" :points="globalReach.mapPoints" :description="globalField('imageAlt')" :locale-code="locale"/><el-image v-else :src="globalReach.image" :alt="globalField('imageAlt')" fit="contain"/></div></div><div><p class="hc-p">{{ globalField('description') }}</p><div class="hc-gstats"><div v-for="(stat,index) in globalReach.statistics" :key="index"><div class="hc-stat">{{ stat.value }}<u v-if="stat.suffix">{{ stat.suffix }}</u></div><div class="hc-stat-cap">{{ globalReachText(stat.label,locale) }}</div></div></div><component :is="globalReach.buttonLink.startsWith('/') ? 'router-link' : 'a'" v-if="globalReach.showButton && isGlobalReachUrl(globalReach.buttonLink)" class="j-link" :to="globalReach.buttonLink" :href="globalReach.buttonLink">{{ globalField('buttonText') }}<span>→</span></component></div></div></section>
+      <section v-if="latestNews.length" class="hc-sec"><div class="hc-w"><div class="hc-shead"><div><span class="hc-kick">NEWS & INSIGHTS</span><h2 class="hc-h2">{{ text('来自制造与工程一线。','From engineering and manufacturing.') }}</h2></div><router-link class="j-link" to="/insights">{{ text('全部资讯','All news') }}<span>→</span></router-link></div><div class="hc-cards"><router-link v-for="article in latestNews" :key="article.id" class="hc-card" :to="articlePath(article.id)"><div class="im"><img :src="article.image" :alt="field(article,'title')" loading="lazy"/></div><div class="bd"><span class="j-card-meta">{{ field(article,'category') }}<template v-if="article.date"> · {{ article.date }}</template></span><h3>{{ field(article,'title') }}</h3><span class="go">{{ text('阅读全文','Read article') }}<i>→</i></span></div></router-link></div></div></section>
+      <section class="hc-sec j-home-contact"><div class="hc-w j-contact-layout" :class="{'j-contact-single':!contactSettings?.form.showOnHome}"><div><span class="hc-kick">LET’S BUILD TOGETHER</span><h2 class="hc-h2">{{ text('下一项工程，\n从交流开始。','Your next project\nstarts with a conversation.') }}</h2><span class="j-rule"></span><p class="hc-p">{{ text('告诉我们您的物料、工况和交付需求。我们的工程团队将与您一起探讨适用的设备与制造方案。','Tell us about your materials, operating conditions and delivery requirements. Explore an equipment solution with our engineering team.') }}</p><div class="j-direct-contact"><a v-for="email in contactSettings?.contact.emails" :key="email" :href="`mailto:${email}`">{{ email }}</a><p>{{ contactSettings?.contact.phone }}</p></div></div><InquiryForm placement="home"/></div></section>
+    </main><SiteFooter />
+  </div></div>
 </template>
-
-<style scoped>
-.home-hero-actions { display: flex; flex-wrap: wrap; align-items: stretch; gap: 14px; margin-top: 34px; }
-.home-hero-actions .hc-btn.el-button {
-  min-width: min(100%, 150px);
-  max-width: 100%;
-  min-height: 48px;
-  height: auto;
-  padding: 12px 22px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: .03em;
-  line-height: 1.5;
-  text-transform: none;
-  white-space: normal;
-  transition: background-color .18s, border-color .18s, box-shadow .18s;
-}
-.home-hero-actions .hc-btn.el-button :deep(> span) { min-width: 0; max-width: 100%; line-height: 1.5; }
-.home-hero-actions .hc-btn.el-button :deep(i) { flex-shrink: 0; font-size: 16px; }
-.home-hero-actions .home-project-button.el-button {
-  --el-button-text-color: #fff;
-  --el-button-bg-color: #075cac;
-  --el-button-border-color: #a4d7f7;
-  --el-button-hover-text-color: #fff;
-  --el-button-hover-bg-color: #126ab8;
-  --el-button-hover-border-color: #d3edff;
-  --el-button-active-text-color: #fff;
-  --el-button-active-bg-color: #064b8e;
-  --el-button-active-border-color: #a4d7f7;
-  border: 1px solid #a4d7f7;
-  background: #075cac;
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
-}
-.home-hero-actions .home-project-button.el-button:hover { border-color: #d3edff; background: #126ab8; color: #fff; }
-.home-hero-actions .home-project-button.el-button:active { border-color: #a4d7f7; background: #064b8e; color: #fff; }
-.home-hero-actions .hc-btn.el-button.solid:hover { border-color: #e4eef7; background: #e4eef7; color: #0b263b; }
-.home-hero-actions .hc-btn.el-button.solid:active { border-color: #cbddeb; background: #cbddeb; color: #0b263b; }
-.home-hero-actions .hc-btn.el-button:focus-visible { outline: 3px solid #f6b44d; outline-offset: 4px; }
-@media (max-width: 480px) {
-  .home-hero-actions { gap: 12px; }
-  .home-hero-actions .hc-btn.el-button { flex: 1 1 150px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .home-hero-actions .hc-btn.el-button { transition: none; }
-}
-@media (forced-colors: active) {
-  .home-hero-actions .home-project-button.el-button { border-color: ButtonText; background: ButtonFace; color: ButtonText; box-shadow: none; }
-  .home-hero-actions .hc-btn.el-button:focus-visible { outline-color: Highlight; }
-}
-.hc-ind .home-industry-icon { display: inline-flex; align-items: center; justify-content: center; }
-.hc-ind .home-industry-icon::before { content: none; }
-.home-contact-single { grid-template-columns: 1fr; }
-.home-global .hc-global > div { min-width: 0; }
-.home-global .hc-h2, .home-global .hc-p, .home-global .hc-stat, .home-global .hc-stat-cap { overflow-wrap: anywhere; }
-.home-global .hc-p { white-space: pre-line; }
-.home-global .hc-gstats .hc-btn { max-width: 100%; min-height: 38px; height: auto; padding: 10px 17px; white-space: normal; text-align: left; }
-.home-global .hc-gstats .hc-btn :deep(> span) { min-width: 0; max-width: 100%; line-height: 1.4; }
-.home-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
-.home-about { padding: 72px 0 56px; }
-.home-about-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
-.home-about-layout.home-about-without-image { grid-template-columns: minmax(0, 1fr); }
-.home-about-copy { min-width: 0; }
-.home-about-image { position: relative; align-self: stretch; min-width: 0; min-height: 360px; overflow: hidden; border: 1px solid var(--line-d); border-radius: 4px; }
-.home-about-image .el-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-@media (max-width: 960px) {
-  .home-about-layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .home-about-image { min-height: 0; aspect-ratio: 16 / 9; }
-}
-@media (max-width: 700px) {
-  .home-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .home-global .hc-gstats > div:last-child:has(.hc-btn) { grid-column: 1 / -1; }
-}
-</style>

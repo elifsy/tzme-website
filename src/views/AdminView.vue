@@ -830,7 +830,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
               <p class="cms-home-count">{{ $t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS }) }}</p>
               <el-form-item v-if="form.showOnHome" :label="$t('admin.homeDisplayOrder')">
                 <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
-              </el-form-item>
+              </el-form-item>U
             </AdminEditorPanel>
           </aside>
         </div>
@@ -1275,3 +1275,4 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   font-size: 9px;
 }
 </style>
+

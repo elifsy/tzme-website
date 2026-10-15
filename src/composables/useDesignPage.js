@@ -24,6 +24,8 @@ export function useDesignPage(pageKey, page) {
     if (!root || !target || target.closest('[data-site-nav]')) return
     const control = target.closest('.hc-logo,.hc-btn,.hc-lnk,.hc-ico')
     if (!control || !root.contains(control)) return
+    // Real links and explicitly bound buttons own their navigation.
+    if (control.matches('a,button') && !control.matches('.hc-ico')) return
     event.preventDefault()
 
     if (control.matches('.hc-logo')) return goTo('/')

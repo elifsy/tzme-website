@@ -111,8 +111,7 @@
   color: #d5e0e9;
 }
 .projects-page .project-list-section,
-.project-detail > .hc-page > main,
-.project-site .project-footer {
+.project-detail > .hc-page > main {
   --txt: #f5f8fb;
   --txt-2: #d5e0e9;
   --txt-3: #bccddb;
@@ -129,9 +128,6 @@
 .project-site .project-card:focus-visible { outline-color: #075cac; box-shadow: 0 0 0 7px #fff; }
 .project-site ::selection { background: #a4d7f7; color: #06131c; }
 .project-site :where(.project-list-section, .project-detail-intro, .project-detail-content, .projects-related) .hc-kick { color: #a4d7f7; font-size: .75rem; font-weight: 600; letter-spacing: .05em; }
-.project-site .project-footer .hc-lang { font-size: .75rem; color: #d5e0e9; white-space: nowrap; }
-.project-site .project-footer .hc-lang-option { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; color: #d5e0e9; }
-.project-site .project-footer .hc-lang-option.active { color: #fff; text-decoration: underline; text-underline-offset: 6px; }
 .project-skip-link {
   position: absolute;
   z-index: 100;
@@ -257,14 +253,6 @@
 .project-contact-panel .site-filter-button > span { display: flex; align-items: center; gap: 12px; }
 .project-site .projects-related { background: #06131c; padding: 64px 0 88px; border-top: 1px solid #456073; }
 .project-unavailable { min-height: 70vh; }
-.project-site .project-footer { background: #020c13; border-top: 1px solid #456073; }
-.project-site .project-footer .hc-foot-in { display: flex; align-items: center; flex-wrap: wrap; gap: 32px; padding: 36px 0; }
-.project-footer-brand { flex: 1 1 240px; }
-.project-footer-brand .hc-logo { width: fit-content; }
-.project-footer-brand p { color: #d5e0e9; font-size: .8125rem; line-height: 1.8; margin-top: 12px; }
-.project-footer-links { display: flex; flex-wrap: wrap; gap: 6px 20px; max-width: 600px; }
-.project-footer-links a { display: inline-flex; align-items: center; min-height: 44px; color: #f5f8fb; font-size: .875rem; }
-.project-footer-links a:hover, .project-footer-links a[aria-current="page"] { color: #a4d7f7; text-decoration: underline; text-underline-offset: 5px; }
 
 @media (max-width: 1280px) {
   .project-detail-hero-grid { gap: 40px; }
@@ -293,8 +281,6 @@
   .project-detail-metrics dd { text-align: right; font-size: 1rem; }
   .project-detail-sidebar { grid-template-columns: minmax(0, 1fr); }
   .project-detail-sidebar > .project-contact-panel:not(:only-child) { --el-card-padding: 24px 0 0; border-top: 1px solid #d5dee7; }
-  .project-site .project-footer .hc-foot-in { gap: 24px; align-items: flex-start; }
-  .project-footer-brand { flex-basis: 100%; }
 }
 @media (max-width: 420px) {
   .design-site .project-card .bd { padding: 22px 18px; }

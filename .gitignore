@@ -34,3 +34,10 @@ database/snapshots/
 *.iml
 .DS_Store
 Thumbs.db
+
+# User-supplied source photos and website documents (use curated copies in public/assets)
+/public/素材照片/
+/public/网站资料/
+
+# Local design previews and documentation
+/docs/

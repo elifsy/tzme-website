@@ -1,7 +1,7 @@
 /* ==========================================================================
    TZME CORPORATE · 设计令牌
    气质来源：工业 B2B 企业站 —— 深藏青画布 / 明暗交替分段 / 蓝色 kicker /
-             橙色点缀 / 编号卡片 / 项目案例卡 / 点阵世界地图
+             橙色主题点缀 / 编号卡片 / 项目案例卡 / 点阵世界地图
    ========================================================================== */
 :root {
   /* 深色面（三个层次，靠明度分层，不用投影） */
@@ -26,10 +26,13 @@
   --ink: #0b1b26; /* 浅底主文字 */
   --mut: #5a6874; /* 浅底次级 */
 
-  /* 双强调：蓝做结构（kicker / 链接 / 编号），橙做重点（数值 / 标记） */
+  /* 蓝色用于结构与链接，橙色用于主题强调；Logo 保留蓝绿品牌原色。 */
   --blue: #3e94d0;
   --blue-2: #6fb6e8;
+  --brand-blue: #211d78;
+  --brand-green: #099b39;
   --orange: #e8641c;
+  --accent: var(--orange);
 
   /* 字体 */
   --f-ui: "Segoe UI", "Microsoft YaHei", -apple-system, sans-serif;
@@ -94,7 +97,7 @@ code {
   padding: 2px 7px;
 }
 ::selection {
-  background: var(--orange);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -129,7 +132,7 @@ code {
   width: 28px;
   height: 28px;
   border-radius: 4px;
-  background: var(--orange);
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,7 +267,7 @@ code {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--orange);
+  background: var(--accent);
 }
 .cover h1 {
   margin: 24px 0 0;
@@ -363,7 +366,7 @@ code {
 .note {
   margin-top: 34px;
   background: rgba(255, 255, 255, 0.035);
-  border-left: 2px solid var(--orange);
+  border-left: 2px solid var(--accent);
   padding: 20px 24px;
   font-size: 13.5px;
   color: var(--txt-2);
@@ -394,7 +397,7 @@ code {
   color: var(--txt-3);
 }
 .ver.cur > em {
-  color: var(--orange);
+  color: var(--accent);
 }
 .ver > div {
   flex: 0 0 310px;
@@ -731,7 +734,7 @@ code {
   width: 22px;
   height: 22px;
   border-radius: 3px;
-  background: var(--orange);
+  background: var(--accent);
   display: block;
 }
 .hc-menu {
@@ -954,7 +957,7 @@ code {
   text-decoration: none;
   font-size: 15px;
   font-weight: 600;
-  color: var(--orange);
+  color: var(--accent);
   margin-left: 4px;
 }
 .hc-stat-cap {
@@ -1117,7 +1120,7 @@ code {
   top: 0;
   width: 64px;
   height: 2px;
-  background: var(--orange);
+  background: var(--accent);
   border-radius: 2px;
 }
 .hc-slider .of {

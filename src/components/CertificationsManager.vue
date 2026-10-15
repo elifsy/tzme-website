@@ -8,6 +8,7 @@ import AdminEditorPanel from './AdminEditorPanel.vue'
 import ImageUpload from './ImageUpload.vue'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { apiRequest } from '../services/api.js'
+import { isPdf } from '../data/jDesign.js'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const { certifications: records, loadCertifications } = useCertificationCatalog()
@@ -140,7 +141,8 @@ onMounted(load)
       <el-table-column :label="$t('admin.certName')" min-width="230">
         <template #default="{ row }">
           <div class="cert-name-cell">
-            <el-image v-if="row.image" :src="row.image" fit="cover" class="cert-thumbnail" />
+            <a v-if="isPdf(row.image)" :href="row.image" target="_blank" rel="noopener" class="cert-thumbnail cert-thumbnail-empty" :aria-label="field(row,'title')"><el-icon><Document /></el-icon></a>
+            <el-image v-else-if="row.image" :src="row.image" fit="cover" class="cert-thumbnail" />
             <span v-else class="cert-thumbnail cert-thumbnail-empty"><el-icon><Picture /></el-icon></span>
             <span><strong>{{ field(row, 'title') }}</strong><small>{{ field(row, 'summary') }}</small>
               <el-tag v-if="!hasCertificateImage(row)" class="cert-image-missing" type="warning" size="small">{{ $t('admin.certImageMissing') }}</el-tag>
@@ -234,7 +236,8 @@ onMounted(load)
         <aside class="cms-editor-aside">
           <AdminEditorPanel step="03" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
             <el-form-item :label="$t('admin.certImage')" :required="form.status === 'published'">
-              <ImageUpload v-model="form.image" kind="certification" :active="dialogOpen" :context-key="form.id"
+              <template v-if="isPdf(form.image)"><el-link :href="form.image" target="_blank" rel="noopener" type="primary">{{ locale === 'zh' ? '查看证书 PDF 原件' : 'Open certificate PDF' }}</el-link><el-input v-model="form.image" :aria-label="locale === 'zh' ? '证书文件路径' : 'Certificate document path'" /></template>
+              <ImageUpload v-else v-model="form.image" kind="certification" :active="dialogOpen" :context-key="form.id"
                 :disabled="saving" @uploading="imageUploading = $event" />
               <p class="cert-image-requirement">{{ $t('admin.certImageRequirement') }}</p>
             </el-form-item>

@@ -1,6 +1,6 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteAsset } = useSiteContent()
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -8,8 +8,7 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import { localizedField } from '../services/catalog.js'
 import { articleCategoryKey, articleDate, articlePath, useArticleCatalog } from '../services/articles.js'
 import { sanitizeRichText } from '../utils/richText.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 
 const page = ref(null)
@@ -83,11 +82,7 @@ watch(() => route.params.id, () => window.scrollTo({ top: 0, behavior: 'instant'
         <el-skeleton v-if="loading" :rows="8" animated />
         <el-empty v-else :description="$t('site.newsNotFound')"><el-button type="primary" @click="goTo('/insights')">{{ $t('site.backToNews') }}</el-button></el-empty>
       </section>
-      <footer class="hc-foot"><div class="hc-foot-in">
-        <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span><span class="tag">{{ $t('site.newsroom') }}</span>
-        <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-        <SocialLinks />
-      </div></footer>
+      <SiteFooter />
     </div>
 
   </main>

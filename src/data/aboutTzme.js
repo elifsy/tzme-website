@@ -3,7 +3,7 @@ export const aboutTextFields = ['kicker', 'titleLine1', 'titleLine2', 'descripti
 export const aboutText = (value, locale) => value?.[locale] || value?.en || ''
 export const validAboutImage = value => typeof value === 'string' && (value === ''
   || /^\/api\/uploads\/images\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|gif|webp)$/.test(value)
-  || /^\/assets\/[a-zA-Z0-9_-]+\.(jpg|png|gif|webp)$/.test(value))
+  || /^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(jpg|png|gif|webp)$/.test(value))
 
 export function isAboutSettings(value) {
   const translated = item => item && typeof item.en === 'string' && typeof item.zh === 'string'

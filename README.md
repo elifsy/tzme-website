@@ -189,3 +189,13 @@ npm run db:build
 | 事件明细 | `GET /api/analytics/events`，支持报告筛选条件、`page` 和事件名称 `name` |
 
 管理后台现阶段沿用原有内容管理功能，尚未实现登录和权限控制。
+
+## 风格 J 改版（2026-10-15）
+
+官网已采用浅色港口工业风，包含三组原 Banner 中文翻译、基地航拍、企业文化、产品分类与搜索、图片放大及证书 PDF。产品、项目、新闻、联系与首页模块继续使用原有 API 和后台配置；咨询提交、附件上传、邮件通知与分析流程保留。
+
+新增资料由 `database/migrations/2026-10-15-j-design.sql` 一次性导入。Java 启动及完整 `database/install.sql` 均包含该迁移；重复执行不会覆盖后续后台修改，旧默认值仅在仍与基础数据一致时更新。生成脚本为 `node scripts/build-j-design-migration.mjs`。
+
+选用素材位于 `public/assets/tzme-j/`。原始 `public/素材照片/`、`public/网站资料/` 已被 Git 忽略，Vite 生产构建也排除这两个目录。本机迁移前备份位于被忽略的 `database/snapshots/j-before-2026-10-15/`。
+
+改版说明、实际截图和浏览器检查结果见 [风格 J 实现记录](docs/j-implementation-2026-10-15/README.md)。

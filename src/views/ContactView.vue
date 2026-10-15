@@ -4,12 +4,11 @@ import { useI18n } from 'vue-i18n'
 import { useSiteContent } from '../services/website.js'
 import { contactText, contactWebsiteUrl, useContactSettings } from '../services/contactSettings.js'
 import { useDesignPage } from '../composables/useDesignPage.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteAsset } = useSiteContent()
 const { locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
 const contact = computed(() => contactSettings.value?.contact)
@@ -51,12 +50,7 @@ useDesignPage('hc-contact', page)
           <InquiryForm placement="contact" />
         </div>
       </section>
-      <footer class="hc-foot"><div class="hc-foot-in">
-        <span class="hc-logo" style="font-size:19px"><i></i>{{ siteValue('text_8920f3d022b5') }}</span>
-        <span v-if="contact" class="tag">{{ contact.phone }} · {{ contact.emails.join(' · ') }}</span>
-        <LanguageSwitcher style="margin-left:auto;color:var(--txt-2)" />
-        <SocialLinks />
-      </div></footer>
+      <SiteFooter />
     </div>
   </main>
 </template>

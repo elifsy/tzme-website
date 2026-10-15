@@ -76,7 +76,7 @@
   bottom: 2px;
   left: 0;
   height: 2px;
-  background: var(--orange);
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.18s ease;
@@ -84,6 +84,29 @@
 .design-site .hc-nav .hc-menu a:hover::after,
 .design-site .hc-nav .hc-menu a.on::after {
   transform: scaleX(1);
+}
+.design-site .hc-nav .hc-menu a:hover,
+.design-site .hc-nav .hc-menu a.on {
+  color: #fff;
+}
+.design-site .hc-nav .hc-lang,
+.design-site .hc-nav .hc-lang-option {
+  color: #a7bac9;
+}
+.design-site .hc-nav .hc-lang-option.active,
+.design-site .hc-nav .hc-lang-option:hover {
+  color: #fff;
+}
+.design-site .hc-nav .site-nav-contact.el-button {
+  height: 34px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.design-site .hc-nav a:focus-visible,
+.design-site .hc-nav button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 .design-site .hc-lang-option {
   all: unset;
@@ -259,6 +282,10 @@
 .hc-mobile-links .el-button:hover {
   color: #fff;
   background: var(--navy-3);
+}
+.hc-mobile-links .el-button[aria-current="page"] {
+  color: var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 .hc-mobile-language {
   display: flex;

@@ -62,7 +62,7 @@ public class AboutTzmeController {
         if (!value.path("image").isTextual()) invalid("Invalid section image");
         String path = value.path("image").asText().trim();
         boolean uploaded = path.matches("/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)");
-        boolean preset = path.matches("/assets/[a-zA-Z0-9_-]+\\.(jpg|png|gif|webp)");
+        boolean preset = path.matches("/assets/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\\.(jpg|png|gif|webp)");
         if (!path.isEmpty() && !uploaded && !preset) invalid("Select an uploaded image");
         value.put("image", path);
         var entries = value.path("entries");

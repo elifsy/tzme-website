@@ -1,6 +1,6 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
-const { siteAsset, siteValue } = useSiteContent()
+const { siteAsset } = useSiteContent()
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { trackEvent } from '../services/analytics.js'
 import { useRoute, useRouter } from 'vue-router'
@@ -10,8 +10,7 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import { focusProjectContent } from '../utils/projectNavigation.js'
 import { localizedField } from '../services/catalog.js'
 import { projectPath, useProjectCatalog } from '../services/projects.js'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 
@@ -19,7 +18,7 @@ const page = ref(null)
 const route = useRoute()
 const router = useRouter()
 const { locale } = useI18n({ useScope: 'global' })
-const { menuItems, isMenuActive } = useDesignPage('hc-projects', page)
+useDesignPage('hc-projects', page)
 const { publishedProjects, loadProjects } = useProjectCatalog()
 const loading = ref(true)
 const pageSize = 6
@@ -99,13 +98,7 @@ onMounted(async () => { await loadProjects(); loading.value = false })
         </div></section>
       </main>
 
-      <footer class="hc-foot project-footer"><div class="hc-foot-in">
-        <div class="project-footer-brand"><router-link class="hc-logo" to="/" :aria-label="$t('site.brandHome')"><i aria-hidden="true"></i>{{ siteValue('text_8920f3d022b5') }}</router-link>
-          <p>{{ $t('site.engineeredInChina') }} {{ $t('site.builtForTheWorld') }}</p></div>
-        <nav class="project-footer-links" :aria-label="$t('site.footerNavigation')"><router-link v-for="item in menuItems" :key="item.key" :to="item.path" :aria-current="isMenuActive(item) ? 'page' : undefined">{{ item.label }}</router-link></nav>
-        <LanguageSwitcher />
-        <SocialLinks />
-      </div></footer>
+      <SiteFooter />
     </div>
 
   </div>
