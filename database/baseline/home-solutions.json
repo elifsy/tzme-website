@@ -1,0 +1,170 @@
+{
+  "section": {
+    "kicker": {
+      "zh": "OUR SOLUTIONS",
+      "en": "OUR SOLUTIONS"
+    },
+    "title": {
+      "zh": "以装备，回应行业挑战。",
+      "en": "Engineering for your industry."
+    },
+    "buttonText": {
+      "zh": "查看全部方案",
+      "en": "Explore all solutions"
+    }
+  },
+  "products": {
+    "material-handling": {
+      "industry": "ports",
+      "kicker": {
+        "zh": "PORT MATERIAL HANDLING",
+        "en": "PORT MATERIAL HANDLING"
+      },
+      "title": {
+        "zh": "让每一次搬运，\n更稳妥。",
+        "en": "Move every load\nwith confidence."
+      },
+      "description": {
+        "zh": "面向港口物料搬运的实际需求，提供定制化的输送、堆取料及相关配套设备，衔接码头装卸与后方物流，让物料转运更顺畅。",
+        "en": "Custom conveying, stacking and reclaiming equipment for port material handling. Connect quayside operations with storage and onward transport through equipment shaped around your site."
+      }
+    },
+    "mining-equipment": {
+      "industry": "mining",
+      "kicker": {
+        "zh": "MINING & BULK MATERIALS",
+        "en": "MINING & BULK MATERIALS"
+      },
+      "title": {
+        "zh": "从开采到转运，\n让生产持续向前。",
+        "en": "From extraction to transfer,\nkeep operations moving."
+      },
+      "description": {
+        "zh": "围绕矿山开采、物料输送与堆取料需求，提供适应现场工况的定制装备。将结构制造、系统装配与工程交付连接起来，服务矿山生产的每一环。",
+        "en": "Equipment for mining, conveying, stacking and reclaiming, engineered around site conditions. Structural fabrication, system assembly and delivery connect each stage of the operation."
+      }
+    },
+    "port-machinery": {
+      "industry": "ports",
+      "kicker": {
+        "zh": "PORTS & TERMINALS",
+        "en": "PORTS & TERMINALS"
+      },
+      "title": {
+        "zh": "连接船舶与岸线，\n让装卸更从容。",
+        "en": "Connect ship and shore.\nHandle cargo with confidence."
+      },
+      "description": {
+        "zh": "从船舶靠岸到物料转运，围绕港口装卸流程提供装船机、卸船机与相关配套装备。结合货种、处理能力与现场布置，让设备更贴合作业需求。",
+        "en": "Ship loaders, unloaders and supporting equipment shaped around terminal operations. Cargo, handling capacity and site layout guide a solution suited to your port."
+      }
+    },
+    "metallurgy": {
+      "industry": "metallurgy",
+      "kicker": {
+        "zh": "STEEL & METALLURGY",
+        "en": "STEEL & METALLURGY"
+      },
+      "title": {
+        "zh": "衔接每一道工序，\n让重载运行有序。",
+        "en": "Connect every process.\nKeep heavy industry moving."
+      },
+      "description": {
+        "zh": "面向金属生产与加工中的复杂工况，提供定制化工业装备与结构制造服务。围绕生产流程、物料特性和现场空间，衔接制造、装配与交付。",
+        "en": "Custom industrial equipment and structural fabrication for metal production and processing. Production flow, material characteristics and available space shape manufacturing, assembly and delivery."
+      }
+    },
+    "bridge-equipment": {
+      "industry": "construction",
+      "kicker": {
+        "zh": "BRIDGES & INFRASTRUCTURE",
+        "en": "BRIDGES & INFRASTRUCTURE"
+      },
+      "title": {
+        "zh": "托起建设的每一步，\n把蓝图连接成通途。",
+        "en": "Support every stage.\nTurn plans into connections."
+      },
+      "description": {
+        "zh": "围绕架设、安装与施工现场的工况要求，为桥梁建设提供定制化重型装备。以结构制造与装配交付能力，衔接施工流程与项目现场。",
+        "en": "Custom heavy equipment for bridge erection, installation and construction. Structural fabrication and assembly capabilities connect the engineered solution with the project site."
+      }
+    }
+  },
+  "industries": {
+    "energy": {
+      "industry": "",
+      "kicker": {
+        "zh": "ENERGY & INDUSTRIAL INFRASTRUCTURE",
+        "en": "ENERGY & INDUSTRIAL INFRASTRUCTURE"
+      },
+      "title": {
+        "zh": "连接能源与设施，\n让工程有序落地。",
+        "en": "Connect energy and industry.\nBring projects to life."
+      },
+      "description": {
+        "zh": "面向能源与工业基础设施项目，提供定制装备、结构制造与装配服务。将设备需求、现场条件和项目计划相结合，衔接制造基地与工程现场。",
+        "en": "Custom equipment, structural fabrication and assembly for energy and industrial infrastructure. Equipment requirements, site conditions and project schedules guide the work from factory to site."
+      }
+    },
+    "mining": {
+      "industry": "mining",
+      "kicker": {
+        "zh": "MINING & BULK MATERIALS",
+        "en": "MINING & BULK MATERIALS"
+      },
+      "title": {
+        "zh": "从开采到转运，\n让生产持续向前。",
+        "en": "From extraction to transfer,\nkeep operations moving."
+      },
+      "description": {
+        "zh": "围绕矿山开采、物料输送与堆取料需求，提供适应现场工况的定制装备。将结构制造、系统装配与工程交付连接起来，服务矿山生产的每一环。",
+        "en": "Equipment for mining, conveying, stacking and reclaiming, engineered around site conditions. Structural fabrication, system assembly and delivery connect each stage of the operation."
+      }
+    },
+    "ports": {
+      "industry": "ports",
+      "kicker": {
+        "zh": "PORTS & TERMINALS",
+        "en": "PORTS & TERMINALS"
+      },
+      "title": {
+        "zh": "连接船舶与岸线，\n让装卸更从容。",
+        "en": "Connect ship and shore.\nHandle cargo with confidence."
+      },
+      "description": {
+        "zh": "从船舶靠岸到物料转运，围绕港口装卸流程提供装船机、卸船机与相关配套装备。结合货种、处理能力与现场布置，让设备更贴合作业需求。",
+        "en": "Ship loaders, unloaders and supporting equipment shaped around terminal operations. Cargo, handling capacity and site layout guide a solution suited to your port."
+      }
+    },
+    "metallurgy": {
+      "industry": "metallurgy",
+      "kicker": {
+        "zh": "STEEL & METALLURGY",
+        "en": "STEEL & METALLURGY"
+      },
+      "title": {
+        "zh": "衔接每一道工序，\n让重载运行有序。",
+        "en": "Connect every process.\nKeep heavy industry moving."
+      },
+      "description": {
+        "zh": "面向金属生产与加工中的复杂工况，提供定制化工业装备与结构制造服务。围绕生产流程、物料特性和现场空间，衔接制造、装配与交付。",
+        "en": "Custom industrial equipment and structural fabrication for metal production and processing. Production flow, material characteristics and available space shape manufacturing, assembly and delivery."
+      }
+    },
+    "construction": {
+      "industry": "",
+      "kicker": {
+        "zh": "CONSTRUCTION & INFRASTRUCTURE",
+        "en": "CONSTRUCTION & INFRASTRUCTURE"
+      },
+      "title": {
+        "zh": "面向建设现场，\n让工程有序向前。",
+        "en": "Built around your site.\nReady for the next stage."
+      },
+      "description": {
+        "zh": "面向建筑与基础设施领域的项目需求，结合现场空间、作业流程与安装条件，提供定制化装备及结构制造服务，衔接工程设计与现场交付。",
+        "en": "Custom equipment and structural fabrication for construction and infrastructure. Site layout, operating requirements and installation conditions connect engineering with project delivery."
+      }
+    }
+  }
+}

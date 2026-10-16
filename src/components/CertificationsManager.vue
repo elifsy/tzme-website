@@ -16,7 +16,7 @@ const loading = ref(false)
 const saving = ref(false)
 const imageUploading = ref(false)
 const dialogOpen = ref(false)
-const editingLocale = ref('en')
+const editingLocale = ref('zh')
 const hasCertificateImage = (item) => typeof item.image === 'string' && Boolean(item.image.trim())
 const publishedCount = computed(() => records.value.filter((item) => item.status === 'published' && hasCertificateImage(item)).length)
 const missingPublishedImages = computed(() => records.value.filter((item) => item.status === 'published' && !hasCertificateImage(item)).length)
@@ -39,7 +39,7 @@ async function load() {
 }
 
 function openEditor(item = null) {
-  editingLocale.value = locale.value === 'zh' ? 'zh' : 'en'
+  editingLocale.value = 'zh'
   Object.assign(form, {
     id: item?.id || '',
     titleEn: item?.titleEn || '', titleZh: item?.titleZh || '',
@@ -65,7 +65,7 @@ async function persist(record, update) {
 
 async function save() {
   if (saving.value || imageUploading.value) return
-  if (!form.titleEn.trim() || !form.titleZh.trim()) {
+  if (!form.titleZh.trim()) {
     ElMessage.warning(t('admin.bothTitlesRequired'))
     return
   }
@@ -194,17 +194,7 @@ onMounted(load)
           <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
             <el-alert class="bilingual-tip" type="info" :closable="false" show-icon :title="$t('admin.certBilingualHint')" />
             <el-tabs v-model="editingLocale">
-              <el-tab-pane :label="$t('admin.english')" name="en">
-                <el-form-item :label="$t('admin.certNameEn')" required>
-                  <el-input v-model="form.titleEn" maxlength="255" show-word-limit />
-                </el-form-item>
-                <el-form-item :label="$t('admin.certSummaryEn')">
-                  <el-input v-model="form.summaryEn" type="textarea" :rows="3" maxlength="3000" show-word-limit />
-                </el-form-item>
-                <el-form-item :label="$t('admin.certIssuerEn')">
-                  <el-input v-model="form.issuerEn" maxlength="255" />
-                </el-form-item>
-              </el-tab-pane>
+
               <el-tab-pane :label="$t('admin.chinese')" name="zh">
                 <el-form-item :label="$t('admin.certNameZh')" required>
                   <el-input v-model="form.titleZh" maxlength="255" show-word-limit />

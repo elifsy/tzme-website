@@ -1,6 +1,7 @@
 // UI guidance, not image validation requirements. Keep the subject away from edges.
 export const imageRecommendations = {
   product: { width: 1200, height: 800, fit: 'cover', hint: 'admin.imageProductHint' },
+  facility: { width: 1200, height: 800, fit: 'cover', hint: 'contactAdmin.facilityImageHint' },
   news: { width: 1600, height: 900, fit: 'cover', hint: 'admin.imageNewsHint' },
   project: { width: 1600, height: 900, fit: 'cover', hint: 'admin.imageProjectHint' },
   certification: { width: 1240, height: 1754, fit: 'contain', hint: 'admin.imageCertificateHint' },

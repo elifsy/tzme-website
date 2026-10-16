@@ -71,11 +71,10 @@ public class ProjectController {
         if (input.getId().length() > 100 || !input.getId().matches("[a-zA-Z0-9_-]+")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid project ID");
         }
-        if (input.getTitleEn() == null || input.getTitleEn().isBlank()
-                || input.getTitleZh() == null || input.getTitleZh().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "English and Chinese titles are required");
+        if (input.getTitleZh() == null || input.getTitleZh().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A Chinese title is required");
         }
-        input.setTitleEn(input.getTitleEn().trim());
+        input.setTitleEn(input.getTitleEn() == null ? "" : input.getTitleEn().trim());
         input.setTitleZh(input.getTitleZh().trim());
         if (!"published".equals(input.getStatus()) && !"draft".equals(input.getStatus())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid publication status");

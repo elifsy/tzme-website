@@ -17,7 +17,7 @@ const loading = ref(false)
 const saving = ref(false)
 const iconUploading = ref(false)
 const dialogOpen = ref(false)
-const editingLocale = ref('en')
+const editingLocale = ref('zh')
 const form = reactive({
   id: '', titleEn: '', titleZh: '', subtitleEn: '', subtitleZh: '', icon: '',
   sortOrder: 10, status: 'published',
@@ -36,7 +36,7 @@ async function load() {
 function openEditor(item = null) {
   if (saving.value) return
   iconUploading.value = false
-  editingLocale.value = locale.value === 'zh' ? 'zh' : 'en'
+  editingLocale.value = 'zh'
   Object.assign(form, {
     id: item?.id || '',
     titleEn: item?.titleEn || '', titleZh: item?.titleZh || '',
@@ -57,7 +57,7 @@ async function persist(record, update) {
 
 async function save() {
   if (!dialogOpen.value || saving.value || loading.value || iconUploading.value) return
-  if (!form.titleEn.trim() || !form.titleZh.trim()) {
+  if (!form.titleZh.trim()) {
     ElMessage.warning(t('admin.bothTitlesRequired'))
     return
   }
@@ -156,14 +156,7 @@ onMounted(load)
         <div class="cms-editor-main">
           <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
             <el-tabs v-model="editingLocale" class="bilingual-tabs">
-              <el-tab-pane :label="$t('admin.english')" name="en">
-                <el-form-item :label="$t('admin.industryNameEnglish')" required>
-                  <el-input v-model="form.titleEn" maxlength="255" show-word-limit />
-                </el-form-item>
-                <el-form-item :label="$t('admin.industrySubtitleEnglish')">
-                  <el-input v-model="form.subtitleEn" type="textarea" :rows="4" maxlength="1000" show-word-limit />
-                </el-form-item>
-              </el-tab-pane>
+
               <el-tab-pane :label="$t('admin.chinese')" name="zh">
                 <el-form-item :label="$t('admin.industryNameChinese')" required>
                   <el-input v-model="form.titleZh" maxlength="255" show-word-limit />

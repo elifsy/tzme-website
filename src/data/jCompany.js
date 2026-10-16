@@ -18,26 +18,3 @@ export const jCompany = {
   "valuesZh": "客户至上、爱岗敬业、精益求精、诚信团结、反省担当、主动创新。",
   "valuesEn": "Customer orientation, dedication, continuous improvement, integrity and unity, responsibility and innovation."
 }
-export const jFacilities = [
-  {
-    "titleZh": "格林兰制造基地",
-    "titleEn": "Greenland manufacturing base",
-    "image": "/assets/tzme-j/factories/greenland-aerial.jpg",
-    "descriptionZh": "临港制造与总装基地，衔接大型设备整机发运。",
-    "descriptionEn": "Coastal manufacturing and assembly for large equipment delivery."
-  },
-  {
-    "titleZh": "振汉工厂",
-    "titleEn": "Zhenhan factory",
-    "image": "/assets/tzme-j/factories/zhenhan-aerial.jpg",
-    "descriptionZh": "结构制造、装配与工程装备生产现场。",
-    "descriptionEn": "Structural fabrication, assembly and equipment manufacturing."
-  },
-  {
-    "titleZh": "天津总部",
-    "titleEn": "Tianjin headquarters",
-    "image": "/assets/tzme-j/factories/headquarters.jpg",
-    "descriptionZh": "工程项目执行与客户协作的中心。",
-    "descriptionEn": "Project execution and customer collaboration."
-  }
-]

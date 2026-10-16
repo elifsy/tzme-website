@@ -7,7 +7,7 @@ import AdminEditorPanel from './AdminEditorPanel.vue'
 import ImageUpload from './ImageUpload.vue'
 import CapabilityIcon from './CapabilityIcon.vue'
 import HomeCapabilitiesSection from './HomeCapabilitiesSection.vue'
-import { availableLocales } from '../i18n/locales/index.js'
+import { editorLocales as availableLocales } from '../i18n/locales/index.js'
 import { capabilitiesDraft, capabilityIconNames, capabilityText, MAX_CAPABILITY_STEPS, validCapabilityBackground, validCapabilityImage } from '../data/capabilities.js'
 import { loadCapabilities, saveCapabilities } from '../services/capabilities.js'
 import '../style/admin-editor.css'
@@ -18,7 +18,7 @@ const original = ref('')
 const loading = ref(false)
 const saving = ref(false)
 const error = ref(false)
-const editingLocale = ref(locale.value)
+const editingLocale = ref('zh')
 const expandedStep = ref('')
 const uploadIds = ref(new Set())
 const uploading = computed(() => uploadIds.value.size > 0)
@@ -116,7 +116,7 @@ defineExpose({ load })
       <div class="capabilities-editor-layout">
         <div class="capabilities-editor-main">
           <AdminEditorPanel step="01" :title="$t('capabilitiesAdmin.textSettings')" :description="$t('capabilitiesAdmin.textHint')">
-            <el-radio-group v-model="editingLocale" class="capabilities-language"><el-radio-button v-for="language in availableLocales" :key="language.code" :value="language.code">{{ language.label }}</el-radio-button></el-radio-group>
+
             <el-form-item v-for="field in textFields" :key="field.key" :label="$t('capabilitiesAdmin.fields.' + field.key)" :required="!field.optional">
               <el-input v-model="form[field.key][editingLocale]" :type="field.key === 'description' ? 'textarea' : 'text'" :rows="3" :maxlength="field.max" show-word-limit />
             </el-form-item>

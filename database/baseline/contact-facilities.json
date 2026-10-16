@@ -1,0 +1,22 @@
+{
+  "headquarters": {
+    "title": { "zh": "天津总部" },
+    "description": { "zh": "工程项目执行与客户协作的中心。" },
+    "image": "/assets/tzme-j/factories/headquarters.jpg",
+    "imageAlt": { "zh": "天津总部办公楼" }
+  },
+  "subsidiaries": {
+    "zhenhan": {
+      "title": { "zh": "振汉工厂" },
+      "description": { "zh": "结构制造、装配与工程装备生产现场。" },
+      "image": "/assets/tzme-j/factories/zhenhan-aerial.jpg",
+      "imageAlt": { "zh": "振汉工厂厂区航拍" }
+    },
+    "greenland": {
+      "title": { "zh": "格林兰制造基地" },
+      "description": { "zh": "临港制造与总装基地，衔接大型设备整机发运。" },
+      "image": "/assets/tzme-j/factories/greenland-aerial.jpg",
+      "imageAlt": { "zh": "格林兰制造基地航拍" }
+    }
+  }
+}

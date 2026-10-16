@@ -22,11 +22,11 @@ const loading = ref(false)
 const saving = ref(false)
 const busyId = ref('')
 const dialogOpen = ref(false)
-const editingLocale = ref('en')
+const editingLocale = ref('zh')
 const bodyUploading = ref(false)
 const coverUploading = ref(false)
 const editorFullscreen = ref(false)
-const languages = [{ code: 'en', suffix: 'En', label: 'admin.english' }, { code: 'zh', suffix: 'Zh', label: 'admin.chinese' }]
+const languages = [{ code: 'zh', suffix: 'Zh', label: 'admin.chinese' }]
 const metricNames = ['capacity', 'technology', 'scope']
 const form = reactive(normalizeProject({}))
 const publishedCount = computed(() => projects.value.filter((item) => item.status === 'published').length)
@@ -41,7 +41,7 @@ async function load() {
 }
 function openEditor(item = null) {
   coverUploading.value = false
-  editingLocale.value = locale.value === 'zh' ? 'zh' : 'en'
+  editingLocale.value = 'zh'
   bodyUploading.value = false
   editorFullscreen.value = false
   Object.assign(form, normalizeProject(item || {
@@ -69,7 +69,7 @@ async function persist(record, update) {
 }
 async function save() {
   if (saving.value || bodyUploading.value || coverUploading.value) return
-  if (!form.titleEn.trim() || !form.titleZh.trim()) {
+  if (!form.titleZh.trim()) {
     ElMessage.warning(t('admin.bothTitlesRequired'))
     return
   }
@@ -78,7 +78,7 @@ async function save() {
     const record = {
       ...normalizeProject(form), id: form.id || `project-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`}`,
       titleEn: form.titleEn.trim(), titleZh: form.titleZh.trim(),
-      contentEn: sanitizeRichText(form.contentEn), contentZh: sanitizeRichText(form.contentZh),
+      contentEn: form.contentEn, contentZh: sanitizeRichText(form.contentZh),
     }
     if (await persist(record, Boolean(form.id))) dialogOpen.value = false
   } finally { saving.value = false }

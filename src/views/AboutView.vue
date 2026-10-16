@@ -17,7 +17,7 @@ import { globalReachText } from '../data/globalReach.js'
 import { trackEvent } from '../services/analytics.js'
 import ManufacturingFilm from '../components/ManufacturingFilm.vue'
 import { isPdf } from '../data/jDesign.js'
-import { jCompany, jFacilities } from '../data/jCompany.js'
+import { jCompany } from '../data/jCompany.js'
 const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
@@ -156,9 +156,8 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
             </div>
             <router-link class="j-link" to="/contact">{{ $t('site.bookAFactoryVisit') }}<i>→</i></router-link>
           </div>
-          <div class="j-facility-grid"><article v-for="facility in jFacilities" :key="facility.image"><el-image :src="facility.image" :alt="locale === 'zh' ? facility.titleZh : facility.titleEn" :preview-src-list="[facility.image]" fit="cover" preview-teleported hide-on-click-modal/><h3>{{ locale === 'zh' ? facility.titleZh : facility.titleEn }}</h3><p class="hc-p">{{ locale === 'zh' ? facility.descriptionZh : facility.descriptionEn }}</p></article></div>
+          <SubsidiaryCards v-if="contactSettings" include-headquarters about-only show-media />
           <div class="j-about-film"><ManufacturingFilm /></div>
-          <SubsidiaryCards v-if="contactSettings" include-headquarters about-only />
         </div>
       </section>
 

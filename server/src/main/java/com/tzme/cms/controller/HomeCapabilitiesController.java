@@ -77,11 +77,11 @@ public class HomeCapabilitiesController {
     }
 
     private static void translated(JsonNode value, int max, boolean required, boolean multiline) {
-        if (!value.isObject() || value.size() > 30 || !value.path("en").isTextual() || !value.path("zh").isTextual()) invalid("Complete English and Chinese text");
+        if (!value.isObject() || value.size() > 30 || !value.path("zh").isTextual() || (value.has("en") && !value.path("en").isTextual())) invalid("Complete Chinese text");
         value.fields().forEachRemaining(entry -> {
             if (!entry.getKey().matches("[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*") || !entry.getValue().isTextual()) invalid("Invalid translated text");
             String text = entry.getValue().asText().trim();
-            if (text.length() > max || (!multiline && (text.contains("\n") || text.contains("\r"))) || (required && Set.of("en", "zh").contains(entry.getKey()) && text.isBlank())) invalid("Invalid or missing translated text");
+            if (text.length() > max || (!multiline && (text.contains("\n") || text.contains("\r"))) || (required && entry.getKey().equals("zh") && text.isBlank())) invalid("Invalid or missing translated text");
             ((ObjectNode) value).put(entry.getKey(), text);
         });
     }

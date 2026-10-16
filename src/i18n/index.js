@@ -1,8 +1,8 @@
 import { createI18n } from 'vue-i18n'
-import { availableLocales, defaultLocale, localeMessages } from './locales/index.js'
+import { availableLocales, defaultLocale, englishSiteUrl, localeMessages } from './locales/index.js'
 
-const storedLocale = localStorage.getItem('tzme-locale')
-const initialLocale = Object.hasOwn(localeMessages, storedLocale) ? storedLocale : defaultLocale
+const initialLocale = defaultLocale
+try { localStorage.setItem('tzme-locale', defaultLocale) } catch { /* Browsing remains available without storage. */ }
 
 export const i18n = createI18n({
   legacy: false,
@@ -15,9 +15,10 @@ export const i18n = createI18n({
 document.documentElement.lang = availableLocales.find(({ code }) => code === initialLocale).htmlLang
 
 export function setLocale(value) {
-  if (!Object.hasOwn(localeMessages, value)) return
-  const next = value
+  if (value === 'en') { window.location.assign(englishSiteUrl); return }
+  if (value !== defaultLocale) return
+  const next = defaultLocale
   i18n.global.locale.value = next
-  localStorage.setItem('tzme-locale', next)
+  try { localStorage.setItem('tzme-locale', next) } catch { /* Storage is optional. */ }
   document.documentElement.lang = availableLocales.find(({ code }) => code === next).htmlLang
 }

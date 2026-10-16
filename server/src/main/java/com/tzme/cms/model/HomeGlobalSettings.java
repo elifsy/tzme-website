@@ -25,8 +25,10 @@ public record HomeGlobalSettings(
         @NotBlank @Size(max = 500) String buttonLink) {
 
     public record Text(
-            @NotNull @Size(max = 1000) String en,
-            @NotNull @Size(max = 1000) String zh) {}
+            @Size(max = 1000) String en,
+            @NotNull @Size(max = 1000) String zh) {
+        public Text { en = en == null ? "" : en; }
+    }
 
     public record Statistic(
             @NotBlank @Size(max = 24) String value,

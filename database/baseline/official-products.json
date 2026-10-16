@@ -1,0 +1,1031 @@
+{
+  "source": "https://www.tzmeglobal.com/products",
+  "collectedAt": "2026-10-15T07:16:57.760Z",
+  "sourceCategories": [
+    {
+      "path": "/Mining-Equipment",
+      "title": "Mining Equipment"
+    },
+    {
+      "path": "/Port-Equipment",
+      "title": "Port Equipment"
+    },
+    {
+      "path": "/Amusement-Equipment",
+      "title": "Amusement Equipment"
+    },
+    {
+      "path": "/Lift-and-transport-equipment",
+      "title": "Lift and transport equipment"
+    },
+    {
+      "path": "/Bridge-building-equipment",
+      "title": "Bridge building equipment"
+    },
+    {
+      "path": "/Energy-and-environmental-protection-Equipment",
+      "title": "Energy and environmental protection Equipment"
+    },
+    {
+      "path": "/energy-infrastructure",
+      "title": "Energy infrastructure"
+    },
+    {
+      "path": "/environmental-protection-equipment",
+      "title": "Environmental protection equipment"
+    },
+    {
+      "path": "/Other-steel-structures",
+      "title": "Other steel structures"
+    },
+    {
+      "path": "/metallurgical-equipment",
+      "title": "Metallurgical equipment"
+    },
+    {
+      "path": "/steel-structure-building",
+      "title": "Steel Structure Building"
+    },
+    {
+      "path": "/other-steel-structures-hopper",
+      "title": "Hopper"
+    },
+    {
+      "path": "/testing-equipment",
+      "title": "Testing equipment"
+    }
+  ],
+  "notes": [
+    "Chinese descriptions are editorial translations and summaries of the linked official pages; no unpublished numerical specifications have been added.",
+    "Application filters are a project taxonomy based on source descriptions, not a claim that the official category tree has ten top-level categories.",
+    "Existing conveying already represents the official Conveyors entry. It is linked without overwriting its CMS content or image.",
+    "General ship-unloading equipment and offshore pipeline modules remain distinct from the existing grab unloader and urban utility pipe rack.",
+    "The Ausmelt furnace page repeats a company biography rather than product details. Only its confirmed name, image and metallurgical category are used; specifications and features remain empty.",
+    "Rotary screen, wagon tippler and feeder were discovered through previous/next product links; mining application was assigned from their descriptions. Hopper/testing leaf pages were empty, but products exist in Other steel structures."
+  ],
+  "industries": [
+    {
+      "id": "amusement",
+      "titleEn": "Amusement",
+      "titleZh": "游乐观光",
+      "subtitleEn": "Amusement & sightseeing facilities",
+      "subtitleZh": "游乐设备与观光设施",
+      "icon": "/assets/industry-icons/amusement.svg",
+      "sortOrder": 60,
+      "status": "published"
+    },
+    {
+      "id": "lifting-transport",
+      "titleEn": "Lifting & conveying",
+      "titleZh": "起重输送",
+      "subtitleEn": "Lifting, conveying & logistics",
+      "subtitleZh": "起重、输送与物流搬运",
+      "icon": "/assets/industry-icons/lifting-transport.svg",
+      "sortOrder": 70,
+      "status": "published"
+    },
+    {
+      "id": "environmental",
+      "titleEn": "Environmental engineering",
+      "titleZh": "环保工程",
+      "subtitleEn": "Water treatment & industrial dust removal",
+      "subtitleZh": "水处理与工业除尘",
+      "icon": "/assets/industry-icons/environmental.svg",
+      "sortOrder": 80,
+      "status": "published"
+    },
+    {
+      "id": "steel-structures",
+      "titleEn": "Steel structures",
+      "titleZh": "钢结构工程",
+      "subtitleEn": "Structural steel buildings & modules",
+      "subtitleZh": "钢结构建筑与模块化工程",
+      "icon": "/assets/industry-icons/steel-structures.svg",
+      "sortOrder": 90,
+      "status": "published"
+    },
+    {
+      "id": "testing",
+      "titleEn": "Quality testing",
+      "titleZh": "质量检测",
+      "subtitleEn": "Paper quality testing equipment",
+      "subtitleZh": "纸张质量检测设备",
+      "icon": "/assets/industry-icons/testing.svg",
+      "sortOrder": 100,
+      "status": "published"
+    }
+  ],
+  "products": [
+    {
+      "id": "spreader",
+      "titleEn": "Spreaders",
+      "titleZh": "排土机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "A spreader machine is part of a complete set of equipment for continuous open-pit coal mining. It is used in conjunction with a wire rope drag conveyor and is suitable for disposing of and stacking loose materials at open-pit mine spoil heaps and stockyards. The tail unit, as part of the spreader, comes in two types: rail-mounted and chain-track, and is used to transfer material from the conveyor to the spreader.",
+      "summaryZh": "用于露天矿排土场和料场的散料排放与堆存，可与连续输送设备配套，按工况配置轨道式或履带式尾车。",
+      "contentEn": "A spreader machine is part of a complete set of equipment for continuous open-pit coal mining. It is used in conjunction with a wire rope drag conveyor and is suitable for disposing of and stacking loose materials at open-pit mine spoil heaps and stockyards. The tail unit, as part of the spreader, comes in two types: rail-mounted and chain-track, and is used to transfer material from the conveyor to the spreader.",
+      "contentZh": "用于露天矿排土场和料场的散料排放与堆存，可与连续输送设备配套，按工况配置轨道式或履带式尾车。",
+      "featuresEn": "High-efficiency discharge capability: Materials can be quickly discharged to the designated location, improving operational efficiency.\nMultiple tail car designs: Offers both rail-mounted and crawler-type tail cars to suit different working conditions.\nAutomated control: Equipped with an advanced automation system for remote monitoring and fault diagnosis.\nHigh durability: Manufactured with high-strength materials to withstand harsh working conditions.",
+      "featuresZh": "散料连续排放与堆存\n轨道式或履带式尾车，适配不同现场条件\n远程监控与故障诊断\n高强度结构，适应矿山作业环境",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/spreader.webp",
+      "industries": [
+        "mining"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/spreaders.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/e53fffdcd3e4953df83f671db9deb4f9.jpg?ct=webp",
+      "sourceCategories": [
+        "/Mining-Equipment"
+      ]
+    },
+    {
+      "id": "bucket-wheel-excavator",
+      "titleEn": "Bucket wheel excavator",
+      "titleZh": "斗轮挖掘机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "The bucket wheel excavator is composed of components such as the bucket wheel, wheel arm, counterweight arm, chassis, traveling mechanism and discharge arm. The company can customize it according to the needs of different customers to meet the construction requirements of different product performance and different working conditions.",
+      "summaryZh": "由斗轮、斗轮臂、配重臂、底盘、行走机构及排料臂等组成，可根据开采需求、设备性能与现场工况定制。",
+      "contentEn": "The bucket wheel excavator is composed of components such as the bucket wheel, wheel arm, counterweight arm, chassis, traveling mechanism and discharge arm. The company can customize it according to the needs of different customers to meet the construction requirements of different product performance and different working conditions.",
+      "contentZh": "由斗轮、斗轮臂、配重臂、底盘、行走机构及排料臂等组成，可根据开采需求、设备性能与现场工况定制。",
+      "featuresEn": "High-efficiency excavation capability: The high-speed rotation and large-capacity design of the bucket wheel enable highly efficient material excavation and loading.\nCustomized design: Bucket wheel excavators of different sizes and performance levels can be customized according to the working conditions and needs of different customers, meeting diverse construction requirements.\nIntelligent control: Equipped with an advanced automatic control system, it enables remote monitoring and fault diagnosis, improving equipment operating efficiency and safety.\nEnvironmentally friendly and energy-saving: Utilizing advanced energy-saving technologies, it reduces energy consumption and dust emissions, complying with environmental protection requirements.",
+      "featuresZh": "斗轮连续挖掘与装载\n按作业条件定制结构尺寸与性能\n自动控制、远程监控与故障诊断\n节能与抑尘设计",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/bucket-wheel-excavator.webp",
+      "industries": [
+        "mining"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/bucket-wheel-exavator.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/01090122e7ae71351944a705b116989c.jpg?ct=webp",
+      "sourceCategories": [
+        "/Mining-Equipment"
+      ]
+    },
+    {
+      "id": "stacker-reclaimer",
+      "titleEn": "Stacker and Reclaimer",
+      "titleZh": "堆取料机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "A stacker-reclaimer is a combination of a stacker and a reclaimer, equipped with a bucket wheel arm.",
+      "summaryZh": "将堆料与取料功能集成于一体，配置斗轮臂，面向散料料场的连续堆存与回取作业。",
+      "contentEn": "A stacker-reclaimer is a combination of a stacker and a reclaimer, equipped with a bucket wheel arm.",
+      "contentZh": "将堆料与取料功能集成于一体，配置斗轮臂，面向散料料场的连续堆存与回取作业。",
+      "featuresEn": "Multifunctional integration: Combines stacking and reclaiming functions, reducing equipment investment and footprint.\nHigh-precision positioning: Equipped with an advanced positioning system for precise stacking and reclaiming operations, improving operational efficiency.\nAutomated operation: Supports remote control and automated operation, reducing labor costs and improving operational safety.\nHigh durability: Manufactured with high-strength materials, suitable for harsh working conditions and offering a long service life.",
+      "featuresZh": "堆料、取料一体化，优化设备占地\n定位系统辅助堆取料作业\n支持远程控制与自动化运行\n高强度结构，适应连续作业",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/stacker-reclaimer.webp",
+      "industries": [
+        "mining"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/stacker-and-reclaimer.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/ce6a7b36e2aa8e5213f42b1a0ef45e4b.jpg?ct=webp",
+      "sourceCategories": [
+        "/Mining-Equipment"
+      ]
+    },
+    {
+      "id": "crushing-station",
+      "titleEn": "Crushing station",
+      "titleZh": "破碎站",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "Mainly used to crush large chunks of ore into smaller pieces for easier subsequent processing or transportation.",
+      "summaryZh": "将大块矿石破碎至后续处理或运输所需粒度，可结合物料硬度及粒径调整破碎参数。",
+      "contentEn": "Mainly used to crush large chunks of ore into smaller pieces for easier subsequent processing or transportation.",
+      "contentZh": "将大块矿石破碎至后续处理或运输所需粒度，可结合物料硬度及粒径调整破碎参数。",
+      "featuresEn": "High-efficiency crushing capability: Utilizing advanced crushing technology, it can quickly crush large materials into the desired particle size.\nIntelligent control: Equipped with an intelligent control system, it can automatically adjust crushing parameters based on material hardness and particle size.\nEnvironmentally friendly design: Equipped with dust reduction and noise reduction devices, it reduces dust and noise pollution, meeting environmental protection requirements.\nConvenient maintenance: Modular design facilitates maintenance and component replacement, reducing downtime.",
+      "featuresZh": "大块物料破碎与粒度控制\n按物料硬度及粒径调整运行参数\n抑尘与降噪设计\n模块化设计，便于维护与部件更换",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/crushing-station.webp",
+      "industries": [
+        "mining"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/crushing-station.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/d97f4b58f25335d98685b4195f687b64.jpg?ct=webp",
+      "sourceCategories": [
+        "/Mining-Equipment"
+      ]
+    },
+    {
+      "id": "flotation-machine",
+      "titleEn": "Flotation Machine",
+      "titleZh": "浮选机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "Used in the ore dressing stage to separate minerals of different densities. It uses the principle of froth flotation to separate target minerals from the raw ore and is an important piece of equipment in the mineral processing process.",
+      "summaryZh": "应用于矿石选矿流程，利用泡沫浮选实现目标矿物分选，并根据不同矿石特性调整运行条件。",
+      "contentEn": "Used in the ore dressing stage to separate minerals of different densities. It uses the principle of froth flotation to separate target minerals from the raw ore and is an important piece of equipment in the mineral processing process.",
+      "contentZh": "应用于矿石选矿流程，利用泡沫浮选实现目标矿物分选，并根据不同矿石特性调整运行条件。",
+      "featuresEn": "High separation efficiency: Improved mineral separation efficiency through optimized bubble generation and mineral attachment processes.\nAutomated control: Equipped with an advanced automation system for real-time monitoring of the flotation process, ensuring stable product quality.\nEnergy saving and consumption reduction: Utilizes high-efficiency motors and optimized bubble generators to reduce energy consumption.\nStrong adaptability: Can be adjusted according to the characteristics of different minerals, adapting to various ore types.",
+      "featuresZh": "优化气泡生成与矿物附着过程\n实时监测浮选过程\n高效电机与气泡发生装置\n适配不同矿石的分选需求",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/flotation-machine.webp",
+      "industries": [
+        "mining"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/flotation-machine.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/7e6dee38d4be16480d62bed440d2e3b4.jpg?ct=webp",
+      "sourceCategories": [
+        "/Mining-Equipment"
+      ]
+    },
+    {
+      "id": "thickener",
+      "titleEn": "Thickener",
+      "titleZh": "浓密机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "It is mainly used to treat the tailings from ore processing plants, recovering valuable components from the tailings through chemical flocculation.",
+      "summaryZh": "用于选矿厂尾矿处理，通过絮凝促进固体颗粒回收，并结合自动化控制优化尾矿处理过程。",
+      "contentEn": "It is mainly used to treat the tailings from ore processing plants, recovering valuable components from the tailings through chemical flocculation.",
+      "contentZh": "用于选矿厂尾矿处理，通过絮凝促进固体颗粒回收，并结合自动化控制优化尾矿处理过程。",
+      "featuresEn": "High-efficiency flocculation effect: Utilizes advanced flocculation technology to improve the recovery rate of solid particles in tailings.\nAutomated operation: Equipped with an automated control system, enabling unattended operation and reducing labor costs.\nEnvironmentally friendly and energy-saving: Reduces tailings discharge, minimizing environmental impact, while also lowering operating costs.\nCompact structure: Small footprint, facilitating installation and maintenance.",
+      "featuresZh": "絮凝处理，提高固体颗粒回收效率\n自动化运行控制\n减少尾矿排放与运行消耗\n结构紧凑，便于安装维护",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/thickener.webp",
+      "industries": [
+        "mining"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/thickener.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/cab931cc2d52bdc3890b1b6799f1ef99.jpg?ct=webp",
+      "sourceCategories": [
+        "/Mining-Equipment"
+      ]
+    },
+    {
+      "id": "bulk-ship-loader",
+      "titleEn": "Ship loader",
+      "titleZh": "装船机",
+      "categoryEn": "Ports",
+      "categoryZh": "港口",
+      "summaryEn": "A large bulk handling machine used for loading at bulk terminals generally consists of a boom conveyor, transfer conveyor, telescopic chute, tail car, traveling device, gantry, tower, pitching device, and slewing device. It is a large port bulk loading equipment that plays an important role in major bulk material distribution centers in ports, as well as in industries such as energy, power, and metallurgy.",
+      "summaryZh": "面向散货码头装船作业，由臂架输送机、转运输送机、伸缩溜筒、尾车、行走及俯仰回转机构等组成，服务港口、能源及冶金物料转运。",
+      "contentEn": "A large bulk handling machine used for loading at bulk terminals generally consists of a boom conveyor, transfer conveyor, telescopic chute, tail car, traveling device, gantry, tower, pitching device, and slewing device. It is a large port bulk loading equipment that plays an important role in major bulk material distribution centers in ports, as well as in industries such as energy, power, and metallurgy.",
+      "contentZh": "面向散货码头装船作业，由臂架输送机、转运输送机、伸缩溜筒、尾车、行走及俯仰回转机构等组成，服务港口、能源及冶金物料转运。",
+      "featuresEn": "High-efficiency loading capacity: Enables rapid loading of bulk materials into ship holds, improving loading efficiency.\nAutomated operation: Equipped with an advanced automated control system for unmanned operation, reducing labor costs.\nEnvironmentally friendly design: Equipped with dust suppression devices to reduce dust pollution and meet environmental requirements.\nStrong adaptability: Can be adjusted to suit different ship types and dock conditions, offering high versatility.",
+      "featuresZh": "散料连续装船\n自动化装船控制\n抑尘装置，减少粉尘逸散\n根据船型与泊位条件调整配置",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/bulk-ship-loader.webp",
+      "industries": [
+        "ports",
+        "energy",
+        "metallurgy"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/ship-loader.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/cdf5fdf65bf8023f0ff77eb74f8a1fc0.jpg?ct=webp",
+      "sourceCategories": [
+        "/Port-Equipment"
+      ]
+    },
+    {
+      "id": "ship-unloader",
+      "titleEn": "Ship unloader",
+      "titleZh": "卸船机",
+      "categoryEn": "Ports",
+      "categoryZh": "港口",
+      "summaryEn": "Large machinery used for unloading bulk cargo at ports, widely applied to the unloading of coal, ore, grain, and other bulk materials. It achieves efficient and fast ship unloading operations through grabs, conveyor belts, or pneumatic conveying systems, significantly improving port operational efficiency.",
+      "summaryZh": "用于港口煤炭、矿石、粮食等散货卸船，可按物料和作业需求采用抓斗、带式输送或气力输送方案。",
+      "contentEn": "Large machinery used for unloading bulk cargo at ports, widely applied to the unloading of coal, ore, grain, and other bulk materials. It achieves efficient and fast ship unloading operations through grabs, conveyor belts, or pneumatic conveying systems, significantly improving port operational efficiency.",
+      "contentZh": "用于港口煤炭、矿石、粮食等散货卸船，可按物料和作业需求采用抓斗、带式输送或气力输送方案。",
+      "featuresEn": "High-Efficiency Unloading Capacity: Utilizing large-capacity grabs or high-efficiency conveying systems, it can unload large quantities of bulk materials in a short time, significantly improving operational efficiency.\nAutomated Operation: Equipped with an advanced automated control system, supporting remote monitoring and unmanned operation, reducing labor costs and improving operational safety.\nHigh-Precision Positioning: Using an advanced positioning system, it ensures that the grab or conveying equipment is precisely aligned with the ship's hold, reducing operating time and energy consumption.\nEnvironmentally Friendly Design: Equipped with dust suppression devices and sealing systems to reduce dust leakage, meeting port environmental protection requirements.\nStrong Adaptability: Adjustable to different ship types and bulk material types, offering strong versatility and a wide range of applications.\nSafe and Reliable: Equipped with multiple safety protection devices, such as anti-collision systems and overload protection devices, ensuring safe equipment operation.",
+      "featuresZh": "大容量抓斗或连续输送卸料\n远程监控与自动化运行\n定位系统辅助对准船舱\n抑尘与密封设计\n适配不同船型与散货类型\n防碰撞与过载保护",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/ship-unloader.webp",
+      "industries": [
+        "ports"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/ship-unloader.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/51d92ab730d1a5d603e3fcf0c3674ed8.jpg?ct=webp",
+      "sourceCategories": [
+        "/Port-Equipment"
+      ]
+    },
+    {
+      "id": "ropeway",
+      "titleEn": "Ropeway",
+      "titleZh": "索道",
+      "categoryEn": "Amusement equipment",
+      "categoryZh": "游乐观光设备",
+      "summaryEn": "TZME has extensive experience in cableway project development, having been responsible for the cableway system structures of 80% of the famous scenic spots in China. It has also managed cableway projects in Chile and Japan, earning a good reputation.",
+      "summaryZh": "面向景区观光及城市交通的索道系统结构，结合项目地形与运营需求定制，拥有国内及智利、日本等海外索道项目经验。",
+      "contentEn": "TZME has extensive experience in cableway project development, having been responsible for the cableway system structures of 80% of the famous scenic spots in China. It has also managed cableway projects in Chile and Japan, earning a good reputation.",
+      "contentZh": "面向景区观光及城市交通的索道系统结构，结合项目地形与运营需求定制，拥有国内及智利、日本等海外索道项目经验。",
+      "featuresEn": "High Security: Equipped with advanced safety protection devices to ensure passenger safety.\nComfort: The gondola cabins are spacious and comfortable, providing an excellent sightseeing experience.\nEnvironmentally Friendly and Energy-Saving: Utilizes high-efficiency motors and energy-saving technologies to reduce energy consumption.\nCustomizable Design: Can be customized according to the needs of scenic areas or urban transportation, meeting diverse requirements.",
+      "featuresZh": "配套安全防护装置\n舒适观光轿厢\n高效驱动与节能设计\n结合景区或城市交通需求定制",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/ropeway.webp",
+      "industries": [
+        "amusement"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/ropeway.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/4d241cf0d93fd37bd3262b8cc29da93b.jpg?ct=webp",
+      "sourceCategories": [
+        "/Amusement-Equipment"
+      ]
+    },
+    {
+      "id": "roller-coaster",
+      "titleEn": "Roller coaster",
+      "titleZh": "过山车",
+      "categoryEn": "Amusement equipment",
+      "categoryZh": "游乐观光设备",
+      "summaryEn": "TZME has extensive experience in roller coaster manufacturing and has collaborated with several internationally renowned amusement parks, such as Shanghai Disneyland. All delivered roller coaster projects meet strict international standards and quality systems.",
+      "summaryZh": "面向主题乐园的过山车制造，可结合场地与游乐体验设计轨道结构，并开展制造质量检测。",
+      "contentEn": "TZME has extensive experience in roller coaster manufacturing and has collaborated with several internationally renowned amusement parks, such as Shanghai Disneyland. All delivered roller coaster projects meet strict international standards and quality systems.",
+      "contentZh": "面向主题乐园的过山车制造，可结合场地与游乐体验设计轨道结构，并开展制造质量检测。",
+      "featuresEn": "High Security: Equipped with multiple safety protection devices to ensure passenger safety.\nThrilling Experience: Optimized track design provides exciting experiences including high speed, rotations, and inversions.\nCustomizable Design: Can be customized according to customer needs to meet the requirements of different theme parks.\nReliable Quality: Complies with international standards, and product quality undergoes rigorous testing.",
+      "featuresZh": "多重安全防护设计\n轨道设计适配速度、回转与翻转体验\n根据主题乐园需求定制\n制造质量检验与测试",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/roller-coaster.webp",
+      "industries": [
+        "amusement"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/rollar-coaster.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/ef68a1df473dc4bfe66d18d0a837162c.jpg?ct=webp",
+      "sourceCategories": [
+        "/Amusement-Equipment"
+      ]
+    },
+    {
+      "id": "ferris-wheel",
+      "titleEn": "Ferris wheel",
+      "titleZh": "摩天轮",
+      "categoryEn": "Amusement equipment",
+      "categoryZh": "游乐观光设备",
+      "summaryEn": "The Ferris wheels manufactured by TZME have a high level of load capacity, with product quality as the top priority. They have previously been responsible for the cabins of the Las Vegas Ferris wheel in the United States and the Dubai Eye Ferris wheel.",
+      "summaryZh": "提供摩天轮及观光轿厢相关制造，结合景区客流、观光体验与运行要求开展定制设计。",
+      "contentEn": "The Ferris wheels manufactured by TZME have a high level of load capacity, with product quality as the top priority. They have previously been responsible for the cabins of the Las Vegas Ferris wheel in the United States and the Dubai Eye Ferris wheel.",
+      "contentZh": "提供摩天轮及观光轿厢相关制造，结合景区客流、观光体验与运行要求开展定制设计。",
+      "featuresEn": "High load capacity: Can accommodate a large number of passengers simultaneously, meeting the needs of large scenic areas.\nIntelligent control: Equipped with an advanced automatic control system for smooth operation and precise stopping.\nSafe and reliable: Undergoes rigorous quality testing and safety certification to ensure passenger safety.\nCustomized design: Can be customized according to the needs of the scenic area to enhance the visitor experience.",
+      "featuresZh": "承载设计适配景区运营需求\n自动控制，支持平稳运行与精准停靠\n质量检测与安全检验\n根据景区需求定制结构与轿厢",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/ferris-wheel.webp",
+      "industries": [
+        "amusement"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/ferris-wheel.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/b59be81694b2bc8a29bfdf4e49c1b939.jpg?ct=webp",
+      "sourceCategories": [
+        "/Amusement-Equipment"
+      ]
+    },
+    {
+      "id": "crane",
+      "titleEn": "Crane",
+      "titleZh": "起重机",
+      "categoryEn": "Lifting & conveying equipment",
+      "categoryZh": "起重与输送设备",
+      "summaryEn": "The company holds the \"Special Equipment Manufacturing License of the People's Republic of China\" issued by the General Administration of Quality Supervision, Inspection and Quarantine of the People's Republic of China, and is authorized to manufacture Class A/B overhead cranes, various types of gantry cranes, and hoist cranes.",
+      "summaryZh": "涵盖桥式起重机、门式起重机及葫芦起重机，可根据工业现场的载荷、作业空间和使用需求配置。",
+      "contentEn": "The company holds the \"Special Equipment Manufacturing License of the People's Republic of China\" issued by the General Administration of Quality Supervision, Inspection and Quarantine of the People's Republic of China, and is authorized to manufacture Class A/B overhead cranes, various types of gantry cranes, and hoist cranes.",
+      "contentZh": "涵盖桥式起重机、门式起重机及葫芦起重机，可根据工业现场的载荷、作业空间和使用需求配置。",
+      "featuresEn": "High lifting capacity: Capable of lifting goods weighing several tons, meeting the demands of large-scale industrial applications.\nIntelligent control: Equipped with an advanced automated control system for precise lifting and remote monitoring.\nSafe and reliable: Certified by the General Administration of Quality Supervision, Inspection and Quarantine of China, complying with special equipment safety standards.\nCustomizable design: Can be customized according to customer needs to meet different application scenarios.",
+      "featuresZh": "适配工业吊装与物料搬运\n自动控制与远程监控\n安全防护设计\n根据应用场景定制配置",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/crane.webp",
+      "industries": [
+        "lifting-transport"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/crane.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/3201f001c857faafb7bd5453e31a66ed.jpg?ct=webp",
+      "sourceCategories": [
+        "/Lift-and-transport-equipment"
+      ]
+    },
+    {
+      "id": "agv",
+      "titleEn": "AGV",
+      "titleZh": "AGV 自动导引运输车",
+      "categoryEn": "Lifting & conveying equipment",
+      "categoryZh": "起重与输送设备",
+      "summaryEn": "Automated handling equipment for logistics and warehousing is widely used in factories, warehouses, and logistics centers. Its core components, through advanced navigation systems and drive devices, enable efficient handling and transportation of materials.",
+      "summaryZh": "面向工厂、仓库及物流中心的自动化搬运设备，通过导航系统与驱动装置完成物料转运。",
+      "contentEn": "Automated handling equipment for logistics and warehousing is widely used in factories, warehouses, and logistics centers. Its core components, through advanced navigation systems and drive devices, enable efficient handling and transportation of materials.",
+      "contentZh": "面向工厂、仓库及物流中心的自动化搬运设备，通过导航系统与驱动装置完成物料转运。",
+      "featuresEn": "High-efficiency handling capacity: Can quickly complete material handling tasks and improve logistics efficiency.\nIntelligent control: Equipped with advanced navigation and automated control systems for precise handling.\nSafe and reliable: Equipped with anti-collision devices and emergency braking systems to ensure transportation safety.\nHigh flexibility: The driving path can be adjusted according to needs, adapting to different scenarios.",
+      "featuresZh": "自动化物料搬运\n导航与自动控制系统\n防碰撞装置与紧急制动\n可根据现场需求调整行驶路径",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/agv.webp",
+      "industries": [
+        "lifting-transport"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/agv.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/3730bf9dfbb3a4e115d270deff61dfc4.jpg?ct=webp",
+      "sourceCategories": [
+        "/Lift-and-transport-equipment"
+      ]
+    },
+    {
+      "id": "machinery-boom",
+      "titleEn": "Machinery booms",
+      "titleZh": "工程机械臂架",
+      "categoryEn": "Lifting & conveying equipment",
+      "categoryZh": "起重与输送设备",
+      "summaryEn": "The beam is a key component of construction machinery (such as cranes and excavators), used for material grabbing, handling, and lifting. The high-performance booms produced by the company are made of high-strength alloy materials and combine advanced welding technology and structural design to ensure stability and durability under complex working conditions. The products are widely used in heavy machinery fields such as construction, mining, and ports.",
+      "summaryZh": "用于起重机、挖掘机等工程机械的抓取、搬运和吊装，结合高强度合金材料、焊接工艺与结构设计适应复杂工况。",
+      "contentEn": "The beam is a key component of construction machinery (such as cranes and excavators), used for material grabbing, handling, and lifting. The high-performance booms produced by the company are made of high-strength alloy materials and combine advanced welding technology and structural design to ensure stability and durability under complex working conditions. The products are widely used in heavy machinery fields such as construction, mining, and ports.",
+      "contentZh": "用于起重机、挖掘机等工程机械的抓取、搬运和吊装，结合高强度合金材料、焊接工艺与结构设计适应复杂工况。",
+      "featuresEn": "High-strength design: Made with high-strength alloy materials to ensure the stability of the boom under heavy-load operation.\nOptimized structure: The structural design is optimized through finite element analysis, reducing self-weight and improving operational efficiency.\nHigh durability: Undergoes rigorous quality testing, exhibiting excellent wear resistance and fatigue resistance.\nCustomizable options: Can be customized according to different equipment requirements to meet various application scenarios.",
+      "featuresZh": "高强度合金结构，适应重载作业\n有限元分析优化结构与自重\n关注耐磨及疲劳性能\n根据整机需求定制",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/machinery-boom.webp",
+      "industries": [
+        "lifting-transport",
+        "construction",
+        "mining",
+        "ports"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/beams.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/759005b5dd600d8fd0162aa3c798f930.jpg?ct=webp",
+      "sourceCategories": [
+        "/Lift-and-transport-equipment"
+      ]
+    },
+    {
+      "id": "bridge-fabrication-machine",
+      "titleEn": "Bridge fabrication machine",
+      "titleZh": "造桥机",
+      "categoryEn": "Bridges",
+      "categoryZh": "桥梁",
+      "summaryEn": "Bridge fabrication machines are large-scale machinery used in bridge construction, widely applied in bridges for highways, railways, and municipal engineering projects. The bridge-building machines manufactured by TZME mainly serve internationally renowned general contractors and leading companies in the bridge construction industry, such as Italy's DEAL Company, Norway's NRS Company, and Norway's NS Company.",
+      "summaryZh": "用于公路、铁路与市政桥梁建设的专用大型机械，支持预制梁段吊装、安装与施工定位。",
+      "contentEn": "Bridge fabrication machines are large-scale machinery used in bridge construction, widely applied in bridges for highways, railways, and municipal engineering projects. The bridge-building machines manufactured by TZME mainly serve internationally renowned general contractors and leading companies in the bridge construction industry, such as Italy's DEAL Company, Norway's NRS Company, and Norway's NS Company.",
+      "contentZh": "用于公路、铁路与市政桥梁建设的专用大型机械，支持预制梁段吊装、安装与施工定位。",
+      "featuresEn": "High-efficiency construction capabilities: Enables rapid lifting and installation of prefabricated beam segments, shortening construction cycles.\nIntelligent control: Equipped with advanced automated control systems for precise positioning and safe construction.\nMultifunctionality: Suitable for various bridge types and construction scenarios, offering strong versatility.\nSafe and reliable: Ensures construction safety through rigorous quality testing and safety certifications.",
+      "featuresZh": "预制梁段吊装与安装\n自动控制辅助精准定位\n适配不同桥型与施工场景\n质量检验与施工安全保护",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/bridge-fabrication-machine.webp",
+      "industries": [
+        "construction"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/bridge-fabrication-machine.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/fef09e2929e4f969e24a3aaaadd8732a.jpg?ct=webp",
+      "sourceCategories": [
+        "/Bridge-building-equipment"
+      ]
+    },
+    {
+      "id": "bridge-erection-machine",
+      "titleEn": "Bridge erection machine",
+      "titleZh": "架桥机",
+      "categoryEn": "Bridges",
+      "categoryZh": "桥梁",
+      "summaryEn": "Heavy construction machinery used for bridge construction and maintenance is widely used in the hoisting of suspension cables, span construction, and lifting of large components for large bridges. It achieves rapid bridge erection by lifting, moving, and installing prefabricated beam segments.",
+      "summaryZh": "通过吊装、移动及安装预制梁段完成桥梁架设，服务大型桥梁施工、维修及重型构件安装。",
+      "contentEn": "Heavy construction machinery used for bridge construction and maintenance is widely used in the hoisting of suspension cables, span construction, and lifting of large components for large bridges. It achieves rapid bridge erection by lifting, moving, and installing prefabricated beam segments.",
+      "contentZh": "通过吊装、移动及安装预制梁段完成桥梁架设，服务大型桥梁施工、维修及重型构件安装。",
+      "featuresEn": "High-efficiency lifting capacity: Enables rapid lifting and installation of prefabricated beam segments, improving construction efficiency.\nIntelligent control: Equipped with an advanced automated control system for precise positioning and safe construction.\nMultifunctionality: Suitable for various bridge types and construction scenarios, offering strong versatility.\nSafe and reliable: Undergoes rigorous quality testing and safety certification to ensure construction safety.",
+      "featuresZh": "预制梁段快速吊装与安装\n自动控制与精准定位\n适应不同桥梁及施工需求\n安全防护与质量检测",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/bridge-erection-machine.webp",
+      "industries": [
+        "construction"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/bridge-erection-machine.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/b4ecd630cfa04292bc1b02ef8b4e07ad.JPG?ct=webp",
+      "sourceCategories": [
+        "/Bridge-building-equipment"
+      ]
+    },
+    {
+      "id": "wind-tower-stacking-device",
+      "titleEn": "Wind tower stacking device",
+      "titleZh": "风电塔筒堆放装置",
+      "categoryEn": "Energy infrastructure",
+      "categoryZh": "能源基础设施",
+      "summaryEn": "TZME can produce a variety of transportation and maintenance equipment related to wind power, including wind tower stacking devices for offshore transportation of wind towers.",
+      "summaryZh": "用于风电塔筒海上运输的堆放装置及相关运输维护装备，配套多支点分配梁，支持塔筒安装作业。",
+      "contentEn": "TZME can produce a variety of transportation and maintenance equipment related to wind power, including wind tower stacking devices for offshore transportation of wind towers.",
+      "contentZh": "用于风电塔筒海上运输的堆放装置及相关运输维护装备，配套多支点分配梁，支持塔筒安装作业。",
+      "featuresEn": "The multi-support beam is used for wind tower installation. This distribution beam can lift three different structures, and changing the lifting equipment takes only 5 minutes.",
+      "featuresZh": "面向海上塔筒运输与堆放\n多支点分配梁辅助安装\n起吊工装适配不同结构",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/wind-tower-stacking-device.webp",
+      "industries": [
+        "energy"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/wind-tower-stacking-device.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/290aac0e616d4f44b954f05c03b7855e.jpg?ct=webp",
+      "sourceCategories": [
+        "/Energy-and-environmental-protection-Equipment",
+        "/energy-infrastructure"
+      ]
+    },
+    {
+      "id": "offshore-pipe-piles",
+      "titleEn": "Offshore Engineering Pipe Piles",
+      "titleZh": "海洋工程钢管桩",
+      "categoryEn": "Energy infrastructure",
+      "categoryZh": "能源基础设施",
+      "summaryEn": "Conquer the challenges of marine construction with our heavy-duty Offshore Engineering Pipe Piles. Specifically designed for the harsh saltwater environment, our large-diameter steel pipe piles provide the fundamental support for the world's most demanding offshore structures. From oil platforms and wind turbine foundations to deep-water ports and artificial islands, our piling solutions are engineered to withstand dynamic wave loads, seismic activity, and long-term corrosion. Manufactured to strict international standards (API, ASTM, EN), these piles deliver the structural integrity and fatigue resistance required for 25+ year service life in open water.",
+      "summaryZh": "面向海上平台、风电基础、深水港及人工岛的大直径钢管桩，结合波浪、海流、船舶冲击及腐蚀等海洋工况设计制造。",
+      "contentEn": "Conquer the challenges of marine construction with our heavy-duty Offshore Engineering Pipe Piles. Specifically designed for the harsh saltwater environment, our large-diameter steel pipe piles provide the fundamental support for the world's most demanding offshore structures. From oil platforms and wind turbine foundations to deep-water ports and artificial islands, our piling solutions are engineered to withstand dynamic wave loads, seismic activity, and long-term corrosion. Manufactured to strict international standards (API, ASTM, EN), these piles deliver the structural integrity and fatigue resistance required for 25+ year service life in open water.",
+      "contentZh": "面向海上平台、风电基础、深水港及人工岛的大直径钢管桩，结合波浪、海流、船舶冲击及腐蚀等海洋工况设计制造。",
+      "featuresEn": "Offshore Engineering Steel Pipe Piles | Marine Foundation Solutions\nOur Offshore Engineering Pipe Piles are the backbone of marine infrastructure. Fabricated from high-grade steel (API 5L, ASTM A572, EH36/Z35), these piles are engineered to penetrate deep seabeds and provide secure anchoring for fixed and floating structures in water depths up to 50m+.\nExceptional Load Capacity: Designed to handle massive axial and lateral loads from wind, waves, currents, and vessel impacts.\nSuperior Toughness: Steel grades with Charpy V-Notch impact testing guarantee performance in low-temperature marine environments.\nCorrosion Protection: Available with anti-corrosion coatings (FBE/3LPE), concrete encasement, or corrosion allowance designs to extend service life.\nPrecision Fabrication: Automated welding (LSAW/SSAW) ensures straightness, roundness, and consistent wall thickness for reliable driving.\nHeavy-Duty Connections: Engineered transition pieces and pile shoes for easy driving and integration with jacket structures or monopiles.\nEnd Options: Available with beveled ends for welding, internal/external stiffeners, or rock shoes for challenging seabed conditions.",
+      "featuresZh": "承受轴向及横向载荷\n结合海洋低温工况选择钢材韧性\n可选防腐涂层、混凝土包覆或腐蚀余量设计\n焊接制造控制直线度、圆度与壁厚\n可配置过渡段、桩靴及加强结构",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/offshore-pipe-piles.webp",
+      "industries": [
+        "energy",
+        "ports"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/offshore-engineering-pipe-piles.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260317/9b66171631d89bb92b3cd0e52014daf8.png?ct=webp",
+      "sourceCategories": [
+        "/Energy-and-environmental-protection-Equipment",
+        "/energy-infrastructure"
+      ]
+    },
+    {
+      "id": "cyclone-separator",
+      "titleEn": "Cyclone",
+      "titleZh": "旋风分离器",
+      "categoryEn": "Energy infrastructure",
+      "categoryZh": "能源基础设施",
+      "summaryEn": "A cyclone separator is an efficient gas-solid separation device, widely used in industrial dust removal, material recovery, and other fields. Through the action of centrifugal force, a cyclone separator can separate solid particles from gas, featuring a simple structure, convenient operation, and low maintenance costs.",
+      "summaryZh": "利用离心力分离气体中的固体颗粒，应用于工业除尘与物料回收，结构简洁，便于运行与维护。",
+      "contentEn": "A cyclone separator is an efficient gas-solid separation device, widely used in industrial dust removal, material recovery, and other fields. Through the action of centrifugal force, a cyclone separator can separate solid particles from gas, featuring a simple structure, convenient operation, and low maintenance costs.",
+      "contentZh": "利用离心力分离气体中的固体颗粒，应用于工业除尘与物料回收，结构简洁，便于运行与维护。",
+      "featuresEn": "High separation efficiency: Achieved through optimized cyclone separator design.\nLow maintenance costs: Simple structure, easy maintenance, and low operating costs.\nEnvironmentally friendly and energy-efficient: Reduces dust emissions and meets environmental requirements.\nCustomizable design: Can be customized according to customer needs to meet different application scenarios.",
+      "featuresZh": "优化旋风结构，提高气固分离效率\n结构简单，便于维护\n减少粉尘排放\n根据物料与工况定制",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/cyclone-separator.webp",
+      "industries": [
+        "energy",
+        "environmental"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/cyclone.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/184ad95503d01a401b38a33d124416d0.jpg?ct=webp",
+      "sourceCategories": [
+        "/Energy-and-environmental-protection-Equipment",
+        "/energy-infrastructure"
+      ]
+    },
+    {
+      "id": "offshore-pipeline-structure",
+      "titleEn": "Offshore pipeline structure",
+      "titleZh": "海上管道模块",
+      "categoryEn": "Energy infrastructure",
+      "categoryZh": "能源基础设施",
+      "summaryEn": "Pipeline structure are integrated passage facilities used for the centralized installation of various pipelines, including electricity, communications, and water supply and drainage, and are widely used in urban infrastructure construction. The Pipeline structure produced by TZME adopt a prefabricated modular design, featuring fast construction speed, long service life, and easy maintenance, effectively enhancing the efficiency of urban underground space utilization.",
+      "summaryZh": "面向油气生产、运输与消费环节的模块化管道结构，采用预制与装配工艺，衔接管道布置、结构制造及现场安装。",
+      "contentEn": "Pipeline structure are integrated passage facilities used for the centralized installation of various pipelines, including electricity, communications, and water supply and drainage, and are widely used in urban infrastructure construction. The Pipeline structure produced by TZME adopt a prefabricated modular design, featuring fast construction speed, long service life, and easy maintenance, effectively enhancing the efficiency of urban underground space utilization.",
+      "contentZh": "面向油气生产、运输与消费环节的模块化管道结构，采用预制与装配工艺，衔接管道布置、结构制造及现场安装。",
+      "featuresEn": "Oil-gas pipeline modules are critical infrastructure connecting energy production, transportation, and consumption, enabling the safe and efficient transfer of oil, natural gas, and other materials through an intensive and enclosed piping system. The oil-gas pipeline modules manufactured by TZME reach a single-unit length of 95.2 meters, which is currently one of the longest single module in the industry. Manufacturing adheres to internationally leading pipeline modules design standards and prefabrication processes, demanding extremely high structural precision(with millimeters level tolerances) and construction period requirements.\nPrefabricated and Modular Design: Utilizes a prefabricated and modular design for rapid construction and installation.\nHigh Durability: Uses high-performance concrete and anti-corrosion materials to ensure long-term stable operation.\nSpace Optimization: Optimized pipeline layout maximizes the use of underground space and reduces redundant construction.\nIntelligent Management: Equipped with an intelligent monitoring system to real-time monitor the operation status of the utility tunnel and improve management efficiency.",
+      "featuresZh": "油气管道模块预制与装配\n结构精度与制造过程控制\n防腐材料与耐久设计\n结合管线布局优化模块空间",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/offshore-pipeline-structure.webp",
+      "industries": [
+        "energy"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/offshore-pipeline-structure.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/241d952f04f565ea5a8c5c26db62f3a2.jpg?ct=webp",
+      "sourceCategories": [
+        "/Energy-and-environmental-protection-Equipment",
+        "/energy-infrastructure"
+      ]
+    },
+    {
+      "id": "sedimentation-tank",
+      "titleEn": "Sedimentation tank",
+      "titleZh": "沉淀池",
+      "categoryEn": "Environmental",
+      "categoryZh": "环保",
+      "summaryEn": "Sedimentation tanks are facilities used for wastewater treatment and material separation, widely applied in municipal, industrial, and environmental protection fields. The sedimentation tanks produced by the company adopt advanced sedimentation technology and automated control systems, efficiently removing suspended solids and impurities from wastewater, ensuring that the water meets discharge standards.",
+      "summaryZh": "用于市政、工业及环保领域的废水处理与物料分离，通过沉淀去除水中悬浮物和杂质。",
+      "contentEn": "Sedimentation tanks are facilities used for wastewater treatment and material separation, widely applied in municipal, industrial, and environmental protection fields. The sedimentation tanks produced by the company adopt advanced sedimentation technology and automated control systems, efficiently removing suspended solids and impurities from wastewater, ensuring that the water meets discharge standards.",
+      "contentZh": "用于市政、工业及环保领域的废水处理与物料分离，通过沉淀去除水中悬浮物和杂质。",
+      "featuresEn": "High-efficiency sedimentation: Utilizes an optimized tank structure and sedimentation technology to improve separation efficiency.\nAutomated operation: Equipped with an automated control system for unattended operation.\nEnvironmentally friendly and energy-saving: Reduces sludge production and lowers operating costs.\nCompact structure: Small footprint, facilitating installation and maintenance.",
+      "featuresZh": "优化池体结构与沉淀过程\n自动化运行控制\n优化污泥处理与运行消耗\n结构紧凑，便于安装维护",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/sedimentation-tank.webp",
+      "industries": [
+        "environmental"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/sedimentation-tank.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/c1ff3fd5da393d7c15f4fd9482440654.jpg?ct=webp",
+      "sourceCategories": [
+        "/Energy-and-environmental-protection-Equipment",
+        "/environmental-protection-equipment"
+      ]
+    },
+    {
+      "id": "water-storage-tank",
+      "titleEn": "Water storage Tank",
+      "titleZh": "储水罐",
+      "categoryEn": "Environmental",
+      "categoryZh": "环保",
+      "summaryEn": "Water tanks are containers used for storing and transporting liquids (such as water, chemical solutions, etc.). They are widely used in fire fighting, agricultural irrigation, industrial production, sanitation, and other fields. Water tanks are usually made of stainless steel, fiberglass, or high-strength plastic, and have good sealing and corrosion resistance.",
+      "summaryZh": "用于水及其他液体的储存和运输，应用于消防、农业灌溉、工业生产及卫生设施，可按需求选择不锈钢、玻璃钢或高强度塑料等材料。",
+      "contentEn": "Water tanks are containers used for storing and transporting liquids (such as water, chemical solutions, etc.). They are widely used in fire fighting, agricultural irrigation, industrial production, sanitation, and other fields. Water tanks are usually made of stainless steel, fiberglass, or high-strength plastic, and have good sealing and corrosion resistance.",
+      "contentZh": "用于水及其他液体的储存和运输，应用于消防、农业灌溉、工业生产及卫生设施，可按需求选择不锈钢、玻璃钢或高强度塑料等材料。",
+      "featuresEn": "Strong corrosion resistance: Made of stainless steel or fiberglass, it is corrosion-resistant and aging-resistant, ensuring a long service life.\nExcellent sealing performance: Equipped with a high-quality sealing system to prevent liquid leakage and ensure safe transportation.\nDiverse capacities: Available in various capacities to meet different user needs.\nEnvironmentally friendly and energy-saving: The materials are recyclable and meet environmental requirements, while also reducing liquid evaporation losses.",
+      "featuresZh": "耐腐蚀材料选型\n密封设计，减少液体泄漏\n多种容量配置\n减少蒸发损失，关注材料回收利用",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/water-storage-tank.webp",
+      "industries": [
+        "environmental"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/water-storage-tank.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/53b81a6425671e0ff0a848e806670ae2.JPG?ct=webp",
+      "sourceCategories": [
+        "/Energy-and-environmental-protection-Equipment",
+        "/environmental-protection-equipment"
+      ]
+    },
+    {
+      "id": "electric-furnace",
+      "titleEn": "Electric Furnaces",
+      "titleZh": "电炉",
+      "categoryEn": "Metallurgy",
+      "categoryZh": "冶金",
+      "summaryEn": "An electric furnace is an electric heating device used for heating, smelting, and heat treatment, widely applied in the fields of metallurgy, chemical industry, and materials processing. The electric furnaces produced by TZME use advanced electric heating technology and automated control systems, enabling efficient and stable heating and temperature control, meeting various industrial needs.",
+      "summaryZh": "用于加热、熔炼与热处理的电加热设备，应用于冶金、化工及材料加工，结合自动控制实现温度调节。",
+      "contentEn": "An electric furnace is an electric heating device used for heating, smelting, and heat treatment, widely applied in the fields of metallurgy, chemical industry, and materials processing. The electric furnaces produced by TZME use advanced electric heating technology and automated control systems, enabling efficient and stable heating and temperature control, meeting various industrial needs.",
+      "contentZh": "用于加热、熔炼与热处理的电加热设备，应用于冶金、化工及材料加工，结合自动控制实现温度调节。",
+      "featuresEn": "Efficient Heating: Utilizes advanced electric heating elements for rapid temperature rise.\nPrecise Temperature Control: Equipped with an automated control system for accurate temperature regulation.\nEnergy Saving and Consumption Reduction: Optimized design reduces energy consumption and meets environmental requirements.\nSafe and Reliable: Equipped with multiple safety protection devices to ensure safe operation of the equipment.",
+      "featuresZh": "电加热元件快速升温\n自动温度控制\n结构与能耗优化\n多重安全防护装置",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/electric-furnace.webp",
+      "industries": [
+        "metallurgy"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/electric-furnaces.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/fc328c5bece1c8e6a0e795a87d73caad.jpg?ct=webp",
+      "sourceCategories": [
+        "/Other-steel-structures",
+        "/metallurgical-equipment"
+      ]
+    },
+    {
+      "id": "ausmelt-furnace",
+      "titleEn": "Ausmelt furnace",
+      "titleZh": "奥斯麦特熔炼炉",
+      "categoryEn": "Metallurgy",
+      "categoryZh": "冶金",
+      "summaryEn": "Ausmelt furnace for metallurgical applications. Contact our engineering team for the structure, manufacturing scope and configuration.",
+      "summaryZh": "面向冶金行业的奥斯麦特熔炼炉，具体结构、制造范围与配置可联系技术团队了解。",
+      "contentEn": "Ausmelt furnace for metallurgical applications. Contact our engineering team for the structure, manufacturing scope and configuration.",
+      "contentZh": "面向冶金行业的奥斯麦特熔炼炉，具体结构、制造范围与配置可联系技术团队了解。",
+      "featuresEn": "",
+      "featuresZh": "",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/ausmelt-furnace.webp",
+      "industries": [
+        "metallurgy"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/ausmelt-furnace.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/64234ed86d71e83e1d3866c12baa6d36.jpg?ct=webp",
+      "sourceCategories": [
+        "/Other-steel-structures",
+        "/metallurgical-equipment"
+      ]
+    },
+    {
+      "id": "bridge-steel-structure",
+      "titleEn": "Bridge steel structures",
+      "titleZh": "桥梁钢结构",
+      "categoryEn": "Structural steel buildings",
+      "categoryZh": "建筑钢结构",
+      "summaryEn": "Structural engineering used to span rivers, valleys, or roads is widely applied in transportation and municipal sectors. Its core components, through advanced design and construction techniques, enable efficient and safe transportation connections.",
+      "summaryZh": "服务跨河、跨谷及跨路桥梁的结构工程，结合设计与制造技术，满足交通及市政建设需求。",
+      "contentEn": "Structural engineering used to span rivers, valleys, or roads is widely applied in transportation and municipal sectors. Its core components, through advanced design and construction techniques, enable efficient and safe transportation connections.",
+      "contentZh": "服务跨河、跨谷及跨路桥梁的结构工程，结合设计与制造技术，满足交通及市政建设需求。",
+      "featuresEn": "High-efficiency construction capabilities: Utilizing advanced construction techniques and equipment to shorten construction cycles.\nVersatility: Suitable for various types of traffic and construction scenarios, offering strong adaptability.\nSafe and reliable: Ensuring construction safety through rigorous quality testing and safety certifications.",
+      "featuresZh": "桥梁结构制造与施工衔接\n适配不同交通与工程场景\n结构质量检验与安全控制",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/bridge-steel-structure.webp",
+      "industries": [
+        "construction",
+        "steel-structures"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/bridge.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/3b84dd945b6ccd94639e54dc0a83fa52.JPG?ct=webp",
+      "sourceCategories": [
+        "/Other-steel-structures",
+        "/steel-structure-building"
+      ]
+    },
+    {
+      "id": "bulk-hopper",
+      "titleEn": "Hopper",
+      "titleZh": "料斗",
+      "categoryEn": "Hoppers",
+      "categoryZh": "料斗",
+      "summaryEn": "The hopper is a key transfer equipment in industrial material handling systems, used for collecting, temporarily storing, and transferring various bulk materials.",
+      "summaryZh": "用于散料收集、暂存与转运，可根据物料特性设计料斗形状、壁面倾角与出料口，配置闸门或给料机控制流量。",
+      "contentEn": "The hopper is a key transfer equipment in industrial material handling systems, used for collecting, temporarily storing, and transferring various bulk materials.",
+      "contentZh": "用于散料收集、暂存与转运，可根据物料特性设计料斗形状、壁面倾角与出料口，配置闸门或给料机控制流量。",
+      "featuresEn": "The equipment is made of high-quality carbon steel or customized materials, featuring a sturdy and durable structure. It is typically designed in an inverted cone or square funnel shape, with an open top to receive materials from upstream equipment. The wall inclination is designed based on material characteristics to ensure smooth gravity flow and prevent clogging or bridging. A discharge outlet at the bottom can be equipped with gates or feeders for precise flow control.\nThe hopper body is reinforced with ribs and supported by a steel frame, ensuring excellent stability and load-bearing capacity for continuous operation in mining, construction, grain, chemical, and other industries. The surface is treated with anti-rust and anti-corrosion coating for extended service life.\nSimple in structure and easy to install and maintain, the hopper can be customized to meet site-specific requirements and material characteristics.",
+      "featuresZh": "碳钢或按工况选材，采用锥形或方形斗体\n按物料特性设计壁面倾角，改善重力流动\n闸门或给料机配套控制出料\n加强筋与钢架支承\n防锈防腐处理，便于安装维护",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/bulk-hopper.webp",
+      "industries": [
+        "lifting-transport",
+        "mining",
+        "construction"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/hopper.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/0ae5220f5a48a0a0b47b76ff5a96b3b0.jpg?ct=webp",
+      "sourceCategories": [
+        "/Other-steel-structures"
+      ]
+    },
+    {
+      "id": "paper-scanner",
+      "titleEn": "Paper quality scanner",
+      "titleZh": "纸张质量扫描仪",
+      "categoryEn": "Testing equipment",
+      "categoryZh": "检测设备",
+      "summaryEn": "This high-precision instrument for testing paper quality is widely used in the papermaking, printing, and packaging industries.",
+      "summaryZh": "应用于造纸、印刷及包装行业，通过光学扫描进行纸张质量检测与数据分析。",
+      "contentEn": "This high-precision instrument for testing paper quality is widely used in the papermaking, printing, and packaging industries.",
+      "contentZh": "应用于造纸、印刷及包装行业，通过光学扫描进行纸张质量检测与数据分析。",
+      "featuresEn": "High-precision detection: Provides high-precision detection results through advanced optical scanning technology.\nAutomated operation: Equipped with an automated control system for rapid detection and data analysis.\nMultifunctionality: Capable of detecting various paper quality indicators to meet the needs of different industries.\nReliable quality: Ensures the stability and accuracy of the instrument through rigorous quality testing and certification.",
+      "featuresZh": "光学扫描与高精度检测\n自动检测及数据分析\n支持多项纸张质量指标检测\n质量检验保障检测稳定性",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/paper-scanner.webp",
+      "industries": [
+        "testing"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/paper-scanner.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/c58f9fba1e8951f69a1b801647bbd3e1.jpg?ct=webp",
+      "sourceCategories": [
+        "/Other-steel-structures"
+      ]
+    },
+    {
+      "id": "mmi-house",
+      "titleEn": "MMI modular house",
+      "titleZh": "MMI 模块化房屋",
+      "categoryEn": "Structural steel buildings",
+      "categoryZh": "建筑钢结构",
+      "summaryEn": "MMI--magical-modular-intelligent, meaning: magical, standardized modular, and intelligent.",
+      "summaryZh": "采用标准化模块与整体集成设计，可在不同地点快速组装、重构布局，集成生活功能，便于现场安装与迁移。",
+      "contentEn": "MMI--magical-modular-intelligent, meaning: magical, standardized modular, and intelligent.",
+      "contentZh": "采用标准化模块与整体集成设计，可在不同地点快速组装、重构布局，集成生活功能，便于现场安装与迁移。",
+      "featuresEn": "The MMI houses independently designed by TZME can be quickly assembled and reconfigured in different locations, with both reinstallation and assembly rates reaching 100%, allowing customers to create the maximum building area with minimal transport volume. As container houses designed as fully integrated units, they encompass comprehensive living functions. Finely crafted, they can be quickly assembled on-site without long waiting times, reconstructing new possibilities for living with convenience and practicality.",
+      "featuresZh": "标准化模块与集成设计\n快速现场组装\n支持迁移与重新配置\n集成生活功能，优化运输体积",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/mmi-house.webp",
+      "industries": [
+        "steel-structures",
+        "construction"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/mmi-house.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260130/22e35b4eb76ffd0ae5b7a0d49e3ca527.jpg?ct=webp",
+      "sourceCategories": [
+        "/Other-steel-structures",
+        "/steel-structure-building"
+      ]
+    },
+    {
+      "id": "factory-building-module",
+      "titleEn": "Steel structure factory building modules",
+      "titleZh": "钢结构厂房模块",
+      "categoryEn": "Structural steel buildings",
+      "categoryZh": "建筑钢结构",
+      "summaryEn": "Optimize your industrial operations with our advanced Steel Structure Factory Building Modules. Engineered for durability and flexibility, our prefabricated solutions provide a rapid, cost-effective alternative to traditional construction. Utilizing high-strength structural steel, these modules offer large, column-free interior spaces ideal for manufacturing, warehousing, and assembly lines. Fully customizable to your specific load and dimensional requirements, our factory buildings are designed for longevity, seismic resistance, and quick on-site assembly, ensuring your business operates without delay.",
+      "summaryZh": "用于制造、仓储及装配产线的预制钢结构厂房，采用高强度钢材与模块化设计，可根据空间、载荷和尺寸需求定制。",
+      "contentEn": "Optimize your industrial operations with our advanced Steel Structure Factory Building Modules. Engineered for durability and flexibility, our prefabricated solutions provide a rapid, cost-effective alternative to traditional construction. Utilizing high-strength structural steel, these modules offer large, column-free interior spaces ideal for manufacturing, warehousing, and assembly lines. Fully customizable to your specific load and dimensional requirements, our factory buildings are designed for longevity, seismic resistance, and quick on-site assembly, ensuring your business operates without delay.",
+      "contentZh": "用于制造、仓储及装配产线的预制钢结构厂房，采用高强度钢材与模块化设计，可根据空间、载荷和尺寸需求定制。",
+      "featuresEn": "Our Steel Structure Factory Building Modules represent the pinnacle of industrial construction technology. Designed for heavy-duty applications, these structures are fabricated from premium Q235/Q355 steel with hot-dip galvanized or anti-corrosive painting for maximum lifespan.\nStructural Integrity: Rigid portal frame design engineered to withstand heavy crane loads, seismic activity, and extreme weather conditions\nModular Design: Standardized components allow for easy future expansion, relocation, and layout reconfiguration.\nVersatile Cladding: Options include single or sandwich panels (EPS, Rockwool, PIR) for superior insulation and soundproofing.\nSpeed of Construction: Pre-engineered components are fabricated off-site and delivered ready for bolted assembly, significantly reducing construction time and labor costs.\nClear Span Capability: Up to 30+ meters of column-free space to maximize production and storage efficiency.",
+      "featuresZh": "门式刚架与大跨度空间设计\n模块化构件便于扩建与布局调整\n可选单层板及 EPS、岩棉或 PIR 夹芯围护板\n工厂预制，现场螺栓装配\n镀锌或防腐涂装，结合风荷载与抗震需求设计",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/factory-building-module.webp",
+      "industries": [
+        "steel-structures",
+        "construction"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/factory-building-module.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260317/b2aae3549b32ace3eca884f3246701ee.png?ct=webp",
+      "sourceCategories": [
+        "/steel-structure-building"
+      ]
+    },
+    {
+      "id": "rotary-screen",
+      "titleEn": "Rotary screen",
+      "titleZh": "滚筒筛",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "Equipment used for material grading and screening, widely applied in industries such as mining, construction, chemical, and food processing. It separates materials through a rotating drum and screen, effectively removing impurities, grading materials, or screening products of specific particle sizes.",
+      "summaryZh": "通过旋转滚筒与筛网完成物料分级、除杂及粒度筛选，可用于矿山、建筑、化工及食品加工等领域。",
+      "contentEn": "Equipment used for material grading and screening, widely applied in industries such as mining, construction, chemical, and food processing. It separates materials through a rotating drum and screen, effectively removing impurities, grading materials, or screening products of specific particle sizes.",
+      "contentZh": "通过旋转滚筒与筛网完成物料分级、除杂及粒度筛选，可用于矿山、建筑、化工及食品加工等领域。",
+      "featuresEn": "High-efficiency screening capability: Utilizing optimized drum rotation speed and screen mesh size design, it can quickly separate materials of different particle sizes, improving screening efficiency.\nStrong durability: The drum and screen are made of high-strength, wear-resistant materials, ensuring wear resistance, corrosion resistance, and a long service life.\nLow energy consumption operation: Adopting energy-efficient motors and an optimized transmission system, it reduces energy consumption and operating costs.\nModular design allows for convenient screen replacement, low maintenance costs, and short downtime.",
+      "featuresZh": "结合滚筒转速及筛孔尺寸优化筛分\n耐磨、防腐结构\n高效电机与优化传动系统\n模块化筛网，便于更换维护",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/rotary-screen.webp",
+      "industries": [
+        "mining",
+        "construction"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/rotary-screen.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/b7fcc236547d94ff3b82b2ef47537555.jpg?ct=webp",
+      "sourceCategories": []
+    },
+    {
+      "id": "wagon-tippler",
+      "titleEn": "Wagon Tippler",
+      "titleZh": "翻车机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "Large machinery used for tipping and unloading, mainly used in railway transport to unload bulk materials such as coal, ore, grain, etc. It works by tilting the entire railcar to a certain angle, allowing the materials to be emptied from the car, thereby achieving fast and efficient unloading operations.",
+      "summaryZh": "用于铁路运输煤炭、矿石、粮食等散货卸料，通过将铁路车辆倾转至一定角度完成卸载。",
+      "contentEn": "Large machinery used for tipping and unloading, mainly used in railway transport to unload bulk materials such as coal, ore, grain, etc. It works by tilting the entire railcar to a certain angle, allowing the materials to be emptied from the car, thereby achieving fast and efficient unloading operations.",
+      "contentZh": "用于铁路运输煤炭、矿石、粮食等散货卸料，通过将铁路车辆倾转至一定角度完成卸载。",
+      "featuresEn": "High-efficiency unloading capacity: Capable of unloading large quantities of materials in a short time, improving operational efficiency.\nAutomated operation: Equipped with an advanced automatic control system for unmanned operation, reducing labor costs.\nSafe and reliable: Features multiple safety protection devices to ensure safe equipment operation.\nStrong adaptability: Compatible with various sizes of truck bodies, offering high versatility.",
+      "featuresZh": "铁路车辆散货快速卸载\n自动化运行控制\n多重安全防护\n适配不同车辆尺寸与作业需求",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/wagon-tippler.webp",
+      "industries": [
+        "mining",
+        "lifting-transport"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/wagon-tippler.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/4269f6bc4ae59f6c9b9cea8a3221242b.jpg?ct=webp",
+      "sourceCategories": []
+    },
+    {
+      "id": "feeder",
+      "titleEn": "Feeder",
+      "titleZh": "给料机",
+      "categoryEn": "Mining",
+      "categoryZh": "矿山",
+      "summaryEn": "A device used to transport materials evenly and continuously to subsequent processing equipment, widely used in industries such as mining, building materials, chemicals, and food.",
+      "summaryZh": "向后续加工设备均匀、连续输送物料，可用于矿山、建材、化工及食品等行业，按粒度与湿度调节给料方式。",
+      "contentEn": "A device used to transport materials evenly and continuously to subsequent processing equipment, widely used in industries such as mining, building materials, chemicals, and food.",
+      "contentZh": "向后续加工设备均匀、连续输送物料，可用于矿山、建材、化工及食品等行业，按粒度与湿度调节给料方式。",
+      "featuresEn": "Uniform Feeding: Utilizing advanced vibration or belt drive technology, it ensures uniform and continuous material transport, preventing material accumulation or interruptions in flow.\nHigh-Precision Control: Equipped with an intelligent control system, it supports remote monitoring and speed adjustment, achieving precise control of feeding volume.\nStrong Adaptability: The feeding speed and method can be adjusted according to material characteristics (such as particle size and humidity), adapting to various material types.\nHigh Durability: Key components are manufactured from high-strength materials, offering wear resistance and fatigue resistance for a long service life.\nEnvironmentally Friendly and Energy-Saving: It uses energy-efficient motors and an optimized drive system to reduce energy consumption and meet environmental requirements.",
+      "featuresZh": "振动或带式驱动，实现连续均匀给料\n远程监测与调速，控制给料量\n适配不同粒度及湿度物料\n耐磨与抗疲劳部件\n节能电机与传动优化",
+      "specificationsEn": "",
+      "specificationsZh": "",
+      "image": "/assets/tzme-products/feeder.webp",
+      "industries": [
+        "mining",
+        "lifting-transport"
+      ],
+      "status": "published",
+      "showOnHome": false,
+      "homeOrder": 0,
+      "sourceUrl": "https://www.tzmeglobal.com/feeder.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/a5e94f58bfe558e291f2e43afb3d34de.jpg?ct=webp",
+      "sourceCategories": []
+    }
+  ],
+  "existingProducts": [
+    {
+      "id": "conveying",
+      "sourceUrl": "https://www.tzmeglobal.com/conveyors.html",
+      "sourceImageUrl": "https://img03.71360.com/w3/86q3v8/20260121/980a75dedcdc633e1ab0dc1869d6550a.JPG?ct=webp"
+    }
+  ],
+  "associations": [
+    {
+      "id": "conveying",
+      "industries": [
+        "lifting-transport",
+        "mining"
+      ]
+    },
+    {
+      "id": "tourism",
+      "industries": [
+        "amusement"
+      ]
+    },
+    {
+      "id": "environmental",
+      "industries": [
+        "environmental"
+      ]
+    }
+  ]
+}

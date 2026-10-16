@@ -6,7 +6,7 @@ export const validAboutImage = value => typeof value === 'string' && (value === 
   || /^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(jpg|png|gif|webp)$/.test(value))
 
 export function isAboutSettings(value) {
-  const translated = item => item && typeof item.en === 'string' && typeof item.zh === 'string'
+  const translated = item => item && typeof item.zh === 'string' && (item.en === undefined || typeof item.en === 'string')
   return value && ['home', 'about'].every(key => {
     const section = value[key]
     return section && aboutTextFields.every(field => translated(section[field])) && validAboutImage(section.image)

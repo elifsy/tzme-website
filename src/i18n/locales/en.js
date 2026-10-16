@@ -2,11 +2,13 @@ import { contactEn } from '../contact.js'
 import { capabilitiesEn } from '../capabilities.js'
 import { aboutTzmeEn } from '../aboutTzme.js'
 import { analyticsEn } from '../analytics.js'
+import { homeSolutionsEn } from '../homeSolutions.js'
 export default {
   ...contactEn,
   ...capabilitiesEn,
   ...aboutTzmeEn,
   ...analyticsEn,
+  ...homeSolutionsEn,
   "site": {
     "globalMapLitLocations": "{count} highlighted locations",
     "skipToProjectContent": "Skip navigation and go to page content",

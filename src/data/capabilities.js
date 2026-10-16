@@ -6,7 +6,7 @@ export const validCapabilityImage = value => typeof value === 'string' && (value
 export const validCapabilityBackground = value => validCapabilityImage(value) || (typeof value === 'string' && /^\/assets\/[a-zA-Z0-9_-]+\.(jpg|png|gif|webp)$/.test(value))
 
 export function isCapabilitiesSettings(value) {
-  const translated = item => item && typeof item.en === 'string' && typeof item.zh === 'string'
+  const translated = item => item && typeof item.zh === 'string' && (item.en === undefined || typeof item.en === 'string')
   return value && typeof value.enabled === 'boolean' && typeof value.image === 'string'
     && validCapabilityBackground(value.image)
     && capabilityTextFields.every(key => translated(value[key]))

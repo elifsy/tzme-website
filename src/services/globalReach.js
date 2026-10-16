@@ -9,7 +9,7 @@ function isMapPoints(points) {
     && points.every((point) => point && /^[a-zA-Z0-9_-]{1,80}$/.test(point.id)
       && Number.isFinite(point.x) && point.x >= 0 && point.x <= 100
       && Number.isFinite(point.y) && point.y >= 0 && point.y <= 100
-      && typeof point.label?.en === 'string' && typeof point.label?.zh === 'string')
+      && typeof point.label?.zh === 'string' && (point.label.en === undefined || typeof point.label.en === 'string'))
 }
 function isSettings(value) {
   return value && typeof value.enabled === 'boolean' && typeof value.showButton === 'boolean'
@@ -17,10 +17,10 @@ function isSettings(value) {
     && (value.mapMode == null || ['points', 'image'].includes(value.mapMode))
     && (value.mapPoints == null || isMapPoints(value.mapPoints))
     && ['kicker', 'titleLine1', 'titleLine2', 'description', 'imageAlt', 'buttonText']
-      .every((key) => typeof value[key]?.en === 'string' && typeof value[key]?.zh === 'string')
+      .every((key) => typeof value[key]?.zh === 'string' && (value[key].en === undefined || typeof value[key].en === 'string'))
     && Array.isArray(value.statistics) && value.statistics.length === 3
     && value.statistics.every((item) => item && typeof item.value === 'string' && typeof item.suffix === 'string'
-      && typeof item.label?.en === 'string' && typeof item.label?.zh === 'string')
+      && typeof item.label?.zh === 'string' && (item.label.en === undefined || typeof item.label.en === 'string'))
 }
 const settings = ref(null)
 export async function loadGlobalReach() {

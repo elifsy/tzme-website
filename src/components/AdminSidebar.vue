@@ -32,6 +32,7 @@ const groups = [
   },
   {
     key: 'pages', icon: Setting, items: [
+      { key: 'solutions', label: 'homeSolutionsAdmin.title', icon: Grid },
       { key: 'about', label: 'adminNavigation.labels.about', title: 'aboutTzmeAdmin.title', icon: OfficeBuilding },
       { key: 'capabilities', label: 'adminNavigation.labels.capabilities', title: 'capabilitiesAdmin.title', icon: Tools },
       { key: 'global', label: 'adminNavigation.labels.global', title: 'admin.homeGlobal', icon: Location },

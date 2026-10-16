@@ -10,13 +10,12 @@ import {
   Promotion,
   Refresh,
 } from "@element-plus/icons-vue";
-import { setLocale } from "../i18n/index.js";
-import { availableLocales } from "../i18n/locales/index.js";
 import CertificationsManager from "../components/CertificationsManager.vue";
 import IndustriesManager from "../components/IndustriesManager.vue";
 import ProjectsManager from "../components/ProjectsManager.vue";
 import GlobalReachManager from "../components/GlobalReachManager.vue";
 import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
+import HomeSolutionsManager from "../components/HomeSolutionsManager.vue";
 import AboutTzmeManager from "../components/AboutTzmeManager.vue";
 import AdminSidebar from "../components/AdminSidebar.vue";
 import AnalyticsManager from "../components/AnalyticsManager.vue";
@@ -89,6 +88,7 @@ const industryManager = ref(null);
 const projectManager = ref(null);
 const globalManager = ref(null);
 const capabilitiesManager = ref(null);
+const solutionsManager = ref(null);
 const aboutManager = ref(null);
 const analyticsManager = ref(null);
 const contactManager = ref(null);
@@ -99,7 +99,7 @@ const loading = ref(true);
 const modal = ref(false);
 const kind = ref("products");
 const saving = ref(false);
-const editingLocale = ref("en");
+const editingLocale = ref("zh");
 const form = reactive({
   id: "",
   titleEn: "",
@@ -128,6 +128,7 @@ const titles = {
   projects: "admin.projects",
   global: "admin.homeGlobal",
   capabilities: "capabilitiesAdmin.title",
+  solutions: "homeSolutionsAdmin.title",
   about: "aboutTzmeAdmin.title",
   analytics: "analyticsAdmin.title",
   articles: "admin.insights",
@@ -178,7 +179,7 @@ async function load() {
 
 function openEditor(type, item) {
   kind.value = type;
-  editingLocale.value = locale.value === "zh" ? "zh" : "en";
+  editingLocale.value = "zh";
   Object.assign(form, {
     id: item?.id || "",
     titleEn: item?.titleEn || item?.title || "",
@@ -188,7 +189,7 @@ function openEditor(type, item) {
     industries: [...(item?.industries || (item?.industry ? [item.industry] : []))],
     summaryEn: item?.summaryEn || item?.summary || "",
     summaryZh: item?.summaryZh || "",
-    contentEn: type === 'articles' ? sanitizeRichText(item?.contentEn || item?.content || '') : item?.contentEn || item?.content || "",
+    contentEn: item?.contentEn || item?.content || "",
     contentZh: type === 'articles' ? sanitizeRichText(item?.contentZh || '') : item?.contentZh || "",
     featuresEn: item?.featuresEn || "",
     featuresZh: item?.featuresZh || "",
@@ -205,7 +206,7 @@ function openEditor(type, item) {
 
 async function save() {
   if (saving.value || imageUploading.value) return;
-  if (!form.titleEn.trim() || !form.titleZh.trim()) {
+  if (!form.titleZh.trim()) {
     ElMessage.warning(t("admin.bothTitlesRequired"));
     return;
   }
@@ -214,7 +215,6 @@ async function save() {
     return;
   }
   if (kind.value === 'articles') {
-    form.contentEn = sanitizeRichText(form.contentEn);
     form.contentZh = sanitizeRichText(form.contentZh);
   }
   if (kind.value === 'products' && (!form.industries.length ||
@@ -280,6 +280,7 @@ function refresh() {
   else if (tab.value === 'projects') projectManager.value?.load();
   else if (tab.value === 'global') globalManager.value?.load();
   else if (tab.value === 'capabilities') capabilitiesManager.value?.load();
+  else if (tab.value === 'solutions') solutionsManager.value?.load();
   else if (tab.value === 'about') aboutManager.value?.load();
   else if (tab.value === 'analytics') analyticsManager.value?.load();
   else if (tab.value === 'contact') contactManager.value?.load();
@@ -306,16 +307,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="admin-profile">
-          <el-button-group class="admin-language">
-            <el-button
-              v-for="option in availableLocales"
-              :key="option.code"
-              size="small"
-              :type="locale === option.code ? 'primary' : 'default'"
-              @click="setLocale(option.code)"
-              >{{ option.shortLabel }}</el-button
-            >
-          </el-button-group>
+
           <el-avatar :size="32" class="admin-avatar">A</el-avatar>
           <div>
             {{ $t('admin.administrator') }}<small>{{ $t('admin.contentManager') }}</small>
@@ -340,6 +332,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 : tab === 'projects' ? 'admin.projectManagementDescription'
                 : tab === 'global' ? 'admin.homeGlobalDescription'
                 : tab === 'capabilities' ? 'capabilitiesAdmin.description'
+                : tab === 'solutions' ? 'homeSolutionsAdmin.description'
                 : tab === 'about' ? 'aboutTzmeAdmin.description'
                 : tab === 'analytics' ? 'analyticsAdmin.description'
                 : tab === 'contact' ? 'contactAdmin.description'
@@ -620,8 +613,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                     <strong>{{ field(row, "title") }}</strong
                     ><small>{{ field(row, "summary") }}</small>
                     <div class="bilingual-badges">
-                      <el-tag size="small" type="info" effect="plain">EN</el-tag
-                      ><el-tag
+                      <el-tag
                         size="small"
                         :type="row.titleZh ? 'success' : 'warning'"
                         effect="plain"
@@ -698,6 +690,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <ProjectsManager v-else-if="tab === 'projects'" ref="projectManager" />
         <GlobalReachManager v-else-if="tab === 'global'" ref="globalManager" />
         <HomeCapabilitiesManager v-else-if="tab === 'capabilities'" ref="capabilitiesManager" />
+        <HomeSolutionsManager v-else-if="tab === 'solutions'" ref="solutionsManager" />
         <AboutTzmeManager v-else-if="tab === 'about'" ref="aboutManager" />
         <AnalyticsManager v-else-if="tab === 'analytics'" ref="analyticsManager" />
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
@@ -727,42 +720,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
               <el-alert class="bilingual-tip" type="info" :closable="false" show-icon
                 :title="$t('admin.maintainEnglishAndChineseTogetherBothTitlesAreRequiredBeforeSaving')" />
               <el-tabs v-model="editingLocale" class="bilingual-tabs">
-                <el-tab-pane :label="$t('admin.english')" name="en">
-                  <div class="cms-field-grid">
-                    <el-form-item :label="$t('admin.titleEnglish')" required>
-                      <el-input v-model="form.titleEn" :placeholder="$t('admin.enterEnglishTitle')" />
-                    </el-form-item>
-                    <el-form-item :label="$t('admin.categoryEnglish')">
-                      <el-input v-model="form.categoryEn" :placeholder="$t('admin.exampleMining')" />
-                    </el-form-item>
-                  </div>
-                  <el-form-item :label="$t('admin.shortDescriptionEnglish')">
-                    <el-input v-model="form.summaryEn" type="textarea" :rows="3" :placeholder="$t('admin.englishSummaryPlaceholder')" />
-                  </el-form-item>
-                  <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleContentEnglish')">
-                    <RichTextEditor v-if="modal && editingLocale === 'en'" :key="'en-' + locale"
-                      v-model="form.contentEn" :placeholder="$t('admin.englishArticlePlaceholder')"
-                      @uploading="bodyImageUploading = $event" @fullscreen-change="editorFullscreen = $event" />
-                  </el-form-item>
-                  <template v-if="kind === 'products'">
-                    <el-form-item :label="$t('admin.productDescriptionEnglish')">
-                      <el-input v-model="form.contentEn" type="textarea" :rows="5" />
-                    </el-form-item>
-                    <div class="cms-field-grid">
-                      <el-form-item :label="$t('admin.productFeaturesEnglish')">
-                        <el-input v-model="form.featuresEn" type="textarea" :rows="4" :placeholder="$t('admin.oneItemPerLine')" />
-                      </el-form-item>
-                      <el-form-item :label="$t('admin.productSpecificationsEnglish')">
-                        <el-input v-model="form.specificationsEn" type="textarea" :rows="4" :placeholder="$t('admin.specificationFormat')"
-                          aria-describedby="product-specifications-en-help" />
-                        <div id="product-specifications-en-help" class="cms-specification-help">
-                          <p>{{ $t('admin.productSpecificationsHint') }}</p>
-                          <code class="cms-specification-example">{{ $t('admin.productSpecificationsExampleEnglish') }}</code>
-                        </div>
-                      </el-form-item>
-                    </div>
-                  </template>
-                </el-tab-pane>
+
                 <el-tab-pane :label="$t('admin.chinese')" name="zh">
                   <div class="cms-field-grid">
                     <el-form-item :label="$t('admin.titleChinese')" required>

@@ -1,34 +1,13 @@
 <script setup>
-import { useI18n } from 'vue-i18n'
-import { setLocale } from '../i18n/index.js'
-import { availableLocales } from '../i18n/locales/index.js'
+import { englishSiteUrl } from '../i18n/locales/index.js'
 
 defineProps({ mobile: { type: Boolean, default: false } })
-const { locale } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
   <component :is="mobile ? 'div' : 'span'" :class="mobile ? 'hc-mobile-language' : 'hc-lang'" role="group" :aria-label="$t('site.languageSelection')">
-    <template v-for="(option, index) in availableLocales" :key="option.code">
-      <el-button
-        v-if="mobile"
-        :type="locale === option.code ? 'primary' : 'default'"
-        :aria-pressed="locale === option.code"
-        :lang="option.htmlLang"
-        @click="setLocale(option.code)"
-      >{{ option.label }}</el-button>
-      <template v-else>
-        <span v-if="index" aria-hidden="true"> | </span>
-        <button
-          type="button"
-          class="hc-lang-option"
-          :class="{ active: locale === option.code }"
-          :aria-label="option.label"
-          :aria-pressed="locale === option.code"
-          :lang="option.htmlLang"
-          @click="setLocale(option.code)"
-        >{{ option.shortLabel }}</button>
-      </template>
-    </template>
+    <a :href="englishSiteUrl" class="hc-lang-option" lang="en" aria-label="访问英文官网">{{ mobile ? 'English' : 'EN' }}</a>
+    <span aria-hidden="true"> | </span>
+    <span class="hc-lang-option active" lang="zh-CN" aria-current="page">{{ mobile ? '中文' : '中' }}</span>
   </component>
 </template>

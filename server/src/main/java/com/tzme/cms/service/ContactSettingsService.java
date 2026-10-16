@@ -48,6 +48,8 @@ public class ContactSettingsService {
         var row = repository.findForUpdate("contact").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         var value = parse(row.getConfiguration());
         var storedSocialLinks = value.path("contact").get("socialLinks");
+        var storedContact = value.path("contact");
+        var storedSubsidiaries = value.path("subsidiaries");
         var keys = Set.of("contact", "subsidiaries", "form", "upload");
         input.fieldNames().forEachRemaining(key -> { if (!keys.contains(key)) invalid("Unknown contact configuration field"); });
         for (String key : keys) {
@@ -56,6 +58,11 @@ public class ContactSettingsService {
         }
         // Preserve social links when an older client updates contact information.
         if (storedSocialLinks != null && value.path("contact") instanceof ObjectNode contact && !contact.has("socialLinks")) contact.set("socialLinks", storedSocialLinks);
+        preserveFacility(value.path("contact"), storedContact);
+        // Older clients may omit facility fields. Match by stable ID, even after a reorder.
+        var facilitiesById = new HashMap<String, JsonNode>();
+        for (var item : storedSubsidiaries) facilitiesById.put(item.path("id").asText(), item);
+        for (var item : value.path("subsidiaries")) preserveFacility(item, facilitiesById.get(item.path("id").asText()));
         validateContact(value);
         try {
             row.setConfiguration(mapper.writeValueAsString(value)); repository.save(row);
@@ -92,6 +99,7 @@ public class ContactSettingsService {
         if (!contact.path("emails").isArray() || contact.path("emails").size() > 10) invalid("Maximum 10 contact emails");
         for (var email : contact.path("emails")) if (!validEmail(email.asText())) invalid("Invalid contact email");
         validateSocialLinks(contact.path("socialLinks"));
+        validateFacility(contact.path("facility"));
         if (!value.path("subsidiaries").isArray() || value.path("subsidiaries").size() > 50) invalid("Maximum 50 subsidiaries");
         var ids = new HashSet<String>();
         for (var item : value.path("subsidiaries")) {
@@ -99,6 +107,7 @@ public class ContactSettingsService {
             translated(item.path("name"), 255, true); translated(item.path("address"), 2000, true);
             text(item, "phone", 255); website(item.path("website").asText());
             if (!item.path("email").asText().isBlank() && !validEmail(item.path("email").asText())) invalid("Invalid subsidiary email");
+            validateFacility(item.path("facility"));
         }
         var form = value.path("form");
         for (String key : List.of("title", "buttonText", "successText", "closedText")) translated(form.path(key), 1000, true);
@@ -110,6 +119,27 @@ public class ContactSettingsService {
         if (upload.path("maxFiles").asInt() < 1 || upload.path("maxFiles").asInt() > 10) invalid("File count must be 1 to 10");
         if (!upload.path("allowedExtensions").isArray() || (upload.path("enabled").asBoolean() && upload.path("allowedExtensions").isEmpty())) invalid("Select permitted file types");
         for (var extension : upload.path("allowedExtensions")) if (!FILE_TYPES.contains(extension.asText())) invalid("Unsupported file type");
+    }
+    private static void preserveFacility(JsonNode incoming, JsonNode stored) {
+        if (incoming instanceof ObjectNode target && !target.has("facility") && stored != null && stored.has("facility")) target.set("facility", stored.get("facility").deepCopy());
+    }
+    private static void validateFacility(JsonNode facility) {
+        if (facility.isMissingNode()) return;
+        if (!facility.isObject()) invalid("Invalid facility configuration");
+        facility.fieldNames().forEachRemaining(key -> {
+            if (!Set.of("title", "description", "image", "imageAlt").contains(key)) invalid("Unknown facility field");
+        });
+        for (String key : List.of("title", "description", "imageAlt")) {
+            if (!facility.has(key)) continue;
+            var text = facility.path(key);
+            translated(text, key.equals("description") ? 2000 : 255, false);
+            text.elements().forEachRemaining(item -> { if (!item.isTextual()) invalid("Invalid facility text"); });
+        }
+        var image = facility.path("image");
+        if (!image.isMissingNode() && !image.isTextual()) invalid("Invalid facility image");
+        var url = image.asText();
+        if (!url.isEmpty() && !url.matches("/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)")
+            && !url.matches("/assets/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\\.(jpg|jpeg|png|gif|webp)")) invalid("Facility images must use uploaded or project assets");
     }
     private void validateSocialLinks(JsonNode locales) {
         if (locales.isMissingNode()) return;
@@ -158,10 +188,10 @@ public class ContactSettingsService {
         if (notification.path("enabled").asBoolean() && (active == 0 || smtp.path("host").asText().isBlank() || !validEmail(smtp.path("from").asText()) || (!smtp.path("username").asText().isBlank() && smtp.path("password").asText().isBlank()))) invalid("Complete sender configuration and select recipients before enabling notifications");
     }
     private static void translated(JsonNode value, int max, boolean required) {
-        if (!value.isObject()) invalid("Bilingual text is required");
+        if (!value.isObject()) invalid("Chinese text is required");
         for (String locale : List.of("en", "zh")) {
             var text = value.path(locale).asText();
-            if (text.length() > max || (required && text.isBlank())) invalid("Complete both Chinese and English text");
+            if (text.length() > max || (required && locale.equals("zh") && text.isBlank())) invalid("Complete Chinese text");
         }
     }
     private static void text(JsonNode value, String key, int max) {

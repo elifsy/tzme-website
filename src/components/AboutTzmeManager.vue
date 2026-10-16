@@ -6,7 +6,7 @@ import { ArrowDown, ArrowUp, CircleCheckFilled } from '@element-plus/icons-vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import ImageUpload from './ImageUpload.vue'
 import AboutTzmeContent from './AboutTzmeContent.vue'
-import { availableLocales } from '../i18n/locales/index.js'
+import { editorLocales as availableLocales } from '../i18n/locales/index.js'
 import { ABOUT_ENTRY_COUNT, aboutSettingsDraft, aboutText, validAboutImage } from '../data/aboutTzme.js'
 import { loadAboutTzme, saveAboutTzme } from '../services/aboutTzme.js'
 import '../style/admin-editor.css'
@@ -19,7 +19,7 @@ const saving = ref(false)
 const uploading = ref(false)
 const error = ref(false)
 const editingPage = ref('home')
-const editingLocale = ref(locale.value)
+const editingLocale = ref('zh')
 const expandedEntry = ref(0)
 const section = computed(() => form.value?.[editingPage.value])
 const dirty = computed(() => form.value && JSON.stringify(form.value) !== original.value)
@@ -105,9 +105,7 @@ defineExpose({ load })
         <div class="about-settings-layout">
           <div class="about-settings-main">
             <AdminEditorPanel step="01" :title="$t('aboutTzmeAdmin.textSettings')" :description="$t('aboutTzmeAdmin.textHint')">
-              <el-radio-group v-model="editingLocale" class="about-settings-language">
-                <el-radio-button v-for="language in availableLocales" :key="language.code" :value="language.code">{{ language.label }}</el-radio-button>
-              </el-radio-group>
+
               <el-form-item v-for="field in textFields" :key="field.key" :label="$t('aboutTzmeAdmin.fields.' + field.key)" :required="!field.optional">
                 <el-input v-model="section[field.key][editingLocale]" :type="field.multiline ? 'textarea' : 'text'" :rows="3" :maxlength="field.max" show-word-limit />
               </el-form-item>

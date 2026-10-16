@@ -5,9 +5,11 @@ import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
 import SubsidiaryCards from './SubsidiaryCards.vue'
 import SocialLinksEditor from './SocialLinksEditor.vue'
+import ContactFacilityFields from './ContactFacilityFields.vue'
+import { emptyFacility, ensureContactFacilities, validFacilityImage } from '../data/contactFacilities.js'
 import { apiRequest } from '../services/api.js'
 import { attachmentTypes, inquiryFieldLabels, saveContactSettings } from '../services/contactSettings.js'
-import { availableLocales } from '../i18n/locales/index.js'
+import { editorLocales as availableLocales } from '../i18n/locales/index.js'
 import { ensureSocialLinkLocales, MAX_SOCIAL_LINKS, socialPlatforms, validSocialIcon, validSocialUrl } from '../data/socialLinks.js'
 import '../style/admin-editor.css'
 
@@ -16,9 +18,11 @@ const form = ref(null)
 const loading = ref(false)
 const saving = ref(false)
 const socialUploading = ref(false)
+const facilityUploads = ref(new Set())
+const uploading = computed(() => socialUploading.value || facilityUploads.value.size > 0)
 const activeTab = ref('contact')
-const editingLocale = ref(locale.value)
-const subsidiaryPreviewPage = ref('contact')
+const editingLocale = ref('zh')
+const subsidiaryPreviewPage = ref('about')
 const error = ref('')
 const original = ref('')
 const dirty = computed(() => JSON.stringify(form.value) !== original.value)
@@ -26,19 +30,20 @@ const bilingualContact = ['headquarters', 'address', 'port']
 const bilingualForm = ['title', 'buttonText', 'successText', 'closedText', 'privacyText']
 let disposed = false
 async function load() {
-  if (loading.value || saving.value || socialUploading.value) return
+  if (loading.value || saving.value || uploading.value) return
   loading.value = true; error.value = ''
   try {
     const value = await apiRequest('/api/contact-settings/admin')
-    if (!disposed) { form.value = ensureSocialLinkLocales(value, availableLocales.map(item => item.code)); original.value = JSON.stringify(form.value) }
+    if (!disposed) { form.value = ensureContactFacilities(ensureSocialLinkLocales(value, availableLocales.map(item => item.code))); original.value = JSON.stringify(form.value) }
   } catch { if (!disposed) error.value = t('contactAdmin.loadFailed') }
   finally { if (!disposed) loading.value = false }
 }
 function addSubsidiary() {
   if (form.value.subsidiaries.length >= 50) return
   const text = () => Object.fromEntries(availableLocales.map(({ code }) => [code, '']))
-  form.value.subsidiaries.push({ id: crypto.randomUUID(), name: text(), address: text(), phone: '', email: '', enabled: true, showOnAbout: true })
+  form.value.subsidiaries.push({ id: crypto.randomUUID(), name: text(), address: text(), phone: '', email: '', website: '', facility: emptyFacility(), enabled: true, showOnAbout: true })
 }
+function trackFacilityUpload(id, active) { active ? facilityUploads.value.add(id) : facilityUploads.value.delete(id) }
 function move(index, direction) {
   const items = form.value.subsidiaries
   const target = index + direction
@@ -54,7 +59,11 @@ function validate() {
   }
   if (value.contact.emails.some(email => !validEmail(email)) || value.subsidiaries.some(item => item.email && !validEmail(item.email))) return t('contactAdmin.emailInvalid')
   if (value.upload.enabled && !value.upload.allowedExtensions.length) return t('contactAdmin.selectTypes')
-  for (const links of Object.values(value.contact.socialLinks)) {
+  for (const item of [value.contact, ...value.subsidiaries]) {
+    if (!validFacilityImage(item.facility.image)) return t('contactAdmin.facilityImageInvalid')
+    if (['title', 'description', 'imageAlt'].some(key => typeof item.facility[key]?.zh !== 'string' || item.facility[key].zh.length > (key === 'description' ? 2000 : 255))) return t('contactAdmin.facilityTextInvalid')
+  }
+  for (const links of availableLocales.map(({code}) => value.contact.socialLinks[code] || [])) {
     if (!Array.isArray(links) || links.length > MAX_SOCIAL_LINKS || links.some(item => !socialPlatforms.includes(item.platform) || (item.enabled && !item.url.trim()) || (item.url.trim() && !validSocialUrl(item.url.trim())))) return t('contactAdmin.socialInvalid', { max: MAX_SOCIAL_LINKS })
     if (links.some(item => item.platform === 'link' && item.enabled && !item.label.trim())) return t('contactAdmin.socialCustomNameRequired')
     if (links.some(item => !validSocialIcon(item.icon ?? ''))) return t('contactAdmin.socialCustomIconInvalid')
@@ -63,14 +72,14 @@ function validate() {
 }
 async function save() {
   if (!form.value || saving.value || loading.value) return
-  if (socialUploading.value) { ElMessage.info(t('contactAdmin.socialIconUploading')); return }
+  if (uploading.value) { ElMessage.info(t('contactAdmin.imagesUploading')); return }
   const message = validate()
   if (message) { ElMessage.warning(message); return }
   saving.value = true
   try {
     const value = await saveContactSettings(form.value)
     if (disposed) return
-    form.value = value; original.value = JSON.stringify(value); error.value = ''
+    form.value = ensureContactFacilities(value); original.value = JSON.stringify(form.value); error.value = ''
     ElMessage.success(t('contactAdmin.saved'))
   } catch { if (!disposed) ElMessage.error(t('contactAdmin.saveFailed')) }
   finally { if (!disposed) saving.value = false }
@@ -86,7 +95,7 @@ defineExpose({ load })
     <el-form v-if="form" label-position="top" :disabled="saving" class="contact-settings-form" @submit.prevent="save">
       <div class="contact-settings-toolbar">
         <el-tabs v-model="activeTab"><el-tab-pane v-for="key in ['contact', 'subsidiaries', 'social', 'form']" :key="key" :name="key" :label="$t('contactAdmin.tabs.' + key)" /></el-tabs>
-        <el-radio-group v-model="editingLocale" size="small"><el-radio-button v-for="language in availableLocales" :key="language.code" :value="language.code">{{ language.label }}</el-radio-button></el-radio-group>
+
       </div>
       <div v-show="activeTab === 'contact'" class="contact-settings-grid">
         <AdminEditorPanel step="01" :title="$t('contactAdmin.contactText')" :description="$t('contactAdmin.sharedHint')">
@@ -104,14 +113,28 @@ defineExpose({ load })
         <p class="contact-settings-help">{{ $t('contactAdmin.subsidiaryHint') }}</p>
         <div class="contact-subsidiaries-layout">
           <div class="contact-subsidiaries-config">
-            <AdminEditorPanel v-for="(item, index) in form.subsidiaries" :key="item.id" :step="String(index + 1).padStart(2, '0')" :title="item.name[editingLocale] || $t('contactAdmin.newSubsidiary')" class="contact-subsidiary-panel">
+            <AdminEditorPanel step="01" :title="form.contact.facility.title.zh || form.contact.headquarters.zh" :description="$t('contactAdmin.headquartersFacilityHint')" class="contact-subsidiary-panel" data-company-editor="headquarters">
+              <ContactFacilityFields v-model="form.contact.facility" context-key="headquarters" :disabled="saving" :active="activeTab === 'subsidiaries'" @uploading="trackFacilityUpload('headquarters', $event)" />
+              <div class="contact-settings-grid contact-settings-grid-inside">
+                <div>
+                  <el-form-item :label="$t('contactAdmin.fields.headquarters')" required><el-input v-model="form.contact.headquarters.zh" maxlength="255" /></el-form-item>
+                  <el-form-item :label="$t('contactAdmin.fields.address')" required><el-input v-model="form.contact.address.zh" type="textarea" :rows="3" maxlength="2000" /></el-form-item>
+                </div>
+                <div>
+                  <el-form-item v-for="key in ['phone', 'website']" :key="key" :label="$t('contactAdmin.fields.' + key)"><el-input v-model="form.contact[key]" :maxlength="key === 'website' ? 500 : 255" /></el-form-item>
+                  <el-form-item :label="$t('contactAdmin.fields.emails')"><el-select v-model="form.contact.emails" multiple filterable allow-create default-first-option :multiple-limit="10" :placeholder="$t('contactAdmin.emailEnter')" /></el-form-item>
+                </div>
+              </div>
+            </AdminEditorPanel>
+            <AdminEditorPanel v-for="(item, index) in form.subsidiaries" :key="item.id" :step="String(index + 2).padStart(2, '0')" :title="item.name[editingLocale] || $t('contactAdmin.newSubsidiary')" class="contact-subsidiary-panel" :data-company-editor="'subsidiary-' + item.id">
+              <ContactFacilityFields v-model="item.facility" :context-key="'subsidiary-' + item.id" :disabled="saving" :active="activeTab === 'subsidiaries'" @uploading="trackFacilityUpload('subsidiary-' + item.id, $event)" />
               <div class="contact-settings-grid contact-settings-grid-inside">
                 <div><el-form-item :label="$t('contactAdmin.subsidiaryName')" required><el-input v-model="item.name[editingLocale]" maxlength="255" /></el-form-item><el-form-item :label="$t('site.address')" required><el-input v-model="item.address[editingLocale]" type="textarea" :rows="3" maxlength="2000" /></el-form-item></div>
-                <div><el-form-item v-for="key in ['phone', 'email']" :key="key" :label="$t('contactAdmin.fields.' + key)"><el-input v-model="item[key]" :maxlength="255" /></el-form-item></div>
+                <div><el-form-item v-for="key in ['phone', 'email', 'website']" :key="key" :label="$t('contactAdmin.fields.' + key)"><el-input v-model="item[key]" :maxlength="key === 'website' ? 500 : 255" /></el-form-item></div>
               </div>
-              <div class="contact-subsidiary-actions"><el-checkbox v-model="item.enabled">{{ $t('contactAdmin.visible') }}</el-checkbox><el-checkbox v-model="item.showOnAbout">{{ $t('contactAdmin.showOnAbout') }}</el-checkbox><el-button size="small" :disabled="index === 0" @click="move(index, -1)">{{ $t('contactAdmin.moveUp') }}</el-button><el-button size="small" :disabled="index === form.subsidiaries.length - 1" @click="move(index, 1)">{{ $t('contactAdmin.moveDown') }}</el-button><el-button size="small" type="danger" plain @click="form.subsidiaries.splice(index, 1)">{{ $t('admin.delete') }}</el-button></div>
+              <div class="contact-subsidiary-actions"><el-checkbox v-model="item.enabled">{{ $t('contactAdmin.visible') }}</el-checkbox><el-checkbox v-model="item.showOnAbout">{{ $t('contactAdmin.showOnAbout') }}</el-checkbox><el-button size="small" :disabled="uploading || index === 0" @click="move(index, -1)">{{ $t('contactAdmin.moveUp') }}</el-button><el-button size="small" :disabled="uploading || index === form.subsidiaries.length - 1" @click="move(index, 1)">{{ $t('contactAdmin.moveDown') }}</el-button><el-button size="small" type="danger" plain :disabled="uploading" @click="form.subsidiaries.splice(index, 1)">{{ $t('admin.delete') }}</el-button></div>
             </AdminEditorPanel>
-            <el-button type="primary" plain :disabled="form.subsidiaries.length >= 50" @click="addSubsidiary"><el-icon><Plus /></el-icon>{{ $t('contactAdmin.addSubsidiary') }}</el-button>
+            <el-button type="primary" plain :disabled="uploading || form.subsidiaries.length >= 50" @click="addSubsidiary"><el-icon><Plus /></el-icon>{{ $t('contactAdmin.addSubsidiary') }}</el-button>
           </div>
           <aside class="contact-subsidiaries-preview" :aria-label="$t('contactAdmin.subsidiaryPreview')">
             <AdminEditorPanel :title="$t('contactAdmin.subsidiaryPreview')" :description="$t('contactAdmin.subsidiaryPreviewHint')">
@@ -120,7 +143,7 @@ defineExpose({ load })
                 <el-radio-button value="about">{{ $t('contactAdmin.subsidiaryPreviewAbout') }}</el-radio-button>
               </el-radio-group>
               <div class="subsidiary-preview-body" tabindex="0" :aria-label="$t('contactAdmin.subsidiaryPreview')">
-                <SubsidiaryCards v-if="subsidiaryPreviewPage === 'about' || form.subsidiaries.some(item => item.enabled)" :configuration="form" :locale-code="editingLocale" :about-only="subsidiaryPreviewPage === 'about'" :include-headquarters="subsidiaryPreviewPage === 'about'" />
+                <SubsidiaryCards v-if="subsidiaryPreviewPage === 'about' || form.subsidiaries.some(item => item.enabled)" :configuration="form" :locale-code="editingLocale" :about-only="subsidiaryPreviewPage === 'about'" :include-headquarters="subsidiaryPreviewPage === 'about'" :show-media="subsidiaryPreviewPage === 'about'" />
                 <el-empty v-else :image-size="72" :description="$t('contactAdmin.subsidiaryPreviewEmpty')" />
               </div>
             </AdminEditorPanel>
@@ -142,7 +165,7 @@ defineExpose({ load })
           <el-form-item :label="$t('contactAdmin.maxFiles')"><el-input-number v-model="form.upload.maxFiles" :min="1" :max="10" :precision="0" controls-position="right" /></el-form-item>
         </AdminEditorPanel>
       </div>
-      <div class="contact-settings-footer"><span>{{ $t(socialUploading ? 'contactAdmin.socialIconUploading' : dirty ? 'contactAdmin.unsaved' : 'admin.editorSaveNote') }}</span><el-button type="primary" :loading="saving" :disabled="socialUploading" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}</el-button></div>
+      <div class="contact-settings-footer"><span>{{ $t(uploading ? 'contactAdmin.imagesUploading' : dirty ? 'contactAdmin.unsaved' : 'admin.editorSaveNote') }}</span><el-button type="primary" :loading="saving" :disabled="uploading" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}</el-button></div>
     </el-form>
   </div>
 </template>
@@ -164,6 +187,7 @@ defineExpose({ load })
 .subsidiary-preview-pages :deep(.el-radio-button) { flex: 1; }
 .subsidiary-preview-pages :deep(.el-radio-button__inner) { display: block; padding: 10px 8px; }
 .subsidiary-preview-body { max-height: max(280px, calc(100dvh - 290px)); overflow-y: auto; scrollbar-gutter: stable; overscroll-behavior: contain; padding: 16px; background: var(--navy); border-radius: 10px; font-family: var(--f-cn); }
+.subsidiary-preview-body:has(.facility-cards) { background: #f4f9fa; }
 .subsidiary-preview-body:focus-visible { outline: 2px solid var(--el-color-primary); outline-offset: 3px; }
 .subsidiary-preview-body :deep(.subsidiary-cards) { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
 .subsidiary-preview-body :deep(.el-empty__description p) { color: #c1cfdb; }

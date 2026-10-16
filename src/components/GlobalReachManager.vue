@@ -15,8 +15,8 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const { globalReach } = useGlobalReach()
 const { siteContent } = useSiteContent()
 const form = ref(createGlobalReachSettings(globalReach.value))
-const editingLocale = ref(locale.value === 'zh' ? 'zh' : 'en')
-const languages = [{ code: 'en', label: 'admin.english' }, { code: 'zh', label: 'admin.chinese' }]
+const editingLocale = ref('zh')
+const languages = [{ code: 'zh', label: 'admin.chinese' }]
 const loading = ref(false)
 const saving = ref(false)
 const uploading = ref(false)

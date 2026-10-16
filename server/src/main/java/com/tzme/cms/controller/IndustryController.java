@@ -24,6 +24,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class IndustryController {
     private static final Set<String> INITIAL_IDS = Set.of(
             "mining", "ports", "metallurgy", "energy", "construction");
+    private static final Set<String> PRESET_ICON_IDS = Set.of(
+            "mining", "ports", "metallurgy", "energy", "construction", "amusement",
+            "lifting-transport", "environmental", "steel-structures", "testing");
     private final IndustryRepository repository;
     private final ContentRepository contentRepository;
 
@@ -85,16 +88,15 @@ public class IndustryController {
     }
 
     private void validate(Industry input) {
-        if (input.getTitleEn() == null || input.getTitleEn().isBlank()
-                || input.getTitleZh() == null || input.getTitleZh().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "English and Chinese names are required");
+        if (input.getTitleZh() == null || input.getTitleZh().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A Chinese name is required");
         }
-        input.setTitleEn(input.getTitleEn().trim());
+        input.setTitleEn(input.getTitleEn() == null ? "" : input.getTitleEn().trim());
         input.setTitleZh(input.getTitleZh().trim());
         if (input.getIcon() != null) {
             String icon = input.getIcon().trim();
             boolean uploaded = icon.matches("/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)");
-            boolean preset = INITIAL_IDS.stream().anyMatch(id -> icon.equals("/assets/industry-icons/" + id + ".svg"));
+            boolean preset = PRESET_ICON_IDS.stream().anyMatch(id -> icon.equals("/assets/industry-icons/" + id + ".svg"));
             if (!icon.isEmpty() && !uploaded && !preset) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select an uploaded industry icon");
             }

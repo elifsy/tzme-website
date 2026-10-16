@@ -7,7 +7,7 @@ const content = ref(null)
 export async function loadWebsiteContent() {
   try {
     const value = await apiRequest('/api/site-settings')
-    if (!value?.translations?.en || !value.translations.zh || !value.assets || !value.values || !Array.isArray(value.mapCountries)) {
+    if (!value?.translations?.zh || !value.assets || !value.values || !Array.isArray(value.mapCountries)) {
       throw new Error('Invalid website settings')
     }
     for (const [code, messages] of Object.entries(value.translations)) {

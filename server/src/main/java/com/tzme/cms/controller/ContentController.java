@@ -28,10 +28,11 @@ public class ContentController {
         content.setType(type);
         if ("products".equals(type)) content.setIndustries(content.getIndustries());
         enforceHomeLimit(type, content);
-        content.setTitleEn(content.getTitleEn());
-        content.setCategoryEn(content.getCategoryEn());
-        content.setSummaryEn(content.getSummaryEn());
-        content.setContentEn(content.getContentEn());
+        content.setTitleEn(orEmpty(content.getTitleEn()));
+        content.setCategoryEn(orEmpty(content.getCategoryEn()));
+        content.setSummaryEn(orEmpty(content.getSummaryEn()));
+        content.setContentEn(orEmpty(content.getContentEn()));
+        normalizeLegacyFields(content);
         return repository.save(content);
     }
 
@@ -65,7 +66,18 @@ public class ContentController {
         existing.setShowOnHome(input.getShowOnHome());
         existing.setHomeOrder(input.getHomeOrder());
         enforceHomeLimit(type, existing);
+        normalizeLegacyFields(existing);
         return repository.save(existing);
+    }
+
+    private static String orEmpty(String value) { return value == null ? "" : value; }
+
+    // Chinese-only records still populate the original fields used by catalog filters and older clients.
+    private static void normalizeLegacyFields(Content content) {
+        content.setTitle(content.getTitleEn() == null || content.getTitleEn().isBlank() ? content.getTitleZh() : content.getTitleEn());
+        content.setCategory(content.getCategoryEn() == null || content.getCategoryEn().isBlank() ? content.getCategoryZh() : content.getCategoryEn());
+        content.setSummary(content.getSummaryEn() == null || content.getSummaryEn().isBlank() ? content.getSummaryZh() : content.getSummaryEn());
+        content.setContent(content.getContentEn() == null || content.getContentEn().isBlank() ? content.getContentZh() : content.getContentEn());
     }
 
     @DeleteMapping("/{type:products|articles}/{id}")

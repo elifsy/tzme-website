@@ -62,8 +62,8 @@ public class HomeGlobalController {
     }
 
     private static void requireText(HomeGlobalSettings.Text text) {
-        if (text.en().isBlank() || text.zh().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "English and Chinese content are required");
+        if (text.zh().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chinese content is required");
         }
     }
 

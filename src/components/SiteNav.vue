@@ -59,7 +59,7 @@ watch(
           @click="drawerOpen = true"
           >☰</el-button
         >
-        <LanguageSwitcher />
+        <LanguageSwitcher class="site-header-language" />
         <el-button
           class="hc-btn sm site-nav-contact"
           :class="overlay ? 'ghost' : 'solid'"
@@ -99,3 +99,9 @@ watch(
     <LanguageSwitcher mobile />
   </el-drawer>
 </template>
+
+<style scoped>
+@media (max-width: 700px) {
+  .hc-nav .hc-nav-r :deep(.site-header-language) { display: none !important; }
+}
+</style>
