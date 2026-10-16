@@ -16,7 +16,7 @@ import java.util.Set;
 @RequestMapping("/api/home-capabilities")
 public class HomeCapabilitiesController {
     private static final int MAX_STEPS = 8;
-    private static final Set<String> ICON_NAMES = Set.of("idea", "engineering", "design", "fabrication", "assembly", "delivery", "general");
+    private static final Set<String> ICON_NAMES = Set.of("requirements", "materials", "inspection", "idea", "engineering", "design", "fabrication", "assembly", "delivery", "general");
     private final SiteSettingsRepository repository;
     private final ObjectMapper mapper;
 

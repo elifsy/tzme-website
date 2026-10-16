@@ -1,8 +1,8 @@
 <script setup>
-import { Connection, EditPen, Grid, Opportunity, SetUp, Tools, Van } from '@element-plus/icons-vue'
+import { Box, CircleCheck, Connection, DocumentChecked, EditPen, Grid, Opportunity, SetUp, Tools, Van } from '@element-plus/icons-vue'
 
 defineProps({ iconMode: { type: String, default: 'preset' }, iconName: { type: String, default: 'general' }, icon: { type: String, default: '' } })
-const icons = { idea: Opportunity, engineering: SetUp, design: EditPen, fabrication: Tools, assembly: Connection, delivery: Van, general: Grid }
+const icons = { requirements: DocumentChecked, materials: Box, inspection: CircleCheck, idea: Opportunity, engineering: SetUp, design: EditPen, fabrication: Tools, assembly: Connection, delivery: Van, general: Grid }
 </script>
 
 <template>

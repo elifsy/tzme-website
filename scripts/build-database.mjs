@@ -12,6 +12,7 @@ import './build-j-design-migration.mjs'
 import './build-official-products-migration.mjs'
 import './build-home-solutions-migration.mjs'
 import './build-contact-facilities-migration.mjs'
+import './build-quality-positioning-migration.mjs'
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
 const recordPath = 'database/baseline/records.json'
@@ -268,7 +269,7 @@ writeFileSync(resolve(resources, '03-comments.sql'), comments)
 mkdirSync('database/migrations', { recursive: true })
 writeFileSync('database/migrations/2026-10-column-comments.sql', comments)
 writeFileSync(resolve(resources, '02-data.sql'), data)
-writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + contactMigration + '\n' + socialMigration + '\n' + industryIconMigration + '\n' + capabilitiesMigration + '\n' + analyticsMigration + '\n' + aboutMigration + '\n' + comments + '\n' + data + '\n' + readFileSync('server/src/main/resources/db/10-j-design.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/11-official-products.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/12-home-solutions.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/13-contact-facilities.sql','utf8'))
+writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + contactMigration + '\n' + socialMigration + '\n' + industryIconMigration + '\n' + capabilitiesMigration + '\n' + analyticsMigration + '\n' + aboutMigration + '\n' + comments + '\n' + data + '\n' + readFileSync('server/src/main/resources/db/10-j-design.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/11-official-products.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/12-home-solutions.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/13-contact-facilities.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/14-quality-positioning.sql','utf8'))
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

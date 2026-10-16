@@ -35,6 +35,7 @@ const visibleSteps = computed(() => (props.configuration?.steps || []).filter(st
 .capability-steps { display: grid; grid-template-columns: repeat(var(--capability-columns), minmax(0, 1fr)); gap: 0; margin: 56px 0 0; padding: 0; list-style: none; border-top: 1px solid #dbe3e9; max-width: 820px; }
 .capability-steps > li { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 26px 12px 4px; text-align: center; }
 .capability-step-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 40px; height: 40px; border: 1px solid #c3ced6; border-radius: 9px; background: #fff; }
+.home-capabilities:not(.capabilities-preview) .capability-step-icon { justify-content: flex-start; }
 .capability-step-number { display: block; margin-top: 16px; font-family: var(--f-din); font-size: 13px; font-weight: 700; line-height: 20px; color: #2375bf; }
 .capability-step-label { display: block; width: 100%; margin-top: 5px; font-size: 10.5px; font-weight: 700; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; color: #10283a; overflow-wrap: anywhere; }
 .home-capabilities.capabilities-preview { padding: 24px; border-radius: 10px; }

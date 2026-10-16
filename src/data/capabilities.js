@@ -1,5 +1,5 @@
 export const MAX_CAPABILITY_STEPS = 8
-export const capabilityIconNames = ['idea', 'engineering', 'design', 'fabrication', 'assembly', 'delivery', 'general']
+export const capabilityIconNames = ['requirements', 'materials', 'fabrication', 'assembly', 'inspection', 'delivery', 'general', 'idea', 'engineering', 'design']
 export const capabilityTextFields = ['kicker', 'titleLine1', 'titleLine2', 'description', 'imageAlt']
 export const capabilityText = (value, locale) => value?.[locale] || value?.en || ''
 export const validCapabilityImage = value => typeof value === 'string' && (value === '' || /^\/api\/uploads\/images\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|gif|webp)$/.test(value))

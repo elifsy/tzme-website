@@ -1,0 +1,992 @@
+{
+  "description": "中文官网以产品质量、制造工艺、检验与交付为核心；保留客观产品结构特征及历史英文资料。",
+  "changes": [
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "heavyEngineeringBuiltAroundYourChallenge"
+      ],
+      "before": [
+        "重型工程，专为您的挑战而造。"
+      ],
+      "after": "以制造实力，交付可靠品质。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "challenges"
+      ],
+      "before": [
+        "挑战而设计。"
+      ],
+      "after": "工况而制造。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "engineering"
+      ],
+      "before": [
+        "工程设计"
+      ],
+      "after": "装备制造"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "withoutLimits"
+      ],
+      "before": [
+        "不设边界。"
+      ],
+      "after": "品质为先。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "engineeringAndManufacturing"
+      ],
+      "before": [
+        "工程设计与制造"
+      ],
+      "after": "制造与质量控制"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "engineeringAtScale"
+      ],
+      "before": [
+        "大规模工程能力。"
+      ],
+      "after": "规模化制造能力。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "fromInitialConceptToFinalCommissioningOurEngineeringAndManufacturingCapabilitiesAre"
+      ],
+      "before": [
+        "从初步构想到最终调试，我们的工程设计和制造能力始终围绕每个项目的具体需求展开。"
+      ],
+      "after": "围绕客户图纸与技术要求，做好制造、装配与检验，关注产品质量与交付过程。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "largeScaleEngineeringRequiresMoreThanDesignItRequiresManufacturingCapabilityPrecision"
+      ],
+      "before": [
+        "大型工程不仅需要设计，还需要制造能力、精度与全过程控制。"
+      ],
+      "after": "大型装备的可靠交付，需要扎实的制造工艺、加工精度和质量控制。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "3dDesignAndSimulation"
+      ],
+      "before": [
+        "三维设计与仿真"
+      ],
+      "after": "材料与工艺检验"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "engineeredInChina"
+      ],
+      "before": [
+        "中国设计。"
+      ],
+      "after": "中国制造。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "everyUnitIsEngineeredToOrderCapacityGeometryAndDriveConfigurationAre"
+      ],
+      "before": [
+        "每台设备均按订单设计，产能、尺寸与驱动配置根据项目需求确定，而非从标准目录中选取。"
+      ],
+      "after": "每台设备按订单要求制造，产能、尺寸与驱动配置依据客户技术要求确定。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "tianjinHeavySteelMachineryEquipmentCoLtdDesignsFabricatesAndDeliversEngineered"
+      ],
+      "before": [
+        "天津重型钢结构机械设备有限公司设计、制造并交付按需定制的重型钢结构装备。从客户的工况要求或图纸开始，到设备在现场完成调试，设计、焊接、机加工、试装、出口包装和安装监督均由我们自主完成。"
+      ],
+      "after": "天津重钢机械装备股份有限公司专注非标机械装备制造。围绕客户图纸与技术要求，开展结构制造、焊接、机加工、装配与检验，衔接包装发运及交付配合。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "design"
+      ],
+      "before": [
+        "设计"
+      ],
+      "after": "焊接加工"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "concept"
+      ],
+      "before": [
+        "概念方案"
+      ],
+      "after": "需求确认"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "fromConcept"
+      ],
+      "before": [
+        "从概念"
+      ],
+      "after": "产品质量，"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "toReality"
+      ],
+      "before": [
+        "到现实。"
+      ],
+      "after": "贯穿制造与交付。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "projectContactText"
+      ],
+      "before": [
+        "联系我们的团队，了解适合您项目的设备与工程方案。"
+      ],
+      "after": "联系我们的团队，交流设备制造、质量要求与项目交付需求。"
+    },
+    {
+      "table": "site_settings",
+      "id": "website",
+      "path": [
+        "translations",
+        "zh",
+        "newsContactText"
+      ],
+      "before": [
+        "联系我们的团队，交流您的设备与工程需求。"
+      ],
+      "after": "联系我们的团队，交流您的设备制造与供货需求。"
+    },
+    {
+      "table": "site_settings",
+      "id": "about-tzme",
+      "path": [
+        "home",
+        "description",
+        "zh"
+      ],
+      "before": [
+        "以工程设计、结构制造和装配交付能力，为全球客户提供港口、矿山、能源等领域的非标机械装备与系统解决方案。"
+      ],
+      "after": "以产品质量为核心，围绕客户图纸与技术要求，提供结构制造、焊接加工、装配检验与交付服务，服务港口、矿山、能源等领域的装备需求。"
+    },
+    {
+      "table": "site_settings",
+      "id": "about-tzme",
+      "path": [
+        "home",
+        "titleLine1",
+        "zh"
+      ],
+      "before": [
+        "工程设计"
+      ],
+      "after": "从制造基地，"
+    },
+    {
+      "table": "site_settings",
+      "id": "about-tzme",
+      "path": [
+        "home",
+        "titleLine2",
+        "zh"
+      ],
+      "before": [
+        "不设边界。"
+      ],
+      "after": "到全球工程现场。"
+    },
+    {
+      "table": "site_settings",
+      "id": "about-tzme",
+      "path": [
+        "about",
+        "titleLine1",
+        "zh"
+      ],
+      "before": [
+        "工程设计"
+      ],
+      "after": "中国制造，"
+    },
+    {
+      "table": "site_settings",
+      "id": "about-tzme",
+      "path": [
+        "about",
+        "titleLine2",
+        "zh"
+      ],
+      "before": [
+        "不设边界。"
+      ],
+      "after": "服务全球工程。"
+    },
+    {
+      "table": "site_settings",
+      "id": "about-tzme",
+      "path": [
+        "about",
+        "description",
+        "zh"
+      ],
+      "before": [
+        "天津重型钢结构机械设备有限公司设计、制造并交付按需定制的重型钢结构装备。从客户的工况要求或图纸开始，到设备在现场完成调试，设计、焊接、机加工、试装、出口包装和安装监督均由我们自主完成。",
+        "公司是一家主要面向国际市场的非标机械装备定制服务商，主要产品有港口机械、矿山机械、造桥机械、旅游观光设施及其他大型连续搬运装备、起重机械、冶金设备、压力容器、环保设备和特种船舶等，年综合生产能力达4.5万吨以上。公司保有一批国际知名的高端客户，产品出口到美国、德国、澳大利亚、巴西、日本、南非、加拿大、丹麦、韩国等六十多个国家和地区。"
+      ],
+      "after": "公司是一家主要面向国际市场的非标机械装备制造服务商，以产品质量为核心，围绕客户图纸与技术要求，开展结构制造、焊接加工、装配与检验，配合项目交付。主要产品涵盖港口机械、矿山机械、造桥机械、旅游观光设施、连续搬运装备、起重机械、冶金设备、压力容器、环保设备和特种船舶等，年综合生产能力达4.5万吨以上，产品出口至六十多个国家和地区。"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "path": [
+        "kicker",
+        "zh"
+      ],
+      "before": [
+        "我们的能力"
+      ],
+      "after": "制造与质量"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "path": [
+        "titleLine1",
+        "zh"
+      ],
+      "before": [
+        "从概念"
+      ],
+      "after": "产品质量，"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "path": [
+        "titleLine2",
+        "zh"
+      ],
+      "before": [
+        "到现实。"
+      ],
+      "after": "贯穿制造与交付。"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "path": [
+        "description",
+        "zh"
+      ],
+      "before": [
+        "从初步构想到最终调试，我们的工程设计和制造能力始终围绕每个项目的具体需求展开。"
+      ],
+      "after": "以产品质量为核心，围绕客户图纸和技术要求，做好材料准备、焊接加工、装配试装与质量检验，衔接包装发运与现场交付。"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-concept",
+        "field": [
+          "label",
+          "zh"
+        ]
+      },
+      "before": [
+        "概念方案"
+      ],
+      "after": "需求确认"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-concept",
+        "field": [
+          "iconName"
+        ]
+      },
+      "before": [
+        "idea"
+      ],
+      "after": "requirements"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-engineering",
+        "field": [
+          "label",
+          "zh"
+        ]
+      },
+      "before": [
+        "工程设计"
+      ],
+      "after": "材料准备"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-engineering",
+        "field": [
+          "iconName"
+        ]
+      },
+      "before": [
+        "engineering"
+      ],
+      "after": "materials"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-design",
+        "field": [
+          "label",
+          "zh"
+        ]
+      },
+      "before": [
+        "设计"
+      ],
+      "after": "焊接加工"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-design",
+        "field": [
+          "iconName"
+        ]
+      },
+      "before": [
+        "design"
+      ],
+      "after": "fabrication"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-fabrication",
+        "field": [
+          "label",
+          "zh"
+        ]
+      },
+      "before": [
+        "制造"
+      ],
+      "after": "装配试装"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-fabrication",
+        "field": [
+          "iconName"
+        ]
+      },
+      "before": [
+        "fabrication"
+      ],
+      "after": "assembly"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-assembly",
+        "field": [
+          "label",
+          "zh"
+        ]
+      },
+      "before": [
+        "装配"
+      ],
+      "after": "质量检验"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-assembly",
+        "field": [
+          "iconName"
+        ]
+      },
+      "before": [
+        "assembly"
+      ],
+      "after": "inspection"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-delivery",
+        "field": [
+          "label",
+          "zh"
+        ]
+      },
+      "before": [
+        "交付"
+      ],
+      "after": "包装交付"
+    },
+    {
+      "table": "site_settings",
+      "id": "capabilities",
+      "item": {
+        "array": "steps",
+        "id": "capability-delivery",
+        "field": [
+          "iconName"
+        ]
+      },
+      "before": [
+        "delivery"
+      ],
+      "after": "delivery"
+    },
+    {
+      "table": "home_global_settings",
+      "id": 1,
+      "path": [
+        "titleLine1",
+        "zh"
+      ],
+      "before": [
+        "中国设计。"
+      ],
+      "after": "中国制造。"
+    },
+    {
+      "table": "site_settings",
+      "id": "home-solutions",
+      "path": [
+        "industries",
+        "construction",
+        "description",
+        "zh"
+      ],
+      "before": [
+        "面向建筑与基础设施领域的项目需求，结合现场空间、作业流程与安装条件，提供定制化装备及结构制造服务，衔接工程设计与现场交付。"
+      ],
+      "after": "面向建筑与基础设施领域的项目需求，结合客户图纸、现场条件与安装要求，提供定制化装备及结构制造服务，关注制造质量、装配检验与交付配合。"
+    },
+    {
+      "table": "site_settings",
+      "id": "contact",
+      "path": [
+        "contact",
+        "facility",
+        "description",
+        "zh"
+      ],
+      "before": [
+        "工程项目执行与客户协作的中心。"
+      ],
+      "after": "客户沟通、项目协调与交付配合的中心。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "material-handling",
+      "field": "specifications_zh",
+      "before": [
+        "应用：散料料场\n服务范围：设计、制造与集成\n配置：根据项目需求定制"
+      ],
+      "after": "应用：散料料场\n服务范围：制造、装配与集成\n配置：根据项目需求定制"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "conveying",
+      "field": "specifications_zh",
+      "before": [
+        "应用：散料运输\n服务范围：输送系统设计与制造\n配置：依据线路条件确定"
+      ],
+      "after": "应用：散料运输\n服务范围：输送设备制造与装配\n配置：依据线路条件确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "mining-equipment",
+      "field": "specifications_zh",
+      "before": [
+        "应用：矿山作业\n服务范围：工程设计与制造\n配置：依据现场条件确定"
+      ],
+      "after": "应用：矿山作业\n服务范围：制造与装配\n配置：依据现场条件确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "port-machinery",
+      "field": "specifications_zh",
+      "before": [
+        "应用：港口与码头\n服务范围：设计、制造与集成\n配置：依据泊位与货物确定"
+      ],
+      "after": "应用：港口与码头\n服务范围：制造、装配与集成\n配置：依据泊位与货物确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bridge-equipment",
+      "field": "specifications_zh",
+      "before": [
+        "应用：桥梁建设\n服务范围：设备设计与制造\n配置：依据项目确定"
+      ],
+      "after": "应用：桥梁建设\n服务范围：设备制造与装配\n配置：依据项目确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "metallurgy",
+      "field": "specifications_zh",
+      "before": [
+        "应用：冶金工厂\n服务范围：定制设计与制造\n配置：依据工艺确定"
+      ],
+      "after": "应用：冶金工厂\n服务范围：定制制造与装配\n配置：依据工艺确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "environmental",
+      "field": "specifications_zh",
+      "before": [
+        "应用：环保设施\n服务范围：设计与制造\n配置：依据工艺确定"
+      ],
+      "after": "应用：环保设施\n服务范围：制造与装配\n配置：依据工艺确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "tourism",
+      "field": "specifications_zh",
+      "before": [
+        "应用：旅游设施\n服务范围：设计与制造\n配置：依据项目确定"
+      ],
+      "after": "应用：旅游设施\n服务范围：制造与装配\n配置：依据项目确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "pipe-rack",
+      "field": "specifications_zh",
+      "before": [
+        "应用：能源基础设施\n服务范围：设计、制造与装配\n配置：根据项目要求定制"
+      ],
+      "after": "应用：能源基础设施\n服务范围：制造、装配与检验\n配置：根据项目要求定制"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "rotor-sail",
+      "field": "specifications_zh",
+      "before": [
+        "应用：海洋工程\n服务范围：设计、制造与装配\n配置：根据项目要求定制"
+      ],
+      "after": "应用：海洋工程\n服务范围：制造、装配与检验\n配置：根据项目要求定制"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "mining-equipment",
+      "field": "content_zh",
+      "before": [
+        "面向矿山作业的重型设备与工程结构，可根据严苛工况和现场条件进行设计。"
+      ],
+      "after": "面向矿山作业的重型设备与工程结构，围绕客户图纸、工况和技术要求开展制造、装配与检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "mining-equipment",
+      "field": "features_zh",
+      "before": [
+        "开采与物料运输设备\n适合连续运行的结构设计\n按项目考虑维护通道"
+      ],
+      "after": "开采与物料运输设备\n结构制造与焊接质量控制\n按项目要求配置维护通道"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bridge-equipment",
+      "field": "content_zh",
+      "before": [
+        "面向桥梁施工与安装的专用设备，结合每个项目的几何条件和施工顺序设计。"
+      ],
+      "after": "面向桥梁施工与安装的专用设备，按客户图纸及项目技术要求开展结构制造、装配和质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bridge-equipment",
+      "field": "features_zh",
+      "before": [
+        "施工与架设设备\n按项目进行结构设计\n装配与安装规划"
+      ],
+      "after": "施工与架设设备\n按项目图纸开展结构制造\n装配与交付配合"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "custom-engineering",
+      "field": "title_zh",
+      "before": [
+        "定制工程"
+      ],
+      "after": "非标装备制造"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "custom-engineering",
+      "field": "category_zh",
+      "before": [
+        "工程设计"
+      ],
+      "after": "定制制造"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "custom-engineering",
+      "field": "summary_zh",
+      "before": [
+        "从方案设计、制造到调试与服务。"
+      ],
+      "after": "围绕客户图纸与技术要求，开展制造、装配、检验与交付服务。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "custom-engineering",
+      "field": "content_zh",
+      "before": [
+        "从前期方案、设计、制造、装配到调试支持的定制机械项目。"
+      ],
+      "after": "承接非标机械装备的定制制造，按客户图纸与技术要求组织结构制作、焊接加工、装配试装和质量检验，配合项目交付。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "custom-engineering",
+      "field": "features_zh",
+      "before": [
+        "方案与可行性支持\n机械与结构设计\n制造、装配与调试支持"
+      ],
+      "after": "客户图纸与技术要求确认\n结构制造、焊接与机加工\n装配试装、质量检验与交付配合"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "custom-engineering",
+      "field": "specifications_zh",
+      "before": [
+        "应用：定制工业项目\n服务范围：全流程工程服务\n配置：与客户共同确定"
+      ],
+      "after": "应用：定制工业项目\n服务范围：制造、装配、检验与交付配合\n配置：依据客户图纸与技术要求确定"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "tourism",
+      "field": "features_zh",
+      "before": [
+        "大型景区设施结构\n适配现场的设备设计\n装配与安装支持"
+      ],
+      "after": "大型景区设施结构\n按图制造与质量检验\n装配与安装配合"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "rotor-sail",
+      "field": "content_zh",
+      "before": [
+        "围绕客户项目的结构、装配与交付需求，开展工程设计与制造。"
+      ],
+      "after": "围绕客户项目的结构、装配与交付要求，开展结构制造、加工装配与质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "roller-coaster",
+      "field": "summary_zh",
+      "before": [
+        "面向主题乐园的过山车制造，可结合场地与游乐体验设计轨道结构，并开展制造质量检测。"
+      ],
+      "after": "面向主题乐园的过山车及配套结构制造，围绕客户图纸、技术要求和使用场景开展加工、装配与质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "ferris-wheel",
+      "field": "summary_zh",
+      "before": [
+        "提供摩天轮及观光轿厢相关制造，结合景区客流、观光体验与运行要求开展定制设计。"
+      ],
+      "after": "提供摩天轮及观光轿厢相关制造，围绕客户图纸与技术要求，关注结构制造、装配和质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "machinery-boom",
+      "field": "summary_zh",
+      "before": [
+        "用于起重机、挖掘机等工程机械的抓取、搬运和吊装，结合高强度合金材料、焊接工艺与结构设计适应复杂工况。"
+      ],
+      "after": "用于起重机、挖掘机等工程机械的抓取、搬运和吊装，采用高强度合金材料与焊接工艺，按客户图纸和技术要求制造。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "offshore-pipe-piles",
+      "field": "summary_zh",
+      "before": [
+        "面向海上平台、风电基础、深水港及人工岛的大直径钢管桩，结合波浪、海流、船舶冲击及腐蚀等海洋工况设计制造。"
+      ],
+      "after": "面向海上平台、风电基础、深水港及人工岛的大直径钢管桩，按照客户图纸和技术要求制造，关注钢材、焊接、防腐与尺寸控制。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bridge-steel-structure",
+      "field": "summary_zh",
+      "before": [
+        "服务跨河、跨谷及跨路桥梁的结构工程，结合设计与制造技术，满足交通及市政建设需求。"
+      ],
+      "after": "服务跨河、跨谷及跨路桥梁的钢结构制造，围绕客户图纸与技术要求，开展构件加工、焊接、装配和质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bulk-hopper",
+      "field": "summary_zh",
+      "before": [
+        "用于散料收集、暂存与转运，可根据物料特性设计料斗形状、壁面倾角与出料口，配置闸门或给料机控制流量。"
+      ],
+      "after": "用于散料收集、暂存与转运，按照客户图纸及物料参数制造，配套闸门或给料机控制出料。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "roller-coaster",
+      "field": "content_zh",
+      "before": [
+        "面向主题乐园的过山车制造，可结合场地与游乐体验设计轨道结构，并开展制造质量检测。"
+      ],
+      "after": "面向主题乐园的过山车及配套结构制造，围绕客户图纸、技术要求和使用场景开展加工、装配与质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "ferris-wheel",
+      "field": "content_zh",
+      "before": [
+        "提供摩天轮及观光轿厢相关制造，结合景区客流、观光体验与运行要求开展定制设计。"
+      ],
+      "after": "提供摩天轮及观光轿厢相关制造，围绕客户图纸与技术要求，关注结构制造、装配和质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "machinery-boom",
+      "field": "content_zh",
+      "before": [
+        "用于起重机、挖掘机等工程机械的抓取、搬运和吊装，结合高强度合金材料、焊接工艺与结构设计适应复杂工况。"
+      ],
+      "after": "用于起重机、挖掘机等工程机械的抓取、搬运和吊装，采用高强度合金材料与焊接工艺，按客户图纸和技术要求制造。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "offshore-pipe-piles",
+      "field": "content_zh",
+      "before": [
+        "面向海上平台、风电基础、深水港及人工岛的大直径钢管桩，结合波浪、海流、船舶冲击及腐蚀等海洋工况设计制造。"
+      ],
+      "after": "面向海上平台、风电基础、深水港及人工岛的大直径钢管桩，按照客户图纸和技术要求制造，关注钢材、焊接、防腐与尺寸控制。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bridge-steel-structure",
+      "field": "content_zh",
+      "before": [
+        "服务跨河、跨谷及跨路桥梁的结构工程，结合设计与制造技术，满足交通及市政建设需求。"
+      ],
+      "after": "服务跨河、跨谷及跨路桥梁的钢结构制造，围绕客户图纸与技术要求，开展构件加工、焊接、装配和质量检验。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bulk-hopper",
+      "field": "content_zh",
+      "before": [
+        "用于散料收集、暂存与转运，可根据物料特性设计料斗形状、壁面倾角与出料口，配置闸门或给料机控制流量。"
+      ],
+      "after": "用于散料收集、暂存与转运，按照客户图纸及物料参数制造，配套闸门或给料机控制出料。"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "roller-coaster",
+      "field": "features_zh",
+      "before": [
+        "多重安全防护设计\n轨道设计适配速度、回转与翻转体验\n根据主题乐园需求定制\n制造质量检验与测试"
+      ],
+      "after": "配套安全防护装置\n轨道结构按图制造与装配\n根据项目技术要求制造配套结构\n制造质量检验与测试"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "ferris-wheel",
+      "field": "features_zh",
+      "before": [
+        "承载设计适配景区运营需求\n自动控制，支持平稳运行与精准停靠\n质量检测与安全检验\n根据景区需求定制结构与轿厢"
+      ],
+      "after": "承载结构按技术要求制造\n自动控制，支持平稳运行与精准停靠\n质量检测与安全检验\n根据景区需求制造配套结构与轿厢"
+    },
+    {
+      "table": "site_content",
+      "type": "products",
+      "id": "bulk-hopper",
+      "field": "features_zh",
+      "before": [
+        "碳钢或按工况选材，采用锥形或方形斗体\n按物料特性设计壁面倾角，改善重力流动\n闸门或给料机配套控制出料\n加强筋与钢架支承\n防锈防腐处理，便于安装维护"
+      ],
+      "after": "碳钢或按工况选材，采用锥形或方形斗体\n斗体角度与出料口按图加工，关注尺寸与焊接质量\n闸门或给料机配套控制出料\n加强筋与钢架支承\n防锈防腐处理，便于安装维护"
+    },
+    {
+      "table": "site_content",
+      "type": "articles",
+      "id": "quality-system",
+      "field": "content_zh",
+      "before": [
+        "<h2>贯穿交付全过程的质量管理</h2><p>复杂工业装备的交付涉及设计、制造和现场工作。明确的技术要求与可追溯的记录，将各阶段的质量管理连接起来。</p><h2>从需求评审到检验交付</h2><ul><li>在工程设计阶段评审运行工况。</li><li>记录材料、制造过程和检验信息。</li><li>将调试结果纳入最终交付资料。</li></ul><blockquote>可靠交付，始于每个阶段对细节的关注。</blockquote>"
+      ],
+      "after": "<h2>贯穿交付全过程的质量管理</h2><p>复杂工业装备的交付涉及材料、制造、检验和现场配合。明确的技术要求与可追溯的记录，将各阶段的质量管理连接起来。</p><h2>从需求确认到检验交付</h2><ul><li>制造前确认客户图纸、运行工况与质量要求。</li><li>记录材料、制造过程和检验信息。</li><li>将装配检验与调试记录纳入交付资料。</li></ul><blockquote>可靠交付，始于每个阶段对细节的关注。</blockquote>"
+    },
+    {
+      "table": "site_content",
+      "type": "articles",
+      "id": "global-partnership",
+      "field": "content_zh",
+      "before": [
+        "<h2>在协作中推进工程项目</h2><p>工业项目需要不同团队、专业和市场之间对需求形成共同理解。长期合作为项目全过程中的务实沟通创造条件。</p><h2>设备全生命周期支持</h2><p>协作在交付后持续进行。运行反馈和维护需求的共享，帮助工程团队了解设备在实际现场中的使用情况。</p>"
+      ],
+      "after": "<h2>在协作中推进项目交付</h2><p>工业项目需要客户与制造团队对图纸、技术要求和交付安排形成共同理解。长期合作为项目全过程中的务实沟通创造条件。</p><h2>交付与使用反馈</h2><p>协作在交付后持续进行。运行反馈和维护需求的共享，帮助团队了解设备在实际现场中的使用情况。</p>"
+    },
+    {
+      "table": "site_content",
+      "type": "articles",
+      "id": "manufacturing",
+      "field": "content_zh",
+      "before": [
+        "<h2>制造背后的人员与流程</h2><p>重型装备制造将工程图纸、制造计划与专业团队的工作结合起来。各项工作的协调推进，使设计逐步转化为可交付的设备。</p><h2>相互衔接的制造过程</h2><p>材料准备、制作、装配和检验共同影响最终结果。各阶段之间的沟通，帮助团队及时处理制造过程中的实际问题。</p>"
+      ],
+      "after": "<h2>制造背后的人员与流程</h2><p>重型装备制造将客户图纸、制造计划与专业团队的工作结合起来。各项工作的协调推进，将技术要求落实到可交付的设备。</p><h2>相互衔接的制造过程</h2><p>材料准备、制作、装配和检验共同影响最终结果。各阶段之间的沟通，帮助团队及时处理制造过程中的实际问题。</p>"
+    }
+  ]
+}

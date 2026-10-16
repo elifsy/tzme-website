@@ -180,6 +180,12 @@ npm run db:build
 
 `node scripts/build-official-products-migration.mjs` 生成增量迁移 `database/migrations/2026-10-15-official-products.sql` 和 Java 的 `11-official-products.sql`；`npm run db:build` 同时更新完整安装 SQL。Java 启动会自动执行该迁移。迁移仅补入缺失记录及行业关联，保留已编辑内容、删除标记与首页推荐，重复执行不会重复添加。本机导入前的备份保存在 Git 忽略的 `database/snapshots/before-official-products-2026-10-15/`。
 
+## 官网宣传定位
+
+中文官网宣传以产品质量、制造工艺、检验与交付为核心，避免将独立设计、概念方案或研发作为服务承诺。首页能力流程默认为“需求确认、材料准备、焊接加工、装配试装、质量检验、包装交付”，仍可在首页能力配置中编辑；企业介绍、全球业务、方案文案与企业卡片仍通过原后台入口维护。
+
+本次文案调整记录于 `database/baseline/quality-positioning.json`，生成脚本为 `node scripts/build-quality-positioning-migration.mjs`。Java 自动执行 `14-quality-positioning.sql`；现有数据库也可导入 `database/migrations/2026-10-16-quality-positioning.sql`。迁移仅首次更新仍等于已知原文案的中文字段，流程按稳定 ID 关联，保留自定义文案、英文资料、图片、排序、显示状态及邮件配置，重复执行保留后台修改。完整安装 SQL 已包含该迁移。历史基础种子保持原状，新安装按顺序应用迁移后使用新的文案。
+
 ## 首页方案文案配置
 
 后台入口：`/admin/solutions`（页面配置 → 首页方案）。可以分别编辑中文模块小标题、模块主标题、全部方案按钮文字，以及每个产品的小标题、主标题和描述；主标题支持换行。产品的首页展示开关、顺序与图片仍在产品管理中维护。

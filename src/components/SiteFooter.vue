@@ -14,7 +14,7 @@ const address = computed(() => contactText(contactSettings.value?.contact.addres
 </script>
 
 <template>
-  <section class="j-footer-cta"><div class="hc-w"><div><h2>{{ locale === 'zh' ? '与我们的工程团队交流' : 'Talk to our engineering team' }}</h2><p>{{ locale === 'zh' ? '从一项需求开始，探讨适合您项目的装备与工程方案。' : 'Explore equipment and engineering shaped around your project.' }}</p></div><router-link class="j-button" to="/contact">{{ $t('site.contactUs') }}<span>→</span></router-link></div></section>
+  <section class="j-footer-cta"><div class="hc-w"><div><h2>{{ locale === 'zh' ? '交流您的制造需求' : 'Talk to our engineering team' }}</h2><p>{{ locale === 'zh' ? '围绕客户图纸、质量要求和交付计划，交流装备制造与供货需求。' : 'Explore equipment and engineering shaped around your project.' }}</p></div><router-link class="j-button" to="/contact">{{ $t('site.contactUs') }}<span>→</span></router-link></div></section>
   <footer class="site-footer" role="contentinfo" data-site-nav>
     <div class="site-footer-inner">
       <div class="site-footer-main">
