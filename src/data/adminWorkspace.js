@@ -5,7 +5,7 @@ export const adminModules = {
   industries: { label: '行业分类', group: 'content', icon: 'Grid', description: '先维护行业名称与图标，再将产品关联到行业；已发布行业会出现在首页 Banner 下方。', steps: ['维护行业', '关联产品', '检查官网展示'], related: ['products', 'home'], preview: '/#industries' },
   products: { label: '产品资料', group: 'content', icon: 'Box', description: '集中维护产品介绍、图片、所属行业和首页推荐，产品资料与首页方案文案分别维护。', steps: ['名称与行业', '介绍、图片与参数', '发布与首页推荐'], related: ['industries', 'solutions'], preview: '/solutions' },
   projects: { label: '项目案例', group: 'content', icon: 'Collection', description: '填写项目名称、供货范围与图片，再设置发布状态和首页展示。', steps: ['项目基本资料', '供货范围与图片', '预览并发布'], related: ['home'], preview: '/projects' },
-  articles: { label: '新闻资讯', group: 'content', icon: 'Document', description: '维护新闻标题、摘要、封面和正文，填写发布日期后预览并发布。', steps: ['标题与摘要', '封面与正文', '日期与发布状态'], related: ['home'], preview: '/insights' },
+  articles: { label: '新闻资讯', group: 'content', icon: 'Document', description: '维护独立资讯页面的新闻标题、摘要、封面和正文，填写发布日期后预览并发布。', steps: ['标题与摘要', '封面与正文', '日期与发布状态'], preview: '/insights' },
   home: { label: '首页配置导航', group: 'pages', icon: 'OfficeBuilding', description: '按照官网从上到下的顺序找到配置入口，查看桌面与手机端的已保存效果。', preview: '/' },
   solutions: { label: '首页方案文案', group: 'pages', icon: 'Grid', description: '先在产品资料中选择首页推荐，再填写对应的方案标题、介绍和行业按钮。', steps: ['选择推荐产品', '填写方案文案', '预览行业按钮'], related: ['products', 'industries', 'home'], preview: '/#solutions' },
   capabilities: { label: '制造与质量流程', group: 'pages', icon: 'Tools', description: '维护栏目文案、工序名称和说明；预览支持与官网相同的工序切换。', steps: ['栏目标题与说明', '工序、图标与顺序', '切换预览并保存'], related: ['certifications', 'home'], preview: '/#capabilities' },

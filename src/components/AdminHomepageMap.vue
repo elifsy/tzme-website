@@ -19,7 +19,6 @@ const modules = [
   { title: '项目案例', description: '在项目资料中设置首页展示，使用真实项目与供货信息。', to: '/admin/projects', action: '管理项目' },
   { title: '资质与质量体系', description: '维护关于我们页的资质资料，首页保留品质入口。', to: '/admin/certifications', action: '维护资质' },
   { title: '全球业务', description: '编辑业务文案、地图位置和统计数据。', to: '/admin/global', action: '配置全球业务' },
-  { title: '新闻资讯', description: '发布的新闻用于官网资讯列表与首页最新内容。', to: '/admin/articles', action: '管理资讯' },
   { title: '联系与咨询', description: '企业联系方式、咨询表单、附件与邮件通知分别维护。', to: '/admin/contact', action: '联系方式', second: { to: '/admin/forms', label: '表单与附件' } },
 ]
 </script>

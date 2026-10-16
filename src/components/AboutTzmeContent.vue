@@ -31,12 +31,12 @@ defineProps({
 .about-tzme-title { margin-top: 18px; color: var(--txt); overflow-wrap: anywhere; }
 .about-tzme-description { max-width: 540px; margin-top: 20px; white-space: pre-line; overflow-wrap: anywhere; }
 .about-tzme-description + .about-tzme-description { margin-top: 18px; }
-.about-tzme-entries { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 40px; }
+.about-tzme-entries { grid-template-columns: repeat(4, minmax(min-content, 1fr)); margin-top: 40px; }
 .about-tzme-entries > div, .about-tzme-entries > div + div { min-width: 0; padding: 24px 10px 4px; }
 .about-tzme-entries > div:first-child { padding-left: 0; }
 .about-tzme-entries > div:last-child { padding-right: 0; }
-.about-tzme-entries .hc-stat { font-size: clamp(20px, 1.8vw, 28px); line-height: 1.3; white-space: normal; overflow-wrap: anywhere; }
-.about-tzme-entries .hc-stat u { margin-left: 4px; font-size: 12px; white-space: normal; }
+.about-tzme-entries .hc-stat { font-size: clamp(20px, 1.8vw, 28px); line-height: 1.3; white-space: nowrap; overflow-wrap: normal; }
+.about-tzme-entries .hc-stat u { margin-left: 4px; font-size: 12px; white-space: nowrap; }
 .about-tzme-entries .hc-stat-cap { margin-top: 10px; color: #bccddb; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 @media (max-width: 700px) {
   .about-tzme-entries { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 0; }
