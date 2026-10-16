@@ -1,9 +1,14 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowDown, ArrowUp, CircleCheckFilled } from '@element-plus/icons-vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import AdminPreviewFrame from './AdminPreviewFrame.vue'
+import AdminSaveBar from './AdminSaveBar.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
+
 import ImageUpload from './ImageUpload.vue'
 import AboutTzmeContent from './AboutTzmeContent.vue'
 import { editorLocales as availableLocales } from '../i18n/locales/index.js'
@@ -19,6 +24,8 @@ const saving = ref(false)
 const uploading = ref(false)
 const error = ref(false)
 const editingPage = ref('home')
+const route = useRoute()
+watch(() => route.query.page, page => { if (['home', 'about'].includes(page)) editingPage.value = page }, { immediate: true })
 const editingLocale = ref('zh')
 const expandedEntry = ref(0)
 const section = computed(() => form.value?.[editingPage.value])
@@ -90,6 +97,7 @@ async function save() {
 }
 onMounted(load)
 onBeforeUnmount(() => { disposed = true })
+useAdminEditorState({ dirty, saving, loading, uploading })
 defineExpose({ load })
 </script>
 
@@ -138,20 +146,13 @@ defineExpose({ load })
             </AdminEditorPanel>
           </div>
           <aside class="about-settings-preview">
-            <AdminEditorPanel :title="$t('aboutTzmeAdmin.preview')" :description="$t('aboutTzmeAdmin.previewHint')">
-              <div class="about-settings-preview-scroll" tabindex="0" :aria-label="$t('aboutTzmeAdmin.preview')">
-                <div class="design-site about-preview-surface" :class="{ 'about-preview-background': editingPage === 'about' }">
-                  <el-image v-if="section.image" :src="section.image" :alt="aboutText(section.imageAlt, editingLocale)" fit="cover" class="about-preview-image" />
-                  <div class="about-preview-copy"><AboutTzmeContent :configuration="section" :locale-code="editingLocale" /></div>
-                </div>
-              </div>
-            </AdminEditorPanel>
+            <AdminPreviewFrame :title="editingPage === 'home' ? '首页企业简介预览' : '关于我们预览'" :public-path="editingPage === 'home' ? '/' : '/about'">
+              <section v-if="editingPage === 'home'" class="hc-sec j-manufacturing"><div class="hc-w j-split"><div><AboutTzmeContent :configuration="section" :locale-code="editingLocale"/><a class="j-link" href="/about">走进重钢机械<span>→</span></a></div><figure><div class="j-factory-photo"><img v-if="section.image" :src="section.image" :alt="aboutText(section.imageAlt, editingLocale)"/></div><figcaption>TIANJIN / FABRICATION · QUALITY · DELIVERY</figcaption></figure></div></section>
+              <section v-else class="hc-sec about-intro catalog-intro catalog-intro-about"><el-image v-if="section.image" class="catalog-intro-image" :src="section.image" :alt="aboutText(section.imageAlt, editingLocale)" fit="cover"/><div class="hc-w catalog-intro-foreground"><div class="about-intro-copy"><AboutTzmeContent :configuration="section" :locale-code="editingLocale" heading-tag="h1"/></div></div></section>
+            </AdminPreviewFrame>
           </aside>
         </div>
-        <div class="about-settings-save-bar">
-          <span>{{ $t(uploading ? 'aboutTzmeAdmin.uploading' : dirty ? 'aboutTzmeAdmin.unsaved' : 'aboutTzmeAdmin.saveNote') }}</span>
-          <el-button type="primary" :icon="CircleCheckFilled" :loading="saving" :disabled="uploading || loading || error" @click="save">{{ $t('admin.saveContent') }}</el-button>
-        </div>
+        <AdminSaveBar class="about-settings-save-bar" :dirty="Boolean(dirty)" :saving="saving" :busy="uploading" :disabled="loading || error" @save="save" />
       </el-form>
     </template>
   </div>

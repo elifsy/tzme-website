@@ -3,6 +3,10 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import AdminPreviewFrame from './AdminPreviewFrame.vue'
+import AdminSaveBar from './AdminSaveBar.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
+
 import ImageUpload from './ImageUpload.vue'
 import WorldReachMap from './WorldReachMap.vue'
 import { createGlobalReachSettings, globalReachText, isGlobalReachUrl, MAX_GLOBAL_POINTS } from '../data/globalReach.js'
@@ -150,6 +154,7 @@ async function save() {
 }
 onBeforeUnmount(() => { disposed = true; loadVersion++ })
 onMounted(load)
+useAdminEditorState({ dirty, saving, loading, uploading })
 defineExpose({ load })
 </script>
 
@@ -255,37 +260,30 @@ defineExpose({ load })
           </AdminEditorPanel>
         </div>
       </div>
-      <div class="global-save-bar">
-        <span>{{ $t(dirty ? 'admin.globalUnsaved' : 'admin.editorSaveNote') }}</span>
-        <el-button type="primary" :loading="saving" :disabled="uploading || loading" @click="save">
-          <el-icon v-if="!saving"><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}
-        </el-button>
-      </div>
     </el-form>
-    <AdminEditorPanel :title="$t('admin.globalPreview')" :description="$t('admin.globalPreviewHint')">
-      <el-alert v-if="!form.enabled" :title="$t('admin.globalHiddenPreview')" type="info" :closable="false" />
-      <div class="design-site global-live-preview" :lang="editingLocale === 'zh' ? 'zh-CN' : 'en'">
-        <div class="hc-page hc-global">
+    <el-alert v-if="!form.enabled" :title="$t('admin.globalHiddenPreview')" type="info" :closable="false" />
+    <AdminPreviewFrame initial-device="desktop" title="全球业务效果预览" public-path="/">
+      <section class="hc-sec j-global j-soft">
+        <div class="hc-w hc-global">
           <div>
             <span class="hc-kick">{{ previewField('kicker') }}</span>
             <h2 class="hc-h2">{{ previewField('titleLine1') }}<template v-if="previewField('titleLine2')"><br />{{ previewField('titleLine2') }}</template></h2>
-            <p class="hc-p">{{ previewField('description') }}</p>
             <div class="hc-map">
               <WorldReachMap v-if="form.mapMode === 'points'" :points="form.mapPoints" :description="previewField('imageAlt')" :locale-code="editingLocale" />
               <el-image v-else :src="form.image" :alt="previewField('imageAlt')" fit="contain">
               <template #error><span class="global-image-error">{{ $t('admin.editorImageError') }}</span></template>
             </el-image></div>
           </div>
-          <div class="hc-gstats">
+          <div><p class="hc-p">{{ previewField('description') }}</p><div class="hc-gstats">
             <div v-for="(statistic, index) in form.statistics" :key="index">
               <div class="hc-stat">{{ statistic.value }}<u v-if="statistic.suffix">{{ statistic.suffix }}</u></div>
               <div class="hc-stat-cap">{{ globalReachText(statistic.label, editingLocale) }}</div>
             </div>
-            <div v-if="form.showButton"><el-button class="hc-btn ghost sm" disabled>{{ previewField('buttonText') }}<i aria-hidden="true">→</i></el-button></div>
-          </div>
+          </div><a v-if="form.showButton && isGlobalReachUrl(form.buttonLink)" class="j-link" :href="form.buttonLink">{{ previewField('buttonText') }}<span>→</span></a></div>
         </div>
-      </div>
-    </AdminEditorPanel>
+      </section>
+    </AdminPreviewFrame>
+    <AdminSaveBar class="global-save-bar" :dirty="Boolean(dirty)" :saving="saving" :busy="uploading" :disabled="loading" @save="save" />
   </div>
 </template>
 
@@ -317,24 +315,12 @@ defineExpose({ load })
 .global-save-bar { position: sticky; bottom: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; padding: 16px 20px; border: 1px solid #dce5ef; border-radius: 10px; background: #fff; box-shadow: 0 -4px 18px rgba(33, 52, 82, .06); }
 .global-save-bar span { color: #53647b; font-size: 13px; }
 .global-errors { padding-left: 18px; margin: 8px 0; }
-.global-live-preview { margin-top: 16px; border-radius: 8px; overflow: hidden; }
-.global-live-preview .hc-page { padding: 36px; }
-.global-live-preview .hc-h2 { margin-top: 18px; color: #fff; overflow-wrap: anywhere; }
-.global-live-preview .hc-p { margin-top: 20px; max-width: 520px; }
-.global-live-preview .hc-map { margin-top: 34px; }
-.global-live-preview .el-image { display: block; width: 100%; }
-.global-live-preview .hc-stat, .global-live-preview .hc-stat-cap { overflow-wrap: anywhere; }
-.global-live-preview .hc-gstats .hc-btn { max-width: 100%; min-height: 38px; height: auto; padding: 10px 17px; white-space: normal; text-align: left; }
-.global-live-preview .hc-gstats .hc-btn :deep(> span) { min-width: 0; max-width: 100%; line-height: 1.4; }
-.global-live-preview :deep(.el-button.is-disabled) { opacity: 1; color: #fff; }
 @media (max-width: 1050px) {
   .global-editor-grid { grid-template-columns: 1fr; }
   .global-editor-main > :last-child, .global-editor-aside > :last-child { flex: none; }
 }
 @media (max-width: 700px) {
   .global-display-switches { grid-template-columns: 1fr; gap: 0; }
-  .global-live-preview .hc-page { padding: 24px 18px; }
-  .global-live-preview .hc-h2 { font-size: 28px; }
   .global-save-bar { padding: 14px; flex-wrap: wrap; }
 }
 </style>

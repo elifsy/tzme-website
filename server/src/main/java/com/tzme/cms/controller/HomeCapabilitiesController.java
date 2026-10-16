@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Set;
 
 @RestController
@@ -35,8 +36,18 @@ public class HomeCapabilitiesController {
     @Transactional
     public ObjectNode save(@RequestBody ObjectNode input) throws JsonProcessingException {
         var value = input.deepCopy();
-        validate(value);
         var row = repository.findForUpdate("capabilities").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Initialize the homepage capabilities configuration first"));
+        var stored = mapper.readTree(row.getConfiguration());
+        var descriptions = new HashMap<String, JsonNode>();
+        for (var step : stored.path("steps")) if (step.has("description")) descriptions.put(step.path("id").asText(), step.get("description"));
+        // Preserve descriptions from older clients by stable step ID, including after sorting.
+        for (var step : value.path("steps")) {
+            if (step instanceof ObjectNode item && !item.has("description")) {
+                var description = descriptions.get(item.path("id").asText());
+                item.set("description", description == null ? mapper.createObjectNode().put("zh", "") : description.deepCopy());
+            }
+        }
+        validate(value);
         row.setConfiguration(mapper.writeValueAsString(value));
         repository.save(row);
         return value;
@@ -58,12 +69,13 @@ public class HomeCapabilitiesController {
         for (var step : steps) {
             if (!(step instanceof ObjectNode)) invalid("Invalid capability step");
             var item = (ObjectNode) step;
-            exactKeys(item, Set.of("id", "label", "enabled", "iconMode", "iconName", "icon"));
+            exactKeys(item, Set.of("id", "label", "description", "enabled", "iconMode", "iconName", "icon"));
             if (!item.path("id").isTextual() || !item.path("id").asText().matches("[a-zA-Z0-9-]{1,100}") || !ids.add(item.path("id").asText())) invalid("Invalid capability step ID");
             if (!item.path("enabled").isBoolean()) invalid("Invalid step visibility");
             boolean enabled = item.path("enabled").asBoolean();
             if (enabled) visible++;
             translated(item.path("label"), 100, enabled, false);
+            translated(item.path("description"), 600, false, true);
             if (!Set.of("preset", "image").contains(item.path("iconMode").asText()) || !ICON_NAMES.contains(item.path("iconName").asText())) invalid("Invalid capability icon");
             image(item, "icon", false);
             if (enabled && item.path("iconMode").asText().equals("image") && item.path("icon").asText().isEmpty()) invalid("Upload an icon for each visible image step");

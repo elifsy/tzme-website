@@ -1,11 +1,18 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import AdminPreviewFrame from './AdminPreviewFrame.vue'
+import AdminSaveBar from './AdminSaveBar.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
+
 import SubsidiaryCards from './SubsidiaryCards.vue'
 import SocialLinksEditor from './SocialLinksEditor.vue'
 import ContactFacilityFields from './ContactFacilityFields.vue'
+import ContactDetails from './ContactDetails.vue'
+import InquiryForm from './InquiryForm.vue'
 import { emptyFacility, ensureContactFacilities, validFacilityImage } from '../data/contactFacilities.js'
 import { apiRequest } from '../services/api.js'
 import { attachmentTypes, inquiryFieldLabels, saveContactSettings } from '../services/contactSettings.js'
@@ -13,6 +20,8 @@ import { editorLocales as availableLocales } from '../i18n/locales/index.js'
 import { ensureSocialLinkLocales, MAX_SOCIAL_LINKS, socialPlatforms, validSocialIcon, validSocialUrl } from '../data/socialLinks.js'
 import '../style/admin-editor.css'
 
+const props = defineProps({ mode: { type: String, default: 'company' } })
+const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 const form = ref(null)
 const loading = ref(false)
@@ -21,8 +30,11 @@ const socialUploading = ref(false)
 const facilityUploads = ref(new Set())
 const uploading = computed(() => socialUploading.value || facilityUploads.value.size > 0)
 const activeTab = ref('contact')
+const availableTabs = computed(() => props.mode === 'inquiry' ? ['form'] : ['contact', 'subsidiaries', 'social'])
+watch(() => [props.mode, route.query.section], () => { activeTab.value = availableTabs.value.includes(route.query.section) ? route.query.section : availableTabs.value[0] }, { immediate: true })
 const editingLocale = ref('zh')
 const subsidiaryPreviewPage = ref('about')
+const formPreviewPage = ref('contact')
 const error = ref('')
 const original = ref('')
 const dirty = computed(() => JSON.stringify(form.value) !== original.value)
@@ -86,6 +98,7 @@ async function save() {
 }
 onMounted(load)
 onBeforeUnmount(() => { disposed = true })
+useAdminEditorState({ dirty, saving, loading, uploading })
 defineExpose({ load })
 </script>
 
@@ -93,8 +106,8 @@ defineExpose({ load })
   <div v-loading="loading" class="contact-settings-manager">
     <el-alert v-if="error" :title="error" type="error" show-icon :closable="false"><el-button @click="load">{{ $t('admin.retryDatabase') }}</el-button></el-alert>
     <el-form v-if="form" label-position="top" :disabled="saving" class="contact-settings-form" @submit.prevent="save">
-      <div class="contact-settings-toolbar">
-        <el-tabs v-model="activeTab"><el-tab-pane v-for="key in ['contact', 'subsidiaries', 'social', 'form']" :key="key" :name="key" :label="$t('contactAdmin.tabs.' + key)" /></el-tabs>
+      <div v-if="mode !== 'inquiry'" class="contact-settings-toolbar">
+        <el-tabs v-model="activeTab"><el-tab-pane v-for="key in availableTabs" :key="key" :name="key" :label="$t('contactAdmin.tabs.' + key)" /></el-tabs>
 
       </div>
       <div v-show="activeTab === 'contact'" class="contact-settings-grid">
@@ -109,6 +122,7 @@ defineExpose({ load })
           <p class="cms-field-hint">{{ $t('contactAdmin.emailContactHint') }}</p>
         </AdminEditorPanel>
       </div>
+      <div v-if="activeTab === 'contact'" class="contact-direct-preview"><AdminPreviewFrame title="公开联系方式预览" public-path="/contact"><section class="hc-sec"><div class="hc-w"><h2 class="hc-h2">{{ form.contact.headquarters.zh }}</h2><ContactDetails :contact="form.contact"/></div></section></AdminPreviewFrame></div>
       <div v-show="activeTab === 'subsidiaries'">
         <p class="contact-settings-help">{{ $t('contactAdmin.subsidiaryHint') }}</p>
         <div class="contact-subsidiaries-layout">
@@ -136,27 +150,19 @@ defineExpose({ load })
             </AdminEditorPanel>
             <el-button type="primary" plain :disabled="uploading || form.subsidiaries.length >= 50" @click="addSubsidiary"><el-icon><Plus /></el-icon>{{ $t('contactAdmin.addSubsidiary') }}</el-button>
           </div>
-          <aside class="contact-subsidiaries-preview" :aria-label="$t('contactAdmin.subsidiaryPreview')">
-            <AdminEditorPanel :title="$t('contactAdmin.subsidiaryPreview')" :description="$t('contactAdmin.subsidiaryPreviewHint')">
-              <el-radio-group v-model="subsidiaryPreviewPage" class="subsidiary-preview-pages" :aria-label="$t('contactAdmin.subsidiaryPreviewPage')">
-                <el-radio-button value="contact">{{ $t('contactAdmin.subsidiaryPreviewContact') }}</el-radio-button>
-                <el-radio-button value="about">{{ $t('contactAdmin.subsidiaryPreviewAbout') }}</el-radio-button>
-              </el-radio-group>
-              <div class="subsidiary-preview-body" tabindex="0" :aria-label="$t('contactAdmin.subsidiaryPreview')">
-                <SubsidiaryCards v-if="subsidiaryPreviewPage === 'about' || form.subsidiaries.some(item => item.enabled)" :configuration="form" :locale-code="editingLocale" :about-only="subsidiaryPreviewPage === 'about'" :include-headquarters="subsidiaryPreviewPage === 'about'" :show-media="subsidiaryPreviewPage === 'about'" />
-                <el-empty v-else :image-size="72" :description="$t('contactAdmin.subsidiaryPreviewEmpty')" />
-              </div>
-            </AdminEditorPanel>
+          <aside v-if="activeTab === 'subsidiaries'" class="contact-subsidiaries-preview" :aria-label="$t('contactAdmin.subsidiaryPreview')">
+            <el-radio-group v-model="subsidiaryPreviewPage" class="subsidiary-preview-pages" aria-label="选择预览页面"><el-radio-button value="about">关于我们</el-radio-button><el-radio-button value="contact">联系我们</el-radio-button></el-radio-group>
+            <AdminPreviewFrame title="企业资料效果预览" :public-path="subsidiaryPreviewPage === 'about' ? '/about' : '/contact'"><section class="hc-sec" :class="{'j-soft': subsidiaryPreviewPage === 'about'}"><div class="hc-w"><h2 class="hc-h2" style="margin-bottom:32px">{{ subsidiaryPreviewPage === 'about' ? '总部与下属企业' : '下属企业' }}</h2><SubsidiaryCards :configuration="form" :locale-code="editingLocale" :about-only="subsidiaryPreviewPage === 'about'" :include-headquarters="subsidiaryPreviewPage === 'about'" :show-media="subsidiaryPreviewPage === 'about'"/></div></section></AdminPreviewFrame>
           </aside>
         </div>
       </div>
       <SocialLinksEditor v-show="activeTab === 'social'" v-model="form.contact.socialLinks[editingLocale]" :locale-code="editingLocale" :disabled="saving" :active="activeTab === 'social'" @uploading="socialUploading = $event" />
-      <div v-show="activeTab === 'form'" class="contact-settings-grid">
+      <div v-show="activeTab === 'form'" class="contact-form-layout"><div class="contact-settings-grid">
         <AdminEditorPanel step="01" :title="$t('contactAdmin.formSettings')">
           <div class="contact-settings-switches"><el-checkbox v-model="form.form.enabled">{{ $t('contactAdmin.formEnabled') }}</el-checkbox><el-checkbox v-model="form.form.showOnHome">{{ $t('contactAdmin.showOnHome') }}</el-checkbox><el-checkbox v-model="form.form.showOnContact">{{ $t('contactAdmin.showOnContact') }}</el-checkbox></div>
           <el-form-item v-for="key in bilingualForm" :key="key" :label="$t('contactAdmin.formText.' + key)" :required="key !== 'privacyText'"><el-input v-model="form.form[key][editingLocale]" :type="['successText', 'closedText', 'privacyText'].includes(key) ? 'textarea' : 'text'" :rows="2" maxlength="1000" /></el-form-item>
           <el-checkbox v-model="form.form.showPrivacy">{{ $t('contactAdmin.showPrivacy') }}</el-checkbox>
-          <el-form-item :label="$t('contactAdmin.requiredFields')"><el-checkbox-group v-model="form.form.requiredFields"><el-checkbox v-for="(label, key) in inquiryFieldLabels" :key="key" :value="key">{{ $t(label) }}</el-checkbox></el-checkbox-group></el-form-item>
+          <el-form-item :label="$t('contactAdmin.requiredFields')"><el-checkbox-group v-model="form.form.requiredFields"><el-checkbox v-for="(label, key) in inquiryFieldLabels" :key="key" :value="key">{{ $t(label).replace(/\s*[*＊]\s*$/, '') }}</el-checkbox></el-checkbox-group></el-form-item>
         </AdminEditorPanel>
         <AdminEditorPanel step="02" :title="$t('contactAdmin.uploadSettings')" :description="$t('contactAdmin.uploadServerHint')">
           <el-form-item :label="$t('contactAdmin.uploadEnabled')"><el-switch v-model="form.upload.enabled" /></el-form-item>
@@ -165,13 +171,16 @@ defineExpose({ load })
           <el-form-item :label="$t('contactAdmin.maxFiles')"><el-input-number v-model="form.upload.maxFiles" :min="1" :max="10" :precision="0" controls-position="right" /></el-form-item>
         </AdminEditorPanel>
       </div>
-      <div class="contact-settings-footer"><span>{{ $t(uploading ? 'contactAdmin.imagesUploading' : dirty ? 'contactAdmin.unsaved' : 'admin.editorSaveNote') }}</span><el-button type="primary" :loading="saving" :disabled="uploading" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}</el-button></div>
+        <aside v-if="activeTab === 'form'" class="contact-form-preview"><el-radio-group v-model="formPreviewPage" class="subsidiary-preview-pages" aria-label="选择表单预览位置"><el-radio-button value="contact">联系我们</el-radio-button><el-radio-button value="home">首页</el-radio-button></el-radio-group><el-alert v-if="!form.form[formPreviewPage === 'home' ? 'showOnHome' : 'showOnContact']" title="此位置已关闭表单展示，下面仍可预览编辑内容" type="info" :closable="false"/><AdminPreviewFrame title="咨询表单效果预览" :public-path="formPreviewPage === 'home' ? '/' : '/contact'"><section class="hc-sec"><div class="hc-w inquiry-preview-content"><InquiryForm :configuration="form" :placement="formPreviewPage" preview/></div></section></AdminPreviewFrame></aside>
+      </div>
+      <AdminSaveBar class="contact-settings-footer" :dirty="Boolean(dirty)" :saving="saving" :busy="uploading" :disabled="loading" @save="save" />
     </el-form>
   </div>
 </template>
 
 <style scoped>
 .contact-settings-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+.inquiry-preview-content { max-width: 650px; }
 .contact-settings-toolbar > .el-tabs { flex: 1; min-width: 0; }
 .contact-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
 .contact-settings-grid-inside { gap: 16px; align-items: start; }

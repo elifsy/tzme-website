@@ -13,13 +13,15 @@ export function isCapabilitiesSettings(value) {
     && Array.isArray(value.steps) && value.steps.length <= MAX_CAPABILITY_STEPS
     && new Set(value.steps.map(step => step?.id)).size === value.steps.length
     && value.steps.every(step => step && typeof step.id === 'string' && /^[a-zA-Z0-9-]{1,100}$/.test(step.id) && translated(step.label)
+      && (step.description === undefined || (translated(step.description) && Object.values(step.description).every(text => typeof text === 'string' && text.length <= 600)))
       && typeof step.enabled === 'boolean' && ['preset', 'image'].includes(step.iconMode)
       && capabilityIconNames.includes(step.iconName) && validCapabilityImage(step.icon))
 }
 
 export function capabilitiesDraft(value, localeCodes) {
   const draft = JSON.parse(JSON.stringify(value))
-  for (const text of [...capabilityTextFields.map(key => draft[key]), ...draft.steps.map(step => step.label)]) {
+  for (const step of draft.steps) step.description = { zh: '', ...step.description }
+  for (const text of [...capabilityTextFields.map(key => draft[key]), ...draft.steps.flatMap(step => [step.label, step.description])]) {
     for (const code of localeCodes) text[code] ??= ''
   }
   return draft

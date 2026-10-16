@@ -5,6 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
 import ImageUpload from './ImageUpload.vue'
 import ProjectCard from './ProjectCard.vue'
 import { localizedField } from '../services/catalog.js'
@@ -29,6 +30,9 @@ const editorFullscreen = ref(false)
 const languages = [{ code: 'zh', suffix: 'Zh', label: 'admin.chinese' }]
 const metricNames = ['capacity', 'technology', 'scope']
 const form = reactive(normalizeProject({}))
+const editorOriginal = ref('')
+const editorDirty = computed(() => dialogOpen.value && JSON.stringify(form) !== editorOriginal.value)
+useAdminEditorState({ dirty: editorDirty, saving, loading, uploading: computed(() => bodyUploading.value || coverUploading.value) })
 const publishedCount = computed(() => projects.value.filter((item) => item.status === 'published').length)
 const selectedHomeCount = computed(() => projects.value.filter((item) => item.showOnHome).length)
 const otherHomeCount = computed(() => projects.value.filter((item) => item.showOnHome && item.id !== form.id).length)
@@ -50,6 +54,7 @@ function openEditor(item = null) {
       name + 'Label' + (code === 'zh' ? 'Zh' : 'En'), i18n.global.getLocaleMessage(code).site[name],
     ]))),
   }), { id: item?.id || '' })
+  editorOriginal.value = JSON.stringify(form)
   dialogOpen.value = true
 }
 async function writeToApi(record, update) {
@@ -160,7 +165,7 @@ onMounted(load)
 
   <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.projectEdit' : 'admin.projectAdd')"
     :description="$t('admin.projectEditorDescription')" icon="DataBoard" width="min(1280px, calc(100vw - 40px))"
-    :status="form.status" :saving="saving" :save-disabled="bodyUploading || coverUploading" :editor-fullscreen="editorFullscreen" @save="save">
+    :status="form.status" :dirty="editorDirty" :saving="saving" :save-disabled="bodyUploading || coverUploading" :editor-fullscreen="editorFullscreen" @save="save">
     <el-form :model="form" label-position="top" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">

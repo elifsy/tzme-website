@@ -1,0 +1,26 @@
+{
+  "capability-concept": {
+    "labelZh": "需求确认",
+    "description": { "zh": "结合客户图纸、使用工况与技术要求，确认供货范围、质量关注点和交付安排，让制造工作有据可依。" }
+  },
+  "capability-engineering": {
+    "labelZh": "材料准备",
+    "description": { "zh": "围绕项目的材料规格与技术要求做好备料，关注材料标识、配套资料与后续加工衔接，为制造过程打好基础。" }
+  },
+  "capability-design": {
+    "labelZh": "焊接加工",
+    "description": { "zh": "按图纸与工艺要求开展结构制作、焊接和机加工，关注焊接质量、关键尺寸与工序配合，将技术要求落实到具体部件。" }
+  },
+  "capability-fabrication": {
+    "labelZh": "装配试装",
+    "description": { "zh": "结合设备结构与安装要求开展装配和试装，关注连接部位、配合尺寸与部件协同，为后续检验和交付做好准备。" }
+  },
+  "capability-assembly": {
+    "labelZh": "质量检验",
+    "description": { "zh": "依据图纸、项目技术要求与检验安排，核对制造和装配结果，关注关键质量项目及检验记录，使产品交付有据可查。" }
+  },
+  "capability-delivery": {
+    "labelZh": "包装交付",
+    "description": { "zh": "结合设备尺寸、运输方式和项目进度安排包装与发运，配套交付资料，并做好与客户现场的衔接。" }
+  }
+}

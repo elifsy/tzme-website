@@ -8,6 +8,7 @@ import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
+import ContactDetails from '../components/ContactDetails.vue'
 const { siteAsset } = useSiteContent()
 const { locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
@@ -34,14 +35,7 @@ useDesignPage('hc-contact', page)
         <div class="hc-w contact-layout" :class="{ 'contact-layout-single': !contactSettings?.form.showOnContact }">
           <div v-if="contact">
             <span class="hc-kick">{{ $t('site.01DirectContact') }}</span>
-            <dl class="contact-details">
-              <div><dt>{{ $t('site.address') }}</dt><dd>{{ contactText(contact.address, locale) }}</dd></div>
-              <div v-if="contact.phone"><dt>{{ $t('site.telephone') }}</dt><dd>{{ contact.phone }}</dd></div>
-              <div v-if="contact.fax"><dt>{{ $t('site.fax') }}</dt><dd>{{ contact.fax }}</dd></div>
-              <div v-if="contact.emails.length"><dt>{{ $t('site.email') }}</dt><dd><a v-for="email in contact.emails" :key="email" :href="`mailto:${email}`">{{ email }}</a></dd></div>
-              <div v-if="contact.website"><dt>{{ $t('site.website') }}</dt><dd><a :href="contactWebsiteUrl(contact.website)" target="_blank" rel="noopener noreferrer">{{ contact.website }}</a></dd></div>
-              <div v-if="contactText(contact.port, locale)"><dt>{{ $t('site.port') }}</dt><dd>{{ contactText(contact.port, locale) }}</dd></div>
-            </dl>
+            <ContactDetails :contact="contact" />
             <template v-if="contactSettings.subsidiaries.some(item => item.enabled)">
               <span class="hc-kick contact-subsidiaries-title">{{ $t('site.02Subsidiaries') }}</span>
               <SubsidiaryCards />

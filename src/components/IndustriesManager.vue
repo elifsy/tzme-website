@@ -5,6 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
 import ImageUpload from './ImageUpload.vue'
 import IndustryIcon from './IndustryIcon.vue'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
@@ -22,6 +23,9 @@ const form = reactive({
   id: '', titleEn: '', titleZh: '', subtitleEn: '', subtitleZh: '', icon: '',
   sortOrder: 10, status: 'published',
 })
+const editorOriginal = ref('')
+const editorDirty = computed(() => dialogOpen.value && JSON.stringify(form) !== editorOriginal.value)
+useAdminEditorState({ dirty: editorDirty, saving, loading, uploading: iconUploading })
 const publishedCount = computed(() => industries.value.filter((item) => item.status === 'published').length)
 
 const field = (item, name) => industryField(item, name, locale.value)
@@ -45,6 +49,7 @@ function openEditor(item = null) {
     sortOrder: Number(item?.sortOrder ?? (industries.value.length + 1) * 10),
     status: item?.status || 'published',
   })
+  editorOriginal.value = JSON.stringify(form)
   dialogOpen.value = true
 }
 
@@ -150,7 +155,7 @@ onMounted(load)
 
   <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.editIndustry' : 'admin.addIndustry')"
     :description="$t('admin.industryManagementDescription')" icon="DataBoard" width="min(980px, calc(100vw - 40px))"
-    :status="form.status" :saving="saving" :save-disabled="iconUploading || loading" :footer-note="iconUploading ? $t('admin.industryIconUploading') : ''" @save="save">
+    :status="form.status" :dirty="editorDirty" :saving="saving" :save-disabled="iconUploading || loading" :footer-note="iconUploading ? $t('admin.industryIconUploading') : ''" @save="save">
     <el-form :model="form" label-position="top" :disabled="saving" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">

@@ -1,4 +1,9 @@
 export const capabilitiesZh = {
+  capabilitiesUi: {
+    selectHint: '选择工序，了解制造与质量关注点',
+    stepDetail: '工序说明', stepPosition: '工序 {current} / {total}',
+    qualityLink: '查看资质与质量体系',
+  },
   capabilitiesAdmin: {
     title: '首页能力配置', description: '维护首页制造与质量板块的中文文案、背景图与流程步骤。',
     textSettings: '中文内容', textHint: '维护中文文案，保存后在首页展示。',
@@ -6,6 +11,7 @@ export const capabilitiesZh = {
     displaySettings: '展示与背景', enabled: '在首页显示此区域', image: '背景图片（选填）',
     steps: '流程步骤', stepsHint: '最多 {max} 个步骤，可调整顺序、隐藏或删除。展示编号按可见步骤顺序自动生成，流程图标与显示状态统一配置。',
     stepTitle: '步骤 {number}', stepName: '步骤名称', addStep: '新增步骤', stepVisible: '展示此步骤', visible: '显示', hidden: '隐藏',
+    stepDescription: '工序说明（选填）', stepDescriptionHint: '在官网悬停、点击或通过键盘选中该工序时展示，最多 600 字。',
     moveUp: '上移', moveDown: '下移', deleteStep: '删除步骤', iconMode: '图标方式', preset: '内置图标', uploaded: '上传图标', iconName: '选择图标', stepIcon: '步骤图标',
     icons: { requirements: '需求 / 文件确认', materials: '材料 / 备料', inspection: '质量 / 检验', idea: '创意 / 提示', engineering: '工艺 / 参数', design: '图纸 / 文件', fabrication: '制造 / 工具', assembly: '装配 / 连接', delivery: '交付 / 运输', general: '通用能力' },
     preview: '首页实时预览', previewHint: '预览跟随当前编辑语言，保存后更新官网。', hiddenPreview: '此区域已关闭首页展示，仍可预览编辑中的内容。', noVisibleSteps: '当前没有开启展示的步骤。',
@@ -15,6 +21,11 @@ export const capabilitiesZh = {
 }
 
 export const capabilitiesEn = {
+  capabilitiesUi: {
+    selectHint: 'Select a step to explore manufacturing and quality',
+    stepDetail: 'Process details', stepPosition: 'Step {current} / {total}',
+    qualityLink: 'Quality and certifications',
+  },
   capabilitiesAdmin: {
     title: 'Homepage capabilities', description: 'Manage the bilingual copy, background and process steps in Our capabilities on the homepage.',
     textSettings: 'Bilingual content', textHint: 'Edit each language using the selector above. Both languages are saved together.',
@@ -22,6 +33,7 @@ export const capabilitiesEn = {
     displaySettings: 'Visibility and background', enabled: 'Show this section on the homepage', image: 'Background image (optional)',
     steps: 'Process steps', stepsHint: 'Up to {max} steps. Reorder, hide or delete steps. Visible steps are numbered automatically; both languages share icons and visibility.',
     stepTitle: 'Step {number}', stepName: 'Step name', addStep: 'Add step', stepVisible: 'Show this step', visible: 'Visible', hidden: 'Hidden',
+    stepDescription: 'Process description (optional)', stepDescriptionHint: 'Displayed when a step is selected. Up to 600 characters.',
     moveUp: 'Move up', moveDown: 'Move down', deleteStep: 'Delete step', iconMode: 'Icon source', preset: 'Built-in icon', uploaded: 'Upload image', iconName: 'Choose icon', stepIcon: 'Step icon',
     icons: { requirements: 'Requirements / documents', materials: 'Materials / preparation', inspection: 'Quality / inspection', idea: 'Concept / idea', engineering: 'Engineering', design: 'Design / drawing', fabrication: 'Fabrication / tools', assembly: 'Assembly / connection', delivery: 'Delivery / transport', general: 'General capability' },
     preview: 'Live homepage preview', previewHint: 'The preview follows the editing language. Save to update the website.', hiddenPreview: 'This section is hidden on the homepage. Its draft content is still shown in the preview.', noVisibleSteps: 'No steps are currently visible.',

@@ -4,6 +4,7 @@ import {
   Box, ChatDotRound, Collection, DataBoard, Document, Expand, Fold, Grid, Link,
   Location, Medal, Message, OfficeBuilding, Setting, Tools, TrendCharts,
 } from '@element-plus/icons-vue'
+import { adminGroups } from '../data/adminWorkspace.js'
 
 const props = defineProps({
   activeKey: { type: String, default: 'overview' },
@@ -14,40 +15,10 @@ const props = defineProps({
 defineEmits(['select', 'toggle', 'close'])
 const navigation = ref(null)
 const menu = ref(null)
-const groups = [
-  {
-    key: 'workspace', icon: DataBoard, items: [
-      { key: 'overview', label: 'admin.overview', icon: DataBoard },
-      { key: 'analytics', label: 'analyticsAdmin.title', icon: TrendCharts },
-    ],
-  },
-  {
-    key: 'content', icon: Collection, items: [
-      { key: 'products', label: 'admin.products', icon: Box },
-      { key: 'projects', label: 'admin.projects', icon: Collection },
-      { key: 'articles', label: 'admin.insights', icon: Document },
-      { key: 'industries', label: 'admin.industryManagement', icon: Grid },
-      { key: 'certifications', label: 'admin.certifications', icon: Medal },
-    ],
-  },
-  {
-    key: 'pages', icon: Setting, items: [
-      { key: 'solutions', label: 'homeSolutionsAdmin.title', icon: Grid },
-      { key: 'about', label: 'adminNavigation.labels.about', title: 'aboutTzmeAdmin.title', icon: OfficeBuilding },
-      { key: 'capabilities', label: 'adminNavigation.labels.capabilities', title: 'capabilitiesAdmin.title', icon: Tools },
-      { key: 'global', label: 'adminNavigation.labels.global', title: 'admin.homeGlobal', icon: Location },
-      { key: 'contact', label: 'adminNavigation.labels.contact', title: 'contactAdmin.title', icon: Setting },
-    ],
-  },
-  {
-    key: 'communication', icon: ChatDotRound, items: [
-      { key: 'inquiries', label: 'admin.enquiries', icon: ChatDotRound },
-      { key: 'mail', label: 'mailAdmin.title', icon: Message },
-    ],
-  },
-]
+const icons = { Box, ChatDotRound, Collection, DataBoard, Document, Grid, Location, Medal, Message, OfficeBuilding, Setting, Tools, TrendCharts }
+const groups = adminGroups.map(group => ({ ...group, icon: icons[group.icon], items: group.items.map(item => ({ ...item, icon: icons[item.icon] })) }))
 
-const groupPreferenceKey = 'tzme-admin-sidebar-groups-v1'
+const groupPreferenceKey = 'tzme-admin-sidebar-groups-v2'
 const expandedGroups = ref(readExpandedGroups())
 ensureActiveGroup()
 const initialExpandedGroups = expandedGroups.value.slice()
@@ -60,7 +31,7 @@ function readExpandedGroups() {
     const stored = JSON.parse(localStorage.getItem(groupPreferenceKey))
     if (Array.isArray(stored)) return groups.filter(group => stored.includes(group.key)).map(group => group.key)
   } catch { /* Storage is optional; navigation remains available. */ }
-  return []
+  return ['workspace']
 }
 
 function ensureActiveGroup() {
@@ -172,21 +143,21 @@ onBeforeUnmount(() => {
           @open="onGroupOpen" @close="onGroupClose" @select="$emit('select', $event)">
           <el-sub-menu v-for="group in groups" :key="group.key" :index="group.key" class="cms-sidebar-group"
             :class="{ 'cms-sidebar-group-current': group.items.some(item => item.key === activeKey) }"
-            tabindex="0" :aria-label="$t('adminNavigation.groups.' + group.key)"
+            tabindex="0" :aria-label="group.label"
             @keydown.enter.self.prevent="toggleGroupWithKeyboard(group.key, $event)"
             @keydown.space.self.prevent="toggleGroupWithKeyboard(group.key, $event)">
             <template #title>
               <el-icon aria-hidden="true"><component :is="group.icon" /></el-icon>
-              <span class="cms-sidebar-group-title" :title="$t('adminNavigation.groups.' + group.key)">{{ $t('adminNavigation.groups.' + group.key) }}</span>
+              <span class="cms-sidebar-group-title" :title="group.label">{{ group.label }}</span>
               <el-badge v-if="group.key === 'communication' && newInquiries && (collapsed || !expandedGroups.includes(group.key))"
                 :value="newInquiries" :max="99" :aria-label="$t('contactAdmin.newInquiryCount', { count: newInquiries })"
                 class="cms-sidebar-badge cms-sidebar-group-badge" />
             </template>
-            <li v-if="collapsed" class="cms-sidebar-popup-heading" role="presentation">{{ $t('adminNavigation.groups.' + group.key) }}</li>
-            <el-menu-item v-for="item in group.items" :key="item.key" :index="item.key" :title="$t(item.title || item.label)"
-              :aria-label="$t(item.label)" :aria-current="activeKey === item.key ? 'page' : undefined">
+            <li v-if="collapsed" class="cms-sidebar-popup-heading" role="presentation">{{ group.label }}</li>
+            <el-menu-item v-for="item in group.items" :key="item.key" :index="item.key" :title="item.label"
+              :aria-label="item.label" :aria-current="activeKey === item.key ? 'page' : undefined">
               <el-icon aria-hidden="true"><component :is="item.icon" /></el-icon>
-              <span class="cms-sidebar-item-label">{{ $t(item.label) }}</span>
+              <span class="cms-sidebar-item-label">{{ item.label }}</span>
               <el-badge v-if="item.key === 'inquiries' && newInquiries" :value="newInquiries" :max="99"
                 :aria-label="$t('contactAdmin.newInquiryCount', { count: newInquiries })" class="cms-sidebar-badge" />
             </el-menu-item>

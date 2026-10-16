@@ -1,6 +1,6 @@
 <script setup>
-import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, provide, reactive, ref, watch } from "vue";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
@@ -26,6 +26,14 @@ import ImageUpload from "../components/ImageUpload.vue";
 import ContactSettingsManager from "../components/ContactSettingsManager.vue";
 import InquiriesManager from "../components/InquiriesManager.vue";
 import EmailNotificationsManager from "../components/EmailNotificationsManager.vue";
+import AdminWorkspaceHome from '../components/AdminWorkspaceHome.vue';
+import AdminHomepageMap from '../components/AdminHomepageMap.vue';
+import AdminWorkflowGuide from '../components/AdminWorkflowGuide.vue';
+import AdminPreviewFrame from '../components/AdminPreviewFrame.vue';
+import AdminContentPreview from '../components/AdminContentPreview.vue';
+import { adminGroups, adminModules, adminPath } from '../data/adminWorkspace.js';
+import { adminEditorKey, createAdminEditorState } from '../composables/useAdminEditorState.js';
+import '../style/admin-workspace.css';
 import { sanitizeRichText } from "../utils/richText.js";
 import { MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
 import { useArticleCatalog } from "../services/articles.js";
@@ -42,6 +50,15 @@ const imageUploading = computed(() => bodyImageUploading.value || coverImageUplo
 const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
+const currentModule = computed(() => adminModules[tab.value] || adminModules.overview);
+const currentGroup = computed(() => adminGroups.find(group => group.key === currentModule.value.group));
+const pageEditor = createAdminEditorState();
+provide(adminEditorKey, pageEditor);
+const homepageManager = ref(null);
+const contentPreview = ref(null);
+const modalOriginal = ref('');
+const search = ref(''), statusFilter = ref('all'), homeFilter = ref('all');
+watch(() => [route.params.view, route.query.home], () => { search.value = ''; statusFilter.value = 'all'; homeFilter.value = route.query.home === '1' ? 'home' : 'all'; }, { immediate: true });
 const sidebarPreferenceKey = 'tzme-admin-sidebar-collapsed';
 const sidebarMedia = window.matchMedia('(max-width: 680px)');
 const smallSidebarScreen = ref(sidebarMedia.matches);
@@ -121,22 +138,7 @@ const form = reactive({
   status: "published",
   date: "",
 });
-const titles = {
-  overview: "admin.overview",
-  products: "admin.products",
-  industries: "admin.industryManagement",
-  projects: "admin.projects",
-  global: "admin.homeGlobal",
-  capabilities: "capabilitiesAdmin.title",
-  solutions: "homeSolutionsAdmin.title",
-  about: "aboutTzmeAdmin.title",
-  analytics: "analyticsAdmin.title",
-  articles: "admin.insights",
-  certifications: "admin.certifications",
-  inquiries: "admin.enquiries",
-  contact: "contactAdmin.title",
-  mail: "mailAdmin.title",
-};
+
 const publishedProducts = computed(
   () => products.value.filter((item) => item.status === "published").length,
 );
@@ -148,8 +150,26 @@ const newInquiries = computed(
   () => inquiries.value.filter((item) => item.status === "new").length,
 );
 const currentItems = computed(() =>
-  tab.value === "products" ? products.value : articles.value,
+  (tab.value === "products" ? products.value : articles.value).filter(item => {
+    const keyword = search.value.trim().toLowerCase();
+    return (!keyword || [field(item, 'title'), field(item, 'category'), industryNames(item.industries)].some(value => value.toLowerCase().includes(keyword)))
+      && (statusFilter.value === 'all' || item.status === statusFilter.value)
+      && (tab.value !== 'products' || homeFilter.value !== 'home' || item.showOnHome);
+  }),
 );
+const hasUnsavedChanges = computed(() => Boolean(pageEditor.value?.dirty || (modal.value && JSON.stringify(form) !== modalOriginal.value)));
+const editorBusy = computed(() => Boolean(pageEditor.value?.busy || saving.value || imageUploading.value));
+async function confirmDiscard() {
+  if (editorBusy.value) { ElMessage.info('正在保存或上传，请完成后再离开。'); return false; }
+  if (!hasUnsavedChanges.value) return true;
+  try { await ElMessageBox.confirm('当前有未保存的修改，离开后将丢弃这些内容。', '保留编辑内容', { confirmButtonText: '丢弃修改并继续', cancelButtonText: '继续填写', type: 'warning', distinguishCancelAndClose: true }); return true; }
+  catch { return false; }
+}
+onBeforeRouteLeave(confirmDiscard);
+onBeforeRouteUpdate((to, from) => to.path === from.path ? true : confirmDiscard());
+function warnBeforeUnload(event) { if (hasUnsavedChanges.value || editorBusy.value) { event.preventDefault(); event.returnValue = ''; } }
+onMounted(() => window.addEventListener('beforeunload', warnBeforeUnload));
+onBeforeUnmount(() => window.removeEventListener('beforeunload', warnBeforeUnload));
 function field(item, key) {
   return locale.value === "zh"
     ? item[`${key}Zh`] || item[`${key}En`] || item[key] || ""
@@ -198,9 +218,10 @@ function openEditor(type, item) {
     showOnHome: item?.showOnHome ?? false,
     homeOrder: item?.homeOrder ?? null,
     image: item?.image || "",
-    status: item?.status || "published",
+    status: item?.status || "draft",
     date: item?.date || new Date().toISOString().slice(0, 10),
   });
+  modalOriginal.value = JSON.stringify(form);
   modal.value = true;
 }
 
@@ -272,10 +293,12 @@ async function toggle(item, type) {
 
 function navigate(key) {
   closeMobileSidebar();
-  router.push(`/admin/${key === "overview" ? "" : key}`);
+  router.push(adminPath(key));
 }
-function refresh() {
-  if (tab.value === 'certifications') certManager.value?.load();
+async function refresh() {
+  if (!(await confirmDiscard())) return;
+  if (tab.value === 'home') { homepageManager.value?.load(); load(); loadIndustries(); }
+  else if (tab.value === 'certifications') certManager.value?.load();
   else if (tab.value === 'industries') industryManager.value?.load();
   else if (tab.value === 'projects') projectManager.value?.load();
   else if (tab.value === 'global') globalManager.value?.load();
@@ -283,7 +306,7 @@ function refresh() {
   else if (tab.value === 'solutions') solutionsManager.value?.load();
   else if (tab.value === 'about') aboutManager.value?.load();
   else if (tab.value === 'analytics') analyticsManager.value?.load();
-  else if (tab.value === 'contact') contactManager.value?.load();
+  else if (tab.value === 'contact' || tab.value === 'forms') contactManager.value?.load();
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
   else if (tab.value === 'mail') mailManager.value?.load();
   else { load(); loadIndustries(); }
@@ -301,9 +324,10 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
     <el-container class="admin-main" :inert="mobileSidebarOpen || undefined">
       <el-header class="admin-topbar" height="62px">
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item>TZME</el-breadcrumb-item>
+          <el-breadcrumb-item :to="'/admin'">TZME</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ currentGroup?.label }}</el-breadcrumb-item>
           <el-breadcrumb-item>{{
-            $t(titles[tab] || "admin.overview")
+            currentModule.label
           }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="admin-profile">
@@ -323,24 +347,13 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <div class="admin-heading">
           <div>
             <div class="admin-eyebrow">
-              {{ $t('admin.contentManagement2026') }}
+              {{ currentGroup?.label }}
             </div>
-            <h1>{{ $t(titles[tab] || "admin.overview") }}</h1>
-            <p>
-              {{ $t(tab === 'certifications' ? 'admin.certDescription'
-                : tab === 'industries' ? 'admin.industryManagementDescription'
-                : tab === 'projects' ? 'admin.projectManagementDescription'
-                : tab === 'global' ? 'admin.homeGlobalDescription'
-                : tab === 'capabilities' ? 'capabilitiesAdmin.description'
-                : tab === 'solutions' ? 'homeSolutionsAdmin.description'
-                : tab === 'about' ? 'aboutTzmeAdmin.description'
-                : tab === 'analytics' ? 'analyticsAdmin.description'
-                : tab === 'contact' ? 'contactAdmin.description'
-                : tab === 'mail' ? 'mailAdmin.description'
-                : 'admin.manageYourCorporateWebsiteContentAndEnquiries') }}
-            </p>
+            <h1>{{ currentModule.label }}</h1>
+            <p>{{ currentModule.description }}</p>
           </div>
           <div class="admin-actions">
+            <a v-if="currentModule.preview" class="admin-public-preview" :href="currentModule.preview" target="_blank" rel="noopener noreferrer">查看已保存网页 ↗</a>
             <el-button :icon="Refresh" @click="refresh">{{
               $t('admin.refresh')
             }}</el-button>
@@ -355,210 +368,10 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           </div>
         </div>
 
-        <template v-if="tab === 'overview'">
-          <el-row :gutter="16" class="stat-grid">
-            <el-col
-              v-for="stat in [
-                {
-                  label: 'admin.totalProducts',
-                  value: products.length,
-                  hint: `${publishedProducts} ${$t('admin.published3')}`,
-                  icon: 'Box',
-                  tone: 'blue',
-                },
-                {
-                  label: 'admin.articles',
-                  value: articles.length,
-                  hint: `${publishedArticles} ${$t('admin.published3')}`,
-                  icon: 'Document',
-                  tone: 'violet',
-                },
-                {
-                  label: 'admin.totalEnquiries',
-                  value: inquiries.length,
-                  hint: `${newInquiries} ${$t('admin.awaitingResponse')}`,
-                  icon: 'ChatDotRound',
-                  tone: 'orange',
-                },
-                {
-                  label: 'admin.websiteStatus',
-                  value: dataErrors.size ? 'admin.databaseUnavailable' : loading ? 'admin.databaseConnecting' : 'admin.online',
-                  hint: $t(dataErrors.size ? 'admin.databaseReadFailed' : 'admin.allSystemsOperational'),
-                  icon: 'CircleCheckFilled',
-                  tone: 'green',
-                },
-              ]"
-              :key="stat.label"
-              :xs="12"
-              :sm="12"
-              :md="6"
-            >
-              <el-card shadow="never" class="stat-card">
-                <div class="stat-top">
-                  <span class="stat-label">{{ $t(stat.label) }}</span
-                  ><span :class="['stat-icon', stat.tone]"
-                    ><el-icon><component :is="stat.icon" /></el-icon
-                  ></span>
-                </div>
-                <strong
-                  :class="{ 'status-good': stat.label === 'admin.websiteStatus' }"
-                  >{{ typeof stat.value === 'string' ? $t(stat.value) : stat.value }}</strong
-                >
-                <div class="stat-hint">{{ stat.hint }}</div>
-              </el-card>
-            </el-col>
-          </el-row>
+        <AdminWorkflowGuide :module="currentModule" />
 
-          <el-row :gutter="16" class="dashboard-panels">
-            <el-col :xs="24" :md="14">
-              <el-card shadow="never" class="dashboard-card">
-                <template #header
-                  ><div class="card-heading">
-                    <div>
-                      <strong>{{ $t('admin.recentEnquiries') }}</strong
-                      ><small>{{
-                        $t('admin.latestMessagesFromYourWebsite')
-                      }}</small>
-                    </div>
-                    <el-button
-                      link
-                      type="primary"
-                      @click="navigate('inquiries')"
-                      >{{ $t('admin.viewAll') }} <el-icon><ArrowRight /></el-icon
-                    ></el-button></div
-                ></template>
-                <el-empty
-                  v-if="!inquiries.length"
-                  :image-size="52"
-                  :description="$t('admin.noEnquiriesYet')"
-                />
-                <div
-                  v-for="item in inquiries.slice(0, 4)"
-                  :key="item.id"
-                  class="mini-inquiry"
-                >
-                  <el-avatar :size="32">{{
-                    (item.name || "U").slice(0, 1).toUpperCase()
-                  }}</el-avatar>
-                  <div class="inquiry-summary">
-                    <strong>{{ item.name || $t('admin.websiteVisitor') }}</strong
-                    ><small>{{ item.company }} · {{ item.email }}</small>
-                  </div>
-                  <time>{{ item.createdAt?.slice(0, 10) || $t('admin.today') }}</time>
-                </div>
-              </el-card>
-            </el-col>
-            <el-col :xs="24" :md="10">
-              <el-card shadow="never" class="dashboard-card quick-card">
-                <template #header
-                  ><div class="card-heading">
-                    <div>
-                      <strong>{{ $t('admin.quickActions') }}</strong
-                      ><small>{{ $t('admin.commonContentTasks') }}</small>
-                    </div>
-                  </div></template
-                >
-                <el-button
-                  class="quick-action"
-                  text
-                  @click="openEditor('products')"
-                  ><el-icon><Box /></el-icon
-                  ><span
-                    ><b>{{ $t('admin.addAProduct') }}</b
-                    ><small>{{
-                      $t('admin.createAProductListingForTheWebsite')
-                    }}</small></span
-                  ><el-icon class="quick-arrow"><ArrowRight /></el-icon
-                ></el-button>
-                <el-button
-                  class="quick-action"
-                  text
-                  @click="openEditor('articles')"
-                  ><el-icon><EditPen /></el-icon
-                  ><span
-                    ><b>{{ $t('admin.writeAnArticle') }}</b
-                    ><small>{{
-                      $t('admin.shareCompanyNewsAndInsights')
-                    }}</small></span
-                  ><el-icon class="quick-arrow"><ArrowRight /></el-icon
-                ></el-button>
-                <el-link
-                  class="quick-action"
-                  href="/"
-                  target="_blank"
-                  :underline="false"
-                  ><el-icon><View /></el-icon
-                  ><span
-                    ><b>{{ $t('admin.previewWebsite') }}</b
-                    ><small>{{
-                      $t('admin.openThePublicFacingWebsite')
-                    }}</small></span
-                  ><el-icon class="quick-arrow"><ArrowRight /></el-icon
-                ></el-link>
-              </el-card>
-            </el-col>
-          </el-row>
-
-          <el-card shadow="never" class="dashboard-card content-overview">
-            <template #header
-              ><div class="card-heading">
-                <div>
-                  <strong>{{ $t('admin.contentOverview') }}</strong
-                  ><small>{{ $t('admin.publishedWebsiteContent') }}</small>
-                </div>
-              </div></template
-            >
-            <el-row :gutter="16">
-              <el-col
-                v-for="item in [
-                  {
-                    label: 'admin.products',
-                    value: publishedProducts,
-                    total: products.length,
-                    route: 'products',
-                    color: '#4388dc',
-                  },
-                  {
-                    label: 'admin.insights',
-                    value: publishedArticles,
-                    total: articles.length,
-                    route: 'articles',
-                    color: '#826bd5',
-                  },
-                  {
-                    label: 'admin.openEnquiries',
-                    value: newInquiries,
-                    total: inquiries.length,
-                    route: 'inquiries',
-                    color: '#df8b52',
-                  },
-                ]"
-                :key="item.route"
-                :xs="24"
-                :sm="8"
-              >
-                <button class="overview-item" @click="navigate(item.route)">
-                  <span>{{ $t(item.label) }}</span
-                  ><strong
-                    >{{ item.value
-                    }}<small v-if="item.route !== 'inquiries'">
-                      / {{ item.total }}</small
-                    ></strong
-                  ><el-progress
-                    :percentage="
-                      item.total
-                        ? Math.round((item.value / item.total) * 100)
-                        : 0
-                    "
-                    :show-text="false"
-                    :color="item.color"
-                    :stroke-width="4"
-                  />
-                </button>
-              </el-col>
-            </el-row>
-          </el-card>
-        </template>
+        <AdminWorkspaceHome v-if="tab === 'overview'" :products="products" :articles="articles" :inquiries="inquiries" :new-inquiries="newInquiries" :ready="!dataErrors.size && !loading" @create="openEditor" />
+        <AdminHomepageMap v-else-if="tab === 'home'" ref="homepageManager" :products="products" :industries="industryRecords" />
 
         <el-card
           v-else-if="tab === 'products' || tab === 'articles'"
@@ -591,6 +404,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           <el-alert v-if="tab === 'products'" class="home-product-tip" type="info" :closable="false"
             :title="$t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS })"
             :description="$t('admin.homeSelectionHint')" />
+          <div class="admin-content-filters"><el-input v-model="search" clearable placeholder="搜索名称、分类或行业" aria-label="搜索内容"/><el-select v-model="statusFilter" aria-label="筛选发布状态"><el-option label="全部状态" value="all"/><el-option label="已发布" value="published"/><el-option label="草稿" value="draft"/></el-select><el-select v-if="tab === 'products'" v-model="homeFilter" aria-label="筛选首页推荐"><el-option label="全部产品" value="all"/><el-option label="首页推荐产品" value="home"/></el-select><router-link v-if="tab === 'products'" to="/admin/solutions">填写首页方案文案 ↗</router-link></div>
           <el-table
             :data="currentItems"
             v-loading="loading"
@@ -697,7 +511,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
 
         <InquiriesManager v-else-if="tab === 'inquiries'" ref="inquiriesManager" />
-        <ContactSettingsManager v-else-if="tab === 'contact'" ref="contactManager" />
+        <ContactSettingsManager v-else-if="tab === 'contact' || tab === 'forms'" :mode="tab === 'forms' ? 'inquiry' : 'company'" :key="tab" ref="contactManager" />
         <EmailNotificationsManager v-else-if="tab === 'mail'" ref="mailManager" />
 
         <footer class="admin-footer">
@@ -712,16 +526,11 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
       :description="$t(kind === 'products' ? 'admin.productEditorDescription' : 'admin.newsEditorDescription')"
       :icon="kind === 'products' ? 'Box' : 'Document'"
       :width="kind === 'articles' ? 'min(1280px, calc(100vw - 40px))' : 'min(1120px, calc(100vw - 40px))'"
-      :status="form.status" :saving="saving" :save-disabled="imageUploading" :editor-fullscreen="editorFullscreen" @save="save">
+      :status="form.status" :dirty="modal && JSON.stringify(form) !== modalOriginal" :saving="saving" :save-disabled="imageUploading" :editor-fullscreen="editorFullscreen" show-preview :save-label="form.status === 'published' ? '保存并发布' : '保存为草稿'" @preview="contentPreview?.open()" @save="save">
       <el-form :model="form" label-position="top" class="cms-editor-form" @submit.prevent="save">
         <div class="cms-editor-layout">
           <div class="cms-editor-main">
-            <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
-              <el-alert class="bilingual-tip" type="info" :closable="false" show-icon
-                :title="$t('admin.maintainEnglishAndChineseTogetherBothTitlesAreRequiredBeforeSaving')" />
-              <el-tabs v-model="editingLocale" class="bilingual-tabs">
-
-                <el-tab-pane :label="$t('admin.chinese')" name="zh">
+            <AdminEditorPanel step="01" title="基本信息" :description="kind === 'products' ? '先填写名称与所属行业，再补充对外展示的简介。' : '先填写标题、分类和发布日期，再补充摘要与正文。'">
                   <div class="cms-field-grid">
                     <el-form-item :label="$t('admin.titleChinese')" required>
                       <el-input v-model="form.titleZh" :placeholder="$t('admin.enterChineseTitle')" />
@@ -730,9 +539,20 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                       <el-input v-model="form.categoryZh" :placeholder="$t('admin.exampleMiningChinese')" />
                     </el-form-item>
                   </div>
+              <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
+                <el-select v-model="form.industries" multiple filterable collapse-tags collapse-tags-tooltip
+                  :placeholder="$t('admin.chooseIndustries')">
+                  <el-option v-for="industry in industryRecords" :key="industry.id" :label="industryOptionLabel(industry)" :value="industry.id" />
+                </el-select>
+              </el-form-item>
+              <el-form-item v-if="kind === 'articles'" :label="$t('admin.publicationDate')" required>
+                <el-date-picker v-model="form.date" type="date" value-format="YYYY-MM-DD" :clearable="false" />
+              </el-form-item>
                   <el-form-item :label="$t('admin.summaryChinese')">
                     <el-input v-model="form.summaryZh" type="textarea" :rows="3" :placeholder="$t('admin.chineseSummaryPlaceholder')" />
                   </el-form-item>
+            </AdminEditorPanel>
+            <AdminEditorPanel step="02" :title="kind === 'products' ? '产品详情与参数' : '新闻正文'" :description="kind === 'products' ? '介绍、特点和参数会显示在产品详情页，支持分行填写。' : '正文支持排版与插入图片，保存前可查看填写效果。'">
                   <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleChinese')">
                     <RichTextEditor v-if="modal && editingLocale === 'zh'" :key="'zh-' + locale"
                       v-model="form.contentZh" :placeholder="$t('admin.chineseArticlePlaceholder')"
@@ -756,25 +576,17 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                       </el-form-item>
                     </div>
                   </template>
-                </el-tab-pane>
-              </el-tabs>
+
             </AdminEditorPanel>
           </div>
           <aside class="cms-editor-aside">
-            <AdminEditorPanel step="02" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
+            <AdminEditorPanel step="03" title="封面与发布" description="上传对外展示的图片，再选择保存为草稿或发布到官网。">
               <el-form-item :label="$t('admin.editorDisplayImage')">
                 <ImageUpload v-model="form.image" :kind="kind === 'products' ? 'product' : 'news'" :active="modal"
                   :context-key="`${kind}-${form.id}`" :disabled="saving" @uploading="coverImageUploading = $event" />
               </el-form-item>
-              <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
-                <el-select v-model="form.industries" multiple filterable collapse-tags collapse-tags-tooltip
-                  :placeholder="$t('admin.chooseIndustries')">
-                  <el-option v-for="industry in industryRecords" :key="industry.id" :label="industryOptionLabel(industry)" :value="industry.id" />
-                </el-select>
-              </el-form-item>
-              <el-form-item v-if="kind === 'articles'" :label="$t('admin.publicationDate')" required>
-                <el-date-picker v-model="form.date" type="date" value-format="YYYY-MM-DD" :clearable="false" />
-              </el-form-item>
+
+
               <el-form-item :label="$t('admin.status2')">
                 <el-radio-group v-model="form.status" class="cms-status-options">
                   <el-radio-button value="published">{{ $t('admin.published2') }}</el-radio-button>
@@ -783,13 +595,14 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 <p class="cms-field-hint">{{ $t(form.status === 'published' ? 'admin.editorPublishedHint' : 'admin.editorDraftHint') }}</p>
               </el-form-item>
             </AdminEditorPanel>
-            <AdminEditorPanel v-if="kind === 'products'" step="03" :title="$t('admin.editorHomepageSettings')" :description="$t('admin.homeSelectionHint')">
+            <AdminEditorPanel v-if="kind === 'products'" step="04" :title="$t('admin.editorHomepageSettings')" :description="$t('admin.homeSelectionHint')">
               <div class="cms-switch-row"><strong>{{ $t('admin.showOnHome') }}</strong><el-switch v-model="form.showOnHome" /></div>
               <p class="cms-home-count">{{ $t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS }) }}</p>
               <el-form-item v-if="form.showOnHome" :label="$t('admin.homeDisplayOrder')">
                 <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
-              </el-form-item>U
+              </el-form-item>
             </AdminEditorPanel>
+            <AdminPreviewFrame ref="contentPreview" :title="kind === 'products' ? '产品填写效果预览' : '资讯填写效果预览'" :public-path="form.id ? (kind === 'products' ? '/solutions/' : '/insights/') + form.id : ''"><AdminContentPreview :kind="kind" :record="form"/></AdminPreviewFrame>
           </aside>
         </div>
       </el-form>

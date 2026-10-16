@@ -3,6 +3,10 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import AdminPreviewFrame from './AdminPreviewFrame.vue'
+import AdminSaveBar from './AdminSaveBar.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
+
 import HomeSolutionsSection from './HomeSolutionsSection.vue'
 import { editorLocales as availableLocales } from '../i18n/locales/index.js'
 import { emptySolutionStory, homeSolutionsDraft } from '../data/homeSolutions.js'
@@ -93,6 +97,7 @@ async function save() {
 }
 onMounted(load)
 onBeforeUnmount(() => { disposed = true })
+useAdminEditorState({ dirty, saving, loading })
 defineExpose({ load })
 </script>
 
@@ -128,13 +133,10 @@ defineExpose({ load })
           </AdminEditorPanel>
         </div>
         <aside class="home-solutions-preview">
-          <AdminEditorPanel :title="$t('homeSolutionsAdmin.preview')" :description="$t('homeSolutionsAdmin.previewHint')">
-            <div v-if="previewProducts.length" class="design-site" @click.capture.prevent><div class="hc-page"><HomeSolutionsSection :configuration="previewConfiguration" :products="previewProducts" :industries="industries" :locale-code="editingLocale"/></div></div>
-            <el-empty v-else :description="$t('homeSolutionsAdmin.noPreview')" />
-          </AdminEditorPanel>
+          <AdminPreviewFrame title="首页方案预览" public-path="/#solutions"><HomeSolutionsSection v-if="previewProducts.length" :configuration="previewConfiguration" :products="previewProducts" :industries="industries" :locale-code="editingLocale"/><el-empty v-else :description="$t('homeSolutionsAdmin.noPreview')" /></AdminPreviewFrame>
         </aside>
       </div>
-      <div class="home-solutions-save"><span>{{ $t(dirty?'homeSolutionsAdmin.unsaved':'homeSolutionsAdmin.saveNote') }}</span><el-button type="primary" :loading="saving" :disabled="loading || error" class="home-solutions-save-button" @click="save">{{ $t('admin.saveContent') }}</el-button></div>
+      <AdminSaveBar class="home-solutions-save" :dirty="Boolean(dirty)" :saving="saving" :disabled="loading || error" @save="save" />
     </el-form>
   </div>
 </template>

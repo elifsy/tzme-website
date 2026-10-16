@@ -4,6 +4,10 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { ArrowDown, ArrowUp, Delete, Plus } from '@element-plus/icons-vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import AdminPreviewFrame from './AdminPreviewFrame.vue'
+import AdminSaveBar from './AdminSaveBar.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
+
 import ImageUpload from './ImageUpload.vue'
 import CapabilityIcon from './CapabilityIcon.vue'
 import HomeCapabilitiesSection from './HomeCapabilitiesSection.vue'
@@ -52,7 +56,7 @@ async function load() {
 function addStep() {
   if (saving.value || form.value.steps.length >= MAX_CAPABILITY_STEPS) return
   const id = crypto.randomUUID()
-  form.value.steps.push({ id, label: Object.fromEntries(availableLocales.map(item => [item.code, ''])), enabled: false, iconMode: 'preset', iconName: 'general', icon: '' })
+  form.value.steps.push({ id, label: Object.fromEntries(availableLocales.map(item => [item.code, ''])), description: { zh: '' }, enabled: false, iconMode: 'preset', iconName: 'general', icon: '' })
   expandedStep.value = id
 }
 function moveStep(index, direction) {
@@ -106,6 +110,7 @@ async function save() {
 }
 onMounted(load)
 onBeforeUnmount(() => { disposed = true })
+useAdminEditorState({ dirty, saving, loading, uploading })
 defineExpose({ load })
 </script>
 
@@ -134,6 +139,7 @@ defineExpose({ load })
                   </div>
                 </div>
                 <el-form-item :label="$t('capabilitiesAdmin.stepName')" :required="step.enabled"><el-input v-model="step.label[editingLocale]" maxlength="100" show-word-limit /></el-form-item>
+                <el-form-item :label="$t('capabilitiesAdmin.stepDescription')"><el-input v-model="step.description[editingLocale]" type="textarea" :rows="4" maxlength="600" show-word-limit data-step-description /><p class="cms-field-hint">{{ $t('capabilitiesAdmin.stepDescriptionHint') }}</p></el-form-item>
                 <el-form-item :label="$t('capabilitiesAdmin.iconMode')"><el-radio-group v-model="step.iconMode"><el-radio-button value="preset">{{ $t('capabilitiesAdmin.preset') }}</el-radio-button><el-radio-button value="image">{{ $t('capabilitiesAdmin.uploaded') }}</el-radio-button></el-radio-group></el-form-item>
                 <el-form-item v-if="step.iconMode === 'preset'" :label="$t('capabilitiesAdmin.iconName')"><el-select v-model="step.iconName"><el-option v-for="name in capabilityIconNames" :key="name" :value="name" :label="$t('capabilitiesAdmin.icons.' + name)"><div class="capabilities-icon-option"><CapabilityIcon :icon-name="name" /><span>{{ $t('capabilitiesAdmin.icons.' + name) }}</span></div></el-option></el-select></el-form-item>
                 <el-form-item v-else :label="$t('capabilitiesAdmin.stepIcon')" :required="step.enabled"><ImageUpload v-model="step.icon" kind="capabilityIcon" :active="expandedStep === step.id" :context-key="step.id" :disabled="saving" :alt="capabilityText(step.label, editingLocale)" @uploading="setUploading('step:' + step.id, $event)" /></el-form-item>
@@ -148,13 +154,11 @@ defineExpose({ load })
           </AdminEditorPanel>
         </div>
         <aside class="capabilities-editor-preview">
-          <AdminEditorPanel :title="$t('capabilitiesAdmin.preview')" :description="$t('capabilitiesAdmin.previewHint')">
-            <el-alert v-if="!form.enabled" type="info" :closable="false" :title="$t('capabilitiesAdmin.hiddenPreview')" class="capabilities-preview-alert" />
-            <div class="capabilities-preview-scroll" tabindex="0" :aria-label="$t('capabilitiesAdmin.preview')"><HomeCapabilitiesSection :configuration="form" :locale-code="editingLocale" preview /></div>
-          </AdminEditorPanel>
+          <el-alert v-if="!form.enabled" type="info" :closable="false" :title="$t('capabilitiesAdmin.hiddenPreview')" class="capabilities-preview-alert" />
+          <AdminPreviewFrame title="制造与质量预览" public-path="/#capabilities"><HomeCapabilitiesSection :configuration="form" :locale-code="editingLocale" embedded /></AdminPreviewFrame>
         </aside>
       </div>
-      <div class="capabilities-save-bar"><span>{{ $t(uploading ? 'capabilitiesAdmin.uploading' : dirty ? 'capabilitiesAdmin.unsaved' : 'capabilitiesAdmin.saveNote') }}</span><el-button type="primary" :loading="saving" :disabled="uploading || loading || error" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('admin.saveContent') }}</el-button></div>
+      <AdminSaveBar class="capabilities-save-bar" :dirty="Boolean(dirty)" :saving="saving" :busy="uploading" :disabled="loading || error" @save="save" />
     </el-form>
   </div>
 </template>

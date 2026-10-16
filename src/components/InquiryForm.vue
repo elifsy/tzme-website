@@ -8,12 +8,12 @@ import { contactText, inquiryFieldLabels, useContactSettings } from '../services
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import { inquiryAnalyticsContext, trackEvent } from '../services/analytics.js'
 
-const props = defineProps({ placement: { type: String, default: 'contact' } })
+const props = defineProps({ placement: { type: String, default: 'contact' }, preview: Boolean, configuration: { type: Object, default: null } })
 const { t, locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
 const { industries, loadIndustries } = useIndustryCatalog()
 const activeIndustries = computed(() => industries.value.filter(item => item.status === 'published'))
-const config = computed(() => contactSettings.value)
+const config = computed(() => props.configuration || contactSettings.value)
 const form = reactive(Object.fromEntries(Object.keys(inquiryFieldLabels).map(key => [key, ''])))
 const OTHER_INDUSTRY = '__tzme_other_industry__'
 const industrySelection = ref('')
@@ -26,8 +26,9 @@ const uploads = new Map()
 const inProgress = computed(() => fileList.value.some(file => ['ready', 'uploading'].includes(file.status)))
 const hasFailed = computed(() => fileList.value.some(file => file.status === 'fail'))
 const accept = computed(() => config.value?.upload.allowedExtensions.map(value => `.${value}`).join(',') || '')
+const fieldLabel = key => t(inquiryFieldLabels[key]).replace(/\s*[*＊]\s*$/, '')
 const rules = computed(() => Object.fromEntries(Object.keys(inquiryFieldLabels).map(key => [key, [
-  ...(config.value?.form.requiredFields.includes(key) || (key === 'industry' && isOtherIndustry.value) ? [{ required: true, whitespace: true, message: t('contactUi.required', { field: t(inquiryFieldLabels[key]) }), trigger: 'blur' }] : []),
+  ...(config.value?.form.requiredFields.includes(key) || (key === 'industry' && isOtherIndustry.value) ? [{ required: true, whitespace: true, message: t('contactUi.required', { field: fieldLabel(key) }), trigger: 'blur' }] : []),
   ...(key === 'email' ? [{ type: 'email', message: t('site.inquiryInvalidEmail'), trigger: 'blur' }] : []),
 ]])))
 // Clear messages from the previous language without resetting the entered values.
@@ -40,11 +41,13 @@ function selectIndustry(value) {
   formRef.value?.clearValidate('industry')
 }
 function trackStart(event) {
+  if (props.preview) return
   if (started || !event.target.closest('input,textarea,.el-select')) return
   started = true
   trackEvent('inquiry_start', props.placement)
 }
 function beforeUpload(file) {
+  if (props.preview) return false
   const extension = file.name.split('.').pop().toLowerCase()
   if (!config.value.upload.allowedExtensions.includes(extension) || file.size <= 0 || file.size > config.value.upload.maxFileSizeMb * 1024 * 1024) {
     ElMessage.warning(t('contactUi.fileInvalid', { size: config.value.upload.maxFileSizeMb, types: config.value.upload.allowedExtensions.join(', ').toUpperCase() }))
@@ -53,6 +56,7 @@ function beforeUpload(file) {
   return !submitting.value
 }
 function uploadFile(options) {
+  if (props.preview) return Promise.reject(new DOMException('Preview does not upload files', 'AbortError'))
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest()
     uploads.set(options.file.uid, request)
@@ -79,6 +83,7 @@ function uploadFile(options) {
 function removeFile(file) { uploads.get(file.uid)?.abort() }
 function uploadError(error) { if (!disposed && error.name !== 'AbortError') ElMessage.error(t('contactUi.uploadFailed')) }
 async function submit() {
+  if (props.preview) return
   if (submitting.value || inProgress.value || hasFailed.value || !config.value.form.enabled) return
   try { await formRef.value.validate() } catch { return }
   if (disposed || submitting.value) return
@@ -103,29 +108,29 @@ onBeforeUnmount(() => { disposed = true; uploads.forEach(request => request.abor
 </script>
 
 <template>
-  <div v-if="config && config.form[placement === 'home' ? 'showOnHome' : 'showOnContact']" class="hc-form inquiry-form" @click.stop @keydown.stop @focusin="trackStart">
+  <div v-if="config && (preview || config.form[placement === 'home' ? 'showOnHome' : 'showOnContact'])" class="hc-form inquiry-form" @click.stop @keydown.stop @focusin="trackStart">
     <template v-if="config.form.enabled">
       <span class="hc-kick inquiry-form-title">{{ contactText(config.form.title, locale) }}</span>
       <el-form ref="formRef" :model="form" :rules="rules" :validate-on-rule-change="false" label-position="top" :disabled="submitting" @submit.prevent="submit">
         <div class="inquiry-fields">
-          <el-form-item v-for="key in ['name', 'company', 'country', 'email', 'phone', 'industry']" :key="key" :prop="key" :label="$t(inquiryFieldLabels[key])">
+          <el-form-item v-for="key in ['name', 'company', 'country', 'email', 'phone', 'industry']" :key="key" :prop="key" :label="fieldLabel(key)">
             <template v-if="key === 'industry'">
-              <el-select v-model="industrySelection" filterable default-first-option clearable :validate-event="false"
+              <el-select v-model="industrySelection" filterable default-first-option clearable :validate-event="false" :teleported="!preview"
                 :placeholder="$t('contactUi.industryPlaceholder')" @change="selectIndustry">
                 <el-option v-for="industry in activeIndustries" :key="industry.id" :label="industryField(industry, 'title', locale)" :value="industryField(industry, 'title', locale)" />
                 <el-option :value="OTHER_INDUSTRY" :label="$t('contactUi.otherIndustry')" />
               </el-select>
               <el-input v-if="isOtherIndustry" v-model="form.industry" class="inquiry-industry-custom" maxlength="255" autocomplete="off"
-                :aria-label="$t(inquiryFieldLabels.industry)" :placeholder="$t('contactUi.otherIndustryPlaceholder')" />
+                :aria-label="fieldLabel('industry')" :placeholder="$t('contactUi.otherIndustryPlaceholder')" />
             </template>
-            <el-input v-else v-model="form[key]" :type="key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'" maxlength="255" :autocomplete="{ name: 'name', company: 'organization', country: 'country-name', email: 'email', phone: 'tel' }[key]" :placeholder="$t(inquiryFieldLabels[key])" />
+            <el-input v-else v-model="form[key]" :type="key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'" maxlength="255" :autocomplete="{ name: 'name', company: 'organization', country: 'country-name', email: 'email', phone: 'tel' }[key]" :placeholder="fieldLabel(key)" />
           </el-form-item>
         </div>
         <el-form-item prop="requirements" :label="$t('site.projectRequirements')">
           <el-input v-model="form.requirements" type="textarea" :rows="4" maxlength="6000" show-word-limit :placeholder="$t('site.capacityMaterialHandledSiteConditionsRequiredDeliveryDate')" />
         </el-form-item>
         <el-form-item v-if="config.upload.enabled" :label="$t('contactUi.attachments')" class="inquiry-attachment-field">
-          <el-upload ref="uploadRef" v-model:file-list="fileList" drag :accept="accept" :limit="config.upload.maxFiles" :before-upload="beforeUpload" :http-request="uploadFile" :on-remove="removeFile" :on-error="uploadError" :on-exceed="() => ElMessage.warning($t('contactUi.fileCount', { count: config.upload.maxFiles }))" :disabled="submitting" class="inquiry-upload">
+          <el-upload ref="uploadRef" v-model:file-list="fileList" drag :accept="accept" :limit="config.upload.maxFiles" :before-upload="beforeUpload" :http-request="uploadFile" :on-remove="removeFile" :on-error="uploadError" :on-exceed="() => ElMessage.warning($t('contactUi.fileCount', { count: config.upload.maxFiles }))" :disabled="submitting || preview" class="inquiry-upload">
             <el-icon class="inquiry-upload-icon"><UploadFilled /></el-icon>
             <div>{{ $t('site.dragAndDropOrClickToUpload') }}</div>
             <template #tip><p class="inquiry-upload-tip">{{ $t('contactUi.uploadHint', { size: config.upload.maxFileSizeMb, count: config.upload.maxFiles, types: config.upload.allowedExtensions.join(' / ').toUpperCase() }) }}</p></template>

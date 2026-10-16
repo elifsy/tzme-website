@@ -5,6 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
 import AdminEditorDialog from './AdminEditorDialog.vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
 import ImageUpload from './ImageUpload.vue'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { apiRequest } from '../services/api.js'
@@ -25,6 +26,9 @@ const form = reactive({
   issuerEn: '', issuerZh: '', certificateNo: '', issuedAt: '', expiresAt: '',
   image: '', sortOrder: 10, status: 'published',
 })
+const editorOriginal = ref('')
+const editorDirty = computed(() => dialogOpen.value && JSON.stringify(form) !== editorOriginal.value)
+useAdminEditorState({ dirty: editorDirty, saving, loading, uploading: imageUploading })
 
 function field(item, name) {
   return locale.value === 'zh'
@@ -51,6 +55,7 @@ function openEditor(item = null) {
     sortOrder: Number(item?.sortOrder ?? (records.value.length + 1) * 10),
     status: item?.status || 'published',
   })
+  editorOriginal.value = JSON.stringify(form)
   dialogOpen.value = true
 }
 
@@ -187,7 +192,7 @@ onMounted(load)
 
   <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.certEdit' : 'admin.certAdd')"
     :description="$t('admin.certDescription')" icon="CircleCheckFilled" width="min(1100px, calc(100vw - 40px))"
-    :status="form.status" :saving="saving" :save-disabled="imageUploading" @save="save">
+    :status="form.status" :dirty="editorDirty" :saving="saving" :save-disabled="imageUploading" @save="save">
     <el-form :model="form" label-position="top" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">

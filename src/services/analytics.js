@@ -139,6 +139,7 @@ function captureClick(event) {
   trackEvent('cta_click', control.dataset.action || 'website-button')
 }
 export function installAnalytics(siteRouter, currentLocale) {
+  if (new URLSearchParams(window.location.search).get('admin-preview') === '1') return
   router = siteRouter; locale = currentLocale
   router.afterEach((to, from, failure) => {
     if (!enabled || failure || to.path === from.path) return

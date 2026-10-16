@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { Promotion, View } from '@element-plus/icons-vue'
 import AdminEditorPanel from './AdminEditorPanel.vue'
+import AdminSaveBar from './AdminSaveBar.vue'
+import { useAdminEditorState } from '../composables/useAdminEditorState.js'
+
 import InquiryDetailsDialog from './InquiryDetailsDialog.vue'
 import { apiRequest } from '../services/api.js'
 import { useInquiryCatalog } from '../services/inquiries.js'
@@ -86,6 +89,7 @@ function dateLabel(value) { return value ? new Date(value).toLocaleString() : 'â
 function mailType(status) { return status === 'sent' ? 'success' : status === 'failed' ? 'danger' : ['pending', 'sending'].includes(status) ? 'warning' : 'info' }
 onMounted(() => { load(); timer = setInterval(() => { if (inquiries.value.some(item => ['pending', 'sending'].includes(item.mailStatus))) loadInquiries() }, 15000) })
 onBeforeUnmount(() => { disposed = true; clearInterval(timer) })
+useAdminEditorState({ dirty, saving, loading })
 defineExpose({ load })
 </script>
 
@@ -111,7 +115,7 @@ defineExpose({ load })
           <el-checkbox v-if="form.smtp.passwordConfigured" v-model="form.smtp.clearPassword">{{ $t('contactAdmin.clearPassword') }}</el-checkbox>
         </AdminEditorPanel>
       </div>
-      <div class="mail-settings-footer"><span>{{ $t(dirty ? 'mailAdmin.unsaved' : 'mailAdmin.saveHint') }}</span><el-button type="primary" :loading="saving" @click="save"><el-icon><CircleCheckFilled /></el-icon>{{ $t('mailAdmin.saveSettings') }}</el-button></div>
+      <AdminSaveBar class="mail-settings-footer" :dirty="Boolean(dirty)" :saving="saving" :disabled="loading" @save="save" />
     </el-form>
     <el-card v-show="activeTab === 'records'" shadow="never" class="table-card mail-records">
       <template #header><div class="mail-records-heading"><div><strong>{{ $t('mailAdmin.records') }}</strong><p>{{ $t('mailAdmin.recordsHint') }}</p></div><div class="mail-records-filters"><el-input v-model="search" clearable :placeholder="$t('mailAdmin.search')" @input="currentPage = 1" /><el-select v-model="statusFilter" clearable :placeholder="$t('mailAdmin.allStatuses')" @change="currentPage = 1"><el-option v-for="status in ['disabled', 'pending', 'sending', 'sent', 'failed']" :key="status" :value="status" :label="$t('contactAdmin.mailStatus.' + status)" /></el-select></div></div></template>
