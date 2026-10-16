@@ -9,6 +9,7 @@ import { useAdminEditorState } from '../composables/useAdminEditorState.js'
 
 import ImageUpload from './ImageUpload.vue'
 import WorldReachMap from './WorldReachMap.vue'
+import GlobalReachSection from './GlobalReachSection.vue'
 import { createGlobalReachSettings, globalReachText, isGlobalReachUrl, MAX_GLOBAL_POINTS } from '../data/globalReach.js'
 import { useSiteContent } from '../services/website.js'
 import { localeMessages } from '../i18n/locales/index.js'
@@ -263,25 +264,7 @@ defineExpose({ load })
     </el-form>
     <el-alert v-if="!form.enabled" :title="$t('admin.globalHiddenPreview')" type="info" :closable="false" />
     <AdminPreviewFrame initial-device="desktop" title="全球业务效果预览" public-path="/">
-      <section class="hc-sec j-global j-soft">
-        <div class="hc-w hc-global">
-          <div>
-            <span class="hc-kick">{{ previewField('kicker') }}</span>
-            <h2 class="hc-h2">{{ previewField('titleLine1') }}<template v-if="previewField('titleLine2')"><br />{{ previewField('titleLine2') }}</template></h2>
-            <div class="hc-map">
-              <WorldReachMap v-if="form.mapMode === 'points'" :points="form.mapPoints" :description="previewField('imageAlt')" :locale-code="editingLocale" />
-              <el-image v-else :src="form.image" :alt="previewField('imageAlt')" fit="contain">
-              <template #error><span class="global-image-error">{{ $t('admin.editorImageError') }}</span></template>
-            </el-image></div>
-          </div>
-          <div><p class="hc-p">{{ previewField('description') }}</p><div class="hc-gstats">
-            <div v-for="(statistic, index) in form.statistics" :key="index">
-              <div class="hc-stat">{{ statistic.value }}<u v-if="statistic.suffix">{{ statistic.suffix }}</u></div>
-              <div class="hc-stat-cap">{{ globalReachText(statistic.label, editingLocale) }}</div>
-            </div>
-          </div><a v-if="form.showButton && isGlobalReachUrl(form.buttonLink)" class="j-link" :href="form.buttonLink">{{ previewField('buttonText') }}<span>→</span></a></div>
-        </div>
-      </section>
+      <GlobalReachSection :configuration="form" :locale-code="editingLocale" preview />
     </AdminPreviewFrame>
     <AdminSaveBar class="global-save-bar" :dirty="Boolean(dirty)" :saving="saving" :busy="uploading" :disabled="loading" @save="save" />
   </div>

@@ -51,9 +51,9 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() })
       <img :src="worldDots" alt="" draggable="false" class="world-map-land" />
       <button v-for="point in points" :key="point.id" type="button" class="world-map-point"
         :ref="(element) => element ? pointButtons.set(point.id, element) : pointButtons.delete(point.id)"
-        :class="{ 'is-selected': selectedId === point.id }" :style="{ left: `${point.x}%`, top: `${point.y}%` }"
+        :class="{ 'is-selected': selectedId === point.id, 'is-active': visibleId === point.id }" :style="{ left: `${point.x}%`, top: `${point.y}%` }"
         :aria-label="editable ? t('admin.globalEditPoint', { name: name(point) }) : name(point)"
-        :aria-pressed="editable ? selectedId === point.id : undefined" :disabled="disabled"
+        :aria-pressed="editable ? selectedId === point.id : activeId === point.id" :disabled="disabled"
         @click.stop="editable ? emit('select', point.id) : activeId = activeId === point.id ? '' : point.id"
         @pointerenter="hoveredId = point.id" @pointerleave="hoveredId = ''"
         @focus="hoveredId = point.id" @blur="hoveredId = ''" @keydown="keyboard($event, point)">
@@ -63,7 +63,7 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() })
     </div>
     <figcaption class="world-map-caption">
       <span class="world-map-legend" aria-hidden="true"></span>
-      <span>{{ t('site.globalMapLitLocations', { count: points.length }, { locale: language }) }}</span>
+      <span><slot name="caption">{{ t('site.globalMapLitLocations', { count: points.length }, { locale: language }) }}</slot></span>
       <span class="world-map-sr-only">{{ names }}</span>
     </figcaption>
   </figure>

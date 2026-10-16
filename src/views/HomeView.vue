@@ -5,7 +5,7 @@ import SiteNav from '../components/SiteNav.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 import IndustryIcon from '../components/IndustryIcon.vue'
-import WorldReachMap from '../components/WorldReachMap.vue'
+import GlobalReachSection from '../components/GlobalReachSection.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import AboutTzmeContent from '../components/AboutTzmeContent.vue'
 import HomeCapabilitiesSection from '../components/HomeCapabilitiesSection.vue'
@@ -19,7 +19,6 @@ import { useProjectCatalog } from '../services/projects.js'
 import { useArticleCatalog, articlePath } from '../services/articles.js'
 import { useIndustryCatalog, industryField } from '../services/industries.js'
 import { useGlobalReach } from '../services/globalReach.js'
-import { globalReachText, isGlobalReachUrl } from '../data/globalReach.js'
 import { useContactSettings } from '../services/contactSettings.js'
 import { jAssets, jBanner as banner } from '../data/jDesign.js'
 const { locale } = useI18n({ useScope: 'global' })
@@ -39,7 +38,6 @@ const activeIndustries = computed(() => industries.value.filter(item => item.sta
 const featuredProducts = computed(() => products.value.filter(item => item.status === 'published' && item.showOnHome)
   .sort((a,b) => (Number(a.homeOrder) || 999) - (Number(b.homeOrder) || 999)).slice(0, MAX_HOME_PRODUCTS))
 const latestNews = computed(() => [...publishedArticles.value].sort((a,b) => Number(['canada-energy','annual-gala'].includes(b.id)) - Number(['canada-energy','annual-gala'].includes(a.id))).slice(0,3))
-const globalField = name => globalReachText(globalReach.value?.[name], locale.value)
 onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadArticles(); loadCapabilities(); loadHomeSolutions(); loadAboutTzme(); loadGlobalReach() })
 </script>
 
@@ -57,7 +55,7 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadArticles
       <HomeCapabilitiesSection :configuration="capabilities" :locale-code="locale" />
       <section id="projects" class="hc-sec"><div class="hc-w"><div class="hc-shead"><div><span class="hc-kick">SELECTED PROJECTS</span><h2 class="hc-h2">{{ text('真实项目，持久价值。','Real projects. Lasting value.') }}</h2></div><router-link class="j-link" to="/projects">{{ $t('site.viewAllProjects') }}<span>→</span></router-link></div><div v-if="homeProjects.length" class="hc-proj"><ProjectCard v-for="project in homeProjects" :key="project.id" :project="project"/></div><el-empty v-else :description="$t('site.projectsEmpty')"/></div></section>
       <section class="j-quality-strip hc-w"><router-link v-for="title in ['ISO 9001','ISO 14001','ISO 45001','EN 1090','ISO 3834']" :key="title" to="/about#certificates-title">{{ title }}</router-link><router-link class="j-link" to="/about#certificates-title">{{ text('资质与质量体系','Quality & certifications') }} ↗</router-link></section>
-      <section v-if="globalReach?.enabled" class="hc-sec j-global j-soft"><div class="hc-w hc-global"><div><span class="hc-kick">{{ globalField('kicker') }}</span><h2 class="hc-h2">{{ globalField('titleLine1') }}<br v-if="globalField('titleLine2')"/>{{ globalField('titleLine2') }}</h2><div class="hc-map"><WorldReachMap v-if="globalReach.mapMode === 'points'" :points="globalReach.mapPoints" :description="globalField('imageAlt')" :locale-code="locale"/><el-image v-else :src="globalReach.image" :alt="globalField('imageAlt')" fit="contain"/></div></div><div><p class="hc-p">{{ globalField('description') }}</p><div class="hc-gstats"><div v-for="(stat,index) in globalReach.statistics" :key="index"><div class="hc-stat">{{ stat.value }}<u v-if="stat.suffix">{{ stat.suffix }}</u></div><div class="hc-stat-cap">{{ globalReachText(stat.label,locale) }}</div></div></div><component :is="globalReach.buttonLink.startsWith('/') ? 'router-link' : 'a'" v-if="globalReach.showButton && isGlobalReachUrl(globalReach.buttonLink)" class="j-link" :to="globalReach.buttonLink" :href="globalReach.buttonLink">{{ globalField('buttonText') }}<span>→</span></component></div></div></section>
+      <GlobalReachSection :configuration="globalReach" />
       <section v-if="latestNews.length" class="hc-sec"><div class="hc-w"><div class="hc-shead"><div><span class="hc-kick">NEWS & INSIGHTS</span><h2 class="hc-h2">{{ text('来自制造与交付一线。','From engineering and manufacturing.') }}</h2></div><router-link class="j-link" to="/insights">{{ text('全部资讯','All news') }}<span>→</span></router-link></div><div class="hc-cards"><router-link v-for="article in latestNews" :key="article.id" class="hc-card" :to="articlePath(article.id)"><div class="im"><img :src="article.image" :alt="field(article,'title')" loading="lazy"/></div><div class="bd"><span class="j-card-meta">{{ field(article,'category') }}<template v-if="article.date"> · {{ article.date }}</template></span><h3>{{ field(article,'title') }}</h3><span class="go">{{ text('阅读全文','Read article') }}<i>→</i></span></div></router-link></div></div></section>
       <section class="hc-sec j-home-contact"><div class="hc-w j-contact-layout" :class="{'j-contact-single':!contactSettings?.form.showOnHome}"><div><span class="hc-kick">LET’S BUILD TOGETHER</span><h2 class="hc-h2">{{ text('下一项制造需求，\n从交流开始。','Your next project\nstarts with a conversation.') }}</h2><span class="j-rule"></span><p class="hc-p">{{ text('告诉我们您的图纸、工况、质量要求和交付计划。我们将与您确认设备制造、检验与供货需求。','Tell us about your materials, operating conditions and delivery requirements. Explore an equipment solution with our engineering team.') }}</p><div class="j-direct-contact"><a v-for="email in contactSettings?.contact.emails" :key="email" :href="`mailto:${email}`">{{ email }}</a><p>{{ contactSettings?.contact.phone }}</p></div></div><InquiryForm placement="home"/></div></section>
     </main><SiteFooter />
