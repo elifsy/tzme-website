@@ -1,0 +1,57 @@
+/* Keep the desktop banner and every industry entry inside the first viewport.
+   Navigation stays outside this flex container so it remains sticky site-wide. */
+@media (min-width: 1001px) {
+  .j-home-first-screen {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - var(--site-nav-height, 96px));
+    max-height: calc(100svh - var(--site-nav-height, 96px));
+  }
+
+  .j-home-first-screen > .j-hero {
+    flex: 0 1 auto;
+    min-height: 0;
+  }
+
+  .j-home-first-screen > .home-industry-nav {
+    flex: 0 0 auto;
+  }
+}
+
+/* Preserve readable copy and its action on shorter laptop windows. */
+@media (min-width: 1001px) and (max-height: 800px) {
+  .j-home-first-screen .j-hero-copy {
+    padding: 28px 34px;
+  }
+
+  .j-home-first-screen .j-hero-copy h1 {
+    font-size: clamp(32px, 5.2vh, 43px);
+    line-height: 1.25;
+  }
+
+  .j-home-first-screen .j-hero-copy .j-rule {
+    margin-block: 16px 18px;
+  }
+}
+
+@media (min-width: 1001px) and (max-height: 600px) {
+  .j-home-first-screen .j-hero-copy {
+    padding: 18px 28px;
+  }
+
+  .j-home-first-screen .j-hero-copy h1 {
+    font-size: 30px;
+    line-height: 1.2;
+  }
+
+  .j-home-first-screen .j-hero-copy .j-rule {
+    height: 2px;
+    margin-block: 12px 14px;
+  }
+
+  .j-home-first-screen .j-hero-copy .j-button {
+    min-height: 40px;
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+}

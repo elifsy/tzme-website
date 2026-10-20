@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import SiteNav from '../components/SiteNav.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 import ProjectCard from '../components/ProjectCard.vue'
-import IndustryIcon from '../components/IndustryIcon.vue'
+import HomeIndustryNavigation from '../components/HomeIndustryNavigation.vue'
 import GlobalReachSection from '../components/GlobalReachSection.vue'
 import InquiryForm from '../components/InquiryForm.vue'
 import AboutTzmeContent from '../components/AboutTzmeContent.vue'
@@ -16,10 +16,11 @@ import { useCapabilities } from '../services/capabilities.js'
 import { useHomeSolutions } from '../services/homeSolutions.js'
 import { MAX_HOME_PRODUCTS, useProductCatalog } from '../services/catalog.js'
 import { useProjectCatalog } from '../services/projects.js'
-import { useIndustryCatalog, industryField } from '../services/industries.js'
+import { useIndustryCatalog } from '../services/industries.js'
 import { useGlobalReach } from '../services/globalReach.js'
 import { useContactSettings } from '../services/contactSettings.js'
 import { jAssets, jBanner as banner } from '../data/jDesign.js'
+import '../style/home-first-screen.css'
 const { locale } = useI18n({ useScope: 'global' })
 const text = (zh, en) => locale.value === 'zh' ? zh : en
 const { products, loadProducts } = useProductCatalog()
@@ -41,11 +42,13 @@ onMounted(() => { loadProducts(); loadIndustries(); loadProjects(); loadCapabili
   <div class="design-site j-home"><div class="hc-page">
     <SiteNav />
     <main id="main-content">
-      <section class="j-hero" :aria-label="text('首页横幅','Homepage banner')">
-        <img class="j-hero-photo" :src="banner.image" :alt="text('重钢机械港口、制造与装备现场','TZME port equipment and manufacturing')" fetchpriority="high" />
-        <div class="j-hero-copy"><h1>{{ banner.title[locale] || banner.title.en }}</h1><span class="j-rule"></span><router-link :to="banner.to" class="j-button" data-analytics-event="cta_click" data-analytics-target="banner-1">{{ banner.button[locale] || banner.button.en }}<span aria-hidden="true">→</span></router-link></div>
-      </section>
-      <section v-if="activeIndustries.length" id="industries" class="j-industry-strip" :aria-label="text('服务行业','Industries we serve')"><div class="hc-w"><router-link v-for="industry in activeIndustries" :key="industry.id" :to="{ path:'/solutions',query:{industry:industry.id} }" data-analytics-event="industry_filter" :data-analytics-target="industry.id"><IndustryIcon :icon="industry.icon"/><div><strong>{{ industryField(industry,'title',locale) }}</strong><small>{{ industryField(industry,'subtitle',locale) }}</small></div><span aria-hidden="true">→</span></router-link></div></section>
+      <div class="j-home-first-screen">
+        <section class="j-hero" :aria-label="text('首页横幅','Homepage banner')">
+          <img class="j-hero-photo" :src="banner.image" :alt="text('重钢机械港口、制造与装备现场','TZME port equipment and manufacturing')" fetchpriority="high" />
+          <div class="j-hero-copy"><h1>{{ banner.title[locale] || banner.title.en }}</h1><span class="j-rule"></span><router-link :to="banner.to" class="j-button" data-analytics-event="cta_click" data-analytics-target="banner-1">{{ banner.button[locale] || banner.button.en }}<span aria-hidden="true">→</span></router-link></div>
+        </section>
+        <HomeIndustryNavigation :industries="activeIndustries" />
+      </div>
       <section v-if="aboutTzme" class="hc-sec j-manufacturing"><div class="hc-w j-split"><div><AboutTzmeContent :configuration="aboutTzme.home" :locale-code="locale" /><router-link class="j-link" to="/about">{{ text('走进重钢机械','Discover TZME') }}<span>→</span></router-link></div><figure><div class="j-factory-photo"><img :src="aboutTzme.home.image || jAssets.factory" :alt="text('格林兰制造基地实景','Greenland manufacturing base')" loading="lazy"/><ManufacturingFilm /></div><figcaption>TIANJIN / FABRICATION · QUALITY · DELIVERY</figcaption></figure></div></section>
       <HomeSolutionsSection v-if="homeSolutions" :configuration="homeSolutions" :products="featuredProducts" :industries="activeIndustries" />
       <HomeCapabilitiesSection :configuration="capabilities" :locale-code="locale" />
