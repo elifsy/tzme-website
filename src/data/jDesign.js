@@ -1,8 +1,7 @@
 // Only curated, normal project paths are used at runtime.
 export const jAssets = Object.freeze({
   logo: '/assets/tzme-j/brand/official-mark.jpg',
-  // harbor: '/assets/tzme-j/banners/harbor-clean.png',
-  harbor: '/assets/tzme-j/banners/1111111.jpg',
+  harbor: '/assets/tzme-j/banners/harbor-overhead-v2.webp',
   factory: '/assets/tzme-j/factories/greenland-aerial.jpg',
   team: '/assets/tzme-j/banners/team-equipment.jpg',
   video: '/assets/tzme-j/videos/greenland-aerial.mp4',

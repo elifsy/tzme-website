@@ -35,7 +35,7 @@ try{
   await check('Light navigation',`getComputedStyle(document.querySelector('.hc-nav')).backgroundColor==='rgb(255, 255, 255)'`)
   await check('Light footer and readable brand',`getComputedStyle(document.querySelector('.site-footer')).backgroundColor==='rgb(255, 255, 255)'&&getComputedStyle(document.querySelector('.hc-nav .site-logo')).width==='73px'`)
   await capture('home-desktop');await capture('home-full',true)
-  await check('Only first banner is displayed without carousel controls',`document.querySelectorAll('.j-hero-photo').length===1&&document.querySelector('.j-hero-photo').getAttribute('src')==='/assets/tzme-j/banners/harbor-clean.png'&&!document.querySelector('.j-hero-controls,[aria-roledescription="carousel"]')`)
+  await check('Only the overhead port banner is displayed without carousel controls',`document.querySelectorAll('.j-hero-photo').length===1&&document.querySelector('.j-hero-photo').getAttribute('src')==='/assets/tzme-j/banners/harbor-overhead-v2.webp'&&!document.querySelector('.j-hero-controls,[aria-roledescription="carousel"]')`)
   await click('.j-film-button');await check('Manufacturing video opens',`!!document.querySelector('video')&&document.querySelector('video').src.includes('/assets/tzme-j/')`);await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape'});await delay(300)
   await click('.world-map-point');await check('CMS map point responds',`!!document.querySelector('.world-map-label')`)
   await navigate('/solutions?industry=ports');await check('Industry filter retained',`document.querySelectorAll('.hc-card').length>0&&document.querySelectorAll('.hc-card').length<12`)
