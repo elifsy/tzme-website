@@ -22,6 +22,16 @@ Vue 3 + Vite + Element Plus，Java 17 + Spring Boot 3 + MySQL。官网页面按�
 
 后台嵌入的已保存页面携带 `admin-preview=1`，不会采集访问统计；预览内链接、提交及文件选择被拦截，咨询表单预览也独立停用提交、上传和咨询埋点。各处“查看已保存网页”可在新标签页核对官网。此次整理无需新增数据库迁移。
 
+## 产品详情展示
+
+产品详情根据设备形态使用三种浅色布局：A 左文右景、B 开放式展台、C 宽幅场景；默认按透明设备图中主体的长宽比例自动匹配。高瘦及低矮宽厚设备使用 A，方正设备使用 B，细长设备及索道系统使用 C。取消产品周围的围框和装饰轨道，采用渐隐地面与柔和接地阴影；桌面鼠标移动时有小幅设备、投影及地面视差，手机与减少动态效果设置下静止，后台预览使用相同规则。现有 33 款产品已配置主体边界数据；新增或更换图片后在加载时识别主体，并缓存结果。仅在页面中等比排版。索道展示图已补充缆绳、支撑塔、轮组及多节轿厢，为参考现有项目照片制作的系统示意，原始项目照片继续保留。产品介绍、编号特点、技术参数和相关设备继续共用；章节导航支持固定定位及直接链接，电脑和手机均只显示一个咨询入口。文案和参数沿用后台产品记录，未填写的特点、参数及对应目录自动隐藏；案例参数保留“项目案例”等限定说明。
+
+在 `/admin/products` 编辑产品，“封面与发布”中分别维护列表封面和可选的“详情页设备展示图”。展示图建议使用透明背景 PNG / WebP，未填写或加载失败时使用现有封面原图；点击设备图仍可查看原始现场照片。后台桌面、手机实时预览与官网使用同一展示组件，未保存修改不会应用到官网。
+
+同一区域的“详情页布局”可选择“自动匹配设备比例”或手动指定 A／B／C，右侧实时预览随选择变化，保存后应用到官网。布局字段为 `site_content.detail_layout`，API 对应 `detailLayout`：`auto` 为自动、`vertical` 为 A、`exhibit` 为 B、`panorama` 为 C。兼容历史 `platform` 值，前台及编辑器均按 A 展示，不需要改动已有记录；旧客户端不传该字段时保留现有选择，显式传空字符串重置为自动。升级脚本为 `database/migrations/2026-10-20-product-layout.sql`，Java 启动时自动执行 `21-product-layout-schema.sql`，保留现有产品内容和之后的布局选择；全量安装 SQL 已同步。生成脚本为 `node scripts/build-product-layout-migration.mjs`。主体数据位于 `src/data/equipmentPresentationImages.json`，索道素材位于 `public/assets/tzme-j/products/presentation/ropeway-cutout.webp`，运行与构建不依赖 `docs/`。
+
+独立图片字段为 `site_content.presentation_image`，API 字段为 `presentationImage`。升级脚本为 `database/migrations/2026-10-19-product-presentation.sql` 与 `database/migrations/2026-10-20-product-cutouts.sql`，Java 启动自动执行 `17-product-presentation-schema.sql`、`18-product-presentation.sql` 和 `19-product-cutouts.sql`；完整安装 SQL 和生成脚本已同步。官网目录中的 33 款产品均配置透明设备展示图，保存在 `public/assets/tzme-j/products/presentation/`，来源映射见 `database/baseline/product-presentation-images.json`。原始现场照片继续用于列表封面和大图预览。旧版客户端不传该字段时保留现有配置，显式传空字符串可清除；迁移仅执行一次，保留之后的后台替换或清除操作。
+
 ## 本机启动
 
 在项目根目录启动前端：
@@ -123,6 +133,7 @@ npm run db:build
 | 图片用途 | 推荐尺寸（像素） | 建议 |
 | --- | --- | --- |
 | 产品封面 | 1200 × 800 | 横图，主体居中，留出裁切空间 |
+| 产品详情设备展示图 | 1600 × 1600 | 可选，透明背景 PNG / WebP，保持完整设备与原始比例 |
 | 新闻封面 | 1600 × 900 | 16:9 横图，避免边缘文字 |
 | 项目封面 | 1600 × 900 | 展示设备与现场，主体居中 |
 | 资质证书 | 1240 × 1754 | A4 竖图，保留原始比例、文字清晰 |
@@ -186,9 +197,11 @@ npm run db:build
 
 数据保存到 MySQL `site_analytics_events`，字段均带中文备注，采集开关保存于 `site_settings` 的 `analytics` 配置。Java 默认启动时执行 `08-analytics.sql` 创建表及索引，部署 SQL 已同步更新；若关闭了应用自动初始化，请先执行 `database/migrations/2026-10-analytics.sql`。分析只显示实际采集数据，没有模拟历史访问。修改后重新启动 Java 并刷新官网及后台。
 
-## 官网产品与行业资料（2026-10-15）
+## 官网产品与行业资料（2026-10-20）
 
-资料来源：[TZME 官网产品目录](https://www.tzmeglobal.com/products)。已核对 33 款官网产品，新增其中 32 款；输送机与现有 `conveying` 记录关联。原有 12 款产品保留，目前共 44 条产品记录。新增游乐观光、起重输送、环保工程、钢结构工程和质量检测 5 个行业，首页 Banner 下的行业入口及方案页筛选直接读取数据库。
+资料来源：[TZME 官网产品目录](https://www.tzmeglobal.com/products)。已逐页核对全部 6 页，现保留与官网一一对应的 33 款产品，输送机沿用 `conveying` 记录。早期概括性产品及官网目录中没有的条目共 11 项，已按后台删除状态剔除，不再出现在前台和产品管理列表；首页推荐位及方案文案转移至对应官网产品，3D 展示产品引用同步更新。保留现有 10 个有产品数据的行业，首页 Banner 下的行业入口及方案页筛选继续读取数据库。
+
+本次核对清单位于 `database/baseline/product-catalog-sync.json`；运行 `node scripts/build-product-catalog-sync-migration.mjs` 生成 `database/migrations/2026-10-20-product-catalog-sync.sql` 和 Java 启动迁移 `20-product-catalog-sync.sql`。迁移只执行一次，保留产品名称、中文文案、原图、行业关联和后续后台编辑；重复启动不会恢复已剔除条目，也不会阻止以后在后台新增产品。历史种子保留，新安装按顺序应用迁移后得到同样的 33 款产品目录。
 
 中文产品名称、介绍与特点由对应官网资料翻译整理，英文资料一并保存。来源链接、原分类、与现有产品的对应关系及资料缺项说明位于 `database/baseline/official-products.json`。未公开的数值规格不补写；奥斯麦特熔炼炉原页面重复企业简介，因此只采用已确认的名称、分类与图片。
 
@@ -214,10 +227,31 @@ npm run db:build
 
 ## API
 
+产品中心页面位于 `/solutions`，采用可点选的行业场景与产品目录。配置入口为后台 **页面展示 → 产品中心展示**（`/admin/product-showcase`），在此维护中文首屏文案、场景图片、设备热点、各行业专属展示和优先展示产品；行业名称、图标、发布状态和排序仍在行业分类中维护，产品及行业关联仍在产品资料中维护。编辑时可预览桌面、手机、行业切换与热点，草稿行业可在后台预览，官网仅展示已发布且有已发布产品的行业。
+
+场景配置存储于 MySQL `site_settings` 的 `product-showcase` 记录，初始值在 `server/src/main/resources/product-showcase-defaults.json`。执行 `node scripts/build-product-showcase-migration.mjs` 可生成增量初始化 SQL；Java 启动自动执行 `16-product-showcase.sql`，重复启动保留已有后台修改。`npm run db:build` 会将其包含在完整安装 SQL 中。三维选项保存在 `overview.threeD`，已有配置在读取时补入缺失的默认选项，旧客户端保存时保留已存的三维设置。
+
+产品中心使用 Three.js 绘制可交互的行业设备全景，所有已发布且有已发布产品的行业同时展示。目前根据设备照片搭建了港口卸船机、堆取料机、冶金电炉、能源钢结构、架桥机、摩天轮、门式起重机、沉淀设备传动装置、钢结构厂房和质量扫描仪十组示意模型。设备融入连续工业岛，采用港湾、船舶、道路、堆场、护岸和不同标高的场地连接，按主次与前后关系错落布置；设备标签跟随空间位置并自动避让。支持鼠标/触控环绕缩放和设备特写中的自由旋转，进入特写时隐藏岛体环境。点击三维设备或行业标签直接切换对应行业，同步下方行业筛选和产品目录，标签显示选中状态；产品资料可通过目录卡片进入，图片展示保留产品热点。“复位”同时恢复工业岛全景、全部设备、行业、产品分类、搜索词和分页。没有单独配置热点的行业自动关联代表产品。三维模块按需加载，静止及离开可视区域时停止持续绘制，离开页面时清理 WebGL 资源；缺少 WebGL2、上下文丢失或关闭三维功能时使用从实际工业岛渲染导出的备用图片，产品目录保持可用。
+
+后台 **产品中心展示 → 首屏行业全景 → 行业设备全景** 可开关三维功能、为各个有产品资料的行业上传 GLB 2.0 模型。已移除自由漫游、镜头巡游、缩放按钮和全屏入口，旧配置中的巡游字段兼容保留但不再使用。模型需自包含贴图及缓冲数据，单文件不超过 40 MB，导出时取消几何与贴图压缩；也可使用正常项目路径 `/assets/.../*.glb`。替换模型自动居中并按展示范围缩放，加载失败时保留内置示意模型。上传模型保存在已有上传目录下的 `models/` 中，受现有 Git 忽略规则保护。三维场景建模及渲染逻辑在 `src/three/`，新增行业尚无专属模型时先显示钢结构模块，可在后台替换。原场景图片位于 `public/assets/tzme-j/scenes/`；原始素材与效果预览保存在被 Git 忽略的 `docs/` 中。
+
+本地服务运行时，`node scripts/check-product-showcase.mjs` 检查行业、搜索、筛选、详情返回、移动端布局和配置保存。保存验证会恢复原配置，不发送咨询；报告与截图输出到被 Git 忽略的 `docs/product-showcase-2026-10-17/`。
+
+鼠标悬停三维设备或行业标签时，对应设备会高亮并展示小幅运行动作：斗轮和摩天轮转动、吊机与架桥机小车往返、电炉电极升降、检测头移动及沉淀设备刮臂转动。静态钢结构与后续上传的模型使用检验扫光，不改变设备地基与场地位置。移开后平稳恢复，拖动、复位、滚出视野或离开页面时清理交互状态；键盘焦点也可预览，减少动画偏好下仅保留静态高亮。手机端沿用触摸旋转和点击行业，不触发悬停循环。
+
+悬停与点击采用按设备缓存的整体空间区域，覆盖细杆、桁架与部件间隙，边界保留小幅退出缓冲；设备动作不会改变感应区域，替换 GLB 后重新计算。特写的鼠标和触摸拖动持续请求刷新。小部件动作复用静态投影，阴影仅在模型和展示模式变化时更新；摩天轮吊舱与玻璃合并为三组实例绘制，保持吊舱竖直，特写限制像素密度以控制绘制开销。
+
+`node scripts/check-industrial-motion.mjs` 验证部件动作、复位、相邻设备材质隔离、减少动画偏好与模型替换资源清理；`node scripts/check-industrial-layout.mjs` 验证设备的道路和海岸间距。
+
+`node scripts/check-industrial-regions.mjs` 验证桁架空隙、边界缓冲、遮挡、隐藏状态、模型替换、实例模型与空间变换下的感应区域；设备特写中的区域检测不需要逐个检测模型三角面。
+
+`node scripts/check-three-showcase.mjs` 额外验证实际 WebGL2 绘制、旋转、设备特写、标签与行业筛选联动、键盘复位、手机布局、GLB 上传及替换、故障回退与资源清理。测试使用软件 WebGL，完成后恢复场景配置并清理上传的测试模型；报告位于 `docs/product-showcase-3d-2026-10-17/`。
+
 | 数据 | 接口 |
 | --- | --- |
 | 产品 | `GET/POST /api/products`，`PUT/DELETE /api/products/{id}` |
 | 首页方案文案 | `GET/PUT /api/home-solutions` |
+| 产品中心场景与展示 | `GET/PUT /api/product-showcase` |
 | 新闻 | `GET/POST /api/articles`，`PUT/DELETE /api/articles/{id}` |
 | 行业 | `GET/POST /api/industries`，`PUT/DELETE /api/industries/{id}` |
 | 资质 | `GET/POST /api/certifications`，`PUT/DELETE /api/certifications/{id}` |
@@ -230,6 +264,7 @@ npm run db:build
 | 邮件通知配置 | `GET/PUT /api/mail-settings`，密码不回显 |
 | 咨询附件 | `POST /api/inquiry-attachments`，`GET /api/inquiry-attachments/{id}` |
 | 图片 | `POST /api/uploads/images`，`GET /api/uploads/images/{filename}` |
+| 三维模型 | `POST /api/uploads/models`，`GET /api/uploads/models/{filename}`；自包含 GLB 2.0，最大 40 MB |
 | 埋点上报 | `POST /api/analytics/events`，每批最多 20 条，按事件 ID 去重 |
 | 采集开关 | `GET/PUT /api/analytics/config` |
 | 分析报告 | `GET /api/analytics/report?from=YYYY-MM-DD&to=YYYY-MM-DD&locale=zh&device=desktop` |
@@ -240,6 +275,12 @@ npm run db:build
 ## 风格 J 改版（2026-10-15）
 
 官网已采用浅色港口工业风，首页固定展示第一张港口 Banner 及其中文翻译，包含基地航拍、企业文化、产品分类与搜索、图片放大及证书 PDF。产品、项目、新闻、联系与首页模块继续使用原有 API 和后台配置；咨询提交、附件上传、邮件通知与分析流程保留。
+
+官网公共布局由 `src/style/site-layout.css` 统一配置，导航、正文、页脚及首页 Banner 文案块共用内容对齐线。电脑端内容宽度为页面的 87.6%，最大 1660px；平板两侧各留 36px，手机两侧各留 18px。1440px 及以上屏幕统一使用“联系我们”页的 114px 导航高度、品牌字号和菜单间距，较小屏幕使用 96px 导航，手机为 74px。公共样式仅作用于官网，后台管理布局独立。
+
+联系我们首屏由 `src/components/ContactIntro.vue` 渲染，使用原生 SVG 多层线条组成 Z 与淡化的 ME，标题、回复提示和简介继续读取整站中文文案。电脑、手机和触摸设备在图形至少四分之一进入视野时，自动沿上横线、斜线、底横线描出 Z，ME 稍后淡入；每次进入页面播放一次，完成后保留完整图形。描线完成后，桌面鼠标移动产生轻微位移和倾斜，并局部提亮邻近线条；移出后平滑回位。系统“减少动态效果”模式直接显示完整图形；离开页面后清理动画与监听，无需新增数据库迁移。联系我们页关闭页脚重复联系入口，咨询表单和常规页脚导航保持可用。
+
+ME 设备线稿由 `src/components/PortEquipmentMonogram.vue` 绘制：两台港机与悬吊抓斗组成 M，设备塔及三层独立横梁组成 E；底横梁与 Z 保持间距。线稿使用 SVG，随整体标识淡入与鼠标移动，手机上隐藏较细的栏杆等细节并加强主要轮廓。
 
 新增资料由 `database/migrations/2026-10-15-j-design.sql` 一次性导入。Java 启动及完整 `database/install.sql` 均包含该迁移；重复执行不会覆盖后续后台修改，旧默认值仅在仍与基础数据一致时更新。生成脚本为 `node scripts/build-j-design-migration.mjs`。
 

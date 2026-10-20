@@ -1,0 +1,367 @@
+{
+  "/assets/tzme-j/products/presentation/conveying-cutout.webp": {
+    "width": 1026,
+    "height": 1533,
+    "bounds": {
+      "minX": 21,
+      "minY": 22,
+      "maxX": 1013,
+      "maxY": 1517
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/spreader-cutout.webp": {
+    "width": 2043,
+    "height": 770,
+    "bounds": {
+      "minX": 17,
+      "minY": 14,
+      "maxX": 2019,
+      "maxY": 745
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/bucket-wheel-excavator-cutout.webp": {
+    "width": 1720,
+    "height": 914,
+    "bounds": {
+      "minX": 10,
+      "minY": 43,
+      "maxX": 1713,
+      "maxY": 881
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/stacker-reclaimer-cutout.webp": {
+    "width": 1538,
+    "height": 1023,
+    "bounds": {
+      "minX": 16,
+      "minY": 71,
+      "maxX": 1522,
+      "maxY": 994
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/crushing-station-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 162,
+      "minY": 18,
+      "maxX": 1429,
+      "maxY": 1085
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/flotation-machine-cutout.webp": {
+    "width": 1536,
+    "height": 1024,
+    "bounds": {
+      "minX": 133,
+      "minY": 56,
+      "maxX": 1469,
+      "maxY": 967
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/thickener-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 29,
+      "minY": 90,
+      "maxX": 1437,
+      "maxY": 1008
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/bulk-ship-loader-cutout.webp": {
+    "width": 1535,
+    "height": 1025,
+    "bounds": {
+      "minX": 10,
+      "minY": 24,
+      "maxX": 1520,
+      "maxY": 980
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/grab-unloader.webp": {
+    "width": 1024,
+    "height": 1536,
+    "bounds": {
+      "minX": 17,
+      "minY": 23,
+      "maxX": 995,
+      "maxY": 1497
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/ropeway-cutout.webp": {
+    "width": 1536,
+    "height": 1024,
+    "bounds": {
+      "minX": 0,
+      "minY": 17,
+      "maxX": 1535,
+      "maxY": 1003
+    },
+    "transparent": true,
+    "layoutHint": "panorama"
+  },
+  "/assets/tzme-j/products/presentation/roller-coaster-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 44,
+      "minY": 234,
+      "maxX": 1447,
+      "maxY": 1049
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/ferris-wheel-cutout.webp": {
+    "width": 1536,
+    "height": 1024,
+    "bounds": {
+      "minX": 286,
+      "minY": 8,
+      "maxX": 1247,
+      "maxY": 1010
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/crane-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 38,
+      "minY": 23,
+      "maxX": 1409,
+      "maxY": 1061
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/agv-cutout.webp": {
+    "width": 1774,
+    "height": 887,
+    "bounds": {
+      "minX": 26,
+      "minY": 240,
+      "maxX": 1751,
+      "maxY": 812
+    },
+    "transparent": true,
+    "layoutHint": "vertical"
+  },
+  "/assets/tzme-j/products/presentation/machinery-boom-cutout.webp": {
+    "width": 1956,
+    "height": 804,
+    "bounds": {
+      "minX": 9,
+      "minY": 23,
+      "maxX": 1940,
+      "maxY": 759
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/bridge-fabrication-machine-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 24,
+      "minY": 129,
+      "maxX": 1426,
+      "maxY": 1029
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/bridge-erection-machine-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 0,
+      "minY": 0,
+      "maxX": 1437,
+      "maxY": 1077
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/wind-tower-stacking-device-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 138,
+      "minY": 8,
+      "maxX": 1416,
+      "maxY": 1074
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/offshore-pipe-piles-cutout.webp": {
+    "width": 1513,
+    "height": 1040,
+    "bounds": {
+      "minX": 33,
+      "minY": 35,
+      "maxX": 1477,
+      "maxY": 1021
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/cyclone-separator-cutout.webp": {
+    "width": 1024,
+    "height": 1536,
+    "bounds": {
+      "minX": 367,
+      "minY": 26,
+      "maxX": 687,
+      "maxY": 1506
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/offshore-pipeline-structure-cutout.webp": {
+    "width": 2043,
+    "height": 770,
+    "bounds": {
+      "minX": 13,
+      "minY": 29,
+      "maxX": 2025,
+      "maxY": 750
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/sedimentation-tank-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 49,
+      "minY": 1,
+      "maxX": 1393,
+      "maxY": 1084
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/water-storage-tank-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 197,
+      "minY": 140,
+      "maxX": 1245,
+      "maxY": 986
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/electric-furnace-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 40,
+      "minY": 128,
+      "maxX": 1430,
+      "maxY": 1073
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/ausmelt-furnace-cutout.webp": {
+    "width": 1855,
+    "height": 848,
+    "bounds": {
+      "minX": 41,
+      "minY": 25,
+      "maxX": 1840,
+      "maxY": 831
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/bridge-steel-structure-cutout.webp": {
+    "width": 1091,
+    "height": 1442,
+    "bounds": {
+      "minX": 36,
+      "minY": 35,
+      "maxX": 1070,
+      "maxY": 1411
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/bulk-hopper-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 26,
+      "minY": 174,
+      "maxX": 1427,
+      "maxY": 924
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/paper-scanner-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 176,
+      "minY": 24,
+      "maxX": 1329,
+      "maxY": 1071
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/mmi-house-cutout.webp": {
+    "width": 1536,
+    "height": 1024,
+    "bounds": {
+      "minX": 21,
+      "minY": 116,
+      "maxX": 1519,
+      "maxY": 959
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/factory-building-module-cutout.webp": {
+    "width": 1774,
+    "height": 887,
+    "bounds": {
+      "minX": 37,
+      "minY": 45,
+      "maxX": 1734,
+      "maxY": 818
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/rotary-screen-cutout.webp": {
+    "width": 1448,
+    "height": 1086,
+    "bounds": {
+      "minX": 37,
+      "minY": 23,
+      "maxX": 1410,
+      "maxY": 1069
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/wagon-tippler-cutout.webp": {
+    "width": 1983,
+    "height": 793,
+    "bounds": {
+      "minX": 18,
+      "minY": 20,
+      "maxX": 1964,
+      "maxY": 769
+    },
+    "transparent": true
+  },
+  "/assets/tzme-j/products/presentation/feeder-cutout.webp": {
+    "width": 1774,
+    "height": 887,
+    "bounds": {
+      "minX": 42,
+      "minY": 146,
+      "maxX": 1754,
+      "maxY": 853
+    },
+    "transparent": true
+  }
+}

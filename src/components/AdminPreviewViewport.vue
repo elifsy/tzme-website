@@ -74,7 +74,7 @@ onBeforeUnmount(() => { disposed = true; clearTimeout(styleTimer); hostObserver?
 <template>
   <div ref="host" class="admin-preview-viewport" :style="{ maxHeight }">
     <div class="admin-preview-canvas" :style="{ width: `${width * scale}px`, height: `${height * scale}px` }">
-      <iframe ref="frame" class="admin-preview-iframe" :title="source ? '已保存官网效果预览' : '当前编辑内容实时预览'" :src="sourceUrl" :srcdoc="source ? undefined : documentMarkup"
+      <iframe ref="frame" class="admin-preview-iframe" allowfullscreen :title="source ? '已保存官网效果预览' : '当前编辑内容实时预览'" :src="sourceUrl" :srcdoc="source ? undefined : documentMarkup"
         :style="{ width: `${width}px`, height: `${height}px`, transform: `scale(${scale})` }" @load="ready" />
       <Teleport v-if="target && !source" :to="target"><div class="design-site"><div class="hc-page"><slot /></div></div></Teleport>
     </div>

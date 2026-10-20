@@ -1,18 +1,31 @@
 <script setup>
 import { useSiteContent } from '../services/website.js'
 const { siteValue } = useSiteContent()
-import { ref, useId, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, useId, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useSiteNavigation } from "../composables/useSiteNavigation.js";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
 import SiteLogo from "./SiteLogo.vue";
+import { useContactSettings } from '../services/contactSettings.js'
+import '../style/site-mobile-nav.css'
 
 defineProps({ overlay: { type: Boolean, default: false } });
 
 const route = useRoute();
 const { menuItems, isMenuActive, goTo, navigateLink } = useSiteNavigation();
+const { contactSettings } = useContactSettings()
 const drawerOpen = ref(false);
 const mobileMenuId = `site-mobile-menu-${useId()}`;
+const desktopNavigation = window.matchMedia('(min-width: 1051px)')
+
+function navigateFromDrawer(event, path) {
+  if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+  drawerOpen.value = false
+  navigateLink(event, path)
+}
+function closeOnDesktop(event) { if (event.matches) drawerOpen.value = false }
+onMounted(() => desktopNavigation.addEventListener('change', closeOnDesktop))
+onBeforeUnmount(() => desktopNavigation.removeEventListener('change', closeOnDesktop))
 
 function navigateTo(path) {
   drawerOpen.value = false;
@@ -57,8 +70,7 @@ watch(
           :aria-expanded="drawerOpen"
           :aria-controls="mobileMenuId"
           @click="drawerOpen = true"
-          >☰</el-button
-        >
+        ><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h11"/></svg></el-button>
         <LanguageSwitcher class="site-header-language" />
         <el-button
           class="hc-btn sm site-nav-contact"
@@ -75,28 +87,43 @@ watch(
     v-model="drawerOpen"
     :title="siteValue('text_8920f3d022b5')"
     direction="rtl"
-    size="min(320px, 85vw)"
+    size="min(400px, calc(100vw - 24px))"
     append-to-body
+    destroy-on-close
+    :show-close="false"
+    modal-class="site-nav-drawer-overlay"
     class="hc-mobile-drawer site-nav-drawer"
   >
+    <template #header="{ titleId }">
+      <div class="mobile-drawer-brand">
+        <img src="/assets/tzme-j/brand/official-mark.jpg" width="44" height="44" alt="TZME 重钢机械"/>
+        <div><strong>{{ siteValue('text_8920f3d022b5') }}</strong><h2 :id="titleId">网站导航</h2></div>
+      </div>
+      <button type="button" class="mobile-drawer-close" :aria-label="$t('site.close')" @click="drawerOpen = false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </template>
     <nav
       :id="mobileMenuId"
       class="hc-mobile-links"
       :aria-label="$t('site.primaryNavigation')"
       data-site-nav
     >
-      <el-button
-        v-for="item in menuItems"
+      <a
+        v-for="(item, index) in menuItems"
         :key="item.key"
-        text
-        :type="isMenuActive(item) ? 'primary' : 'default'"
+        :href="item.path"
         :aria-current="isMenuActive(item) ? 'page' : undefined"
         data-analytics-event="navigation_click" :data-analytics-target="item.path"
-        @click="navigateTo(item.path)"
-        >{{ item.label }}</el-button
-      >
+        @click="navigateFromDrawer($event, item.path)"
+      ><span class="mobile-drawer-index" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span><span>{{ item.label }}</span><span class="mobile-drawer-arrow" aria-hidden="true">↗</span></a>
     </nav>
-    <LanguageSwitcher mobile />
+    <div class="mobile-drawer-footer">
+      <div v-if="contactSettings?.contact.emails.length || contactSettings?.contact.phone" class="mobile-drawer-contact">
+        <span class="mobile-drawer-contact-label">{{ $t('site.contactUs') }}</span>
+        <a v-for="email in contactSettings?.contact.emails" :key="email" :href="`mailto:${email}`" class="mobile-drawer-email">{{ email }}<span aria-hidden="true">→</span></a>
+        <p v-if="contactSettings?.contact.phone">{{ contactSettings.contact.phone }}</p>
+      </div>
+      <LanguageSwitcher mobile />
+    </div>
   </el-drawer>
 </template>
 

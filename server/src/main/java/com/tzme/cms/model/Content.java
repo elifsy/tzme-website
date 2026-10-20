@@ -32,6 +32,10 @@ public class Content {
     @Column(length = 3000)
     private String summaryZh;
     private String image;
+    @Column(length = 1000)
+    private String presentationImage;
+    @Column(length = 24)
+    private String detailLayout;
     private String status = "published";
     private LocalDate date;
     @Column(columnDefinition = "LONGTEXT")
@@ -136,6 +140,11 @@ public class Content {
     public void setImage(String v) {
         image = v;
     }
+
+    public String getPresentationImage() { return presentationImage; }
+    public void setPresentationImage(String v) { presentationImage = v; }
+    public String getDetailLayout() { return detailLayout; }
+    public void setDetailLayout(String v) { detailLayout = v; }
 
     public String getStatus() {
         return status;

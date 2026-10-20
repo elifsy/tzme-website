@@ -4,6 +4,16 @@ import { aboutTzmeZh } from '../aboutTzme.js'
 import { analyticsZh } from '../analytics.js'
 import { homeSolutionsZh } from '../homeSolutions.js'
 export default {
+  productDetail: {
+    breadcrumb: '产品位置', chapters: '产品详情目录', introduction: '产品介绍', features: '结构特点',
+    specifications: '技术参数', related: '相关设备', allProducts: '查看全部产品',
+    delivery: '制造与交付', deliveryDescription: '围绕您的工况，沟通制造与交付需求。',
+    manufacturingLine: '结构制造 / 装配试装 / 检验交付', inquire: '咨询该设备', viewSpecifications: '查看技术参数',
+    manufacturingNote: '依据客户图纸与技术要求制造',
+    imageHint: '查看设备原图', zoomImage: '放大查看{title}图片', imagePlaceholder: '设备图片待补充',
+    namePlaceholder: '产品名称', loading: '正在加载产品信息…',
+    presentationImageHint: '用于产品详情页的完整设备展示，建议上传透明背景 PNG 或 WebP，设备四周留少量空白。不填写时使用封面原图，不影响产品列表。',
+  },
   ...contactZh,
   ...capabilitiesZh,
   ...aboutTzmeZh,

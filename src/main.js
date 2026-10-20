@@ -27,6 +27,8 @@ import "./style/news.css";
 import "./style/projects.css";
 import "./style/catalog-intro.css";
 import "./style/design-j.css";
+import "./style/site-layout.css";
+import "./style/product-detail.css";
 import { i18n } from "./i18n/index.js";
 import { installAnalytics } from "./services/analytics.js";
 
@@ -34,7 +36,14 @@ const router = createRouter({
   history: createWebHistory(),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    if (to.hash) return { el: to.hash, behavior: "smooth" };
+    if (to.hash) {
+      const target = document.getElementById(to.hash.slice(1));
+      return {
+        el: to.hash,
+        top: target ? parseFloat(getComputedStyle(target).scrollMarginTop) || 0 : 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      };
+    }
     if (to.path !== from.path) return { top: 0 };
     return false;
   },

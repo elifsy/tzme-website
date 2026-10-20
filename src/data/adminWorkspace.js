@@ -2,8 +2,9 @@
 export const adminModules = {
   overview: { label: '运营工作台', group: 'workspace', icon: 'DataBoard', description: '从常用任务开始，维护网站内容、首页展示与客户咨询。' },
   analytics: { label: '访问分析', group: 'workspace', icon: 'TrendCharts', description: '查看真实访问、内容点击与咨询转化。' },
-  industries: { label: '行业分类', group: 'content', icon: 'Grid', description: '先维护行业名称与图标，再将产品关联到行业；已发布行业会出现在首页 Banner 下方。', steps: ['维护行业', '关联产品', '检查官网展示'], related: ['products', 'home'], preview: '/#industries' },
-  products: { label: '产品资料', group: 'content', icon: 'Box', description: '集中维护产品介绍、图片、所属行业和首页推荐，产品资料与首页方案文案分别维护。', steps: ['名称与行业', '介绍、图片与参数', '发布与首页推荐'], related: ['industries', 'solutions'], preview: '/solutions' },
+  industries: { label: '行业分类', group: 'content', icon: 'Grid', description: '维护行业名称、图标与排序，再将产品关联到行业；产品中心会显示有已发布产品的行业。', steps: ['维护行业', '关联产品', '配置行业展示'], related: ['products', 'product-showcase', 'home'], preview: '/solutions' },
+  products: { label: '产品资料', group: 'content', icon: 'Box', description: '集中维护产品介绍、图片、所属行业和首页推荐；场景文案与热点在产品中心展示中配置。', steps: ['名称与行业', '介绍、图片与参数', '发布与首页推荐'], related: ['industries', 'product-showcase', 'solutions'], preview: '/solutions' },
+  'product-showcase': { label: '产品中心展示', group: 'pages', icon: 'Box', description: '配置产品中心首屏与各行业的标题、场景图片、设备热点和优先展示产品，实时预览桌面与手机效果。', steps: ['首屏全景与产品顺序', '行业文案与场景热点', '切换预览并保存'], related: ['industries', 'products'], preview: '/solutions' },
   projects: { label: '项目案例', group: 'content', icon: 'Collection', description: '填写项目名称、供货范围与图片，再设置发布状态和首页展示。', steps: ['项目基本资料', '供货范围与图片', '预览并发布'], related: ['home'], preview: '/projects' },
   articles: { label: '新闻资讯', group: 'content', icon: 'Document', description: '维护独立资讯页面的新闻标题、摘要、封面和正文，填写发布日期后预览并发布。', steps: ['标题与摘要', '封面与正文', '日期与发布状态'], preview: '/insights' },
   home: { label: '首页配置导航', group: 'pages', icon: 'OfficeBuilding', description: '按照官网从上到下的顺序找到配置入口，查看桌面与手机端的已保存效果。', preview: '/' },
@@ -21,7 +22,7 @@ export const adminModules = {
 export const adminGroups = [
   { key: 'workspace', label: '工作台', icon: 'DataBoard', items: ['overview', 'analytics'] },
   { key: 'content', label: '内容管理', icon: 'Collection', items: ['industries', 'products', 'projects', 'articles'] },
-  { key: 'pages', label: '首页运营', icon: 'Setting', items: ['home', 'solutions', 'capabilities', 'global'] },
+  { key: 'pages', label: '页面展示', icon: 'Setting', items: ['home', 'product-showcase', 'solutions', 'capabilities', 'global'] },
   { key: 'company', label: '企业资料', icon: 'OfficeBuilding', items: ['about', 'certifications', 'contact'] },
   { key: 'communication', label: '客户咨询', icon: 'ChatDotRound', items: ['inquiries', 'forms', 'mail'] },
 ].map(group => ({ ...group, items: group.items.map(key => ({ key, ...adminModules[key] })) }))

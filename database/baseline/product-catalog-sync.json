@@ -1,0 +1,274 @@
+{
+  "version": "2026-10-20",
+  "source": "https://www.tzmeglobal.com/products",
+  "collectedAt": "2026-10-20T00:32:00.104Z",
+  "products": [
+    {
+      "id": "spreader",
+      "titleZh": "排土机",
+      "sourceTitle": "Spreaders",
+      "sourceUrl": "https://www.tzmeglobal.com/spreaders.html"
+    },
+    {
+      "id": "bucket-wheel-excavator",
+      "titleZh": "斗轮挖掘机",
+      "sourceTitle": "Bucket wheel exavator",
+      "sourceUrl": "https://www.tzmeglobal.com/bucket-wheel-exavator.html"
+    },
+    {
+      "id": "stacker-reclaimer",
+      "titleZh": "堆取料机",
+      "sourceTitle": "Stacker and Reclaimer",
+      "sourceUrl": "https://www.tzmeglobal.com/stacker-and-reclaimer.html"
+    },
+    {
+      "id": "crushing-station",
+      "titleZh": "破碎站",
+      "sourceTitle": "Crushing station",
+      "sourceUrl": "https://www.tzmeglobal.com/crushing-station.html"
+    },
+    {
+      "id": "flotation-machine",
+      "titleZh": "浮选机",
+      "sourceTitle": "Flotation Machine",
+      "sourceUrl": "https://www.tzmeglobal.com/flotation-machine.html"
+    },
+    {
+      "id": "thickener",
+      "titleZh": "浓密机",
+      "sourceTitle": "Thickener",
+      "sourceUrl": "https://www.tzmeglobal.com/thickener.html"
+    },
+    {
+      "id": "rotary-screen",
+      "titleZh": "滚筒筛",
+      "sourceTitle": "Rotary screen",
+      "sourceUrl": "https://www.tzmeglobal.com/rotary-screen.html"
+    },
+    {
+      "id": "feeder",
+      "titleZh": "给料机",
+      "sourceTitle": "Feeder",
+      "sourceUrl": "https://www.tzmeglobal.com/feeder.html"
+    },
+    {
+      "id": "wagon-tippler",
+      "titleZh": "翻车机",
+      "sourceTitle": "Wagon Tippler",
+      "sourceUrl": "https://www.tzmeglobal.com/wagon-tippler.html"
+    },
+    {
+      "id": "bulk-ship-loader",
+      "titleZh": "装船机",
+      "sourceTitle": "Ship loader",
+      "sourceUrl": "https://www.tzmeglobal.com/ship-loader.html"
+    },
+    {
+      "id": "ship-unloader",
+      "titleZh": "卸船机",
+      "sourceTitle": "Ship unloader",
+      "sourceUrl": "https://www.tzmeglobal.com/ship-unloader.html"
+    },
+    {
+      "id": "ropeway",
+      "titleZh": "索道",
+      "sourceTitle": "Ropeway",
+      "sourceUrl": "https://www.tzmeglobal.com/ropeway.html"
+    },
+    {
+      "id": "roller-coaster",
+      "titleZh": "过山车",
+      "sourceTitle": "Rollar coaster",
+      "sourceUrl": "https://www.tzmeglobal.com/rollar-coaster.html"
+    },
+    {
+      "id": "ferris-wheel",
+      "titleZh": "摩天轮",
+      "sourceTitle": "Ferris wheel",
+      "sourceUrl": "https://www.tzmeglobal.com/ferris-wheel.html"
+    },
+    {
+      "id": "crane",
+      "titleZh": "起重机",
+      "sourceTitle": "Crane",
+      "sourceUrl": "https://www.tzmeglobal.com/crane.html"
+    },
+    {
+      "id": "conveying",
+      "titleZh": "输送设备",
+      "sourceTitle": "Conveyors",
+      "sourceUrl": "https://www.tzmeglobal.com/conveyors.html"
+    },
+    {
+      "id": "agv",
+      "titleZh": "AGV 自动导引运输车",
+      "sourceTitle": "AGV",
+      "sourceUrl": "https://www.tzmeglobal.com/agv.html"
+    },
+    {
+      "id": "machinery-boom",
+      "titleZh": "工程机械臂架",
+      "sourceTitle": "Beams",
+      "sourceUrl": "https://www.tzmeglobal.com/beams.html"
+    },
+    {
+      "id": "bridge-fabrication-machine",
+      "titleZh": "造桥机",
+      "sourceTitle": "Bridge fabrication machine",
+      "sourceUrl": "https://www.tzmeglobal.com/bridge-fabrication-machine.html"
+    },
+    {
+      "id": "bridge-erection-machine",
+      "titleZh": "架桥机",
+      "sourceTitle": "Bridge erection machine",
+      "sourceUrl": "https://www.tzmeglobal.com/bridge-erection-machine.html"
+    },
+    {
+      "id": "electric-furnace",
+      "titleZh": "电炉",
+      "sourceTitle": "Electric Furnaces",
+      "sourceUrl": "https://www.tzmeglobal.com/electric-furnaces.html"
+    },
+    {
+      "id": "ausmelt-furnace",
+      "titleZh": "奥斯麦特熔炼炉",
+      "sourceTitle": "Ausmelt furnace",
+      "sourceUrl": "https://www.tzmeglobal.com/ausmelt-furnace.html"
+    },
+    {
+      "id": "bridge-steel-structure",
+      "titleZh": "桥梁钢结构",
+      "sourceTitle": "Bridge",
+      "sourceUrl": "https://www.tzmeglobal.com/bridge.html"
+    },
+    {
+      "id": "bulk-hopper",
+      "titleZh": "料斗",
+      "sourceTitle": "Hopper",
+      "sourceUrl": "https://www.tzmeglobal.com/hopper.html"
+    },
+    {
+      "id": "paper-scanner",
+      "titleZh": "纸张质量扫描仪",
+      "sourceTitle": "Paper scanner",
+      "sourceUrl": "https://www.tzmeglobal.com/paper-scanner.html"
+    },
+    {
+      "id": "wind-tower-stacking-device",
+      "titleZh": "风电塔筒堆放装置",
+      "sourceTitle": "Wind tower stacking device",
+      "sourceUrl": "https://www.tzmeglobal.com/wind-tower-stacking-device.html"
+    },
+    {
+      "id": "offshore-pipe-piles",
+      "titleZh": "海洋工程钢管桩",
+      "sourceTitle": "Offshore Engineering Pipe Piles",
+      "sourceUrl": "https://www.tzmeglobal.com/offshore-engineering-pipe-piles.html"
+    },
+    {
+      "id": "cyclone-separator",
+      "titleZh": "旋风分离器",
+      "sourceTitle": "Cyclone",
+      "sourceUrl": "https://www.tzmeglobal.com/cyclone.html"
+    },
+    {
+      "id": "offshore-pipeline-structure",
+      "titleZh": "海上管道模块",
+      "sourceTitle": "Offshore pipeline structure",
+      "sourceUrl": "https://www.tzmeglobal.com/offshore-pipeline-structure.html"
+    },
+    {
+      "id": "sedimentation-tank",
+      "titleZh": "沉淀池",
+      "sourceTitle": "Sedimentation tank",
+      "sourceUrl": "https://www.tzmeglobal.com/sedimentation-tank.html"
+    },
+    {
+      "id": "water-storage-tank",
+      "titleZh": "储水罐",
+      "sourceTitle": "Water storage Tank",
+      "sourceUrl": "https://www.tzmeglobal.com/water-storage-tank.html"
+    },
+    {
+      "id": "mmi-house",
+      "titleZh": "MMI 模块化房屋",
+      "sourceTitle": "MMI house",
+      "sourceUrl": "https://www.tzmeglobal.com/mmi-house.html"
+    },
+    {
+      "id": "factory-building-module",
+      "titleZh": "钢结构厂房模块",
+      "sourceTitle": "Factory building Module",
+      "sourceUrl": "https://www.tzmeglobal.com/factory-building-module.html"
+    }
+  ],
+  "removed": [
+    {
+      "id": "material-handling",
+      "titleZh": "物料搬运",
+      "replacementId": "ship-unloader"
+    },
+    {
+      "id": "mining-equipment",
+      "titleZh": "矿山设备",
+      "replacementId": "bucket-wheel-excavator"
+    },
+    {
+      "id": "port-machinery",
+      "titleZh": "港口机械",
+      "replacementId": "bulk-ship-loader"
+    },
+    {
+      "id": "bridge-equipment",
+      "titleZh": "桥梁设备",
+      "replacementId": "bridge-erection-machine"
+    },
+    {
+      "id": "metallurgy",
+      "titleZh": "冶金系统",
+      "replacementId": "electric-furnace"
+    },
+    {
+      "id": "environmental",
+      "titleZh": "环保系统",
+      "replacementId": "sedimentation-tank"
+    },
+    {
+      "id": "custom-engineering",
+      "titleZh": "非标装备制造",
+      "replacementId": "offshore-pipeline-structure"
+    },
+    {
+      "id": "tourism",
+      "titleZh": "旅游设施",
+      "replacementId": "ferris-wheel"
+    },
+    {
+      "id": "grab-ship-unloader",
+      "titleZh": "抓斗卸船机",
+      "replacementId": "ship-unloader"
+    },
+    {
+      "id": "pipe-rack",
+      "titleZh": "模块化管廊",
+      "replacementId": "offshore-pipeline-structure"
+    },
+    {
+      "id": "rotor-sail",
+      "titleZh": "旋筒帆",
+      "replacementId": ""
+    }
+  ],
+  "showcasePatches": [
+    {
+      "path": "$.overview.featuredProducts[0]",
+      "from": "grab-ship-unloader",
+      "to": "ship-unloader"
+    },
+    {
+      "path": "$.overview.hotspots[2].productId",
+      "from": "grab-ship-unloader",
+      "to": "ship-unloader"
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "version": "2026-10-20",
+  "products": [
+    {
+      "id": "conveying",
+      "title": "输送设备",
+      "sourceImage": "/assets/tzme-j/products/belt-conveyor.jpg",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/conveying-cutout.webp"
+    },
+    {
+      "id": "spreader",
+      "title": "排土机",
+      "sourceImage": "/assets/tzme-products/spreader.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/spreader-cutout.webp"
+    },
+    {
+      "id": "bucket-wheel-excavator",
+      "title": "斗轮挖掘机",
+      "sourceImage": "/assets/tzme-products/bucket-wheel-excavator.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/bucket-wheel-excavator-cutout.webp"
+    },
+    {
+      "id": "stacker-reclaimer",
+      "title": "堆取料机",
+      "sourceImage": "/assets/tzme-products/stacker-reclaimer.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/stacker-reclaimer-cutout.webp"
+    },
+    {
+      "id": "crushing-station",
+      "title": "破碎站",
+      "sourceImage": "/assets/tzme-products/crushing-station.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/crushing-station-cutout.webp"
+    },
+    {
+      "id": "flotation-machine",
+      "title": "浮选机",
+      "sourceImage": "/assets/tzme-products/flotation-machine.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/flotation-machine-cutout.webp"
+    },
+    {
+      "id": "thickener",
+      "title": "浓密机",
+      "sourceImage": "/assets/tzme-products/thickener.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/thickener-cutout.webp"
+    },
+    {
+      "id": "bulk-ship-loader",
+      "title": "装船机",
+      "sourceImage": "/assets/tzme-products/bulk-ship-loader.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/bulk-ship-loader-cutout.webp"
+    },
+    {
+      "id": "ship-unloader",
+      "title": "卸船机",
+      "sourceImage": "/assets/tzme-products/ship-unloader.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/grab-unloader.webp"
+    },
+    {
+      "id": "ropeway",
+      "title": "索道",
+      "sourceImage": "/assets/tzme-products/ropeway.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/ropeway-cutout.webp"
+    },
+    {
+      "id": "roller-coaster",
+      "title": "过山车",
+      "sourceImage": "/assets/tzme-products/roller-coaster.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/roller-coaster-cutout.webp"
+    },
+    {
+      "id": "ferris-wheel",
+      "title": "摩天轮",
+      "sourceImage": "/assets/tzme-products/ferris-wheel.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/ferris-wheel-cutout.webp"
+    },
+    {
+      "id": "crane",
+      "title": "起重机",
+      "sourceImage": "/assets/tzme-products/crane.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/crane-cutout.webp"
+    },
+    {
+      "id": "agv",
+      "title": "AGV 自动导引运输车",
+      "sourceImage": "/assets/tzme-products/agv.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/agv-cutout.webp"
+    },
+    {
+      "id": "machinery-boom",
+      "title": "工程机械臂架",
+      "sourceImage": "/assets/tzme-products/machinery-boom.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/machinery-boom-cutout.webp"
+    },
+    {
+      "id": "bridge-fabrication-machine",
+      "title": "造桥机",
+      "sourceImage": "/assets/tzme-products/bridge-fabrication-machine.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/bridge-fabrication-machine-cutout.webp"
+    },
+    {
+      "id": "bridge-erection-machine",
+      "title": "架桥机",
+      "sourceImage": "/assets/tzme-products/bridge-erection-machine.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/bridge-erection-machine-cutout.webp"
+    },
+    {
+      "id": "wind-tower-stacking-device",
+      "title": "风电塔筒堆放装置",
+      "sourceImage": "/assets/tzme-products/wind-tower-stacking-device.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/wind-tower-stacking-device-cutout.webp"
+    },
+    {
+      "id": "offshore-pipe-piles",
+      "title": "海洋工程钢管桩",
+      "sourceImage": "/assets/tzme-products/offshore-pipe-piles.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/offshore-pipe-piles-cutout.webp"
+    },
+    {
+      "id": "cyclone-separator",
+      "title": "旋风分离器",
+      "sourceImage": "/assets/tzme-products/cyclone-separator.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/cyclone-separator-cutout.webp"
+    },
+    {
+      "id": "offshore-pipeline-structure",
+      "title": "海上管道模块",
+      "sourceImage": "/assets/tzme-products/offshore-pipeline-structure.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/offshore-pipeline-structure-cutout.webp"
+    },
+    {
+      "id": "sedimentation-tank",
+      "title": "沉淀池",
+      "sourceImage": "/assets/tzme-products/sedimentation-tank.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/sedimentation-tank-cutout.webp"
+    },
+    {
+      "id": "water-storage-tank",
+      "title": "储水罐",
+      "sourceImage": "/assets/tzme-products/water-storage-tank.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/water-storage-tank-cutout.webp"
+    },
+    {
+      "id": "electric-furnace",
+      "title": "电炉",
+      "sourceImage": "/assets/tzme-products/electric-furnace.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/electric-furnace-cutout.webp"
+    },
+    {
+      "id": "ausmelt-furnace",
+      "title": "奥斯麦特熔炼炉",
+      "sourceImage": "/assets/tzme-products/ausmelt-furnace.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/ausmelt-furnace-cutout.webp"
+    },
+    {
+      "id": "bridge-steel-structure",
+      "title": "桥梁钢结构",
+      "sourceImage": "/assets/tzme-products/bridge-steel-structure.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/bridge-steel-structure-cutout.webp"
+    },
+    {
+      "id": "bulk-hopper",
+      "title": "料斗",
+      "sourceImage": "/assets/tzme-products/bulk-hopper.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/bulk-hopper-cutout.webp"
+    },
+    {
+      "id": "paper-scanner",
+      "title": "纸张质量扫描仪",
+      "sourceImage": "/assets/tzme-products/paper-scanner.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/paper-scanner-cutout.webp"
+    },
+    {
+      "id": "mmi-house",
+      "title": "MMI 模块化房屋",
+      "sourceImage": "/assets/tzme-products/mmi-house.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/mmi-house-cutout.webp"
+    },
+    {
+      "id": "factory-building-module",
+      "title": "钢结构厂房模块",
+      "sourceImage": "/assets/tzme-products/factory-building-module.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/factory-building-module-cutout.webp"
+    },
+    {
+      "id": "rotary-screen",
+      "title": "滚筒筛",
+      "sourceImage": "/assets/tzme-products/rotary-screen.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/rotary-screen-cutout.webp"
+    },
+    {
+      "id": "wagon-tippler",
+      "title": "翻车机",
+      "sourceImage": "/assets/tzme-products/wagon-tippler.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/wagon-tippler-cutout.webp"
+    },
+    {
+      "id": "feeder",
+      "title": "给料机",
+      "sourceImage": "/assets/tzme-products/feeder.webp",
+      "expectedPresentationImage": "",
+      "presentationImage": "/assets/tzme-j/products/presentation/feeder-cutout.webp"
+    }
+  ]
+}

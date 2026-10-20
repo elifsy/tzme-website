@@ -1,0 +1,122 @@
+{
+  "overview": {
+    "kicker": "产品中心 / 行业解决方案",
+    "title": "面向不同工况，\n交付可靠装备。",
+    "description": "围绕客户图纸与技术要求，提供结构制造、装配试验与交付服务。",
+    "primaryText": "探索行业装备",
+    "secondaryText": "查看全部产品",
+    "image": "/assets/tzme-j/scenes/industrial-overview.webp",
+    "imageAlt": "港口、矿山、冶金、能源等十个行业装备组成的连片工业岛",
+    "presentation": "scene",
+    "threeD": {
+      "enabled": true,
+      "models": {}
+    },
+    "featuredProducts": [
+      "ship-unloader",
+      "stacker-reclaimer",
+      "bulk-ship-loader",
+      "bucket-wheel-excavator",
+      "conveying",
+      "offshore-pipeline-structure"
+    ],
+    "hotspots": [
+      {
+        "label": "矿山与散料",
+        "industryId": "mining",
+        "productId": "stacker-reclaimer",
+        "x": 38,
+        "y": 14.8
+      },
+      {
+        "label": "能源与钢结构",
+        "industryId": "energy",
+        "productId": "offshore-pipeline-structure",
+        "x": 76.6,
+        "y": 21
+      },
+      {
+        "label": "港口装备",
+        "industryId": "ports",
+        "productId": "ship-unloader",
+        "x": 28.5,
+        "y": 38.6
+      },
+      {
+        "label": "冶金",
+        "industryId": "metallurgy",
+        "productId": "electric-furnace",
+        "x": 54.8,
+        "y": 16.7
+      },
+      {
+        "label": "建筑施工",
+        "industryId": "construction",
+        "productId": "bridge-erection-machine",
+        "x": 26.8,
+        "y": 27.5
+      },
+      {
+        "label": "游乐观光",
+        "industryId": "amusement",
+        "productId": "ferris-wheel",
+        "x": 44.3,
+        "y": 25.9
+      },
+      {
+        "label": "起重输送",
+        "industryId": "lifting-transport",
+        "productId": "crane",
+        "x": 61.6,
+        "y": 48.3
+      },
+      {
+        "label": "环保工程",
+        "industryId": "environmental",
+        "productId": "sedimentation-tank",
+        "x": 79.7,
+        "y": 71.6
+      },
+      {
+        "label": "钢结构工程",
+        "industryId": "steel-structures",
+        "productId": "factory-building-module",
+        "x": 58.1,
+        "y": 34.3
+      },
+      {
+        "label": "质量检测",
+        "industryId": "testing",
+        "productId": "paper-scanner",
+        "x": 77.3,
+        "y": 46.3
+      }
+    ]
+  },
+  "industries": {
+    "ports": {
+      "title": "让每一次搬运，\n更稳妥。",
+      "description": "面向港口物料搬运的实际需求，提供卸船机、装船机及相关配套设备，衔接装备制造与现场作业。",
+      "image": "",
+      "imageAlt": "",
+      "presentation": "scene",
+      "hotspots": []
+    },
+    "mining": {
+      "title": "从开采到转运，\n让生产持续向前。",
+      "description": "围绕矿山开采、物料输送与堆取料需求，依据客户图纸与技术要求，做好装备制造、质量检验与交付。",
+      "image": "",
+      "imageAlt": "",
+      "presentation": "scene",
+      "hotspots": []
+    },
+    "energy": {
+      "title": "以可靠制造，\n服务能源建设。",
+      "description": "面向能源与工业基础设施项目，提供钢结构、管道模块及配套装备的制造、检验与交付服务。",
+      "image": "",
+      "imageAlt": "",
+      "presentation": "scene",
+      "hotspots": []
+    }
+  }
+}

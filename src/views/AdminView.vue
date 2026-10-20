@@ -16,6 +16,7 @@ import ProjectsManager from "../components/ProjectsManager.vue";
 import GlobalReachManager from "../components/GlobalReachManager.vue";
 import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
 import HomeSolutionsManager from "../components/HomeSolutionsManager.vue";
+import ProductShowcaseManager from "../components/ProductShowcaseManager.vue";
 import AboutTzmeManager from "../components/AboutTzmeManager.vue";
 import AdminSidebar from "../components/AdminSidebar.vue";
 import AnalyticsManager from "../components/AnalyticsManager.vue";
@@ -40,13 +41,15 @@ import { useArticleCatalog } from "../services/articles.js";
 import { useInquiryCatalog } from "../services/inquiries.js";
 import { apiRequest, dataErrors } from "../services/api.js";
 import { industryField, useIndustryCatalog } from "../services/industries.js";
+import { equipmentLayouts, normalizeEquipmentLayout } from '../utils/equipmentPresentation.js';
 
 const route = useRoute();
 const router = useRouter();
 const RichTextEditor = defineAsyncComponent(() => import('../components/RichTextEditor.vue'));
 const bodyImageUploading = ref(false);
 const coverImageUploading = ref(false);
-const imageUploading = computed(() => bodyImageUploading.value || coverImageUploading.value);
+const presentationImageUploading = ref(false);
+const imageUploading = computed(() => bodyImageUploading.value || coverImageUploading.value || presentationImageUploading.value);
 const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
@@ -106,6 +109,7 @@ const projectManager = ref(null);
 const globalManager = ref(null);
 const capabilitiesManager = ref(null);
 const solutionsManager = ref(null);
+const productShowcaseManager = ref(null);
 const aboutManager = ref(null);
 const analyticsManager = ref(null);
 const contactManager = ref(null);
@@ -135,6 +139,8 @@ const form = reactive({
   showOnHome: false,
   homeOrder: null,
   image: "",
+  presentationImage: "",
+  detailLayout: "auto",
   status: "published",
   date: "",
 });
@@ -218,6 +224,8 @@ function openEditor(type, item) {
     showOnHome: item?.showOnHome ?? false,
     homeOrder: item?.homeOrder ?? null,
     image: item?.image || "",
+    presentationImage: item?.presentationImage || "",
+    detailLayout: normalizeEquipmentLayout(item?.detailLayout) || "auto",
     status: item?.status || "draft",
     date: item?.date || new Date().toISOString().slice(0, 10),
   });
@@ -304,6 +312,7 @@ async function refresh() {
   else if (tab.value === 'global') globalManager.value?.load();
   else if (tab.value === 'capabilities') capabilitiesManager.value?.load();
   else if (tab.value === 'solutions') solutionsManager.value?.load();
+  else if (tab.value === 'product-showcase') productShowcaseManager.value?.load();
   else if (tab.value === 'about') aboutManager.value?.load();
   else if (tab.value === 'analytics') analyticsManager.value?.load();
   else if (tab.value === 'contact' || tab.value === 'forms') contactManager.value?.load();
@@ -505,6 +514,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <GlobalReachManager v-else-if="tab === 'global'" ref="globalManager" />
         <HomeCapabilitiesManager v-else-if="tab === 'capabilities'" ref="capabilitiesManager" />
         <HomeSolutionsManager v-else-if="tab === 'solutions'" ref="solutionsManager" />
+        <ProductShowcaseManager v-else-if="tab === 'product-showcase'" ref="productShowcaseManager" />
         <AboutTzmeManager v-else-if="tab === 'about'" ref="aboutManager" />
         <AnalyticsManager v-else-if="tab === 'analytics'" ref="analyticsManager" />
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
@@ -584,6 +594,16 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
               <el-form-item :label="$t('admin.editorDisplayImage')">
                 <ImageUpload v-model="form.image" :kind="kind === 'products' ? 'product' : 'news'" :active="modal"
                   :context-key="`${kind}-${form.id}`" :disabled="saving" @uploading="coverImageUploading = $event" />
+              </el-form-item>
+              <el-form-item v-if="kind === 'products'" label="详情页设备展示图（可选）">
+                <ImageUpload v-model="form.presentationImage" kind="productPresentation" :active="modal"
+                  :context-key="`${kind}-${form.id}`" :disabled="saving" :alt="form.titleZh" @uploading="presentationImageUploading = $event" />
+              </el-form-item>
+              <el-form-item v-if="kind === 'products'" label="详情页布局">
+                <el-select v-model="form.detailLayout" class="product-detail-layout-select" :disabled="saving" aria-label="详情页布局">
+                  <el-option v-for="layout in equipmentLayouts" :key="layout.value" :label="layout.label" :value="layout.value" />
+                </el-select>
+                <p class="cms-field-hint">{{ equipmentLayouts.find(layout => layout.value === form.detailLayout)?.description }}</p>
               </el-form-item>
 
 

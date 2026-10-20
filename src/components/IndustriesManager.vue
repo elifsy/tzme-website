@@ -195,6 +195,7 @@ onMounted(load)
               <div><strong>{{ industryField(form, 'title', editingLocale) || $t('admin.productIndustry') }}</strong><p>{{ industryField(form, 'subtitle', editingLocale) }}</p></div>
             </div>
           </AdminEditorPanel>
+          <router-link v-if="form.id" class="industry-scene-link" :to="{ path: '/admin/product-showcase', query: { industry: form.id } }">配置此行业的场景、文案与热点 ↗</router-link>
         </aside>
       </div>
     </el-form>
@@ -203,6 +204,7 @@ onMounted(load)
 
 <style scoped>
 .industry-manager-tip { margin-bottom: 16px; }
+.industry-scene-link { display: block; padding: 14px 4px; color: #087f91; font-size: 12px; line-height: 1.8; text-decoration: none; }
 .industry-table-name { display: flex; align-items: center; gap: 12px; }
 .industry-table-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex-shrink: 0; border: 1px solid #476276; border-radius: 7px; background: #06131c; }
 .industry-home-preview { display: flex; align-items: center; gap: 12px; padding: 18px 14px; border-radius: 9px; background: #06131c; overflow-wrap: anywhere; }

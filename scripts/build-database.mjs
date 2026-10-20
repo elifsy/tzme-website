@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { products, articles } from '../src/data/content.js'
 import { industrySeed } from '../src/data/industries.js'
@@ -14,6 +14,11 @@ import './build-home-solutions-migration.mjs'
 import './build-contact-facilities-migration.mjs'
 import './build-quality-positioning-migration.mjs'
 import './build-capability-process-migration.mjs'
+import './build-product-showcase-migration.mjs'
+import './build-product-presentation-migration.mjs'
+import './build-product-cutouts-migration.mjs'
+import './build-product-catalog-sync-migration.mjs'
+import './build-product-layout-migration.mjs'
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
 const recordPath = 'database/baseline/records.json'
@@ -23,7 +28,7 @@ function fields(record, names) {
   return Object.fromEntries(names.map((name) => [snake(name), record[name] ?? null]))
 }
 const contentFields = ['id', 'type', 'title', 'titleEn', 'titleZh', 'category', 'categoryEn', 'categoryZh', 'industry',
-  'summary', 'summaryEn', 'summaryZh', 'image', 'status', 'date', 'content', 'contentEn', 'contentZh',
+  'summary', 'summaryEn', 'summaryZh', 'image', 'presentationImage', 'detailLayout', 'status', 'date', 'content', 'contentEn', 'contentZh',
   'featuresEn', 'featuresZh', 'specificationsEn', 'specificationsZh', 'showOnHome', 'homeOrder']
 const projectFields = ['id', 'titleEn', 'titleZh', 'industryEn', 'industryZh', 'locationEn', 'locationZh', 'imageAltEn', 'imageAltZh',
   'summaryEn', 'summaryZh', 'contentEn', 'contentZh', 'capacityLabelEn', 'capacityLabelZh', 'capacityEn', 'capacityZh',
@@ -270,7 +275,11 @@ writeFileSync(resolve(resources, '03-comments.sql'), comments)
 mkdirSync('database/migrations', { recursive: true })
 writeFileSync('database/migrations/2026-10-column-comments.sql', comments)
 writeFileSync(resolve(resources, '02-data.sql'), data)
-writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + contactMigration + '\n' + socialMigration + '\n' + industryIconMigration + '\n' + capabilitiesMigration + '\n' + analyticsMigration + '\n' + aboutMigration + '\n' + comments + '\n' + data + '\n' + readFileSync('server/src/main/resources/db/10-j-design.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/11-official-products.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/12-home-solutions.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/13-contact-facilities.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/14-quality-positioning.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/15-capability-process.sql','utf8'))
+writeFileSync('database/install.sql', '-- Select your target database before executing this file.\n' + schema + '\n' + readFileSync('server/src/main/resources/db/17-product-presentation-schema.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/21-product-layout-schema.sql','utf8') + '\n' + contactMigration + '\n' + socialMigration + '\n' + industryIconMigration + '\n' + capabilitiesMigration + '\n' + analyticsMigration + '\n' + aboutMigration + '\n' + comments + '\n' + data + '\n' + readFileSync('server/src/main/resources/db/10-j-design.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/11-official-products.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/12-home-solutions.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/13-contact-facilities.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/14-quality-positioning.sql','utf8') + '\n' + readFileSync('server/src/main/resources/db/15-capability-process.sql','utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/16-product-showcase.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/18-product-presentation.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/19-product-cutouts.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/20-product-catalog-sync.sql', 'utf8'))
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

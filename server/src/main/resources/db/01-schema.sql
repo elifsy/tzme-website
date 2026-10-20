@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS site_content (
   summary_en VARCHAR(3000) COMMENT '英文摘要或产品简介',
   summary_zh VARCHAR(3000) COMMENT '中文摘要或产品简介',
   image VARCHAR(255) COMMENT '封面图片地址，可使用站内路径或完整网址',
+  presentation_image VARCHAR(1000) COMMENT '产品详情页设备展示图，建议透明背景；留空使用封面原图',
+  detail_layout VARCHAR(24) DEFAULT 'auto' COMMENT '产品详情布局：auto 自动、vertical 纵向、panorama 全景、exhibit 侧边、platform 上图下文',
   status VARCHAR(255) COMMENT '发布状态：published 已发布，draft 草稿，deleted 已删除',
   date DATE COMMENT '发布日期，新闻列表按此日期倒序展示',
   content LONGTEXT COMMENT '正文，兼容旧版英文数据',

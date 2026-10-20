@@ -25,6 +25,7 @@ public class ContentController {
     @PostMapping("/{type:products|articles}")
     @ResponseStatus(HttpStatus.CREATED)
     public Content create(@PathVariable String type, @RequestBody Content content) {
+        if ("products".equals(type)) content.setDetailLayout(normalizeDetailLayout(content.getDetailLayout()));
         content.setType(type);
         if ("products".equals(type)) content.setIndustries(content.getIndustries());
         enforceHomeLimit(type, content);
@@ -38,6 +39,7 @@ public class ContentController {
 
     @PutMapping("/{type:products|articles}/{id}")
     public Content update(@PathVariable String type, @PathVariable String id, @RequestBody Content input) {
+        String detailLayout = input.getDetailLayout() == null ? null : normalizeDetailLayout(input.getDetailLayout());
         Content existing = repository.findByIdAndType(id, type)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         existing.setTitle(input.getTitle());
@@ -54,6 +56,10 @@ public class ContentController {
         existing.setSummaryEn(input.getSummaryEn());
         existing.setSummaryZh(input.getSummaryZh());
         existing.setImage(input.getImage());
+        // Omission from an older editor preserves the stage image; an empty string explicitly clears it.
+        if (input.getPresentationImage() != null) existing.setPresentationImage(input.getPresentationImage());
+        // Older clients preserve the selection; "auto" or an explicit empty value resets it.
+        if ("products".equals(type) && detailLayout != null) existing.setDetailLayout(detailLayout);
         existing.setStatus(input.getStatus());
         existing.setDate(input.getDate());
         existing.setContent(input.getContent());
@@ -71,6 +77,13 @@ public class ContentController {
     }
 
     private static String orEmpty(String value) { return value == null ? "" : value; }
+    private static String normalizeDetailLayout(String value) {
+        String layout = value == null || value.isBlank() ? "auto" : value;
+        if (!List.of("auto", "vertical", "panorama", "exhibit", "platform").contains(layout)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown product detail layout");
+        }
+        return layout;
+    }
 
     // Chinese-only records still populate the original fields used by catalog filters and older clients.
     private static void normalizeLegacyFields(Content content) {
