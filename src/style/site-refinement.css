@@ -1,0 +1,153 @@
+/* Shared spacing and typography for the approved Style J page refinements. */
+.design-site.site-refined { color:#123a50; font-family:var(--f-ui); }
+.design-site.site-refined .refine-section { padding-block:68px; }
+.design-site.site-refined .refine-eyebrow { display:block; color:#688493; font-size:10px; line-height:1.8; letter-spacing:1.6px; }
+.design-site.site-refined .refine-section h2 { margin:14px 0 0; color:#123a50; font-size:38px; line-height:1.4; font-weight:650; letter-spacing:-.6px; }
+.design-site.site-refined .refine-description { margin:22px 0 0; color:#587583; font-size:14px; line-height:2; }
+.design-site.site-refined .refine-link { display:inline-flex; align-items:center; gap:22px; margin-top:22px; padding-bottom:7px; border-bottom:1px solid #bed5dc; color:#087f91; font-size:12px; font-weight:550; }
+.design-site.site-refined .refine-link span { font-size:17px; }
+.design-site.site-refined .refine-short-rule { display:block; width:38px; height:2px; background:#087f91; margin:23px 0; }
+.design-site.site-refined .refine-soft { background:#f3f8f9; }
+.design-site.site-refined .refine-section-head { display:flex; align-items:flex-end; justify-content:space-between; gap:40px; margin-bottom:32px; }
+.design-site.site-refined .refine-section-head>.refine-link { margin:0; white-space:nowrap; }
+.design-site.site-refined .refine-factory-grid { display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); align-items:center; gap:80px; }
+.design-site.site-refined .refine-factory-grid>div { min-width:0; }
+.design-site.site-refined .refine-factory-grid .about-tzme-title { font-size:38px; line-height:1.4; margin-top:14px; }
+.design-site.site-refined .refine-factory-grid .about-tzme-description { margin-top:22px; color:#587583; font-size:14px; line-height:2; }
+.design-site.site-refined .refine-factory-photo { margin:0; min-width:0; }
+.design-site.site-refined .refine-factory-image { position:relative; }
+.design-site.site-refined .refine-factory-image>img { display:block; width:100%; height:400px; object-fit:cover; }
+.design-site.site-refined .refine-factory-photo figcaption { display:flex; justify-content:space-between; gap:18px; padding-top:14px; color:#6d8794; font-size:10px; }
+.design-site.site-refined .refine-factory-photo figcaption a { color:#087f91; }
+.design-site.site-refined .refine-contact-grid { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:100px; align-items:start; }
+.design-site.site-refined .refine-contact-grid>div { min-width:0; }
+.design-site.site-refined .refine-contact-grid.j-contact-single { grid-template-columns:1fr; }
+.design-site.site-refined .refine-email { display:block; width:fit-content; margin-top:34px; color:#087f91; font-size:22px; line-height:1.6; overflow-wrap:anywhere; }
+.design-site.site-refined .refine-email+.refine-email { margin-top:8px; }
+.design-site.site-refined .refine-phone { color:#577784; font-size:14px; margin:12px 0 0; }
+.design-site.site-refined .j-home-contact .hc-h2 { white-space:pre-line; }
+.design-site.site-refined .j-direct-contact { margin-top:30px; font-size:12px; }
+.design-site.site-refined .j-direct-contact a { font-size:22px; overflow-wrap:anywhere; }
+
+/* Company overview: real factory imagery, readable metrics and expandable details. */
+.design-site.site-refined .refine-about-hero { background:linear-gradient(90deg,#f6fafb,#fff); }
+.design-site.site-refined .refine-about-hero-grid { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); align-items:center; gap:70px; padding-block:52px 45px; }
+.design-site.site-refined .refine-about-hero-grid.without-photo { grid-template-columns:1fr; }
+.design-site.site-refined .refine-about-copy h1 { margin:21px 0 0; color:#123a50; font-size:54px; line-height:1.35; letter-spacing:-1.2px; font-weight:650; }
+.design-site.site-refined .refine-about-copy>p { color:#587583; font-size:14px; line-height:2; margin:0; max-width:510px; }
+.design-site.site-refined .refine-about-photo { position:relative; margin:0; }
+.design-site.site-refined .refine-about-photo>img { width:100%; height:390px; object-fit:cover; display:block; }
+.design-site.site-refined .refine-about-photo>figcaption { position:absolute; bottom:0; inset-inline:0; padding:20px 24px; background:linear-gradient(transparent,#0b385b9c); color:white; font-size:12px; }
+.design-site.site-refined .refine-about-nav { display:flex; gap:45px; padding-block:18px; border-bottom:1px solid #e0eaed; }
+.design-site.site-refined .refine-about-nav a { font-size:12px; color:#527685; }
+.design-site.site-refined .refine-about-overview { padding-top:18px; }
+.design-site.site-refined .refine-about-overview summary { font-size:11px; color:#6c8794; }
+.design-site.site-refined .refine-about-overview p { color:#587583; font-size:13px; line-height:2; margin-top:16px; white-space:pre-line; }
+.design-site.site-refined details>summary { cursor:pointer; list-style:none; color:#087f91; font-size:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.design-site.site-refined summary::-webkit-details-marker { display:none; }
+.design-site.site-refined details[open]>summary>span { transform:rotate(45deg); }
+.design-site.site-refined summary:focus-visible,.design-site.site-refined .refine-about-nav a:focus-visible { outline:2px solid #087f91; outline-offset:5px; }
+.design-site.site-refined [id^=manufacturing-] { scroll-margin-top:calc(var(--site-nav-height) + 24px); }
+.design-site.site-refined .facility-cards { gap:28px; }
+.design-site.site-refined .facility-card { background:transparent; border:0; overflow:visible; }
+.design-site.site-refined .facility-card-image { aspect-ratio:1.65; }
+.design-site.site-refined .facility-card .subsidiary-card-body { padding:18px 0 0; }
+.design-site.site-refined .facility-card .facility-card-intro { font-size:12px; line-height:1.9; color:#6a8593; margin-top:8px; }
+.design-site.site-refined .facility-collapsible { border-top:1px solid #d8e4e8; margin-top:18px; padding-top:14px; }
+.design-site.site-refined .facility-collapsible p { font-size:12px; }
+.design-site.site-refined .facility-collapsible[open]>summary { margin-bottom:16px; }
+.design-site.site-refined .refine-values { display:grid; grid-template-columns:1fr 1fr; gap:28px 70px; border-top:1px solid #d5e4e9; padding-block:32px 45px; }
+.design-site.site-refined .refine-values h3 { font-size:20px; line-height:1.8; color:#123a50; margin-top:12px; font-weight:550; }
+.design-site.site-refined .refine-company-values { grid-column:1/-1; color:#66818e; font-size:12px; line-height:1.8; }
+
+/* Certificate previews show the original PDF first page or uploaded image. */
+.design-site.site-refined .certificate-gallery { gap:24px; }
+.design-site.site-refined .certificate-card { display:flex; height:auto; min-height:0; border:0; background:#f3f8f9; }
+.design-site.site-refined .certificate-preview { height:215px; border:0; background:transparent; overflow:visible; }
+.design-site.site-refined .certificate-document-cover { display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:12px 18px 30px; border:0; background:transparent; cursor:pointer; }
+
+.design-site.site-refined .certificate-preview-button.el-button { right:12px; bottom:0; height:28px; background:#fff; box-shadow:none; border-color:#d5e4e9; font-size:10px; }
+.design-site.site-refined .certificate-preview-image { display:block; width:100%; height:100%; cursor:zoom-in; }
+.design-site.site-refined .certificate-preview-image .el-image__inner { box-sizing:border-box; padding:12px 18px 30px; object-fit:contain; }
+.design-site.site-refined .certificate-card-body { padding:12px 18px 18px; }
+.design-site.site-refined .certificate-card h3 { font-size:17px; }
+.design-site.site-refined .certificate-card-body .certificate-summary { font-size:11px; }
+.design-site.site-refined .certificate-card-footer { gap:8px; margin-top:auto; padding-top:14px; }
+.design-site.site-refined .certificate-card-body .certificate-meta { font-size:10px; }
+.design-site.site-refined .certificate-details-button.el-button { height:30px; font-size:11px; }
+
+/* Compact enquiry forms keep the original validation, upload and submission flow. */
+.design-site.site-refined .inquiry-form.inquiry-form-compact { padding:28px; background:#f3f8f9; border-top:2px solid #087f91; }
+.design-site.site-refined .inquiry-form-compact .inquiry-form-title { font-size:21px; font-weight:650; letter-spacing:0; color:#123a50; margin-bottom:23px; }
+.design-site.site-refined .inquiry-form-compact .el-form-item { margin-bottom:17px; }
+.design-site.site-refined .inquiry-form-compact .el-form-item__label { font-size:11px; margin-bottom:5px; }
+.design-site.site-refined .inquiry-form-compact .el-input__wrapper,.design-site.site-refined .inquiry-form-compact .el-select__wrapper { min-height:40px; }
+.design-site.site-refined .inquiry-form-compact .inquiry-upload .el-upload-dragger { padding:15px 10px; }
+.design-site.site-refined .inquiry-form-compact .inquiry-upload-tip,.design-site.site-refined .inquiry-form-compact .inquiry-submit p { font-size:10px; }
+.design-site.site-refined .refine-contact-side>.contact-details { margin-top:28px; }
+.design-site.site-refined .refine-contact-side .contact-details dt { flex-basis:55px; font-size:12px; color:#78909c; }
+.design-site.site-refined .refine-contact-side .contact-details dd { font-size:12px; line-height:1.85; color:#4d6f81; text-align:left; flex:1; }
+.design-site.site-refined .refine-contact-side .contact-details>div { padding:13px 0; gap:20px; border-color:#e0e9ed; }
+.design-site.site-refined .refine-contact-side .contact-details a { color:#087f91; }
+.design-site.site-refined .refine-response { margin-top:30px; padding-top:20px; border-top:1px solid #d8e5ea; }
+.design-site.site-refined .refine-response>span { color:#123a50; font-size:13px; font-weight:600; }
+.design-site.site-refined .refine-response ol { display:flex; list-style:none; margin:20px 0 0; padding:0; gap:18px; justify-content:space-between; }
+.design-site.site-refined .refine-response li { color:#6b8593; font-size:11px; }
+.design-site.site-refined .refine-response b { display:block; color:#087f91; font-size:10px; font-weight:500; margin-bottom:7px; }
+.design-site.site-refined .refine-company-contacts { margin-top:30px; padding-top:18px; border-top:1px solid #d8e5ea; }
+.design-site.site-refined .refine-company-contacts .subsidiary-cards { grid-template-columns:1fr; gap:0; margin-top:10px; }
+.design-site.site-refined .refine-form-wrap { background:#f4f9fa; padding:30px 33px; border-top:2px solid #087f91; }
+.design-site.site-refined .refine-form-wrap header h2 { font-size:26px; margin-top:10px; }
+.design-site.site-refined .refine-form-wrap header>p { margin:12px 0 24px; font-size:12px; color:#6b8593; }
+.design-site.site-refined .refine-form-wrap .inquiry-form { border:0; padding:0; background:transparent; }
+
+/* Product hero layouts remain intact; the lower page gains a manufacturing column. */
+.design-site.site-refined .equipment-information-grid { grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:75px; padding-block:15px 20px; }
+.design-site.site-refined .equipment-information-grid.equipment-information-single { grid-template-columns:1fr; }
+.design-site.site-refined .equipment-information-aside { display:grid; gap:30px; min-width:0; }
+.design-site.site-refined .equipment-features ol { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 25px; }
+.design-site.site-refined .equipment-features li { font-size:13px; padding:16px 0; gap:8px; grid-template-columns:25px minmax(0,1fr); }
+.design-site.site-refined .equipment-related-image.equipment-cutout { aspect-ratio:1.8; }
+.design-site.site-refined .equipment-related-image.equipment-cutout img { object-fit:contain; transition:none; }
+.design-site.site-refined .equipment-related-card:hover .equipment-cutout img { transform:none; }
+.design-site.site-refined .equipment-related-copy { border-top:1px solid #d8e6eb; }
+
+/* Article cover and title share the first screen; reading measure is narrower. */
+.design-site.site-refined.refined-article .article-intro { padding:27px 0 42px; background:#f3f8fa; }
+.design-site.site-refined.refined-article .article-back { margin-bottom:25px; }
+.design-site.site-refined .refine-article-head-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; gap:65px; }
+.design-site.site-refined .refine-article-head-grid.without-cover { grid-template-columns:1fr; max-width:900px; }
+.design-site.site-refined.refined-article .article-intro h1 { font-size:38px; line-height:1.5; letter-spacing:-.8px; margin-top:23px; }
+.design-site.site-refined.refined-article .article-lead { font-size:14px; line-height:1.9; margin-top:20px; }
+.design-site.site-refined.refined-article .article-cover { width:100%; margin:0; }
+.design-site.site-refined.refined-article .article-cover img { display:block; height:325px; width:100%; object-fit:cover; }
+.design-site.site-refined.refined-article .article-content-section { padding-block:60px 65px; }
+.design-site.site-refined.refined-article .article-layout { max-width:1120px; grid-template-columns:minmax(0,1fr) 225px; gap:80px; }
+.design-site.site-refined.refined-article .article-body { font-size:15px; line-height:2.1; }
+.design-site.site-refined.refined-article .article-body h2 { font-size:25px; }
+.design-site.site-refined.refined-article .article-body blockquote { border-left-color:#087f91; background:#f3f8f9; font-size:14px; }
+.design-site.site-refined.refined-article .article-contact { border-top:1px solid #d5e4e9; background:#fff; padding:24px 0 0; }
+.design-site.site-refined.refined-article .article-contact h2 { font-size:18px; }
+.design-site.site-refined.refined-article .article-pagination { margin-top:38px; font-size:12px; }
+
+@media(max-width:1100px) {
+ .design-site.site-refined .refine-factory-grid { gap:40px; }.design-site.site-refined .refine-contact-grid { gap:50px; }
+ .design-site.site-refined .refine-about-hero-grid { gap:35px; }.design-site.site-refined .refine-about-copy h1 { font-size:42px; }.design-site.site-refined .refine-about-photo>img { height:370px; }
+ .design-site.site-refined .equipment-information-grid { gap:35px; }.design-site.site-refined .refine-article-head-grid { gap:35px; }.design-site.site-refined.refined-article .article-intro h1 { font-size:32px; }
+}
+@media(max-width:700px) {
+ .design-site.site-refined .refine-section { padding-block:36px; }.design-site.site-refined .refine-section h2 { font-size:28px; line-height:1.45; margin-top:11px; }.design-site.site-refined .refine-eyebrow { font-size:9px; letter-spacing:1.2px; }.design-site.site-refined .refine-description { font-size:12px; line-height:1.95; margin-top:16px; }
+ .design-site.site-refined .refine-factory-grid,.design-site.site-refined .refine-contact-grid { grid-template-columns:1fr; gap:28px; }.design-site.site-refined .refine-factory-image>img { height:230px; }.design-site.site-refined .refine-factory-photo figcaption { font-size:8px; gap:10px; }.design-site.site-refined .refine-factory-grid .about-tzme-title { font-size:28px; }.design-site.site-refined .refine-factory-grid .about-tzme-description { font-size:12px; line-height:1.95; margin-top:16px; }
+ .design-site.site-refined .refine-section-head { gap:18px; margin-bottom:22px; flex-wrap:wrap; }.design-site.site-refined .refine-section-head>.refine-link { font-size:10px; }.design-site.site-refined .refine-link { font-size:11px; gap:18px; margin-top:16px; }
+ .design-site.site-refined .refine-email { font-size:21px; margin-top:23px; }.design-site.site-refined .j-direct-contact a { font-size:21px; }
+ .design-site.site-refined .inquiry-form.inquiry-form-compact { padding:23px 18px; }.design-site.site-refined .inquiry-form-compact .inquiry-form-title { font-size:20px; }.design-site.site-refined .inquiry-form-compact .el-form-item { margin-bottom:15px; }.design-site.site-refined .inquiry-form-compact .inquiry-fields { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0 12px; }.design-site.site-refined .inquiry-form-compact .el-form-item__label { font-size:11px; }.design-site.site-refined .inquiry-form-compact .el-input__inner,.design-site.site-refined .inquiry-form-compact .el-select__placeholder { font-size:11px; }
+ .design-site.site-refined .inquiry-form-compact .inquiry-upload .el-upload-dragger { padding:12px 8px; }.design-site.site-refined .inquiry-form-compact .inquiry-upload-tip,.design-site.site-refined .inquiry-form-compact .inquiry-submit p { font-size:9px; }.design-site.site-refined .inquiry-form-compact .inquiry-submit { gap:15px; }
+ .design-site.site-refined .refine-about-hero-grid { grid-template-columns:1fr; gap:24px; padding-block:28px 26px; }.design-site.site-refined .refine-about-copy h1 { font-size:35px; margin-top:13px; line-height:1.4; }.design-site.site-refined .refine-about-copy>p { font-size:12px; line-height:1.95; }.design-site.site-refined .refine-short-rule { margin:17px 0; }.design-site.site-refined .refine-about-photo>img { height:220px; }.design-site.site-refined .refine-about-photo>figcaption { font-size:10px; padding:17px; }
+ .design-site.site-refined .refine-about-nav { gap:0; justify-content:space-between; padding-block:18px; }.design-site.site-refined .refine-about-nav a { font-size:10px; }
+ .design-site.site-refined .facility-cards { gap:30px; }.design-site.site-refined .facility-card-image { aspect-ratio:1.8; }.design-site.site-refined .facility-card .subsidiary-card-body { padding:15px 0 0; }.design-site.site-refined .facility-card h3 { font-size:20px; }.design-site.site-refined .facility-card p { font-size:11px; }.design-site.site-refined summary { font-size:11px; }.design-site.site-refined .facility-collapsible { margin-top:15px; padding-top:12px; }
+ .design-site.site-refined .certificate-gallery { grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; min-height:0; }.design-site.site-refined .certificate-preview { height:165px; border:0; }.design-site.site-refined .certificate-document-cover { padding:10px 12px 27px; }.design-site.site-refined .certificate-preview-image .el-image__inner { padding:10px 12px 27px; }.design-site.site-refined .certificate-card-body { padding:12px; }.design-site.site-refined .certificate-card h3 { font-size:14px; }.design-site.site-refined .certificate-summary { font-size:10px; }.design-site.site-refined .certificate-card-footer { display:block; }.design-site.site-refined .certificate-card-body .certificate-meta { font-size:9px; }.design-site.site-refined .certificate-preview-button.el-button { left:auto; right:8px; height:24px; font-size:9px; }
+ .design-site.site-refined .refine-values { grid-template-columns:1fr; gap:26px; padding-block:26px 36px; }.design-site.site-refined .refine-values h3 { font-size:18px; line-height:1.8; }
+ .design-site.site-refined .equipment-information-grid { grid-template-columns:1fr; gap:30px; padding-block:0; }.design-site.site-refined .equipment-features ol { gap:0 16px; }.design-site.site-refined .equipment-features li { grid-template-columns:21px minmax(0,1fr); font-size:12px; gap:5px; padding-block:13px; }.design-site.site-refined .equipment-related-image.equipment-cutout { aspect-ratio:1.2; }
+ .design-site.site-refined.refined-article .article-intro { padding-block:24px 27px!important; }.design-site.site-refined.refined-article .article-back { margin-bottom:21px; }.design-site.site-refined .refine-article-head-grid { grid-template-columns:1fr; gap:23px; }.design-site.site-refined.refined-article .article-intro h1 { font-size:28px; line-height:1.5; margin-top:18px; }.design-site.site-refined.refined-article .article-lead { font-size:12px; line-height:1.9; margin-top:15px; }.design-site.site-refined.refined-article .article-cover img { height:210px; }.design-site.site-refined.refined-article .article-content-section { padding-block:34px 42px; }.design-site.site-refined.refined-article .article-layout { grid-template-columns:1fr; gap:30px; }.design-site.site-refined.refined-article .article-body { font-size:13px; line-height:2; }.design-site.site-refined.refined-article .article-body h2 { font-size:22px; }.design-site.site-refined.refined-article .article-body blockquote { padding:18px; font-size:12px; }
+ .design-site.site-refined.refined-contact .refine-contact-grid { gap:32px; }.design-site.site-refined .refine-contact-side { order:2; }.design-site.site-refined .refine-form-wrap { order:1; padding:24px 20px; }.design-site.site-refined .refine-form-wrap header h2 { font-size:23px; }.design-site.site-refined .refine-form-wrap header>p { font-size:11px; line-height:1.9; margin-bottom:21px; }.design-site.site-refined .refine-form-wrap .inquiry-form { padding:0; }.design-site.site-refined .refine-contact-side .contact-details dt { font-size:11px; flex-basis:43px; }.design-site.site-refined .refine-contact-side .contact-details dd { font-size:11px; }.design-site.site-refined .refine-response { margin-top:25px; }.design-site.site-refined .refine-company-contacts { margin-top:24px; }
+}

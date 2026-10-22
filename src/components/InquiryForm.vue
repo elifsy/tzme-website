@@ -8,7 +8,7 @@ import { contactText, inquiryFieldLabels, useContactSettings } from '../services
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import { inquiryAnalyticsContext, trackEvent } from '../services/analytics.js'
 
-const props = defineProps({ placement: { type: String, default: 'contact' }, preview: Boolean, configuration: { type: Object, default: null } })
+const props = defineProps({ placement: { type: String, default: 'contact' }, preview: Boolean, compact: Boolean, showHeading: { type: Boolean, default: true }, configuration: { type: Object, default: null } })
 const { t, locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
 const { industries, loadIndustries } = useIndustryCatalog()
@@ -108,9 +108,9 @@ onBeforeUnmount(() => { disposed = true; uploads.forEach(request => request.abor
 </script>
 
 <template>
-  <div v-if="config && (preview || config.form[placement === 'home' ? 'showOnHome' : 'showOnContact'])" class="hc-form inquiry-form" @click.stop @keydown.stop @focusin="trackStart">
+  <div v-if="config && (preview || config.form[placement === 'home' ? 'showOnHome' : 'showOnContact'])" class="hc-form inquiry-form" :class="{ 'inquiry-form-compact': compact }" @click.stop @keydown.stop @focusin="trackStart">
     <template v-if="config.form.enabled">
-      <span class="hc-kick inquiry-form-title">{{ contactText(config.form.title, locale) }}</span>
+      <span v-if="showHeading" class="hc-kick inquiry-form-title">{{ compact ? contactText(config.form.title, locale).replace(/^\s*\d+\s*[\/／、.．]\s*/, '') : contactText(config.form.title, locale) }}</span>
       <el-form ref="formRef" :model="form" :rules="rules" :validate-on-rule-change="false" label-position="top" :disabled="submitting" @submit.prevent="submit">
         <div class="inquiry-fields">
           <el-form-item v-for="key in ['name', 'company', 'country', 'email', 'phone', 'industry']" :key="key" :prop="key" :label="fieldLabel(key)">

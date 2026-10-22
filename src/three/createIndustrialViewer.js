@@ -5,6 +5,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { buildIndustrialScene, disposeObject } from './industrialScene.js'
 import { createIndustrialRegions } from './industrialRegions.js'
 import { createIndustrialMotion } from './industrialMotion.js'
+import { createIndustrialQuality } from './industrialQuality.js'
 
 const V = value => new THREE.Vector3(...value)
 
@@ -12,7 +13,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   const doc = host.ownerDocument, win = doc.defaultView
   const reduced = win.matchMedia('(prefers-reduced-motion: reduce)')
   const compact = win.matchMedia('(max-width: 700px)').matches
-  const renderer = new THREE.WebGLRenderer({ canvas: doc.createElement('canvas'), alpha: true, antialias: true, powerPreference: 'low-power' })
+  const renderer = new THREE.WebGLRenderer({ canvas: doc.createElement('canvas'), alpha: true, antialias: true, powerPreference: compact ? 'default' : 'high-performance' })
   renderer.setPixelRatio(Math.min(win.devicePixelRatio || 1, compact ? 1.5 : 1.7))
   renderer.setClearColor(0x000000, 0)
   renderer.outputColorSpace = THREE.SRGBColorSpace
@@ -29,6 +30,10 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   host.append(canvas)
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(37, 1, .08, 360)
   const industrial = buildIndustrialScene(options.industries, compact, doc)
+  // Local matrices of the island and fixed beams never change. Only mechanical
+  // pivots need per-frame composition; camera movement is independent of these.
+  industrial.world.traverse(object => { object.updateMatrix(); if (!object.userData.motion && !object.isSkinnedMesh) object.matrixAutoUpdate = false })
+  scene.matrixAutoUpdate = false
   const motion = createIndustrialMotion(industrial.assemblies)
   const regions = createIndustrialRegions(industrial.assemblies, industrial.landscape)
   let overviewPosition = [40, 50, 58], overviewTarget = [0, 2, 0]
@@ -56,14 +61,46 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   const projected = new THREE.Vector3(), modelRequests = new Map(), modelUrls = new Map()
   const initialSelection = options.industries?.[0]?.id || ''
   let mode = 'orbit', selected = initialSelection, disposed = false, inView = true, frame = 0
-  let tween = null, pointerStart = null, isOverview = true, hovered = '', hoverPoint = null, anchorsDirty = true
-  let hoverExitTimer = 0
+  let tween = null, pointerStart = null, isOverview = true, hovered = '', animatedIndustry = '', hoverPoint = null, anchorsDirty = true
+  let hoverExitTimer = 0, qualityTimer = 0, viewWidth = 0, viewHeight = 0, lastAnchorReport = null, lastAnchors = null, cameraChangedDuringFrame = false, framingSamples = null
+  const quality = createIndustrialQuality({ pixelRatio: win.devicePixelRatio || 1, compact })
+  const equipmentBounds = new Map()
   const ray = new THREE.Raycaster(), pointer = new THREE.Vector2()
-  const state = () => ({ mode, selected, overview: isOverview, transitioning: Boolean(tween), hovered })
-  const notify = () => callbacks.state?.(state())
+  const state = () => ({ mode, selected, overview: isOverview, transitioning: Boolean(tween), hovered, animatedIndustry })
+  let reportedState
+  const notify = () => {
+    const next = state()
+    if (reportedState && Object.keys(next).every(key => next[key] === reportedState[key])) return
+    reportedState = next; callbacks.state?.(next)
+  }
   const activeControls = () => mode === 'inspect' ? trackball : orbit
-  function invalidate() { if (!disposed && !frame && inView && !doc.hidden) frame = win.requestAnimationFrame(render) }
-  function cameraChanged() { anchorsDirty = true; invalidate() }
+  function cancelQualityRestore() { if (qualityTimer) { win.clearTimeout(qualityTimer); qualityTimer = 0 } }
+  function invalidate() { cancelQualityRestore(); if (!disposed && !frame && inView && !doc.hidden) frame = win.requestAnimationFrame(render) }
+  function cameraChanged() { anchorsDirty = true; cameraChangedDuringFrame = true; invalidate() }
+  function applyQuality(ratio) {
+    if (Math.abs(renderer.getPixelRatio() - ratio) > .001) renderer.setDrawingBufferSize(viewWidth, viewHeight, ratio)
+  }
+  function restoreQualityLater() {
+    if (qualityTimer || Math.abs(quality.ratio - quality.restRatio) < .001) return
+    qualityTimer = win.setTimeout(() => {
+      qualityTimer = 0
+      if (disposed || !inView || doc.hidden) return
+      applyQuality(quality.restore()); invalidate()
+    }, 200)
+  }
+  function boundsFor(key) {
+    const root = industrial.assemblies[key].custom || industrial.assemblies[key].equipment
+    let entry = equipmentBounds.get(key)
+    if (entry?.root !== root) { entry = { root, box: new THREE.Box3().setFromObject(root) }; equipmentBounds.set(key, entry) }
+    return entry.box
+  }
+  function changeMode(next) {
+    if (mode === next) return
+    const target = activeControls().target
+    const controls = next === 'inspect' ? trackball : orbit
+    controls.target.copy(target)
+    mode = next
+  }
   function cancelHoverExit() { if (hoverExitTimer) { win.clearTimeout(hoverExitTimer); hoverExitTimer = 0 } }
   function commitHover(next) {
     if (hovered === next) return
@@ -84,8 +121,12 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   }
   function clearHover(immediate = false) {
     hoverPoint = null
-    if (immediate) { cancelHoverExit(); commitHover(''); motion.reset(); invalidate() }
+    if (immediate) { cancelHoverExit(); commitHover(''); motion.clearHover(); invalidate() }
     else hover('')
+  }
+  function animateSelection(key = '') {
+    animatedIndustry = motion.select(key)
+    canvas.dataset.animatedIndustry = animatedIndustry
   }
   function industryAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect()
@@ -93,63 +134,77 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     ray.setFromCamera(pointer, camera)
     return regions.pick(ray, hovered)
   }
-  function reportAnchors() {
+  function reportAnchors(now, force = false) {
+    const interval = 1000 / 30
+    if (!force && lastAnchorReport !== null && now - lastAnchorReport < interval) return
+    lastAnchorReport = force || lastAnchorReport === null ? now : now - ((now - lastAnchorReport) % interval)
     const result = {}
+    let changed = !lastAnchors
     for (const [key, assembly] of Object.entries(industrial.assemblies)) {
       assembly.anchor.getWorldPosition(projected); projected.project(camera)
-      result[key] = { x: (projected.x + 1) * 50, y: (1 - projected.y) * 50,
+      result[key] = { x: Math.round((projected.x + 1) * 5000) / 100, y: Math.round((1 - projected.y) * 5000) / 100,
         visible: assembly.group.visible && projected.z >= -1 && projected.z <= 1 && Math.abs(projected.x) < .98 && Math.abs(projected.y) < .98 }
+      const previous = lastAnchors?.[key]
+      if (!previous || previous.x !== result[key].x || previous.y !== result[key].y || previous.visible !== result[key].visible) changed = true
     }
-    callbacks.anchors?.(result, { width: host.clientWidth, height: host.clientHeight })
+    anchorsDirty = false
+    if (changed) { lastAnchors = result; callbacks.anchors?.(result, { width: viewWidth, height: viewHeight }) }
   }
   function setControls() {
     orbit.enabled = mode === 'orbit'; trackball.enabled = mode === 'inspect'
-    // The close view needs fewer physical pixels while HTML labels stay sharp.
-    const ratio = Math.min(win.devicePixelRatio || 1, mode === 'inspect' ? 1.25 : compact ? 1.5 : 1.7)
-    if (renderer.getPixelRatio() !== ratio) renderer.setPixelRatio(ratio)
+    quality.configure(mode, viewWidth, viewHeight)
+    applyQuality(quality.ratio)
     canvas.style.cursor = 'grab'
   }
   function showAll() {
-    for (const assembly of Object.values(industrial.assemblies)) { assembly.group.visible = true; assembly.environment.visible = true }
+    let changed = !industrial.landscape.visible
+    for (const assembly of Object.values(industrial.assemblies)) {
+      if (!assembly.group.visible || !assembly.environment.visible) changed = true
+      assembly.group.visible = true; assembly.environment.visible = true
+    }
     industrial.landscape.visible = true
-    renderer.shadowMap.needsUpdate = true
+    if (changed) renderer.shadowMap.needsUpdate = true
   }
   function transition(position, target, milliseconds = 1000) {
     clearHover(true)
-    tween = { from: camera.position.clone(), targetFrom: activeControls().target.clone(), to: V(position), targetTo: V(target), start: win.performance.now(), duration: reduced.matches ? 0 : milliseconds }
+    tween = { from: camera.position.clone(), upFrom: camera.up.clone(), targetFrom: activeControls().target.clone(), to: V(position), targetTo: V(target), start: win.performance.now(), duration: reduced.matches ? 0 : milliseconds }
     notify(); invalidate()
   }
   function reset(animate = true) {
     clearHover(true)
-    tween = null; mode = 'orbit'; selected = initialSelection; isOverview = true; pointerStart = null
-    showAll(); camera.up.set(0, 1, 0)
+    motion.reset(); animateSelection('')
+    const position = camera.position.clone(), target = activeControls().target.clone()
+    tween = null; changeMode('orbit'); selected = initialSelection; isOverview = true; pointerStart = null
+    showAll()
     // Flush any residual orbit/trackball movement before restoring the saved view.
     orbit.enableDamping = false; orbit.update(); orbit.enableDamping = true
-    orbit.target.fromArray(overviewTarget); trackball.target.fromArray(overviewTarget)
-    setControls(); transition(overviewPosition, overviewTarget, animate ? 650 : 0); notify()
+    camera.position.copy(position); orbit.target.copy(target); trackball.target.copy(target)
+    setControls(); transition(overviewPosition, overviewTarget, animate ? 500 : 0); notify()
   }
   function focus(key) {
     const assembly = industrial.assemblies[key]
     if (!assembly) return reset()
     clearHover(true)
-    selected = key; mode = 'orbit'; isOverview = false; showAll(); camera.up.set(0, 1, 0); setControls()
-    const bounds = new THREE.Box3().setFromObject(assembly.equipment), center = bounds.getCenter(new THREE.Vector3()), size = bounds.getSize(new THREE.Vector3())
+    animateSelection(key)
+    selected = key; changeMode('orbit'); isOverview = false; showAll(); setControls()
+    const bounds = boundsFor(key), center = bounds.getCenter(new THREE.Vector3()), size = bounds.getSize(new THREE.Vector3())
     const distance = Math.max(size.x, size.y, size.z) * 2.15
-    transition(center.clone().add(new THREE.Vector3(distance * .7, distance * .57, distance)).toArray(), center.toArray()); notify()
+    transition(center.clone().add(new THREE.Vector3(distance * .7, distance * .57, distance)).toArray(), center.toArray(), 700); notify()
   }
   function inspect(key = selected) {
     const assembly = industrial.assemblies[key]
     if (!assembly) return
     clearHover(true)
-    tween = null; selected = key; mode = 'inspect'; isOverview = false; camera.up.set(0, 1, 0)
+    animateSelection(key)
+    tween = null; selected = key; changeMode('inspect'); isOverview = false
+    const changed = industrial.landscape.visible || Object.values(industrial.assemblies).some(entry => entry.group.visible !== (entry.key === key) || entry.environment.visible)
     for (const entry of Object.values(industrial.assemblies)) { entry.group.visible = entry.key === key; entry.environment.visible = false }
     industrial.landscape.visible = false
-    renderer.shadowMap.needsUpdate = true
-    const target = assembly.custom || assembly.equipment
-    const bounds = new THREE.Box3().setFromObject(target), center = bounds.getCenter(new THREE.Vector3()), size = bounds.getSize(new THREE.Vector3())
+    if (changed) renderer.shadowMap.needsUpdate = true
+    const bounds = boundsFor(key), center = bounds.getCenter(new THREE.Vector3()), size = bounds.getSize(new THREE.Vector3())
     const distance = Math.max(size.length() * 1.25, 6)
-    trackball.target.copy(center); setControls()
-    transition(center.clone().add(new THREE.Vector3(distance * .55, distance * .25, distance * .85)).toArray(), center.toArray(), 850); notify()
+    setControls()
+    transition(center.clone().add(new THREE.Vector3(distance * .55, distance * .25, distance * .85)).toArray(), center.toArray(), 600); notify()
   }
   function zoom(factor) {
     clearHover(true)
@@ -194,23 +249,26 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   }
   function onControlStart() { clearHover(true); tween = null; isOverview = false; notify(); invalidate() }
   function contextLost(event) { event.preventDefault(); if (!disposed) callbacks.failure?.('context-lost') }
-  function visibility() { if (doc.hidden) clearHover(true); else invalidate() }
+  function visibility() { quality.pause(); if (doc.hidden) clearHover(true); else invalidate() }
   function motionPreferenceChanged() {
-    motion.reset(); motion.hover(hovered); invalidate()
+    motion.reset(); motion.select(animatedIndustry); motion.hover(hovered); invalidate()
   }
   function fitOverview() {
-    const bounds = new THREE.Box3(), points = []
-    industrial.world.updateMatrixWorld(true)
-    for (const point of industrial.framingPoints) points.push(point.clone().applyMatrix4(industrial.world.matrixWorld))
-    for (const assembly of Object.values(industrial.assemblies)) {
-      // Rotated world-space boxes contain large empty corners. Frame sampled
-      // equipment geometry instead so the continuous island fills its hero.
-      assembly.group.traverse(object => {
-        const positions = object.geometry?.attributes.position
-        if (!positions || !object.visible) return
-        const stride = Math.max(1, Math.floor(positions.count / 240))
-        for (let index = 0; index < positions.count; index += stride) points.push(new THREE.Vector3().fromBufferAttribute(positions, index).applyMatrix4(object.matrixWorld))
-      })
+    const bounds = new THREE.Box3(), points = framingSamples || []
+    if (!framingSamples) {
+      industrial.world.updateMatrixWorld(true)
+      for (const point of industrial.framingPoints) points.push(point.clone().applyMatrix4(industrial.world.matrixWorld))
+      for (const assembly of Object.values(industrial.assemblies)) {
+        // Rotated world-space boxes contain large empty corners. Frame sampled
+        // equipment geometry instead so the continuous island fills its hero.
+        assembly.group.traverse(object => {
+          const positions = object.geometry?.attributes.position
+          if (!positions || !object.visible) return
+          const stride = Math.max(1, Math.floor(positions.count / 240))
+          for (let index = 0; index < positions.count; index += stride) points.push(new THREE.Vector3().fromBufferAttribute(positions, index).applyMatrix4(object.matrixWorld))
+        })
+      }
+      framingSamples = points
     }
     points.forEach(point => bounds.expandByPoint(point))
     if (bounds.isEmpty()) return
@@ -232,29 +290,37 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   function resize() {
     if (disposed) return
     const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight)
-    camera.aspect = width / height; camera.updateProjectionMatrix(); renderer.setSize(width, height, false); trackball.handleResize()
+    if (width === viewWidth && height === viewHeight) return
+    viewWidth = width; viewHeight = height; lastAnchors = null
+    quality.configure(mode, width, height)
+    camera.aspect = width / height; camera.updateProjectionMatrix(); renderer.setDrawingBufferSize(width, height, quality.ratio); trackball.handleResize()
     clearHover(true); fitOverview(); anchorsDirty = true; if (isOverview) reset(false); else invalidate()
   }
   function render(now) {
     frame = 0
     if (disposed || !inView || doc.hidden) return
+    cameraChangedDuringFrame = false
     if (tween) {
       anchorsDirty = true
-      const t = tween.duration ? Math.min((now - tween.start) / tween.duration, 1) : 1, ease = t * t * (3 - 2 * t)
+      const t = tween.duration ? Math.min((now - tween.start) / tween.duration, 1) : 1, ease = t * t * t * (t * (t * 6 - 15) + 10)
       camera.position.lerpVectors(tween.from, tween.to, ease); activeControls().target.lerpVectors(tween.targetFrom, tween.targetTo, ease)
+      camera.up.lerpVectors(tween.upFrom, Y_AXIS, ease).normalize()
       camera.lookAt(activeControls().target); if (t >= 1) { tween = null; notify() }
     }
     activeControls().update()
     if (hoverPoint) { const point = hoverPoint; hoverPoint = null; hover(industryAt(...point)) }
     const animation = motion.update(now, reduced.matches)
+    const moving = Boolean(tween || pointerStart || cameraChangedDuringFrame || animation.running)
+    applyQuality(quality.update(now, moving))
     // Reuse the equipment's resting projection during small mechanical motions.
     // Shadow maps refresh on layout/model/mode changes, never on every hover frame.
     renderer.render(scene, camera)
-    if (anchorsDirty) { reportAnchors(); anchorsDirty = false }
+    if (anchorsDirty) reportAnchors(now, !tween && !pointerStart && !cameraChangedDuringFrame)
     if (tween || animation.running) invalidate()
+    else restoreQualityLater()
   }
   const resizeObserver = new win.ResizeObserver(resize); resizeObserver.observe(host)
-  const visibilityObserver = new win.IntersectionObserver(entries => { inView = entries.some(entry => entry.isIntersecting); if (inView) invalidate(); else clearHover(true) }, { threshold: .01 })
+  const visibilityObserver = new win.IntersectionObserver(entries => { inView = entries.some(entry => entry.isIntersecting); quality.pause(); if (inView) invalidate(); else clearHover(true) }, { threshold: .01 })
   visibilityObserver.observe(host)
   canvas.addEventListener('keydown', keydown)
   canvas.addEventListener('pointerdown', pointerdown); canvas.addEventListener('pointermove', pointermove); canvas.addEventListener('pointerup', pointerup)
@@ -270,10 +336,12 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
       if (url === (modelUrls.get(key) || '')) continue
       clearHover(true)
       motion.forget(key)
+      equipmentBounds.delete(key); framingSamples = null
       modelUrls.set(key, url); modelRequests.get(key)?.abort()
       renderer.shadowMap.needsUpdate = true
       if (assembly.custom) { assembly.group.remove(assembly.custom); disposeObject(assembly.custom); assembly.custom = null }
       assembly.original.visible = true
+      motion.select(animatedIndustry)
       regions.refresh(key)
       if (!url) { invalidate(); continue }
       if (!/^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.glb$/.test(url) && !/^\/api\/uploads\/models\/[0-9a-f-]{36}\.glb$/.test(url)) { callbacks.modelError?.(key); continue }
@@ -288,6 +356,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
         const loaded = await new GLTFLoader(manager).parseAsync(bytes, '')
         if (disposed || request.signal.aborted) { disposeObject(loaded.scene); continue }
         clearHover(true); motion.forget(key)
+        equipmentBounds.delete(key); framingSamples = null
         // Normalize in equipment-local space: the island and equipment groups
         // have different orientations, which would inflate world-space bounds.
         const originalSize = new THREE.Box3().setFromObject(assembly.original.clone()).getSize(new THREE.Vector3())
@@ -299,6 +368,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
         loaded.scene.scale.multiplyScalar(scale); loaded.scene.position.add(new THREE.Vector3(-center.x * scale, -bounds.min.y * scale, -center.z * scale))
         loaded.scene.traverse(object => { if (object.isMesh) { object.castShadow = true; object.receiveShadow = true } })
         wrapper.add(loaded.scene); assembly.group.add(wrapper); assembly.custom = wrapper; assembly.original.visible = false
+        motion.select(animatedIndustry)
         regions.refresh(key)
         renderer.shadowMap.needsUpdate = true
         if (mode === 'inspect' && selected === key) inspect(key)
@@ -311,6 +381,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     dispose() {
       disposed = true; if (frame) win.cancelAnimationFrame(frame)
       cancelHoverExit()
+      cancelQualityRestore()
       modelRequests.forEach(request => request.abort()); resizeObserver.disconnect(); visibilityObserver.disconnect()
       orbit.dispose(); trackball.dispose()
       canvas.removeEventListener('keydown', keydown)

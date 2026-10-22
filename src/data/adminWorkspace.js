@@ -5,7 +5,7 @@ export const adminModules = {
   industries: { label: '行业分类', group: 'content', icon: 'Grid', description: '维护行业名称、图标与排序，再将产品关联到行业；产品中心会显示有已发布产品的行业。', steps: ['维护行业', '关联产品', '配置行业展示'], related: ['products', 'product-showcase', 'home'], preview: '/solutions' },
   products: { label: '产品资料', group: 'content', icon: 'Box', description: '集中维护产品介绍、图片、所属行业和首页推荐；场景文案与热点在产品中心展示中配置。', steps: ['名称与行业', '介绍、图片与参数', '发布与首页推荐'], related: ['industries', 'product-showcase', 'solutions'], preview: '/solutions' },
   'product-showcase': { label: '产品中心展示', group: 'pages', icon: 'Box', description: '配置产品中心首屏与各行业的标题、场景图片、设备热点和优先展示产品，实时预览桌面与手机效果。', steps: ['首屏全景与产品顺序', '行业文案与场景热点', '切换预览并保存'], related: ['industries', 'products'], preview: '/solutions' },
-  projects: { label: '项目案例', group: 'content', icon: 'Collection', description: '填写项目名称、供货范围与图片，再设置发布状态和首页展示。', steps: ['项目基本资料', '供货范围与图片', '预览并发布'], related: ['home'], preview: '/projects' },
+  projects: { label: '项目案例', group: 'content', icon: 'Collection', description: '维护项目名称、供货范围与图片；官网项目模块暂隐藏，原设置和资料保留。', steps: ['项目基本资料', '供货范围与图片', '预览并发布'], related: ['home'], preview: '/projects' },
   articles: { label: '新闻资讯', group: 'content', icon: 'Document', description: '维护独立资讯页面的新闻标题、摘要、封面和正文，填写发布日期后预览并发布。', steps: ['标题与摘要', '封面与正文', '日期与发布状态'], preview: '/insights' },
   home: { label: '首页配置导航', group: 'pages', icon: 'OfficeBuilding', description: '按照官网从上到下的顺序找到配置入口，查看桌面与手机端的已保存效果。', preview: '/' },
   solutions: { label: '首页方案文案', group: 'pages', icon: 'Grid', description: '先在产品资料中选择首页推荐，再填写对应的方案标题、介绍和行业按钮。', steps: ['选择推荐产品', '填写方案文案', '预览行业按钮'], related: ['products', 'industries', 'home'], preview: '/#solutions' },

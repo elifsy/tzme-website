@@ -6,6 +6,7 @@ const props = defineProps({
   includeHeadquarters: Boolean,
   aboutOnly: Boolean,
   showMedia: Boolean,
+  collapsibleDetails: Boolean,
   configuration: { type: Object, default: null },
   localeCode: { type: String, default: '' },
 })
@@ -24,7 +25,7 @@ const cards = computed(() => {
 </script>
 
 <template>
-  <div class="subsidiary-cards" :class="{ 'subsidiary-cards-wide': includeHeadquarters, 'facility-cards': showMedia }">
+  <div class="subsidiary-cards" :class="{ 'subsidiary-cards-wide': includeHeadquarters, 'facility-cards': showMedia, 'facility-cards-collapsible': collapsibleDetails }">
     <article v-for="item in cards" :key="item.cardKey" class="subsidiary-card" :class="{ 'facility-card': showMedia }" :data-entity-id="item.cardKey">
       <el-image v-if="showMedia && item.facility?.image" class="facility-card-image" :src="item.facility.image"
         :alt="contactText(item.facility.imageAlt, displayLocale) || contactText(item.facility.title, displayLocale) || contactText(item.name, displayLocale)"
@@ -32,13 +33,14 @@ const cards = computed(() => {
       <div class="subsidiary-card-body">
         <h3>{{ (showMedia && contactText(item.facility?.title, displayLocale)) || contactText(item.name, displayLocale) }}</h3>
         <p v-if="showMedia && contactText(item.facility?.description, displayLocale)" class="facility-card-intro">{{ contactText(item.facility.description, displayLocale) }}</p>
-        <div :class="{ 'facility-card-details': showMedia }">
+        <component :is="collapsibleDetails ? 'details' : 'div'" :class="{ 'facility-card-details': showMedia, 'facility-collapsible': collapsibleDetails }">
+          <summary v-if="collapsibleDetails">查看基地联系方式 <span aria-hidden="true">＋</span></summary>
           <p v-if="showMedia && contactText(item.facility?.title, displayLocale) && contactText(item.facility.title, displayLocale) !== contactText(item.name, displayLocale)" class="facility-company-name">{{ contactText(item.name, displayLocale) }}</p>
           <p class="facility-address">{{ contactText(item.address, displayLocale) }}</p>
           <p v-if="item.phone"><span>{{ label('site.telephone') }}:</span> {{ item.phone }}</p>
           <p v-if="item.email"><span>{{ label('site.email') }}:</span> {{ item.email }}</p>
           <p v-if="item.website"><a :href="contactWebsiteUrl(item.website)" target="_blank" rel="noopener noreferrer">{{ item.website }}</a></p>
-        </div>
+        </component>
       </div>
     </article>
   </div>
@@ -63,6 +65,7 @@ const cards = computed(() => {
 .facility-card-details > p:first-child { margin-top: 0; }
 .facility-cards .facility-card .facility-company-name { color: #123a50; font-weight: 600; }
 .facility-cards .facility-card a { color: #087f91; }
+.facility-cards-collapsible .facility-card { background: transparent; border: 0; overflow: visible; }
 @media (min-width: 761px) and (max-width: 1000px) { .facility-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .facility-cards { gap: 24px; } .facility-card .subsidiary-card-body { padding: 22px; } }
 </style>

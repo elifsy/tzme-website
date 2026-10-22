@@ -7,7 +7,7 @@ const accent = new THREE.Color(0x13869b)
 // per equipment so highlighting one industry cannot tint its neighbours.
 export function createIndustrialMotion(assemblies) {
   const entries = new Map()
-  let hovered = '', previousTime = null
+  let hovered = '', selected = '', previousTime = null
 
   function entryFor(key) {
     const assembly = assemblies[key], root = assembly?.custom || assembly?.equipment
@@ -37,7 +37,7 @@ export function createIndustrialMotion(assemblies) {
       bounds = new THREE.Box3()
       root.traverse(object => {
         if (!object.isMesh) return
-        object.geometry.computeBoundingBox()
+        if (!object.geometry.boundingBox) object.geometry.computeBoundingBox()
         bounds.union(object.geometry.boundingBox.clone().applyMatrix4(inverse.clone().multiply(object.matrixWorld)))
       })
       if (!bounds.isEmpty()) {
@@ -73,13 +73,28 @@ export function createIndustrialMotion(assemblies) {
 
   return {
     hover(key = '') { hovered = assemblies[key] ? key : ''; if (hovered) entryFor(hovered); return hovered },
+    select(key = '') {
+      const next = assemblies[key] ? key : ''
+      if (selected !== next) {
+        const previous = entries.get(selected)
+        if (previous && selected !== hovered) restore(previous)
+        selected = next
+      }
+      if (selected) entryFor(selected)
+      return selected
+    },
+    clearHover() {
+      hovered = ''
+      // Camera dragging and pointer exit must not rewind the selected equipment.
+      for (const [key, entry] of entries) if (key !== selected) restore(entry)
+    },
     update(now, reduced = false) {
       const elapsed = previousTime === null ? 1 / 60 : Math.max(0, (now - previousTime) / 1000)
       const dt = Math.min(elapsed, .05)
       previousTime = now
       let running = false, changed = false
       for (const [key, entry] of entries) {
-        const active = key === hovered
+        const active = key === hovered || key === selected
         if (!active && !entry.weight) continue
         changed = true
         // Ease in real time even on a busy GPU; only mechanical travel is
@@ -115,10 +130,11 @@ export function createIndustrialMotion(assemblies) {
     },
     forget(key) {
       if (hovered === key) hovered = ''
+      if (selected === key) selected = ''
       const entry = entries.get(key)
       if (entry) { disposeEntry(entry); entries.delete(key) }
     },
-    reset() { hovered = ''; previousTime = null; entries.forEach(restore) },
-    dispose() { hovered = ''; entries.forEach(disposeEntry); entries.clear() },
+    reset() { hovered = ''; selected = ''; previousTime = null; entries.forEach(restore) },
+    dispose() { hovered = ''; selected = ''; entries.forEach(disposeEntry); entries.clear() },
   }
 }

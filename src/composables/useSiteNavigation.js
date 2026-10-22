@@ -6,7 +6,6 @@ const navigationItems = [
   { key: 'navHome', path: '/' },
   { key: 'navAbout', path: '/about' },
   { key: 'navProducts', path: '/solutions' },
-  { key: 'navProjects', path: '/projects' },
   { key: 'navNews', path: '/insights' },
   { key: 'navContact', path: '/contact' },
 ]

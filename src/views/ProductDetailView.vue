@@ -21,7 +21,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
 </script>
 
 <template>
-  <main ref="page" class="design-site product-detail"><div class="hc-page">
+  <main ref="page" class="design-site product-detail site-refined refined-product"><div class="hc-page">
     <SiteNav />
     <ProductDetailPresentation v-if="!loading && product" :key="productId" :record="product" :products="products" :industries="industries" :list-link="listLink" />
     <section v-else-if="!loading" class="hc-sec product-not-found"><el-empty :description="$t('site.productNotFound')" /><el-button type="primary" @click="goTo('/solutions')">{{ $t('site.backToProducts') }}</el-button></section>

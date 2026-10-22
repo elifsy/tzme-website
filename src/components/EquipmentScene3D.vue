@@ -1,20 +1,20 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 
 const props = defineProps({
   settings: { type: Object, required: true }, industries: { type: Array, default: () => [] },
   hotspots: { type: Array, default: () => [] }, selectedIndustry: { type: String, default: '' },
 })
 const emit = defineEmits(['ready', 'unavailable', 'select-industry', 'reset'])
-const host = ref(null), ready = ref(false), error = ref(''), anchors = ref({}), loadedModels = ref({})
-const viewport = ref({ width: 1000, height: 650 })
-const hovered = ref('')
+const host = ref(null), ready = ref(false), error = ref(''), anchors = shallowRef({}), loadedModels = ref({})
+const viewport = shallowRef({ width: 1000, height: 650 })
+const hovered = ref(''), animatedIndustry = ref('')
 const mode = ref('orbit'), selected = ref(props.industries[0]?.id || ''), overview = ref(true), transitioning = ref(false), modelMessage = ref('')
 const currentModels = computed(() => Object.keys(loadedModels.value).filter(key => loadedModels.value[key] && loadedModels.value[key] === props.settings.models?.[key]))
 const industryKey = computed(() => props.industries.map(industry => industry.id).join(','))
-const hint = computed(() => mode.value === 'inspect' ? '拖动自由旋转 · 滚轮或双指缩放' : '拖动环绕 · 点选标签切换行业')
+const hint = computed(() => (animatedIndustry.value ? '已选设备持续演示 · ' : '') + (mode.value === 'inspect' ? '拖动自由旋转 · 滚轮或双指缩放' : '拖动环绕 · 点选标签切换行业'))
 let engine, disposed = false, generation = 0
-function syncState(value) { mode.value = value.mode; selected.value = value.selected; overview.value = value.overview; transitioning.value = value.transitioning; hovered.value = value.hovered }
+function syncState(value) { mode.value = value.mode; selected.value = value.selected; overview.value = value.overview; transitioning.value = value.transitioning; hovered.value = value.hovered; animatedIndustry.value = value.animatedIndustry }
 function hoverLabel(key, event) {
   if (event.pointerType === 'touch' || (event.type === 'focus' && !event.target.matches(':focus-visible'))) return
   engine?.hover(key)
@@ -75,7 +75,7 @@ onBeforeUnmount(() => { disposed = true; generation++; engine?.dispose() })
 </script>
 
 <template>
-  <div class="industrial-viewer" :class="{ 'is-ready': ready }" :aria-busy="!ready || transitioning" :data-mode="mode" :data-overview="overview" :data-hovered-industry="hovered" :data-custom-models="currentModels.join(',')" :data-industries="industryKey">
+  <div class="industrial-viewer" :class="{ 'is-ready': ready }" :aria-busy="!ready || transitioning" :data-mode="mode" :data-overview="overview" :data-hovered-industry="hovered" :data-animated-industry="animatedIndustry" :data-custom-models="currentModels.join(',')" :data-industries="industryKey">
     <div ref="host" class="industrial-canvas-host"/>
     <div v-if="!ready" class="industrial-loading" role="status">{{ error || '正在准备装备全景…' }}</div>
     <template v-if="ready">

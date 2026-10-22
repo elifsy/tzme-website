@@ -48,16 +48,17 @@ watch(() => route.params.id, () => window.scrollTo({ top: 0, behavior: 'instant'
 </script>
 
 <template>
-  <main ref="page" class="design-site news-detail">
+  <main ref="page" class="design-site news-detail site-refined refined-article">
     <div class="hc-page">
       <SiteNav />
       <template v-if="article">
         <section id="article-overview" class="hc-sec article-intro"><div class="hc-w">
           <router-link class="news-text-link article-back" :to="listLink">← {{ $t('site.backToNews') }}</router-link>
+          <div class="refine-article-head-grid" :class="{ 'without-cover': !article.image }"><div>
           <div class="news-meta"><el-tag effect="plain">{{ field(article, 'category') }}</el-tag><time :datetime="article.date">{{ articleDate(article.date) }}</time></div>
           <h1>{{ field(article, 'title') }}</h1><p v-if="field(article, 'summary')" class="article-lead">{{ field(article, 'summary') }}</p>
+          </div><figure v-if="article.image" class="article-cover"><img :src="article.image" :alt="field(article, 'title')" decoding="async" /></figure></div>
         </div></section>
-        <div v-if="article.image" class="hc-w article-cover"><img :src="article.image" :alt="field(article, 'title')" /></div>
         <section class="hc-sec article-content-section"><div class="hc-w article-layout">
           <article>
             <div class="article-body" v-html="body.html"></div>

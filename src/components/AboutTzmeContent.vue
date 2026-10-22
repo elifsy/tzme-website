@@ -2,6 +2,7 @@
 import { aboutText } from '../data/aboutTzme.js'
 
 defineProps({
+  showStatistics: { type: Boolean, default: true },
   configuration: { type: Object, required: true },
   localeCode: { type: String, default: 'en' },
   headingTag: { type: String, default: 'h2' },
@@ -17,7 +18,7 @@ defineProps({
     </component>
     <p class="hc-p about-tzme-description catalog-intro-description">{{ aboutText(configuration.description, localeCode) }}</p>
     <p v-if="aboutText(configuration.description2, localeCode)" class="hc-p about-tzme-description catalog-intro-description">{{ aboutText(configuration.description2, localeCode) }}</p>
-    <div class="hc-band about-tzme-entries">
+    <div v-if="showStatistics" class="hc-band about-tzme-entries">
       <div v-for="(entry, index) in configuration.entries" :key="index" class="about-tzme-entry">
         <div class="hc-stat">{{ aboutText(entry.value, localeCode) }}<u v-if="aboutText(entry.suffix, localeCode)">{{ aboutText(entry.suffix, localeCode) }}</u></div>
         <div class="hc-stat-cap">{{ aboutText(entry.label, localeCode) }}</div>

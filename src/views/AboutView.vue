@@ -1,19 +1,21 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Picture, ZoomIn } from '@element-plus/icons-vue'
+import { ZoomIn } from '@element-plus/icons-vue'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
-import WorldReachMap from '../components/WorldReachMap.vue'
+import GlobalReachSection from '../components/GlobalReachSection.vue'
+import CompanyStatistics from '../components/CompanyStatistics.vue'
+import ManufacturingQuality from '../components/ManufacturingQuality.vue'
+import PdfFirstPage from '../components/PdfFirstPage.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
-import AboutTzmeContent from '../components/AboutTzmeContent.vue'
+import { useCapabilities } from '../services/capabilities.js'
 import { useAboutTzme } from '../services/aboutTzme.js'
 import { aboutText } from '../data/aboutTzme.js'
 import { useContactSettings } from '../services/contactSettings.js'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { useGlobalReach } from '../services/globalReach.js'
-import { globalReachText } from '../data/globalReach.js'
 import { trackEvent } from '../services/analytics.js'
 import ManufacturingFilm from '../components/ManufacturingFilm.vue'
 import { isPdf } from '../data/jDesign.js'
@@ -22,9 +24,9 @@ const page = ref(null)
 useDesignPage('hc-about', page)
 const { locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
+const { capabilities, loadCapabilities } = useCapabilities()
 const { aboutTzme, loadAboutTzme } = useAboutTzme()
 const { globalReach, loadGlobalReach } = useGlobalReach()
-const globalField = (name) => globalReachText(globalReach.value?.[name], locale.value)
 const { certifications, loadCertifications } = useCertificationCatalog()
 const hasCertificateImage = (item) => typeof item.image === 'string' && Boolean(item.image.trim())
 const publishedCertifications = computed(() => certifications.value.filter((item) => item.status === 'published' && hasCertificateImage(item)))
@@ -65,29 +67,29 @@ function previewCertificate(id) { const item = publishedCertifications.value.fin
 const certificationField = (item, name) => locale.value === 'zh'
   ? item[`${name}Zh`] || item[`${name}En`] || ''
   : item[`${name}En`] || ''
-onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
+onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); loadCapabilities() })
 </script>
 
 <template>
-  <main ref="page" class="design-site">
+  <main ref="page" class="design-site site-refined refined-about">
     <div class="hc-page">
 
       <SiteNav />
 
-      <section v-if="aboutTzme" class="hc-sec about-intro catalog-intro catalog-intro-about" aria-labelledby="about-page-title">
-        <el-image v-if="aboutTzme.about.image" class="catalog-intro-image"
-          :src="aboutTzme.about.image" fit="cover" :alt="aboutText(aboutTzme.about.imageAlt, locale)" :aria-hidden="!aboutText(aboutTzme.about.imageAlt, locale)">
-          <template #error><div class="catalog-intro-image-fallback"></div></template>
-        </el-image>
-        <div class="hc-w catalog-intro-foreground">
-          <div class="about-intro-copy">
-            <AboutTzmeContent :configuration="aboutTzme.about" :locale-code="locale" heading-tag="h1" heading-id="about-page-title" />
-          </div>
-        </div>
-      </section>
-
-      <section class="hc-sec j-soft"><div class="hc-w"><div class="j-culture-grid"><div><span class="hc-kick">01 / {{ locale === 'zh' ? '企业愿景' : 'VISION' }}</span><h3>{{ locale === 'zh' ? jCompany.visionZh : jCompany.visionEn }}</h3></div><div><span class="hc-kick">02 / {{ locale === 'zh' ? '我们的使命' : 'MISSION' }}</span><h3>{{ locale === 'zh' ? jCompany.missionZh : jCompany.missionEn }}</h3></div></div><p class="j-values">{{ locale === 'zh' ? '价值观 / ' + jCompany.valuesZh : 'Values / ' + jCompany.valuesEn }}</p></div></section>
-      <section class="hc-sec hc-light certifications-section" aria-labelledby="certificates-title">
+      <template v-if="aboutTzme">
+        <section class="refine-about-hero" aria-labelledby="about-page-title"><div class="hc-w refine-about-hero-grid" :class="{ 'without-photo': !aboutTzme.about.image }">
+          <div class="refine-about-copy"><span class="refine-eyebrow">{{ aboutText(aboutTzme.about.kicker, locale) }}</span><h1 id="about-page-title">{{ aboutText(aboutTzme.about.titleLine1, locale) }}<br />{{ aboutText(aboutTzme.about.titleLine2, locale) }}</h1><span class="refine-short-rule" aria-hidden="true" /><p>{{ aboutText(aboutTzme.about.description, locale).match(/^[^。！？.!?]+[。！？.!?]?/)?.[0] }}</p><a class="refine-link" href="#manufacturing-bases">走进我们的制造基地 <span aria-hidden="true">↓</span></a></div>
+          <figure v-if="aboutTzme.about.image" class="refine-about-photo"><img :src="aboutTzme.about.image" :alt="aboutText(aboutTzme.about.imageAlt, locale)" decoding="async" /><figcaption>从制造基地，到全球工程现场。</figcaption></figure>
+        </div></section>
+        <div class="hc-w"><CompanyStatistics :entries="aboutTzme.about.entries" /></div>
+        <nav class="refine-about-nav hc-w" aria-label="关于我们页面导航"><a v-if="capabilities?.enabled" href="#manufacturing-quality">制造与质量</a><a href="#manufacturing-bases">制造基地</a><a href="#certificates-title">资质认证</a><a v-if="globalReach?.enabled" href="#global-reach">全球业务</a></nav>
+        <details class="refine-about-overview hc-w"><summary>完整公司介绍 <span aria-hidden="true">＋</span></summary><p>{{ aboutText(aboutTzme.about.description, locale) }}</p><p v-if="aboutText(aboutTzme.about.description2, locale)">{{ aboutText(aboutTzme.about.description2, locale) }}</p></details>
+      </template>
+      <div v-if="capabilities?.enabled" id="manufacturing-quality" class="refine-section hc-w"><ManufacturingQuality /></div>
+      <section id="manufacturing-bases" class="refine-section refine-soft"><div class="hc-w"><header class="refine-section-head"><div><span class="refine-eyebrow">{{ $t('site.facilities') }}</span><h2>{{ $t('contactUi.facilitiesTitle') }}</h2></div><router-link class="refine-link" to="/contact">{{ $t('site.bookAFactoryVisit') }}<span aria-hidden="true">↗</span></router-link></header>
+        <SubsidiaryCards v-if="contactSettings" include-headquarters about-only show-media collapsible-details /><div class="j-about-film"><ManufacturingFilm /></div>
+      </div></section>
+      <section class="refine-section certifications-section" aria-labelledby="certificates-title">
         <div class="hc-w">
           <div class="hc-shead">
             <div class="l">
@@ -105,13 +107,11 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
             <div class="certificate-gallery" :class="{ 'certificate-gallery-paged': publishedCertifications.length > certificatePageSize }">
               <article v-for="certificate in visibleCertificates" :key="certificate.id" class="certificate-card">
                 <div class="certificate-preview">
-                  <button v-if="isPdf(certificate.image)" type="button" class="j-pdf-cover" @click="certificateDetailsId = certificate.id"><el-icon><Document /></el-icon><strong>{{ certificationField(certificate,'title') }}</strong><small>CERTIFICATE / PDF</small></button>
-                  <el-image v-else :ref="(instance) => setCertificateImageRef(certificate.id, instance)"
-                    class="certificate-preview-image" :src="certificate.image" fit="contain"
-                    :alt="certificationField(certificate, 'title')" :preview-src-list="certificatePreviewSources"
-                    :initial-index="certificatePreviewSources.indexOf(certificate.image)"
-                    preview-teleported hide-on-click-modal>
-                    <template #error><div class="certificate-image-error"><el-icon aria-hidden="true"><Picture /></el-icon><span>{{ $t('certificationUi.imageUnavailable') }}</span></div></template>
+                  <button v-if="isPdf(certificate.image)" type="button" class="certificate-document-cover j-pdf-cover" :aria-label="$t('certificationUi.previewCertificate', { title: certificationField(certificate, 'title') })" @click="previewCertificate(certificate.id)">
+                    <PdfFirstPage :source="certificate.image" :label="certificationField(certificate, 'title') + ' · 第一页'" />
+                  </button>
+                  <el-image v-else :ref="instance => setCertificateImageRef(certificate.id, instance)" class="certificate-preview-image"
+                    :src="certificate.image" :alt="certificationField(certificate, 'title')" :preview-src-list="certificatePreviewSources" :initial-index="certificatePreviewSources.indexOf(certificate.image)" preview-teleported hide-on-click-modal>
                     <template #viewer-error><div class="certificate-viewer-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
                   </el-image>
                   <el-button class="certificate-preview-button" :icon="ZoomIn"
@@ -147,43 +147,8 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
         </div>
       </section>
 
-      <section class="hc-sec j-soft">
-        <div class="hc-w">
-          <div class="hc-shead">
-            <div class="l">
-              <span class="hc-kick">{{ $t('site.facilities') }}</span>
-              <h2 class="hc-h2" style="margin-top:18px">{{ $t('contactUi.facilitiesTitle') }}</h2>
-            </div>
-            <router-link class="j-link" to="/contact">{{ $t('site.bookAFactoryVisit') }}<i>→</i></router-link>
-          </div>
-          <SubsidiaryCards v-if="contactSettings" include-headquarters about-only show-media />
-          <div class="j-about-film"><ManufacturingFilm /></div>
-        </div>
-      </section>
-
-      <section v-if="globalReach" class="hc-sec about-global" style="padding:0 0 96px" aria-labelledby="about-global-title">
-        <div class="hc-w hc-global">
-          <div>
-            <span class="hc-kick">{{ globalField('kicker') }}</span>
-            <h2 id="about-global-title" class="hc-h2" style="margin-top:18px;color:#fff">
-              {{ globalField('titleLine1') }}<template v-if="globalField('titleLine2')"><br />{{ globalField('titleLine2') }}</template></h2>
-            <p class="hc-p" style="margin-top:20px;max-width:520px">{{ globalField('description') }}</p>
-            <div class="hc-map" style="margin-top:34px">
-              <WorldReachMap v-if="globalReach.mapMode === 'points'" :points="globalReach.mapPoints"
-                :description="globalField('imageAlt')" :locale-code="locale" />
-              <el-image v-else :src="globalReach.image" :alt="globalField('imageAlt')" fit="contain" style="width:100%">
-                <template #error><div class="about-global-image-error">{{ globalField('imageAlt') }}</div></template>
-              </el-image>
-            </div>
-          </div>
-          <div class="hc-gstats">
-            <div v-for="(statistic, index) in globalReach.statistics" :key="index">
-              <div class="hc-stat">{{ statistic.value }}<u v-if="statistic.suffix">{{ statistic.suffix }}</u></div>
-              <div class="hc-stat-cap">{{ globalReachText(statistic.label, locale) }}</div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <section class="refine-values hc-w"><div><span class="refine-eyebrow">企业愿景</span><h3>{{ locale === 'zh' ? jCompany.visionZh : jCompany.visionEn }}</h3></div><div><span class="refine-eyebrow">我们的使命</span><h3>{{ locale === 'zh' ? jCompany.missionZh : jCompany.missionEn }}</h3></div><p class="refine-company-values">{{ locale === 'zh' ? '价值观 / ' + jCompany.valuesZh : 'Values / ' + jCompany.valuesEn }}</p></section>
+      <GlobalReachSection :configuration="globalReach" />
 
       <SiteFooter />
 
@@ -283,13 +248,5 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme() })
 }
 @media (prefers-reduced-motion: reduce) {
   .certificate-card { transition: none; }
-}
-.about-global .hc-global > div { min-width: 0; }
-.about-global .hc-h2, .about-global .hc-p, .about-global .hc-stat, .about-global .hc-stat-cap { overflow-wrap: anywhere; }
-.about-global .hc-p { white-space: pre-line; }
-.about-global-image-error { display: grid; place-items: center; min-height: 150px; color: #bccddb; }
-.about-intro-copy { min-width: 0; width: min(100%, 720px); }
-@media (max-width: 700px) {
-  .about-global .hc-gstats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 </style>

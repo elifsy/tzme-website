@@ -16,7 +16,7 @@ const modules = [
   { title: '企业简介', description: '编辑首页专用的企业简介、统计数字和制造基地图片。', to: '/admin/about?page=home', action: '填写简介' },
   { title: '首页方案', description: '先选择推荐产品和顺序，再维护对应的方案标题、说明与行业按钮。', to: '/admin/products?home=1', action: '选择推荐产品', second: { to: '/admin/solutions', label: '填写方案文案' } },
   { title: '制造与质量', description: '维护可切换的质量流程、工序说明和图标。', to: '/admin/capabilities', action: '编辑质量流程' },
-  { title: '项目案例', description: '在项目资料中设置首页展示，使用真实项目与供货信息。', to: '/admin/projects', action: '管理项目' },
+  { title: '项目案例（官网暂隐藏）', description: '官网首页及导航暂不展示项目，资料和原展示设置保留，可继续维护。', to: '/admin/projects', action: '管理项目' },
   { title: '资质与质量体系', description: '维护关于我们页的资质资料，首页保留品质入口。', to: '/admin/certifications', action: '维护资质' },
   { title: '全球业务', description: '编辑业务文案、地图位置和统计数据。', to: '/admin/global', action: '配置全球业务' },
   { title: '联系与咨询', description: '企业联系方式、咨询表单、附件与邮件通知分别维护。', to: '/admin/contact', action: '联系方式', second: { to: '/admin/forms', label: '表单与附件' } },

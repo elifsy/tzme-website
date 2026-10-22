@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { localizedField } from '../services/catalog.js'
 import { industryField } from '../services/industries.js'
 import { equipmentFrameStyle, knownEquipmentImage, measureEquipmentImage, resolveEquipmentLayout } from '../utils/equipmentPresentation.js'
+import EquipmentImage from './EquipmentImage.vue'
+import ManufacturingQuality from './ManufacturingQuality.vue'
+import { useCapabilities } from '../services/capabilities.js'
 import { useEquipmentDepth } from '../composables/useEquipmentDepth.js'
 
 const props = defineProps({
@@ -11,6 +14,7 @@ const props = defineProps({
   industries: { type: Array, default: () => [] }, listLink: { type: String, default: '/solutions' }, preview: Boolean,
 })
 const { locale, t } = useI18n({ useScope: 'global' })
+const { capabilities, loadCapabilities } = useCapabilities()
 const root = ref(null), imageRef = ref(null), activeChapter = ref('product-introduction'), failedImages = ref([])
 const stage = ref(null), imageMetrics = ref(null), stageSize = ref({ width: 0, height: 0, mobile: false })
 const hero = ref(null)
@@ -90,6 +94,7 @@ watch(() => props.record.id, async () => { resetDepth(); failedImages.value = []
 watch(() => [props.record.image, props.record.presentationImage], () => { failedImages.value = [] })
 watch(heroImage, source => { imageMetrics.value = knownEquipmentImage(source) }, { immediate: true })
 onMounted(() => {
+  if (!capabilities.value) loadCapabilities()
   ownerWindow = root.value.ownerDocument.defaultView
   stageObserver = new ResizeObserver(entries => {
     const rect = entries[0].contentRect
@@ -155,16 +160,16 @@ onBeforeUnmount(() => { ownerWindow?.removeEventListener('scroll', scheduleChapt
       </div>
     </section>
     <nav class="equipment-chapters" :aria-label="$t('productDetail.chapters')"><div class="hc-w"><a v-for="chapter in chapters" :key="chapter.id" :href="`#${chapter.id}`" :aria-current="activeChapter === chapter.id ? 'location' : undefined" @click="chooseChapter(chapter.id)">{{ chapter.label }}</a></div></nav>
-    <section class="equipment-information"><div class="hc-w equipment-information-grid" :class="{ 'equipment-information-single': !specifications.length }">
+    <section class="equipment-information"><div class="hc-w equipment-information-grid" :class="{ 'equipment-information-single': !specifications.length && !capabilities?.enabled }">
       <div>
         <section id="product-introduction" class="equipment-section equipment-introduction"><h2>{{ $t('productDetail.introduction') }}<span aria-hidden="true" /></h2><p v-if="field(record, 'content') || field(record, 'summary')">{{ field(record, 'content') || field(record, 'summary') }}</p></section>
         <section v-if="features.length" id="product-features" class="equipment-section equipment-features"><h2>{{ $t('productDetail.features') }}<span aria-hidden="true" /></h2><ol><li v-for="(feature, index) in features" :key="index"><span class="equipment-feature-number" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span><span>{{ feature }}</span></li></ol></section>
       </div>
-      <section v-if="specifications.length" id="product-specifications" class="equipment-section equipment-specifications product-detail-specs"><h2>{{ $t('productDetail.specifications') }}<span aria-hidden="true" /></h2><dl><div v-for="(spec, index) in specifications" :key="index" :class="{ 'equipment-specification-note': !spec.label }"><dt v-if="spec.label">{{ spec.label }}</dt><dd>{{ spec.value }}</dd></div></dl></section>
+      <div v-if="specifications.length || capabilities?.enabled" class="equipment-information-aside"><section v-if="specifications.length" id="product-specifications" class="equipment-section equipment-specifications product-detail-specs"><h2>{{ $t('productDetail.specifications') }}<span aria-hidden="true" /></h2><dl><div v-for="(spec, index) in specifications" :key="index" :class="{ 'equipment-specification-note': !spec.label }"><dt v-if="spec.label">{{ spec.label }}</dt><dd>{{ spec.value }}</dd></div></dl></section><ManufacturingQuality compact /></div>
     </div></section>
     <section v-if="related.length" id="product-related" class="equipment-section equipment-related"><div class="hc-w">
       <div class="equipment-related-heading"><h2>{{ $t('productDetail.related') }}<span aria-hidden="true" /></h2><router-link :to="listLink">{{ $t('productDetail.allProducts') }}<span aria-hidden="true">→</span></router-link></div>
-      <div class="equipment-related-grid"><router-link v-for="item in related" :key="item.id" :to="relatedLink(item)" class="equipment-related-card"><div class="equipment-related-image"><img v-if="item.image || item.presentationImage" :src="item.image || item.presentationImage" :alt="field(item, 'title')" loading="lazy" /></div><div class="equipment-related-copy"><p>{{ field(item, 'category') }}</p><h3>{{ field(item, 'title') }}</h3><p>{{ field(item, 'summary') }}</p><span class="equipment-related-arrow" aria-hidden="true">↗</span></div></router-link></div>
+      <div class="equipment-related-grid"><router-link v-for="item in related" :key="item.id" :to="relatedLink(item)" class="equipment-related-card"><EquipmentImage class="equipment-related-image" :record="item" :alt="field(item, 'title')" /><div class="equipment-related-copy"><p>{{ field(item, 'category') }}</p><h3>{{ field(item, 'title') }}</h3><p>{{ field(item, 'summary') }}</p><span class="equipment-related-arrow" aria-hidden="true">↗</span></div></router-link></div>
     </div></section>
   </div>
 </template>

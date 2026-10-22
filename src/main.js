@@ -29,6 +29,7 @@ import "./style/catalog-intro.css";
 import "./style/design-j.css";
 import "./style/site-layout.css";
 import "./style/product-detail.css";
+import "./style/site-refinement.css";
 import { i18n } from "./i18n/index.js";
 import { installAnalytics } from "./services/analytics.js";
 
