@@ -1,0 +1,62 @@
+{
+  "/assets/tzme-j/certificates/aisc.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/aisc-cbec1c5e14252758.webp",
+    "width": 557,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/asme.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/asme-c46ac097097bd82e.webp",
+    "width": 557,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/corrosion.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/corrosion-97a59e031ba13261.webp",
+    "width": 510,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/crane-license.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/crane-license-52fc34b3829d504e.webp",
+    "width": 508,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/cwb.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/cwb-fdf527c319fab5c6.webp",
+    "width": 720,
+    "height": 557
+  },
+  "/assets/tzme-j/certificates/en-1090-1.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/en-1090-1-df9ac69b30e9c2ee.webp",
+    "width": 510,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/en-1090-2.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/en-1090-2-149eb2d5c4763c8a.webp",
+    "width": 510,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/iso-14001.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/iso-14001-160ee06bc487122d.webp",
+    "width": 509,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/iso-3834.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/iso-3834-561c154f738d3f49.webp",
+    "width": 510,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/iso-45001.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/iso-45001-2c22e4752dc6c99b.webp",
+    "width": 509,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/iso-9001.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/iso-9001-9f57ab17335b62c1.webp",
+    "width": 509,
+    "height": 720
+  },
+  "/assets/tzme-j/certificates/pressure-license.pdf": {
+    "image": "/assets/tzme-j/certificates/previews/pressure-license-05661998b866bfcd.webp",
+    "width": 508,
+    "height": 720
+  }
+}

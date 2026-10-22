@@ -9,6 +9,7 @@ import GlobalReachSection from '../components/GlobalReachSection.vue'
 import CompanyStatistics from '../components/CompanyStatistics.vue'
 import ManufacturingQuality from '../components/ManufacturingQuality.vue'
 import PdfFirstPage from '../components/PdfFirstPage.vue'
+import CertificateDetailsDialog from '../components/CertificateDetailsDialog.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
 import { useCapabilities } from '../services/capabilities.js'
 import { useAboutTzme } from '../services/aboutTzme.js'
@@ -30,16 +31,21 @@ const { globalReach, loadGlobalReach } = useGlobalReach()
 const { certifications, loadCertifications } = useCertificationCatalog()
 const hasCertificateImage = (item) => typeof item.image === 'string' && Boolean(item.image.trim())
 const publishedCertifications = computed(() => certifications.value.filter((item) => item.status === 'published' && hasCertificateImage(item)))
-const certificateMedia = window.matchMedia('(max-width: 1100px)')
-const compactCertificates = ref(certificateMedia.matches)
+const certificateLayouts = [
+  { media: window.matchMedia('(min-width: 1280px)'), columns: 6 },
+  { media: window.matchMedia('(min-width: 1000px)'), columns: 4 },
+  { media: window.matchMedia('(min-width: 600px)'), columns: 3 },
+]
+const resolveCertificateColumns = () => certificateLayouts.find(layout => layout.media.matches)?.columns || 2
+const certificateColumns = ref(resolveCertificateColumns())
 const certificatePage = ref(1)
-const certificatePageSize = computed(() => compactCertificates.value ? 4 : 8)
+const certificatePageSize = computed(() => certificateColumns.value * 2)
 const certificatePageStart = computed(() => (certificatePage.value - 1) * certificatePageSize.value)
 const certificatePageEnd = computed(() => Math.min(certificatePageStart.value + certificatePageSize.value, publishedCertifications.value.length))
 const visibleCertificates = computed(() => publishedCertifications.value.slice(certificatePageStart.value, certificatePageEnd.value))
-const updateCertificateLayout = (event) => { compactCertificates.value = event.matches }
-onMounted(() => certificateMedia.addEventListener('change', updateCertificateLayout))
-onUnmounted(() => certificateMedia.removeEventListener('change', updateCertificateLayout))
+const updateCertificateLayout = () => { certificateColumns.value = resolveCertificateColumns() }
+onMounted(() => certificateLayouts.forEach(layout => layout.media.addEventListener('change', updateCertificateLayout)))
+onUnmounted(() => certificateLayouts.forEach(layout => layout.media.removeEventListener('change', updateCertificateLayout)))
 watch([() => publishedCertifications.value.length, certificatePageSize], () => {
   const maxPage = Math.max(1, Math.ceil(publishedCertifications.value.length / certificatePageSize.value))
   certificatePage.value = Math.min(certificatePage.value, maxPage)
@@ -51,7 +57,6 @@ async function changeCertificatePage(value) {
   document.getElementById('certificates-title')?.focus({ preventScroll: true })
 }
 const certificateDetailsId = ref('')
-const certificateDetailsImage = ref(null)
 const certificateDetails = computed(() => publishedCertifications.value.find((item) => item.id === certificateDetailsId.value))
 const certificateDetailsOpen = computed({
   get: () => Boolean(certificateDetails.value),
@@ -104,7 +109,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
               <span>{{ $t('certificationUi.count', { count: publishedCertifications.length }) }}</span>
               <p><el-icon aria-hidden="true"><ZoomIn /></el-icon>{{ $t('certificationUi.previewHint') }}</p>
             </div>
-            <div class="certificate-gallery" :class="{ 'certificate-gallery-paged': publishedCertifications.length > certificatePageSize }">
+            <div class="certificate-gallery" :class="{ 'certificate-gallery-paged': publishedCertifications.length > certificatePageSize }" :style="{ '--certificate-columns': certificateColumns }">
               <article v-for="certificate in visibleCertificates" :key="certificate.id" class="certificate-card">
                 <div class="certificate-preview">
                   <button v-if="isPdf(certificate.image)" type="button" class="certificate-document-cover j-pdf-cover" :aria-label="$t('certificationUi.previewCertificate', { title: certificationField(certificate, 'title') })" @click="previewCertificate(certificate.id)">
@@ -114,9 +119,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
                     :src="certificate.image" :alt="certificationField(certificate, 'title')" :preview-src-list="certificatePreviewSources" :initial-index="certificatePreviewSources.indexOf(certificate.image)" preview-teleported hide-on-click-modal>
                     <template #viewer-error><div class="certificate-viewer-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
                   </el-image>
-                  <el-button class="certificate-preview-button" :icon="ZoomIn"
-                    :aria-label="$t('certificationUi.previewCertificate', { title: certificationField(certificate, 'title') })"
-                    @click.stop="previewCertificate(certificate.id)">{{ $t('certificationUi.viewImage') }}</el-button>
                 </div>
                 <div class="certificate-card-body">
                   <h3>{{ certificationField(certificate, 'title') }}</h3>
@@ -154,31 +156,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
 
     </div>
 
-    <el-dialog v-model="certificateDetailsOpen" class="certificate-details-dialog" append-to-body
-      :title="$t('certificationUi.detailsTitle')" width="min(680px, calc(100vw - 32px))">
-      <div v-if="certificateDetails" class="certificate-details-content">
-        <h3>{{ certificationField(certificateDetails, 'title') }}</h3>
-        <p v-if="certificationField(certificateDetails, 'summary')" class="certificate-details-summary">{{ certificationField(certificateDetails, 'summary') }}</p>
-        <dl class="certificate-details-meta">
-          <div v-if="certificationField(certificateDetails, 'issuer')"><dt>{{ $t('certificationUi.issuer') }}</dt><dd>{{ certificationField(certificateDetails, 'issuer') }}</dd></div>
-          <div v-if="certificateDetails.certificateNo"><dt>{{ $t('certificationUi.number') }}</dt><dd>{{ certificateDetails.certificateNo }}</dd></div>
-          <div v-if="certificateDetails.issuedAt"><dt>{{ $t('certificationUi.issuedAt') }}</dt><dd>{{ certificateDetails.issuedAt }}</dd></div>
-          <div v-if="certificateDetails.expiresAt"><dt>{{ $t('site.certValidThrough') }}</dt><dd>{{ certificateDetails.expiresAt }}</dd></div>
-        </dl>
-        <template v-if="isPdf(certificateDetails.image)"><a class="j-link" :href="certificateDetails.image" target="_blank" rel="noopener">{{ locale === 'zh' ? '新窗口查看原件' : 'Open original document' }} ↗</a><iframe class="j-certificate-pdf" :src="certificateDetails.image" :title="certificationField(certificateDetails,'title')" /></template>
-        <el-image v-else-if="hasCertificateImage(certificateDetails)" ref="certificateDetailsImage" class="certificate-details-image"
-          :src="certificateDetails.image" :alt="certificationField(certificateDetails, 'title')" fit="contain"
-          :preview-src-list="certificatePreviewSources"
-          :initial-index="certificatePreviewSources.indexOf(certificateDetails.image)"
-          preview-teleported hide-on-click-modal>
-          <template #error><div class="certificate-image-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
-          <template #viewer-error><div class="certificate-viewer-error">{{ $t('certificationUi.imageUnavailable') }}</div></template>
-        </el-image>
-        <el-button v-if="hasCertificateImage(certificateDetails) && !isPdf(certificateDetails.image)" class="certificate-details-image-button" text :icon="ZoomIn"
-          :aria-label="$t('certificationUi.previewCertificate', { title: certificationField(certificateDetails, 'title') })"
-          @click.stop="certificateDetailsImage?.showPreview()">{{ $t('certificationUi.viewImage') }}</el-button>
-      </div>
-    </el-dialog>
+    <CertificateDetailsDialog v-model="certificateDetailsOpen" :certificate="certificateDetails" :certificates="publishedCertifications" @select="certificateDetailsId = $event" />
 
   </main>
 </template>
@@ -198,9 +176,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
 .certificate-preview { position: relative; flex-shrink: 0; height: 164px; overflow: hidden; border-bottom: 1px solid #d9e3eb; background: #e9eef3; }
 .certificate-preview-image.el-image { display: block; width: 100%; height: 100%; cursor: zoom-in; }
 .certificate-preview-image :deep(.el-image__inner) { padding: 14px 18px; box-sizing: border-box; }
-.certificate-preview-button.el-button { position: absolute; right: 10px; bottom: 10px; height: 36px; margin: 0; padding: 0 10px; border: 1px solid #bacddb; border-radius: 4px; background: #fff; color: #075cac; font-size: 12px; box-shadow: 0 2px 6px rgb(15 44 66 / 8%); }
-.certificate-preview-button.el-button:hover { color: #fff; border-color: #075cac; background: #075cac; }
-.certificate-preview-button.el-button:focus-visible { outline: 3px solid #075cac; outline-offset: 2px; }
 .certificate-card-body { display: flex; flex: 1; flex-direction: column; min-width: 0; min-height: 0; padding: 14px 16px 8px; }
 .certificate-card h3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-width: 0; color: #15354d; font-family: var(--f-ui); font-size: 17px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
 .certificate-card-body p { color: #435b70; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
@@ -210,8 +185,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
 .certificate-details-button.el-button { flex-shrink: 0; height: 40px; margin: 0; padding: 0 4px; color: #075cac; font-size: 13px; }
 .certificate-details-button :deep(> span) { gap: 6px; }
 .certificate-details-button.el-button:focus-visible { outline: 2px solid #075cac; outline-offset: 2px; }
-.certificate-image-error { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; height: 100%; padding: 6px; color: #435b70; font-size: 11px; line-height: 1.5; text-align: center; }
-.certificate-image-error .el-icon { font-size: 20px; }
 .certificate-viewer-error { padding: 20px; color: #fff; font-size: 14px; }
 .certificate-pagination-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 12px; min-height: 44px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #cbd8e2; }
 .certificate-pagination-row > p { color: #435b70; font-size: 12px; line-height: 1.6; }
@@ -219,16 +192,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
 .certificate-pagination :deep(button), .certificate-pagination :deep(.el-pager li) { min-width: 36px; height: 40px; border: 1px solid #b5c8d8; border-radius: 4px; font-size: 13px; margin: 0 2px; }
 .certificate-pagination :deep(.el-pager li.is-active) { color: #fff; background: #075cac; border-color: #075cac; }
 .certificate-pagination :deep(button:focus-visible), .certificate-pagination :deep(.el-pager li:focus-visible) { outline: 2px solid #075cac; outline-offset: 2px; }
-.certificate-details-content { max-height: min(65vh, 600px); overflow-y: auto; padding: 4px 6px; color: #203548; overscroll-behavior: contain; }
-.certificate-details-content h3 { color: #15354d; font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
-.certificate-details-summary { margin-top: 14px; color: #435b70; font-size: 14px; line-height: 1.85; white-space: pre-line; overflow-wrap: anywhere; }
-.certificate-details-meta { margin: 18px 0; }
-.certificate-details-meta > div { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 16px; padding: 10px 0; border-bottom: 1px solid #dce5ed; font-size: 13px; line-height: 1.7; }
-.certificate-details-meta dt { color: #536b7e; }
-.certificate-details-meta dd { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
-.certificate-details-image.el-image { display: block; width: 100%; height: 260px; background: #f4f7fa; cursor: zoom-in; }
-.certificate-details-image-button.el-button { height: 44px; margin-top: 8px; color: #075cac; }
-.certificate-details-image-button.el-button:focus-visible { outline: 2px solid #075cac; outline-offset: 2px; }
 @media (max-width: 1100px) {
   .certificate-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -239,7 +202,6 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
   .certificate-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); height: 192px; }
   .certificate-preview { height: 100%; border-right: 1px solid #d9e3eb; border-bottom: 0; }
   .certificate-preview-image :deep(.el-image__inner) { padding: 10px; }
-  .certificate-preview-button.el-button { right: 6px; bottom: 8px; left: 6px; height: 40px; padding: 0 4px; font-size: 11px; }
   .certificate-card-body { padding: 14px 12px 8px; }
   .certificate-card h3 { font-size: 16px; }
   .certificate-card-body .certificate-summary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: pre-line; }
