@@ -57,7 +57,9 @@
 .equipment-detail-hero .equipment-endnote{display:none}
 
 /* A: a large near-side view, a grounded footprint and text in the quiet left side. */
-.equipment-layout-vertical .equipment-hero-grid{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);grid-template-areas:"heading stage" "summary stage" "action stage";grid-template-rows:1fr auto 1fr;min-height:605px;column-gap:46px}
+.equipment-layout-vertical .equipment-hero-grid{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);grid-template-areas:"heading stage" "summary stage" "action stage";grid-template-rows:1fr auto 1fr;min-height:605px;max-width:1200px;margin-inline:auto;column-gap:36px}
+/* Tall silhouettes need a narrower pair of columns to avoid empty space beside the image. */
+.equipment-layout-vertical.equipment-shape-tall .equipment-hero-grid{max-width:1040px}
 
 .equipment-layout-vertical .equipment-hero-summary{max-width:350px;padding:21px 0 28px}
 .equipment-layout-vertical .equipment-hero-copy h1{max-width:390px}
@@ -72,7 +74,7 @@
 /* B: the compact machine rests on a seamless lit floor, with its introduction alongside. */
 .equipment-layout-exhibit{background:radial-gradient(ellipse at 22% 24%,#fff,#f3fafe 60%,#e9f3f8)}
 
-.equipment-layout-exhibit .equipment-hero-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-areas:"stage heading" "stage summary" "stage action";grid-template-rows:1fr auto 1fr;column-gap:85px;min-height:605px;padding-top:0}
+.equipment-layout-exhibit .equipment-hero-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-areas:"stage heading" "stage summary" "stage action";grid-template-rows:1fr auto 1fr;column-gap:40px;min-height:605px;max-width:1120px;margin-inline:auto;padding-top:0}
 
 .equipment-layout-exhibit .equipment-stage{height:auto;min-height:605px;margin:0 0 0 -15px}
 .equipment-layout-exhibit .equipment-hero-copy{align-self:end;padding-top:32px}

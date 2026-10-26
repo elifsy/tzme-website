@@ -12,9 +12,9 @@ const artworkUnavailable = ref(false)
     <div class="hc-w news-intro-inner">
       <div class="news-intro-copy">
         <span class="news-intro-kicker">NEWS &amp; INSIGHTS</span>
-        <h1 id="news-page-title" class="news-intro-title">{{ $t('site.newsAndInsights') }}</h1>
+        <h1 id="news-page-title" class="news-intro-title site-page-title">{{ $t('site.newsAndInsights') }}</h1>
         <span class="news-intro-rule" aria-hidden="true"/>
-        <p class="news-intro-description">记录制造现场，传递企业动态。</p>
+        <p class="news-intro-description site-intro-description">记录制造现场，传递企业动态。</p>
         <router-link class="news-text-link news-intro-link" to="/contact">{{ $t('site.subscribeToUpdates') }}<span aria-hidden="true">↗</span></router-link>
       </div>
     </div>
@@ -26,10 +26,10 @@ const artworkUnavailable = ref(false)
 .news-intro-art { position: absolute; inset: 0; z-index: -1; pointer-events: none; user-select: none; }
 .news-intro-art img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 51%; }
 .news-intro-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #eff7fa 0%, #eff7fa 24%, rgba(239,247,250,.96) 34%, rgba(239,247,250,.7) 43%, rgba(239,247,250,.15) 58%, rgba(239,247,250,0) 68%); }
-.news-intro-inner { display: flex; align-items: center; min-height: 430px; }
-.news-intro-copy { width: 42%; padding: 45px 0 52px; }
-.news-intro-kicker { color: #617f8e; font-size: 11px; letter-spacing: 2px; }
-.news-intro-title { margin: 17px 0 0; color: #123a50; font: 700 clamp(42px,3.8vw,62px)/1.25 var(--f-ui); letter-spacing: -1px; overflow-wrap: anywhere; }
+.news-intro-inner { display: flex; align-items: flex-start; min-height: 430px; }
+.news-intro-copy { width: 42%; padding: var(--site-hero-copy-top, 64px) 0 52px; }
+.news-intro-kicker { display: block; color: #617f8e; font-size: 11px; line-height: var(--site-hero-kicker-line-height, 20px); letter-spacing: 2px; }
+.news-intro-title { margin: var(--site-hero-title-gap, 12px) 0 0; color: #123a50; font: 700 clamp(42px,3.8vw,62px)/1.25 var(--f-ui); letter-spacing: -1px; overflow-wrap: anywhere; }
 .news-intro-rule { display: block; width: 45px; height: 3px; margin: 26px 0; background: #087f91; }
 .news-intro-description { margin: 0; color: #466a7a; font-size: 17px; line-height: 1.9; }
 .news-intro-ocean .news-intro-link { display: inline-flex; align-items: center; gap: 20px; min-height: 36px; margin-top: 15px; color: #087f91; font-size: 13px; font-weight: 600; text-decoration: none; }
@@ -44,9 +44,9 @@ const artworkUnavailable = ref(false)
 }
 @media (max-width: 700px) {
   .news-intro-inner { min-height: 0; }
-  .news-intro-copy { width: 100%; padding: var(--site-mobile-intro-space, 24px) 0 143px; }
-  .news-intro-kicker { font-size: 9px; letter-spacing: 1.5px; }
-  .news-intro-title { margin-top: 10px; font-size: 34px; line-height: 1.25; letter-spacing: -.6px; }
+  .news-intro-copy { width: 100%; padding: var(--site-hero-copy-top, 24px) 0 143px; }
+  .news-intro-kicker { font-size: 10px; letter-spacing: 1.5px; }
+  .news-intro-title { font-size: 34px; line-height: 1.25; letter-spacing: -.6px; }
   .news-intro-rule { width: 34px; height: 2px; margin: 13px 0 14px; }
   .news-intro-description { font-size: 13px; line-height: 1.8; }
   .news-intro-ocean .news-intro-link { min-height: 36px; margin-top: 4px; font-size: 11px; gap: 17px; }

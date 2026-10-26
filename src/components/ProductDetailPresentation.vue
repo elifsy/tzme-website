@@ -132,11 +132,11 @@ onBeforeUnmount(() => { ownerWindow?.removeEventListener('scroll', scheduleChapt
         </nav>
         <div class="equipment-hero-grid">
           <div class="equipment-hero-copy">
-            <p v-if="primaryCategory" class="equipment-category">{{ primaryCategory }}</p><h1>{{ title }}</h1>
+            <p v-if="primaryCategory" class="equipment-category">{{ primaryCategory }}</p><h1 class="site-page-title">{{ title }}</h1>
             <span class="equipment-title-rule" aria-hidden="true" />
           </div>
           <div class="equipment-hero-summary">
-            <p v-if="field(record, 'summary')" class="equipment-summary">{{ field(record, 'summary') }}</p>
+            <p v-if="field(record, 'summary')" class="equipment-summary site-intro-description">{{ field(record, 'summary') }}</p>
             <router-link class="equipment-inquiry-button equipment-inline-inquiry" to="/contact">{{ $t('productDetail.inquire') }}<span aria-hidden="true">→</span></router-link>
           </div>
           <figure ref="stage" class="equipment-stage" :class="{ 'equipment-stage-cutout': hasPresentationImage }">

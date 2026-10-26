@@ -119,17 +119,16 @@ onBeforeUnmount(() => { observer?.disconnect(); stopObserving?.(); buttons.clear
 .home-capabilities.capabilities-interactive .capability-steps > li { display: block; padding: 0; border: 0; }
 .capability-select-hint { display: flex; align-items: center; gap: 9px; margin: 26px 0 0; color: #6c8795; font-size: 12px; line-height: 1.8; }
 .capability-select-hint > span { color: #087f91; font-size: 18px; }
-.capability-step-button { position: relative; display: flex; flex-direction: column; align-items: flex-start; width: 100%; min-width: 0; height: 100%; padding: 20px 0 16px; border: 0; border-top: 1px solid #bfd7dd; background: transparent; color: #526c79; text-align: left; font: inherit; cursor: pointer; transition: background-color .22s, color .22s; }
+.capability-step-button { position: relative; display: grid; grid-template-columns: 26px 24px minmax(0, 1fr) 8px; align-items: center; gap: 10px; width: 100%; min-width: 0; min-height: 64px; height: 100%; padding: 18px 0; border: 0; border-top: 1px solid #bfd7dd; background: transparent; color: #526c79; text-align: left; font: inherit; cursor: pointer; transition: background-color .22s, color .22s; }
 .capability-step-button::before { position: absolute; content: ''; top: -1px; left: 0; width: 100%; height: 3px; background: #087f91; transform: scaleX(0); transform-origin: left; transition: transform .28s ease; }
 .capability-step-button.is-selected { background: linear-gradient(180deg, #ffffff88, #ffffff00); color: #087f91; }
 .capability-step-button.is-selected::before { transform: scaleX(1); }
 .capability-step-button:focus-visible { outline: 2px solid #087f91; outline-offset: 5px; }
-.home-capabilities .capability-step-button .capability-step-number { margin: 0 0 18px; color: inherit; font-variant-numeric: tabular-nums; }
-.home-capabilities .capability-step-button .capability-step-icon { align-items: center; justify-content: flex-start; border: 0; background: transparent; color: inherit; transition: transform .22s ease; }
+.home-capabilities .capability-step-button .capability-step-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 24px; padding-top: 2px; margin: 0; color: inherit; font-size: 22px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.home-capabilities .capability-step-button .capability-step-icon { width: 24px; height: 24px; align-items: center; justify-content: center; border: 0; background: transparent; color: inherit; transition: transform .22s ease; }
 .capability-step-button :deep(.capability-icon) { color: inherit; }
-.capability-step-button.is-selected .capability-step-icon { transform: translateY(-3px); }
-.home-capabilities .capability-step-button .capability-step-label { margin-top: 5px; color: #123a50; }
-.capability-step-state { position: absolute; top: 18px; right: 8px; color: #087f91; opacity: 0; transform: translateY(-4px); transition: opacity .22s, transform .22s; }
+.home-capabilities .capability-step-button .capability-step-label { min-width: 0; width: auto; height: 24px; margin: 0; color: #123a50; line-height: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.capability-step-state { display: grid; place-items: center; width: 8px; height: 24px; color: #087f91; line-height: 24px; opacity: 0; transform: translateY(-4px); transition: opacity .22s, transform .22s; }
 .is-selected .capability-step-state { opacity: 1; transform: translateY(0); }
 .capability-detail { margin-top: 24px; padding: 26px 30px; border: 1px solid #d4e4e8; border-left: 3px solid #087f91; background: #fff; }
 .capability-detail:focus-visible { outline: 2px solid #087f91; outline-offset: 4px; }
@@ -155,17 +154,29 @@ onBeforeUnmount(() => { observer?.disconnect(); stopObserving?.(); buttons.clear
 .capabilities-preview .capability-detail-inner { grid-template-columns: 1fr; gap: 18px; }
 .capabilities-preview .capability-detail-description { font-size: 13px; }
 .capabilities-preview .capability-quality-link { grid-column: auto; justify-self: start; }
+@media (min-width: 1201px) and (max-width: 1350px) {
+  .capability-step-button { gap: 6px; }
+}
+@media (min-width: 701px) and (max-width: 1200px) {
+  .home-capabilities.capabilities-interactive .capability-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width: 1100px) {
   .capability-detail-inner { grid-template-columns: 200px minmax(0, 1fr); gap: 18px 24px; }
   .capability-quality-link { grid-column: 2; justify-self: start; }
 }
 @media (max-width: 700px) {
+  .capability-step-button { grid-template-columns: 26px 22px minmax(0, 1fr) 6px; gap: 3px; }
+  .capability-step-state { width: 6px; }
+  .home-capabilities .capability-step-button .capability-step-icon { width: 22px; height: 22px; }
   .capability-select-hint { font-size: 11px; }
   .capability-detail { padding: 22px 20px; }
   .capability-detail-inner { grid-template-columns: 1fr; gap: 20px; min-height: 230px; }
   .capability-quality-link { grid-column: auto; justify-self: start; }
   .capability-detail-heading h3 { font-size: 20px; }
   .capability-detail-description { font-size: 13px; }
+}
+@media (max-width: 350px) {
+  .home-capabilities.capabilities-interactive .capability-steps { column-gap: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .capability-step-button, .capability-step-button::before, .capability-step-icon, .capability-step-state, .capability-quality-link > span, .process-detail-enter-active, .process-detail-leave-active { transition: none !important; animation: none !important; }

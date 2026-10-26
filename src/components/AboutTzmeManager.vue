@@ -11,6 +11,7 @@ import { useAdminEditorState } from '../composables/useAdminEditorState.js'
 
 import ImageUpload from './ImageUpload.vue'
 import AboutTzmeContent from './AboutTzmeContent.vue'
+import AboutCompanyIntro from './AboutCompanyIntro.vue'
 import { editorLocales as availableLocales } from '../i18n/locales/index.js'
 import { ABOUT_ENTRY_COUNT, aboutSettingsDraft, aboutText, validAboutImage } from '../data/aboutTzme.js'
 import { loadAboutTzme, saveAboutTzme } from '../services/aboutTzme.js'
@@ -148,7 +149,7 @@ defineExpose({ load })
           <aside class="about-settings-preview">
             <AdminPreviewFrame :title="editingPage === 'home' ? '首页企业简介预览' : '关于我们预览'" :public-path="editingPage === 'home' ? '/' : '/about'">
               <section v-if="editingPage === 'home'" class="hc-sec j-manufacturing"><div class="hc-w j-split"><div><AboutTzmeContent :configuration="section" :locale-code="editingLocale"/><a class="j-link" href="/about">走进重钢机械<span>→</span></a></div><figure><div class="j-factory-photo"><img v-if="section.image" :src="section.image" :alt="aboutText(section.imageAlt, editingLocale)"/></div><figcaption>TIANJIN / FABRICATION · QUALITY · DELIVERY</figcaption></figure></div></section>
-              <section v-else class="hc-sec about-intro catalog-intro catalog-intro-about"><el-image v-if="section.image" class="catalog-intro-image" :src="section.image" :alt="aboutText(section.imageAlt, editingLocale)" fit="cover"/><div class="hc-w catalog-intro-foreground"><div class="about-intro-copy"><AboutTzmeContent :configuration="section" :locale-code="editingLocale" heading-tag="h1"/></div></div></section>
+              <AboutCompanyIntro v-else :configuration="section" :locale-code="editingLocale" />
             </AdminPreviewFrame>
           </aside>
         </div>

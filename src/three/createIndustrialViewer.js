@@ -24,7 +24,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   renderer.shadowMap.autoUpdate = false
   renderer.shadowMap.needsUpdate = true
   const canvas = renderer.domElement
-  canvas.tabIndex = 0; canvas.setAttribute('aria-label', '行业装备全景：拖动环绕，滚轮或双指缩放；设备特写支持自由旋转，Esc 复位。')
+  canvas.tabIndex = 0; canvas.setAttribute('aria-label', '行业装备全景：拖动环绕，使用按钮或双指缩放，滚轮滚动网页；设备特写支持自由旋转，Esc 复位。')
   canvas.dataset.renderer = 'webgl2'
   canvas.dataset.layout = 'industrial-island'
   host.append(canvas)
@@ -207,11 +207,17 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     transition(center.clone().add(new THREE.Vector3(distance * .55, distance * .25, distance * .85)).toArray(), center.toArray(), 600); notify()
   }
   function zoom(factor) {
+    if (disposed || !Number.isFinite(factor) || factor <= 0) return
     clearHover(true)
     tween = null; isOverview = false
     const control = activeControls(), offset = camera.position.clone().sub(control.target)
     offset.setLength(THREE.MathUtils.clamp(offset.length() * factor, control.minDistance, control.maxDistance))
-    camera.position.copy(control.target).add(offset); control.update(); invalidate()
+    camera.position.copy(control.target).add(offset); control.update(); notify(); invalidate()
+  }
+  function pageScrollWheel(event) {
+    // Skip both controls' wheel handlers without cancelling the browser's scroll.
+    // Pointer/touch handlers stay connected so rotation and pinch zoom still work.
+    event.stopImmediatePropagation()
   }
   function keydown(event) {
     if (event.target !== canvas) return
@@ -223,7 +229,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
       const rotation = new THREE.Quaternion().setFromAxisAngle(event.code.includes('Left') || event.code.includes('Right') ? Y_AXIS : new THREE.Vector3().crossVectors(offset, camera.up).normalize(), event.code.includes('Left') || event.code.includes('Up') ? .12 : -.12)
       camera.position.copy(control.target).add(offset.applyQuaternion(rotation)); camera.lookAt(control.target); control.update(); invalidate()
     } else if (event.code === 'Equal' || event.code === 'NumpadAdd') { event.preventDefault(); zoom(.85) }
-    else if (event.code === 'Minus' || event.code === 'NumpadSubtract') { event.preventDefault(); zoom(1.15) }
+    else if (event.code === 'Minus' || event.code === 'NumpadSubtract') { event.preventDefault(); zoom(1 / .85) }
   }
   const Y_AXIS = new THREE.Vector3(0, 1, 0)
   function pointerdown(event) {
@@ -323,6 +329,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   const visibilityObserver = new win.IntersectionObserver(entries => { inView = entries.some(entry => entry.isIntersecting); quality.pause(); if (inView) invalidate(); else clearHover(true) }, { threshold: .01 })
   visibilityObserver.observe(host)
   canvas.addEventListener('keydown', keydown)
+  canvas.addEventListener('wheel', pageScrollWheel, { capture: true, passive: true })
   canvas.addEventListener('pointerdown', pointerdown); canvas.addEventListener('pointermove', pointermove); canvas.addEventListener('pointerup', pointerup)
   canvas.addEventListener('pointerleave', pointerleave); canvas.addEventListener('pointercancel', pointercancel)
   canvas.addEventListener('webglcontextlost', contextLost); doc.addEventListener('visibilitychange', visibility)
@@ -377,7 +384,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     }
   }
   return {
-    canvas, reset, focus, inspect, hover, state, replaceModels,
+    canvas, reset, focus, inspect, hover, zoom, state, replaceModels,
     dispose() {
       disposed = true; if (frame) win.cancelAnimationFrame(frame)
       cancelHoverExit()
@@ -385,6 +392,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
       modelRequests.forEach(request => request.abort()); resizeObserver.disconnect(); visibilityObserver.disconnect()
       orbit.dispose(); trackball.dispose()
       canvas.removeEventListener('keydown', keydown)
+      canvas.removeEventListener('wheel', pageScrollWheel, { capture: true })
       canvas.removeEventListener('pointerdown', pointerdown); canvas.removeEventListener('pointermove', pointermove); canvas.removeEventListener('pointerup', pointerup)
       canvas.removeEventListener('pointerleave', pointerleave); canvas.removeEventListener('pointercancel', pointercancel)
       canvas.removeEventListener('webglcontextlost', contextLost); doc.removeEventListener('visibilitychange', visibility)

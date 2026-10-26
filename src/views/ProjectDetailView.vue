@@ -91,12 +91,12 @@ watch(() => route.params.id, async () => { await nextTick(); focusProjectContent
             </div>
             <div class="project-detail-hero-grid" :class="{ 'project-detail-hero-no-image': !project.image }">
               <div class="project-detail-hero-copy">
-                <h1 id="project-title">{{ field('title') }}</h1>
+                <h1 id="project-title" class="site-page-title">{{ field('title') }}</h1>
                 <div class="project-detail-tags">
                   <el-tag v-if="field('industry')" effect="plain">{{ field('industry') }}</el-tag>
                   <el-tag v-if="field('location')" effect="plain">{{ field('location') }}</el-tag>
                 </div>
-                <p v-if="field('summary')" class="project-detail-lead">{{ field('summary') }}</p>
+                <p v-if="field('summary')" class="project-detail-lead site-intro-description">{{ field('summary') }}</p>
               </div>
               <div v-if="project.image" class="project-detail-cover">
                 <el-image :src="project.image" :alt="field('imageAlt') || field('title')" fit="cover" :preview-src-list="gallery" preview-teleported hide-on-click-modal>

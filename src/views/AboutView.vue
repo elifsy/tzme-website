@@ -6,14 +6,13 @@ import { useDesignPage } from '../composables/useDesignPage.js'
 import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
 import GlobalReachSection from '../components/GlobalReachSection.vue'
-import CompanyStatistics from '../components/CompanyStatistics.vue'
+import AboutCompanyIntro from '../components/AboutCompanyIntro.vue'
 import ManufacturingQuality from '../components/ManufacturingQuality.vue'
 import PdfFirstPage from '../components/PdfFirstPage.vue'
 import CertificateDetailsDialog from '../components/CertificateDetailsDialog.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
 import { useCapabilities } from '../services/capabilities.js'
 import { useAboutTzme } from '../services/aboutTzme.js'
-import { aboutText } from '../data/aboutTzme.js'
 import { useContactSettings } from '../services/contactSettings.js'
 import { useCertificationCatalog } from '../services/certifications.js'
 import { useGlobalReach } from '../services/globalReach.js'
@@ -81,15 +80,8 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
 
       <SiteNav />
 
-      <template v-if="aboutTzme">
-        <section class="refine-about-hero" aria-labelledby="about-page-title"><div class="hc-w refine-about-hero-grid" :class="{ 'without-photo': !aboutTzme.about.image }">
-          <div class="refine-about-copy"><span class="refine-eyebrow">{{ aboutText(aboutTzme.about.kicker, locale) }}</span><h1 id="about-page-title">{{ aboutText(aboutTzme.about.titleLine1, locale) }}<br />{{ aboutText(aboutTzme.about.titleLine2, locale) }}</h1><span class="refine-short-rule" aria-hidden="true" /><p>{{ aboutText(aboutTzme.about.description, locale).match(/^[^。！？.!?]+[。！？.!?]?/)?.[0] }}</p><a class="refine-link" href="#manufacturing-bases">走进我们的制造基地 <span aria-hidden="true">↓</span></a></div>
-          <figure v-if="aboutTzme.about.image" class="refine-about-photo"><img :src="aboutTzme.about.image" :alt="aboutText(aboutTzme.about.imageAlt, locale)" decoding="async" /><figcaption>从制造基地，到全球工程现场。</figcaption></figure>
-        </div></section>
-        <div class="hc-w"><CompanyStatistics :entries="aboutTzme.about.entries" /></div>
-        <nav class="refine-about-nav hc-w" aria-label="关于我们页面导航"><a v-if="capabilities?.enabled" href="#manufacturing-quality">制造与质量</a><a href="#manufacturing-bases">制造基地</a><a href="#certificates-title">资质认证</a><a v-if="globalReach?.enabled" href="#global-reach">全球业务</a></nav>
-        <details class="refine-about-overview hc-w"><summary>完整公司介绍 <span aria-hidden="true">＋</span></summary><p>{{ aboutText(aboutTzme.about.description, locale) }}</p><p v-if="aboutText(aboutTzme.about.description2, locale)">{{ aboutText(aboutTzme.about.description2, locale) }}</p></details>
-      </template>
+      <AboutCompanyIntro v-if="aboutTzme" :configuration="aboutTzme.about" :locale-code="locale" />
+      <nav v-if="aboutTzme" class="company-section-nav hc-w" aria-label="关于我们页面导航"><span>继续了解</span><a v-if="capabilities?.enabled" href="#manufacturing-quality">制造与质量 <i aria-hidden="true">↗</i></a><a href="#manufacturing-bases">制造基地 <i aria-hidden="true">↗</i></a><a href="#certificates-title">资质认证 <i aria-hidden="true">↗</i></a><a v-if="globalReach?.enabled" href="#global-reach">全球业务 <i aria-hidden="true">↗</i></a></nav>
       <div v-if="capabilities?.enabled" id="manufacturing-quality" class="refine-section hc-w"><ManufacturingQuality /></div>
       <section id="manufacturing-bases" class="refine-section refine-soft"><div class="hc-w"><header class="refine-section-head"><div><span class="refine-eyebrow">{{ $t('site.facilities') }}</span><h2>{{ $t('contactUi.facilitiesTitle') }}</h2></div><router-link class="refine-link" to="/contact">{{ $t('site.bookAFactoryVisit') }}<span aria-hidden="true">↗</span></router-link></header>
         <SubsidiaryCards v-if="contactSettings" include-headquarters about-only show-media collapsible-details /><div class="j-about-film"><ManufacturingFilm /></div>
@@ -162,6 +154,13 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
 </template>
 
 <style scoped>
+.company-section-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 18px 42px; padding-block: 21px; border-block: 1px solid #d7e5e9; }
+.company-section-nav > span { margin-right: auto; color: #78909b; font-size: 11px; }
+.company-section-nav > a { display: inline-flex; align-items: center; gap: 25px; color: #315c6e; font-size: 12px; text-decoration: none; }
+.company-section-nav i { color: #087f91; font-style: normal; }
+.company-section-nav > a:hover { color: #087f91; }
+.company-section-nav > a:focus-visible { outline: 2px solid #087f91; outline-offset: 5px; }
+@media (max-width: 700px) { .company-section-nav { gap: 16px; justify-content: space-between; padding-block: 18px; } .company-section-nav > span { display: none; } .company-section-nav > a { gap: 7px; font-size: 10px; } }
 .certifications-section { padding: 64px 0; }
 .certifications-section .hc-shead { margin-bottom: 28px; }
 .certifications-section .certificate-introduction { max-width: 700px; margin-top: 16px; color: #435b70; font-size: 14px; line-height: 1.8; }

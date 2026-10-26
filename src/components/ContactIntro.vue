@@ -1,6 +1,5 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue'
-import { useI18n } from 'vue-i18n'
 import PortEquipmentMonogram from './PortEquipmentMonogram.vue'
 
 const section = ref(null), artwork = ref(null), drawing = ref(null), pointerLight = ref(null)
@@ -8,13 +7,6 @@ const motionEnabled = ref(false)
 const revealState = ref('static')
 const pointerEnabled = computed(() => motionEnabled.value && (revealState.value === 'static' || revealState.value === 'complete'))
 const id = `contact-mark-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
-const { t } = useI18n({ useScope: 'global' })
-const descriptionLines = computed(() => {
-  const copy = t('site.sendADutyStatementADrawingSetOrJustACapacityRequirement')
-  // Keep the editable copy intact, breaking at a phrase rather than a character.
-  const comma = copy.indexOf('，')
-  return comma < 0 ? [copy] : [copy.slice(0, comma + 1), copy.slice(comma + 1)]
-})
 const artWidth = 1100, artHeight = 580
 // Trace both edges of the open Z. The space between them is essential to
 // the approved mark; a stack of single bent lines compresses its diagonal.
@@ -125,10 +117,11 @@ onBeforeUnmount(() => {
   <section ref="section" class="contact-hero" aria-labelledby="contact-page-title" @pointermove.passive="onPointerMove" @pointerleave="reset">
     <div class="hc-w contact-hero-inner">
       <div class="contact-hero-copy">
-        <span class="contact-hero-kicker">{{ $t('site.getInTouchReplyWithin2WorkingDays') }}</span>
-        <h1 id="contact-page-title" class="contact-hero-title">{{ $t('site.contactUs') }}</h1>
+        <span class="contact-hero-kicker">{{ $t('site.contactUs') }} / CONTACT TZME</span>
+        <h1 id="contact-page-title" class="contact-hero-title site-page-title"><span>下一项制造需求，</span><span>从交流开始。</span></h1>
         <span class="contact-hero-rule" aria-hidden="true"/>
-        <p class="contact-hero-description"><span v-for="(line, index) in descriptionLines" :key="index">{{ line }}</span></p>
+        <p class="contact-hero-description site-intro-description"><span>告诉我们您的图纸、工况、质量要求与交付计划。</span><span>一起明确设备制造与交付需求。</span></p>
+        <ul class="contact-hero-topics" aria-label="沟通内容"><li>设备制造</li><li>质量要求</li><li>交付计划</li></ul>
       </div>
     </div>
     <div ref="artwork" class="contact-hero-art" :class="{ 'is-interactive': pointerEnabled, 'is-reveal-pending': revealState === 'waiting', 'is-revealing': revealState === 'playing' }" aria-hidden="true">
@@ -161,16 +154,19 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.contact-hero { position: relative; isolation: isolate; height: clamp(480px, 34.69vw, 660px); overflow: hidden; background: #eff9fd; }
-.contact-hero::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at 60% 96%, #b8e2ed66, transparent 49%), radial-gradient(ellipse at 3% 65%, #fff9, transparent 48%), linear-gradient(110deg, #e9f7fc, #f0faff 58%, #eaf7fc); pointer-events: none; }
-.contact-hero .contact-hero-inner { position: relative; z-index: 1; height: 100%; display: flex; align-items: center; }
-.contact-hero-copy { width: 44%; max-width: 570px; padding: 32px 0; transform: translateY(16px); }
-.contact-hero-kicker { display: block; color: #36648a; font-size: clamp(14px, 1.196vw, 22px); line-height: 1.5; letter-spacing: 1px; }
-.contact-hero .contact-hero-title { margin: 22px 0 0; color: #082947; font-family: var(--f-ui); font-size: clamp(60px, 5.38vw, 98px); font-weight: 700; line-height: 1.2; letter-spacing: -3px; }
-.contact-hero-rule { display: block; width: clamp(52px, 4.43vw, 84px); height: 5px; margin: 27px 0 37px; background: #078b9e; }
-.contact-hero-description { margin: 0; color: #315d80; font-size: clamp(18px, 1.675vw, 30px); line-height: 1.65; white-space: pre-line; overflow-wrap: anywhere; }
+.contact-hero { position: relative; isolation: isolate; height: 430px; overflow: hidden; background: #eff8fb; }
+.contact-hero::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, #f7fcfe 5%, #edf8fc 70%, #e5f4f9); pointer-events: none; }
+.contact-hero .contact-hero-inner { position: relative; z-index: 1; height: 100%; display: flex; align-items: flex-start; }
+.contact-hero-copy { width: 58%; max-width: 650px; padding-top: var(--site-hero-copy-top, 64px); }
+.contact-hero-kicker { display: block; color: #608594; font-size: 11px; line-height: var(--site-hero-kicker-line-height, 20px); letter-spacing: 1.8px; }
+.contact-hero .contact-hero-title { margin: var(--site-hero-title-gap, 12px) 0 0; color: #082947; }
+.contact-hero-title > span { display: block; }
+.contact-hero-rule { display: block; width: 40px; height: 3px; margin: 17px 0 18px; background: #078b9e; }
+.contact-hero-description { max-width: 420px; margin: 0; color: #416a7e; overflow-wrap: anywhere; }
 .contact-hero-description > span { display: block; }
-.contact-hero-art { position: absolute; z-index: 0; top: 50%; right: 0; width: 65.7895%; aspect-ratio: 1100 / 580; transform: translateY(-50%); pointer-events: none; user-select: none; }
+.contact-hero-topics { display: flex; flex-wrap: wrap; gap: 18px; margin: 24px 0 0; padding: 0; list-style: none; color: #467586; font-size: 11px; letter-spacing: .4px; }
+.contact-hero-topics > li { padding-left: 10px; border-left: 2px solid #83c0cb; line-height: 1.2; }
+.contact-hero-art { position: absolute; z-index: 0; top: 50%; right: 0; height: 112%; aspect-ratio: 1100 / 580; opacity: .58; transform: translateY(-50%); pointer-events: none; user-select: none; }
 .contact-hero-mark { width: 100%; height: 100%; transform: perspective(1000px) translate3d(var(--mark-x, 0px), var(--mark-y, 0px), 0) rotateX(var(--mark-rx, 0deg)) rotateY(var(--mark-ry, 0deg)); transform-origin: 65% 50%; }
 .is-interactive .contact-hero-mark { will-change: transform; }
 .contact-hero-svg { display: block; width: 100%; height: 100%; overflow: visible; }
@@ -183,24 +179,23 @@ onBeforeUnmount(() => {
 @keyframes contact-z-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes contact-me-appear { from { opacity: 0; } to { opacity: .85; } }
 @keyframes contact-trails-appear { from { opacity: 0; } to { opacity: 1; } }
-@media (max-width: 1050px) and (min-width: 701px) {
-  .contact-hero { height: 460px; }
-  .contact-hero-copy { width: 46%; transform: none; }
-  .contact-hero-art { width: 82%; right: -5%; }
-  .contact-hero .contact-hero-title { font-size: 50px; }
-  .contact-hero-kicker { font-size: 12px; letter-spacing: .5px; }
-  .contact-hero-rule { width: 48px; height: 3px; margin: 25px 0 28px; }
-  .contact-hero-description { font-size: 16px; line-height: 1.8; }
+@media (min-width: 1800px) {
+  .contact-hero-art { right: max(0px, calc((100% - 1660px) / 2 - 40px)); }
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .contact-hero-copy { width: 75%; }
+  .contact-hero-art { right: -15%; height: 105%; opacity: .3; }
 }
 @media (max-width: 700px) {
-  .contact-hero { height: auto; min-height: 510px; display: flex; flex-direction: column; justify-content: space-between; }
+  .contact-hero { height: auto; min-height: 410px; display: flex; flex-direction: column; padding-bottom: 30px; }
   .contact-hero .contact-hero-inner { height: auto; flex: none; align-items: flex-start; }
-  .contact-hero-copy { width: 100%; max-width: none; padding: 42px 0 12px; transform: none; }
-  .contact-hero .contact-hero-title { margin-top: 17px; font-size: 43px; letter-spacing: -1px; }
-  .contact-hero-kicker { font-size: 12px; letter-spacing: .5px; }
-  .contact-hero-rule { width: 36px; margin: 21px 0 20px; height: 2px; }
-  .contact-hero-description { max-width: 440px; font-size: 16px; line-height: 1.85; }
-  .contact-hero-art { position: relative; top: auto; right: auto; align-self: flex-end; flex-shrink: 0; width: min(620px, 110%); margin: 6px -4% 20px 0; transform: none; }
+  .contact-hero .contact-hero-copy { width: 100%; max-width: none; padding: var(--site-hero-copy-top, 24px) 0 0; }
+  .contact-hero-kicker { font-size: 10px; }
+  .contact-hero-rule { width: 32px; margin: 15px 0 17px; height: 2px; }
+  .contact-hero-description { max-width: 300px; }
+  .contact-hero-description > span { display: inline; }
+  .contact-hero-topics { gap: 12px; margin-top: 18px; font-size: 10px; }
+  .contact-hero-art { top: auto; right: -5%; bottom: 0; width: 95%; height: auto; opacity: .23; transform: none; }
 }
 @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
   .contact-hero-mark { transform: none; will-change: auto; }

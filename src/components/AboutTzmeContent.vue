@@ -16,8 +16,8 @@ defineProps({
     <component :is="headingTag" :id="headingId" class="hc-h2 about-tzme-title">
       {{ aboutText(configuration.titleLine1, localeCode) }}<template v-if="aboutText(configuration.titleLine2, localeCode)"><br />{{ aboutText(configuration.titleLine2, localeCode) }}</template>
     </component>
-    <p class="hc-p about-tzme-description catalog-intro-description">{{ aboutText(configuration.description, localeCode) }}</p>
-    <p v-if="aboutText(configuration.description2, localeCode)" class="hc-p about-tzme-description catalog-intro-description">{{ aboutText(configuration.description2, localeCode) }}</p>
+    <p class="hc-p about-tzme-description catalog-intro-description site-intro-description">{{ aboutText(configuration.description, localeCode) }}</p>
+    <p v-if="aboutText(configuration.description2, localeCode)" class="hc-p about-tzme-description catalog-intro-description site-intro-description">{{ aboutText(configuration.description2, localeCode) }}</p>
     <div v-if="showStatistics" class="hc-band about-tzme-entries">
       <div v-for="(entry, index) in configuration.entries" :key="index" class="about-tzme-entry">
         <div class="hc-stat">{{ aboutText(entry.value, localeCode) }}<u v-if="aboutText(entry.suffix, localeCode)">{{ aboutText(entry.suffix, localeCode) }}</u></div>

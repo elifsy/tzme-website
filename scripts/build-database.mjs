@@ -19,6 +19,8 @@ import './build-product-presentation-migration.mjs'
 import './build-product-cutouts-migration.mjs'
 import './build-product-catalog-sync-migration.mjs'
 import './build-product-layout-migration.mjs'
+import './build-map-locations-migration.mjs'
+import './build-company-overview-migration.mjs'
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
 const recordPath = 'database/baseline/records.json'
@@ -280,6 +282,9 @@ appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/reso
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/18-product-presentation.sql', 'utf8'))
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/19-product-cutouts.sql', 'utf8'))
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/20-product-catalog-sync.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/22-global-map-locations.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/23-china-map-tianjin.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/24-company-overview.sql', 'utf8'))
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

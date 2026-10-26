@@ -55,27 +55,27 @@ const mapHint = computed(() => language.value === 'zh' ? '点击标记，查看�
 </template>
 
 <style scoped>
-.global-reach.hc-sec { padding: 72px 0; background: #f3f8f9; }
+.global-reach.hc-sec { padding: 72px 0; background: linear-gradient(120deg, #e5eef1, #eaf1f3); }
 .global-reach-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .6fr); align-items: end; gap: 70px; margin-bottom: 38px; }
-.global-reach .global-reach-kicker { display: inline-flex; align-items: center; gap: 12px; color: #5e7d89; font-size: 11px; letter-spacing: 1.5px; }
+.global-reach .global-reach-kicker { display: inline-flex; align-items: center; gap: 12px; color: #4c6977; font-size: 11px; letter-spacing: 1.5px; }
 .global-reach-kicker i { display: block; width: 26px; height: 2px; background: #087f91; }
 .global-reach .global-reach-title { margin: 18px 0 0; color: #123a50; font-size: 42px; line-height: 1.28; letter-spacing: -1px; overflow-wrap: anywhere; }
 .global-reach-title > span { display: block; }
 .global-reach-intro { min-width: 0; padding-bottom: 2px; }
 .global-reach-intro .hc-p { margin: 0; max-width: 430px; color: #526c79; font-size: 14px; line-height: 1.95; white-space: pre-line; overflow-wrap: anywhere; }
-.global-reach-link { display: inline-flex; align-items: center; gap: 24px; margin-top: 20px; color: #087f91; font-size: 13px; font-weight: 600; }
+.global-reach-link { display: inline-flex; align-items: center; gap: 24px; margin-top: 20px; color: #086c7d; font-size: 13px; font-weight: 600; }
 .global-reach-link > span { display: grid; place-items: center; width: 34px; height: 34px; font-size: 18px; font-weight: 400; transition: transform .2s; }
 .global-reach-link:hover > span { transform: translate(2px, -2px); }
 .global-reach-link:focus-visible { outline: 2px solid #087f91; outline-offset: 5px; }
 .global-reach-body { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 50px; align-items: stretch; }
-.global-reach-map { position: relative; display: flex; align-items: center; min-width: 0; padding: 30px 28px 20px; border: 1px solid #d4e3e7; background: radial-gradient(ellipse at 48% 45%, #fff9, transparent 75%), #eaf3f5; }
+.global-reach-map { position: relative; display: flex; align-items: center; min-width: 0; padding: 30px 28px 20px; border: 1px solid #bfd2da; background: radial-gradient(ellipse at 48% 45%, #dfeaec80, transparent 75%), #d5e2e7; }
 .global-reach-map::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(#a5c2cc15 1px, transparent 1px), linear-gradient(90deg, #a5c2cc15 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; }
 .global-reach-map-corner { position: absolute; inset: -1px auto auto -1px; width: 28px; height: 28px; border-top: 2px solid #087f91; border-left: 2px solid #087f91; }
 .global-reach-map > .el-image { width: 100%; position: relative; }
 .global-reach-image-error { display: grid; min-height: 250px; place-items: center; color: #647f8b; }
-.global-reach-map :deep(.world-reach-map) { position: relative; color: #6c8792; }
+.global-reach-map :deep(.world-reach-map) { position: relative; color: #486675; }
 .global-reach-map :deep(.world-map-land) { opacity: .8; filter: grayscale(1) brightness(.72); mix-blend-mode: multiply; }
-.global-reach-map :deep(.world-map-caption) { gap: 9px; margin-top: 16px; padding-top: 15px; border-top: 1px solid #cadde3; font-size: 11px; line-height: 1.8; }
+.global-reach-map :deep(.world-map-caption) { gap: 9px; margin-top: 16px; padding-top: 15px; border-top: 1px solid #b8cdd6; font-size: 11px; line-height: 1.8; }
 .global-reach-map :deep(.world-map-core) { width: 7px; height: 7px; background: #087f91; border: 0; box-shadow: 0 0 0 4px #087f9114; }
 .global-reach-map :deep(.world-map-halo) { inset: 0; border: 1px solid #087f9138; background: #087f910c; transition: transform .2s, background-color .2s; }
 .global-reach-map :deep(.world-map-point.is-active .world-map-halo) { transform: scale(1.3); background: #087f9116; }
@@ -83,9 +83,9 @@ const mapHint = computed(() => language.value === 'zh' ? '点击标记，查看�
 .global-reach-map :deep(.world-map-label) { z-index: 4; border: 0; border-radius: 2px; background: #123a50; color: #fff; box-shadow: 0 6px 18px #123a501a; font-size: 12px; }
 .global-reach-map :deep(.world-map-legend) { width: 5px; height: 5px; background: #087f91; box-shadow: 0 0 0 3px #087f9110; }
 .global-reach-statistics { display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); margin: 0; padding: 0; }
-.global-reach-statistic { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 22px 32px 22px 0; border-top: 1px solid #cbdde2; min-width: 0; }
-.global-reach-statistic:last-child { border-bottom: 1px solid #cbdde2; }
-.global-reach-statistic dt { order: 1; margin-top: 10px; color: #5b7683; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.global-reach-statistic { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 22px 32px 22px 0; border-top: 1px solid #bed0d8; min-width: 0; }
+.global-reach-statistic:last-child { border-bottom: 1px solid #bed0d8; }
+.global-reach-statistic dt { order: 1; margin-top: 10px; color: #4c6977; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
 .global-reach-statistic dd { margin: 0; color: #123a50; font: 600 48px/1.1 var(--f-din, var(--f-ui)); letter-spacing: -1.5px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .global-reach-statistic dd > span { display: inline-block; margin-left: 7px; color: #087f91; font: 400 18px/1.4 var(--f-ui); letter-spacing: 0; }
 .global-reach-statistic-index { position: absolute; top: 26px; right: 0; color: #8da7b2; font: 400 10px/1.5 var(--f-ui); }
@@ -104,7 +104,7 @@ const mapHint = computed(() => language.value === 'zh' ? '点击标记，查看�
   .global-reach-link { margin-top: 15px; }
   .global-reach-body { grid-template-columns: 1fr; gap: 26px; }
   .global-reach-statistics { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto; }
-  .global-reach-statistic { justify-content: flex-start; padding: 20px 14px 0; border-top: 1px solid #cbdde2; border-right: 1px solid #cbdde2; }
+  .global-reach-statistic { justify-content: flex-start; padding: 20px 14px 0; border-top: 1px solid #bed0d8; border-right: 1px solid #bed0d8; }
   .global-reach-statistic:first-child { padding-left: 0; }
   .global-reach-statistic:last-child { border-right: 0; border-bottom: 0; padding-right: 0; }
   .global-reach-statistic-index { display: none; }

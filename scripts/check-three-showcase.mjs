@@ -51,7 +51,8 @@ async function suite() {
     await check('Every published industry with products has a model', `document.querySelector('.industrial-viewer').dataset.industries.split(',').length === ${active.length} && document.querySelectorAll('.industrial-model-picker option').length === ${active.length}`)
     await check('All industry hotspots are visible in the initial desktop overview', allVisible)
     await check('Desktop industry labels do not cover each other', noOverlappingLabels)
-    await check('Removed labels, roaming, tours, zoom buttons and fullscreen controls are absent', `!document.querySelector('.industrial-topbar,.industrial-movement,.industrial-tour-progress') && !/自由漫游|镜头巡游|放大查看|三维装备示意|三维装备展示/.test(document.querySelector('.industrial-viewer').innerText) && !document.querySelector('[aria-label="放大设备"],[aria-label="缩小设备"]')`)
+    await check('Removed labels, roaming, tours and fullscreen controls are absent', `!document.querySelector('.industrial-topbar,.industrial-movement,.industrial-tour-progress') && !/自由漫游|镜头巡游|放大查看|三维装备示意|三维装备展示/.test(document.querySelector('.industrial-viewer').innerText)`)
+    await check('Dedicated zoom buttons are available beside reset', `!!document.querySelector('.industrial-view-actions [aria-label="放大三维场景"]') && !!document.querySelector('.industrial-view-actions [aria-label="缩小三维场景"]') && !!document.querySelector('.industrial-view-actions .industrial-reset')`)
     await check('Product catalog and all industry filters remain available', `document.querySelectorAll('.hc-card').length === 12 && document.querySelectorAll('[data-industry]').length === ${active.length}`)
     // CDP captures can temporarily expand the layout past the scrollbar; wait
     // for ResizeObserver to restore the normal canvas dimensions afterwards.

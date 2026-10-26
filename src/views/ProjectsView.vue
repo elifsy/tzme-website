@@ -64,9 +64,9 @@ onMounted(async () => { await loadProjects(); loading.value = false })
           <div class="hc-w projects-intro-heading catalog-intro-content">
             <div class="projects-intro-copy catalog-intro-copy">
               <span class="hc-kick">{{ $t('site.projectCount', { count: publishedProjects.length }) }}</span>
-              <h1 id="projects-page-title" class="hc-h2">{{ $t('site.navProjects') }}</h1>
+              <h1 id="projects-page-title" class="hc-h2 site-page-title">{{ $t('site.navProjects') }}</h1>
             </div>
-            <p class="hc-p projects-intro-description catalog-intro-description">{{ $t('site.projectsIntro') }}</p>
+            <p class="hc-p projects-intro-description catalog-intro-description site-intro-description">{{ $t('site.projectsIntro') }}</p>
           </div>
         </section>
 
