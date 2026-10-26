@@ -1,10 +1,11 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import {
   Box, ChatDotRound, Collection, DataBoard, Document, Expand, Fold, Grid, Link,
   Location, Medal, Message, OfficeBuilding, Setting, Tools, TrendCharts,
 } from '@element-plus/icons-vue'
 import { adminGroups } from '../data/adminWorkspace.js'
+import { isSuperAdmin } from '../services/session.js'
 
 const props = defineProps({
   activeKey: { type: String, default: 'overview' },
@@ -16,7 +17,7 @@ defineEmits(['select', 'toggle', 'close'])
 const navigation = ref(null)
 const menu = ref(null)
 const icons = { Box, ChatDotRound, Collection, DataBoard, Document, Grid, Location, Medal, Message, OfficeBuilding, Setting, Tools, TrendCharts }
-const groups = adminGroups.map(group => ({ ...group, icon: icons[group.icon], items: group.items.map(item => ({ ...item, icon: icons[item.icon] })) }))
+const groups = computed(() => adminGroups.filter(group => !group.superAdminOnly || isSuperAdmin.value).map(group => ({ ...group, icon: icons[group.icon], items: group.items.map(item => ({ ...item, icon: icons[item.icon] })) })))
 
 const groupPreferenceKey = 'tzme-admin-sidebar-groups-v2'
 const expandedGroups = ref(readExpandedGroups())
@@ -29,20 +30,20 @@ let disposed = false
 function readExpandedGroups() {
   try {
     const stored = JSON.parse(localStorage.getItem(groupPreferenceKey))
-    if (Array.isArray(stored)) return groups.filter(group => stored.includes(group.key)).map(group => group.key)
+    if (Array.isArray(stored)) return groups.value.filter(group => stored.includes(group.key)).map(group => group.key)
   } catch { /* Storage is optional; navigation remains available. */ }
   return ['workspace']
 }
 
 function ensureActiveGroup() {
-  const group = groups.find(group => group.items.some(item => item.key === props.activeKey))
+  const group = groups.value.find(group => group.items.some(item => item.key === props.activeKey))
   if (group && !expandedGroups.value.includes(group.key)) expandedGroups.value.push(group.key)
   return group?.key
 }
 
 function onGroupOpen(key) {
   // Hovering a popup in the compact sidebar must not change the saved layout.
-  if (props.collapsed || !groups.some(group => group.key === key) || expandedGroups.value.includes(key)) return
+  if (props.collapsed || !groups.value.some(group => group.key === key) || expandedGroups.value.includes(key)) return
   expandedGroups.value.push(key)
 }
 
@@ -66,7 +67,7 @@ async function restoreExpandedGroups(collapsed) {
   await nextTick()
   if (!disposed && !props.collapsed) {
     ensureActiveGroup()
-    for (const group of groups) {
+    for (const group of groups.value) {
       if (expandedGroups.value.includes(group.key)) menu.value?.open(group.key)
       else menu.value?.close(group.key)
     }

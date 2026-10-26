@@ -1,6 +1,7 @@
 package com.tzme.cms.controller;
 
 import com.tzme.cms.model.Project;
+import com.tzme.cms.auth.ApiAccess;
 import com.tzme.cms.repository.ProjectRepository;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,8 @@ public class ProjectController {
     public ProjectController(ProjectRepository repository) { this.repository = repository; }
 
     @GetMapping
-    public List<Project> list() { return repository.findAllByOrderBySortOrderAscIdAsc(); }
+    public List<Project> list() { return repository.findAllByOrderBySortOrderAscIdAsc().stream()
+        .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList(); }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

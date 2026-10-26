@@ -18,6 +18,9 @@ import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
 import HomeSolutionsManager from "../components/HomeSolutionsManager.vue";
 import ProductShowcaseManager from "../components/ProductShowcaseManager.vue";
 import AboutTzmeManager from "../components/AboutTzmeManager.vue";
+import AdminAccountsManager from '../components/AdminAccountsManager.vue';
+import AdminPasswordForm from '../components/AdminPasswordForm.vue';
+import { currentAccount, isSuperAdmin, signOut } from '../services/session.js';
 import AdminSidebar from "../components/AdminSidebar.vue";
 import AnalyticsManager from "../components/AnalyticsManager.vue";
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
@@ -115,6 +118,17 @@ const analyticsManager = ref(null);
 const contactManager = ref(null);
 const inquiriesManager = ref(null);
 const mailManager = ref(null);
+const accountsManager = ref(null), passwordDialog = ref(false), passwordBusy = ref(false);
+async function userAction(action) {
+  if (!(await confirmDiscard())) return;
+  if (action === 'password') { passwordDialog.value = true; return; }
+  if (action === 'accounts') { navigate('accounts'); return; }
+  if (action === 'logout') {
+    try { await signOut(); location.replace('/admin/login'); }
+    catch (error) { ElMessage.error(error.message); }
+  }
+}
+function passwordChanged() { location.replace('/admin/login?changed=1'); }
 const { industries: industryRecords, loadIndustries } = useIndustryCatalog();
 const loading = ref(true);
 const modal = ref(false);
@@ -164,7 +178,7 @@ const currentItems = computed(() =>
   }),
 );
 const hasUnsavedChanges = computed(() => Boolean(pageEditor.value?.dirty || (modal.value && JSON.stringify(form) !== modalOriginal.value)));
-const editorBusy = computed(() => Boolean(pageEditor.value?.busy || saving.value || imageUploading.value));
+const editorBusy = computed(() => Boolean(pageEditor.value?.busy || saving.value || imageUploading.value || passwordBusy.value));
 async function confirmDiscard() {
   if (editorBusy.value) { ElMessage.info('正在保存或上传，请完成后再离开。'); return false; }
   if (!hasUnsavedChanges.value) return true;
@@ -318,6 +332,7 @@ async function refresh() {
   else if (tab.value === 'contact' || tab.value === 'forms') contactManager.value?.load();
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
   else if (tab.value === 'mail') mailManager.value?.load();
+  else if (tab.value === 'accounts') accountsManager.value?.load();
   else { load(); loadIndustries(); }
 }
 onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
@@ -341,10 +356,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         </el-breadcrumb>
         <div class="admin-profile">
 
-          <el-avatar :size="32" class="admin-avatar">A</el-avatar>
-          <div>
-            {{ $t('admin.administrator') }}<small>{{ $t('admin.contentManager') }}</small>
-          </div>
+          <el-dropdown trigger="click" @command="userAction"><button class="admin-user-trigger" type="button" aria-label="账号操作"><el-avatar :size="32" class="admin-avatar">{{ currentAccount?.displayName?.slice(0, 1) || 'A' }}</el-avatar><span>{{ currentAccount?.displayName }}<small>{{ isSuperAdmin ? '超级管理员' : '普通管理员' }}</small></span><span aria-hidden="true">⌄</span></button><template #dropdown><el-dropdown-menu><el-dropdown-item v-if="isSuperAdmin" command="accounts">账号管理</el-dropdown-item><el-dropdown-item command="password">修改我的密码</el-dropdown-item><el-dropdown-item command="logout" divided>退出登录</el-dropdown-item></el-dropdown-menu></template></el-dropdown>
           <el-tooltip :content="$t('admin.refreshData')"
             ><el-button text circle :icon="Refresh" @click="refresh"
           /></el-tooltip>
@@ -523,6 +535,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <InquiriesManager v-else-if="tab === 'inquiries'" ref="inquiriesManager" />
         <ContactSettingsManager v-else-if="tab === 'contact' || tab === 'forms'" :mode="tab === 'forms' ? 'inquiry' : 'company'" :key="tab" ref="contactManager" />
         <EmailNotificationsManager v-else-if="tab === 'mail'" ref="mailManager" />
+        <AdminAccountsManager v-else-if="tab === 'accounts' && isSuperAdmin" ref="accountsManager" />
 
         <footer class="admin-footer">
           {{ $t('admin.tzmeContentManagement') }}
@@ -627,6 +640,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         </div>
       </el-form>
     </AdminEditorDialog>
+    <el-dialog v-model="passwordDialog" class="admin-password-dialog" title="修改我的密码" width="min(440px, calc(100vw - 32px))" :close-on-click-modal="false" :close-on-press-escape="!passwordBusy" :show-close="!passwordBusy" append-to-body destroy-on-close><AdminPasswordForm @busy="passwordBusy = $event" @success="passwordChanged" /></el-dialog>
   </el-container>
 </template>
 

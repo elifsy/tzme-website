@@ -10,6 +10,7 @@ import { useArticleCatalog } from '../services/articles.js'
 import { useProjectCatalog } from '../services/projects.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import { useContactSettings } from '../services/contactSettings.js'
+import { sessionFetch } from '../services/session.js'
 const { t, locale } = useI18n({ useScope: 'global' })
 const { products } = useProductCatalog()
 const { articles, newsCategories } = useArticleCatalog()
@@ -83,7 +84,7 @@ function validRange() {
   return Array.isArray(values) && values.length === 2 && values[0] <= values[1] && values[1] <= today() && (Date.parse(values[1]) - Date.parse(values[0])) / 86400000 <= 365
 }
 async function request(path, options = {}) {
-  const response = await fetch(path, { cache: 'no-store', ...options })
+  const response = await sessionFetch(path, { cache: 'no-store', ...options })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   return response.json()
 }

@@ -1,5 +1,6 @@
 // One registry for navigation, page headings, related tasks and public previews.
 export const adminModules = {
+  accounts: { label: '账号管理', group: 'system', icon: 'Setting', description: '维护后台管理员账号、启用状态与登录密码。其他网站维护功能对所有管理员保持一致。', superAdminOnly: true },
   overview: { label: '运营工作台', group: 'workspace', icon: 'DataBoard', description: '从常用任务开始，维护网站内容、首页展示与客户咨询。' },
   analytics: { label: '访问分析', group: 'workspace', icon: 'TrendCharts', description: '查看真实访问、内容点击与咨询转化。' },
   industries: { label: '行业分类', group: 'content', icon: 'Grid', description: '维护行业名称、图标与排序，再将产品关联到行业；产品中心会显示有已发布产品的行业。', steps: ['维护行业', '关联产品', '配置行业展示'], related: ['products', 'product-showcase', 'home'], preview: '/solutions' },
@@ -25,6 +26,7 @@ export const adminGroups = [
   { key: 'pages', label: '页面展示', icon: 'Setting', items: ['home', 'product-showcase', 'solutions', 'capabilities', 'global'] },
   { key: 'company', label: '企业资料', icon: 'OfficeBuilding', items: ['about', 'certifications', 'contact'] },
   { key: 'communication', label: '客户咨询', icon: 'ChatDotRound', items: ['inquiries', 'forms', 'mail'] },
+  { key: 'system', label: '系统管理', icon: 'Setting', items: ['accounts'], superAdminOnly: true },
 ].map(group => ({ ...group, items: group.items.map(key => ({ key, ...adminModules[key] })) }))
 
 export const adminPath = key => key === 'overview' ? '/admin' : `/admin/${key}`

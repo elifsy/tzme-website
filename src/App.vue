@@ -8,6 +8,7 @@ import elementZh from 'element-plus/es/locale/lang/zh-cn'
 import { loadWebsiteContent } from './services/website.js'
 import { loadContactSettings } from './services/contactSettings.js'
 import { dataErrors, retryFailedData } from './services/api.js'
+import AdminSessionGate from './components/AdminSessionGate.vue'
 
 const { locale } = useI18n({ useScope: 'global' })
 const ready = ref(false)
@@ -33,6 +34,7 @@ onMounted(initialize)
         <el-button size="small" :loading="retrying" @click="retry">{{ $t('admin.retryDatabase') }}</el-button>
       </el-alert>
       <RouterView />
+      <AdminSessionGate />
     </template>
     <div v-else class="database-boot">
       <el-skeleton v-if="loading" :rows="5" animated class="database-skeleton" />

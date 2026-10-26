@@ -57,7 +57,10 @@ export default defineConfig(({ mode }) => {
     pdfPreviewAssets(),
   ],
   build: { copyPublicDir: false },
-  server: { proxy: { "/api": process.env.VITE_API_TARGET || env.VITE_API_TARGET || "http://127.0.0.1:8080" } },
+  server: {
+    fs: { deny: ['.env', '.env.*', '*.{crt,pem}', '**/.git/**', '**/database/snapshots/**', '**/server/**', '**/*.local.json'] },
+    proxy: { "/api": process.env.VITE_API_TARGET || env.VITE_API_TARGET || "http://127.0.0.1:8080" },
+  },
   preview: { proxy: { "/api": process.env.VITE_API_TARGET || env.VITE_API_TARGET || "http://127.0.0.1:8080" } },
   };
 });

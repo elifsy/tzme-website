@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { sessionFetch } from '../services/session.js'
 const props = defineProps({ modelValue: { type: String, default: '' }, disabled: Boolean, label: String })
 const emit = defineEmits(['update:modelValue', 'uploading'])
 const uploading = ref(false)
@@ -11,7 +12,7 @@ async function upload({ file }) {
   uploading.value = true; emit('uploading', true); request = new AbortController()
   try {
     const body = new FormData(); body.append('file', file)
-    const response = await fetch('/api/uploads/models', { method: 'POST', body, signal: request.signal })
+    const response = await sessionFetch('/api/uploads/models', { method: 'POST', body, signal: request.signal })
     if (!response.ok) throw Error('模型应为自包含的 GLB 2.0 文件，请将贴图一并导出，并取消几何和贴图压缩。')
     const result = await response.json()
     if (!/^\/api\/uploads\/models\/[0-9a-f-]{36}\.glb$/.test(result.url)) throw Error('模型上传返回了无效路径。')

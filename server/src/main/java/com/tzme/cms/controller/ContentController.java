@@ -1,6 +1,7 @@
 package com.tzme.cms.controller;
 
 import com.tzme.cms.model.Content;
+import com.tzme.cms.auth.ApiAccess;
 import com.tzme.cms.repository.ContentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,8 @@ public class ContentController {
 
     @GetMapping("/{type:products|articles}")
     public List<Content> list(@PathVariable String type) {
-        return repository.findAllByTypeOrderByDateDesc(type);
+        return repository.findAllByTypeOrderByDateDesc(type).stream()
+            .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList();
     }
 
     @PostMapping("/{type:products|articles}")

@@ -31,6 +31,8 @@ import "./style/site-layout.css";
 import "./style/product-detail.css";
 import "./style/site-refinement.css";
 import "./style/site-typography.css";
+import "./style/admin-auth.css";
+import { adminReturnPath, checkSession } from './services/session.js';
 import { i18n } from "./i18n/index.js";
 import { installAnalytics } from "./services/analytics.js";
 
@@ -72,6 +74,7 @@ const router = createRouter({
       path: "/contact",
       component: () => import("./views/ContactView.vue"),
     },
+    { path: '/admin/login', component: () => import('./views/AdminLoginView.vue') },
     {
       path: "/admin/:view?",
       component: () => import("./views/AdminView.vue"),
@@ -79,6 +82,18 @@ const router = createRouter({
     },
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],
+});
+router.beforeEach(async to => {
+  if (!to.meta.admin && to.path !== '/admin/login') return true;
+  try {
+    const account = await checkSession();
+    if (to.path === '/admin/login') return account && !account.mustChangePassword ? adminReturnPath(to.query.redirect) : true;
+    if (!account || account.mustChangePassword) return { path: '/admin/login', query: { redirect: to.fullPath } };
+    if (to.params.view === 'accounts' && account.role !== 'SUPER_ADMIN') return '/admin';
+    return true;
+  } catch {
+    return to.path === '/admin/login' ? true : { path: '/admin/login', query: { redirect: to.fullPath } };
+  }
 });
 const app = createApp(App);
 app.use(router);

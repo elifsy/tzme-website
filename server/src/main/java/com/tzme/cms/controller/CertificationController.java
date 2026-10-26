@@ -1,6 +1,7 @@
 package com.tzme.cms.controller;
 
 import com.tzme.cms.model.Certification;
+import com.tzme.cms.auth.ApiAccess;
 import com.tzme.cms.repository.CertificationRepository;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,8 @@ public class CertificationController {
 
     @GetMapping
     public List<Certification> list() {
-        return repository.findAllByOrderBySortOrderAscTitleEnAsc();
+        return repository.findAllByOrderBySortOrderAscTitleEnAsc().stream()
+            .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList();
     }
 
     @PostMapping

@@ -1,6 +1,7 @@
 package com.tzme.cms.controller;
 
 import com.tzme.cms.model.Content;
+import com.tzme.cms.auth.ApiAccess;
 import com.tzme.cms.model.Industry;
 import com.tzme.cms.repository.ContentRepository;
 import com.tzme.cms.repository.IndustryRepository;
@@ -37,7 +38,8 @@ public class IndustryController {
 
     @GetMapping
     public List<Industry> list() {
-        return repository.findAllByOrderBySortOrderAscTitleEnAsc();
+        return repository.findAllByOrderBySortOrderAscTitleEnAsc().stream()
+            .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList();
     }
 
     @PostMapping

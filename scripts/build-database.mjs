@@ -285,6 +285,8 @@ appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/reso
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/22-global-map-locations.sql', 'utf8'))
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/23-china-map-tianjin.sql', 'utf8'))
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/24-company-overview.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/25-admin-accounts.sql', 'utf8'))
+writeFileSync('database/migrations/2026-10-26-admin-accounts.sql', readFileSync('server/src/main/resources/db/25-admin-accounts.sql', 'utf8'))
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

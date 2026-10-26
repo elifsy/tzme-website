@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 # Load user-level variables into this PowerShell process. Existing terminals do
 # not automatically inherit values added after they were opened.
-foreach ($name in @('JAVA_HOME', 'TZME_DB_USER', 'TZME_DB_PASSWORD', 'TZME_DB_URL')) {
+foreach ($name in @('JAVA_HOME', 'TZME_DB_USER', 'TZME_DB_PASSWORD', 'TZME_DB_URL', 'TZME_ADMIN_USERNAME', 'TZME_ADMIN_PASSWORD', 'TZME_ADMIN_DISPLAY_NAME', 'TZME_ADMIN_RESET_PASSWORD', 'TZME_SESSION_COOKIE_SECURE')) {
     if (-not [Environment]::GetEnvironmentVariable($name, 'Process')) {
         $value = [Environment]::GetEnvironmentVariable($name, 'User')
         if ($value) { [Environment]::SetEnvironmentVariable($name, $value, 'Process') }

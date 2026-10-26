@@ -1,4 +1,5 @@
 import { reactive, ref } from 'vue'
+import { sessionFetch } from './session.js'
 
 export const dataErrors = reactive(new Map())
 const retries = new Map()
@@ -9,12 +10,13 @@ export async function retryFailedData() {
 }
 export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
   try {
-    const response = await fetch(path, {
+    const response = await sessionFetch(path, {
       method, signal, cache: 'no-store', headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
     })
     if (!response.ok) {
-      const error = new Error(`HTTP ${response.status}`)
+      const detail = await response.json().catch(() => ({}))
+      const error = new Error(detail.message || `HTTP ${response.status}`)
       error.status = response.status
       throw error
     }
@@ -22,7 +24,7 @@ export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
     if (method === 'GET') dataErrors.delete(path)
     return value
   } catch (error) {
-    if (method === 'GET' && error.name !== 'AbortError') dataErrors.set(path, error.message)
+    if (method === 'GET' && error.name !== 'AbortError' && ![401, 403].includes(error.status)) dataErrors.set(path, error.message)
     throw error
   }
 }
