@@ -6,6 +6,7 @@ import SiteNav from '../components/SiteNav.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 import EquipmentImage from '../components/EquipmentImage.vue'
 import ProductShowcase from '../components/ProductShowcase.vue'
+import SeoKnowledgeSection from '../components/SeoKnowledgeSection.vue'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import { useSiteContent } from '../services/website.js'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
@@ -135,6 +136,7 @@ onMounted(async () => {
         <div class="catalog-bottom-links"><span>依据客户图纸与技术要求，做好每一台装备的制造与交付。</span><a href="/solutions" @click.prevent="browseAll">全部行业方案 <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
+    <SeoKnowledgeSection/>
     <SiteFooter/>
   </div></main>
 </template>

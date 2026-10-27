@@ -5,13 +5,14 @@ import { useI18n } from 'vue-i18n'
 import { ElConfigProvider } from 'element-plus'
 import elementEn from 'element-plus/es/locale/lang/en'
 import elementZh from 'element-plus/es/locale/lang/zh-cn'
-import { loadWebsiteContent } from './services/website.js'
-import { loadContactSettings } from './services/contactSettings.js'
+import { loadWebsiteContent, useSiteContent } from './services/website.js'
+import { loadContactSettings, useContactSettings } from './services/contactSettings.js'
 import { dataErrors, retryFailedData } from './services/api.js'
 import AdminSessionGate from './components/AdminSessionGate.vue'
 
 const { locale } = useI18n({ useScope: 'global' })
-const ready = ref(false)
+const { siteContent } = useSiteContent(), { contactSettings } = useContactSettings()
+const ready = ref(Boolean(siteContent.value && contactSettings.value))
 const loading = ref(true)
 const retrying = ref(false)
 async function initialize() {
@@ -23,7 +24,7 @@ async function retry() {
   retrying.value = true
   try { await retryFailedData() } finally { retrying.value = false }
 }
-onMounted(initialize)
+onMounted(() => { if (!ready.value) initialize() })
 </script>
 
 <template>

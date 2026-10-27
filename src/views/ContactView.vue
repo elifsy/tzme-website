@@ -9,6 +9,7 @@ import InquiryForm from '../components/InquiryForm.vue'
 import SubsidiaryCards from '../components/SubsidiaryCards.vue'
 import ContactDetails from '../components/ContactDetails.vue'
 import ContactIntro from '../components/ContactIntro.vue'
+import SeoKnowledgeSection from '../components/SeoKnowledgeSection.vue'
 const { locale } = useI18n({ useScope: 'global' })
 const { contactSettings } = useContactSettings()
 const contact = computed(() => contactSettings.value?.contact)
@@ -33,6 +34,7 @@ useDesignPage('hc-contact', page)
           <header><span class="refine-eyebrow">TELL US YOUR NEEDS</span><h2>{{ contactText(contactSettings.form.title, locale).replace(/^\s*\d+\s*[\/／、.．]\s*/, '') }}</h2><p>填写基本信息与项目需求，便于我们准确沟通。</p></header><InquiryForm placement="contact" compact :show-heading="false" />
         </div>
       </div></section>
+      <SeoKnowledgeSection />
       <SiteFooter :show-contact-cta="false" />
     </div>
   </main>

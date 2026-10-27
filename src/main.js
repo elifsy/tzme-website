@@ -35,6 +35,9 @@ import "./style/admin-auth.css";
 import { adminReturnPath, checkSession } from './services/session.js';
 import { i18n } from "./i18n/index.js";
 import { installAnalytics } from "./services/analytics.js";
+import { installSeo } from './services/seo.js';
+import { loadWebsiteContent } from './services/website.js';
+import { loadContactSettings } from './services/contactSettings.js';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -70,6 +73,7 @@ const router = createRouter({
     { path: "/about", component: () => import("./views/AboutView.vue") },
     { path: "/insights", component: () => import("./views/InsightsView.vue") },
     { path: "/insights/:id", component: () => import("./views/NewsDetailView.vue") },
+    { path: '/site-map', component: () => import('./views/SiteMapView.vue') },
     {
       path: "/contact",
       component: () => import("./views/ContactView.vue"),
@@ -80,10 +84,11 @@ const router = createRouter({
       component: () => import("./views/AdminView.vue"),
       meta: { admin: true },
     },
-    { path: "/:pathMatch(.*)*", redirect: "/" },
+    { path: "/:pathMatch(.*)*", component: () => import('./views/NotFoundView.vue') },
   ],
 });
 router.beforeEach(async to => {
+  if (to.path.length > 1 && to.path.endsWith('/')) return { path: to.path.slice(0,-1), query: to.query, hash: to.hash, replace:true };
   if (!to.meta.admin && to.path !== '/admin/login') return true;
   try {
     const account = await checkSession();
@@ -99,6 +104,7 @@ const app = createApp(App);
 app.use(router);
 app.use(i18n);
 installAnalytics(router, i18n.global.locale);
+installSeo(router);
 for (const [name, component] of Object.entries({
   ArrowRight,
   Box,
@@ -117,4 +123,10 @@ for (const [name, component] of Object.entries({
   View,
 }))
   app.component(name, component);
-app.mount("#app");
+// Keep the readable server document visible until the app's public configuration is ready.
+async function start() {
+  await Promise.all([loadWebsiteContent(), loadContactSettings()]);
+  await router.isReady();
+  app.mount('#app');
+}
+start();

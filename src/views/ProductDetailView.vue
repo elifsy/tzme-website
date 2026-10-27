@@ -7,6 +7,7 @@ import { useIndustryCatalog } from '../services/industries.js'
 import ProductDetailPresentation from '../components/ProductDetailPresentation.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 import SiteNav from '../components/SiteNav.vue'
+import SeoKnowledgeSection from '../components/SeoKnowledgeSection.vue'
 
 const page = ref(null), loading = ref(true)
 const route = useRoute()
@@ -26,6 +27,7 @@ watch(productId, () => window.scrollTo({ top: 0, behavior: 'instant' }))
     <ProductDetailPresentation v-if="!loading && product" :key="productId" :record="product" :products="products" :industries="industries" :list-link="listLink" />
     <section v-else-if="!loading" class="hc-sec product-not-found"><el-empty :description="$t('site.productNotFound')" /><el-button type="primary" @click="goTo('/solutions')">{{ $t('site.backToProducts') }}</el-button></section>
     <div v-else class="equipment-detail-loading" role="status" aria-live="polite">{{ $t('productDetail.loading') }}</div>
+    <SeoKnowledgeSection v-if="product" />
     <SiteFooter :show-contact-cta="false" />
   </div></main>
 </template>

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { ZoomIn } from '@element-plus/icons-vue'
 import { useDesignPage } from '../composables/useDesignPage.js'
 import SiteFooter from '../components/SiteFooter.vue'
+import SeoKnowledgeSection from '../components/SeoKnowledgeSection.vue'
 import SiteNav from '../components/SiteNav.vue'
 import GlobalReachSection from '../components/GlobalReachSection.vue'
 import AboutCompanyIntro from '../components/AboutCompanyIntro.vue'
@@ -144,6 +145,7 @@ onMounted(() => { loadGlobalReach(); loadCertifications(); loadAboutTzme(); load
       <section class="refine-values hc-w"><div><span class="refine-eyebrow">企业愿景</span><h3>{{ locale === 'zh' ? jCompany.visionZh : jCompany.visionEn }}</h3></div><div><span class="refine-eyebrow">我们的使命</span><h3>{{ locale === 'zh' ? jCompany.missionZh : jCompany.missionEn }}</h3></div><p class="refine-company-values">{{ locale === 'zh' ? '价值观 / ' + jCompany.valuesZh : 'Values / ' + jCompany.valuesEn }}</p></section>
       <GlobalReachSection :configuration="globalReach" />
 
+      <SeoKnowledgeSection />
       <SiteFooter />
 
     </div>

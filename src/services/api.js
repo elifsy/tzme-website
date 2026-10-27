@@ -1,5 +1,6 @@
 import { reactive, ref } from 'vue'
 import { sessionFetch } from './session.js'
+import { peekPublicBootstrap, takePublicBootstrap } from './publicBootstrap.js'
 
 export const dataErrors = reactive(new Map())
 const retries = new Map()
@@ -10,6 +11,10 @@ export async function retryFailedData() {
 }
 export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
   try {
+    if (method === 'GET') {
+      const initial = takePublicBootstrap(path)
+      if (initial !== undefined) { dataErrors.delete(path); return initial }
+    }
     const response = await sessionFetch(path, {
       method, signal, cache: 'no-store', headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -29,7 +34,8 @@ export async function apiRequest(path, { method = 'GET', body, signal } = {}) {
   }
 }
 export function createCollection(path, normalize = (item) => item) {
-  const records = ref([])
+  const initial = peekPublicBootstrap(path)
+  const records = ref(Array.isArray(initial) ? initial.filter(item => item.status !== 'deleted').map(normalize) : [])
   const loading = ref(false)
   let pending
   function load() {

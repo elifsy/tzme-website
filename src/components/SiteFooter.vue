@@ -1,11 +1,12 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSiteNavigation } from '../composables/useSiteNavigation.js'
 import { contactText, useContactSettings } from '../services/contactSettings.js'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 import SocialLinks from './SocialLinks.vue'
 import SiteLogo from './SiteLogo.vue'
+import { loadSeoSettings, seoSettings } from '../services/seo.js'
 
 defineProps({ showContactCta: { type: Boolean, default: true } })
 
@@ -13,6 +14,7 @@ const { locale } = useI18n({ useScope: 'global' })
 const { menuItems, isMenuActive, navigateLink } = useSiteNavigation()
 const { contactSettings } = useContactSettings()
 const address = computed(() => contactText(contactSettings.value?.contact.address, locale.value))
+onMounted(() => { loadSeoSettings().catch(() => {}) })
 </script>
 
 <template>
@@ -59,13 +61,16 @@ const address = computed(() => contactText(contactSettings.value?.contact.addres
       </div>
       <div class="site-footer-bottom">
         <span class="site-footer-copyright">{{ $t('site.copyright') }}</span>
-        <span>{{ $t('contactUi.footerTerms') }}</span>
+        <div class="site-footer-meta"><router-link to="/site-map">网站地图</router-link><a v-if="seoSettings?.icpNumber" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ seoSettings.icpNumber }}</a><span>{{ $t('contactUi.footerTerms') }}</span></div>
       </div>
     </div>
   </footer>
 </template>
 
 <style scoped>
+.site-footer-meta { display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px 22px; }
+.site-footer-meta > a { color:inherit;text-decoration:none; }
+.site-footer-meta > a:hover { color:#087f91;text-decoration:underline; }
 .site-footer {
   position: relative;
   isolation: isolate;

@@ -1,0 +1,3 @@
+<script setup>import SiteNav from '../components/SiteNav.vue';import SiteFooter from '../components/SiteFooter.vue'</script>
+<template><main class="design-site"><div class="hc-page"><SiteNav/><section class="hc-w site-not-found"><span>404 / PAGE NOT FOUND</span><h1 class="site-page-title">页面未找到</h1><p>该页面不存在或尚未发布，可以从产品中心继续浏览。</p><router-link class="j-button" to="/solutions">查看产品中心 →</router-link></section><SiteFooter/></div></main></template>
+<style scoped>.site-not-found{padding-block:80px;min-height:420px}.site-not-found>span{font-size:11px;color:#7591a2;letter-spacing:1px}.site-not-found h1{margin:20px 0}.site-not-found p{color:#628091;font-size:14px;line-height:1.9;margin-bottom:30px}@media(max-width:700px){.site-not-found{padding-block:35px}}</style>

@@ -66,7 +66,7 @@ Java 默认使用 8080 端口，连接默认数据库 `tzme_corporate`。脚本�
 1. 使用 MySQL 8 执行 `database/00-create-database.sql` 建库。
 2. 配置部署环境账号、密码和 JDBC 地址。
 3. 执行 `database/install.sql`，或直接启动 Java 由应用执行相同初始化脚本。
-4. 部署前端构建文件，代理 `/api` 到 Java 服务，并保留上传图片目录。
+4. 部署前端构建文件，设置 Java 的 `TZME_FRONTEND_DIR` 指向该目录，按 `deploy/nginx.conf` 代理 HTML 页面与 API，并保留上传图片目录。
 
 基础 SQL 有初始化标记：重复导入、重启服务均不会覆盖后台修改或恢复删除数据。Hibernate 默认使用 `validate`，后续表结构升级通过新增 SQL 迁移完成。
 
@@ -93,7 +93,21 @@ mvn -DskipTests package
 java -jar target/tzme-cms-1.0.0.jar
 ```
 
-部署 `dist/` 到静态服务器。Nginx 示例在 [deploy/nginx.conf](deploy/nginx.conf)，包含 Vue 路由刷新支持和 API 代理。数据库保存图片地址；`public/assets/` 包含内置图片，后台上传目录需随站点备份和迁移。
+部署 `dist/` 到 Nginx 静态资源目录，同时让 Java 通过 `TZME_FRONTEND_DIR` 读取其中的 `index.html`。Nginx 示例在 [deploy/nginx.conf](deploy/nginx.conf)：静态资源由 Nginx 提供，公开 HTML、robots、站点地图和 API 由 Java 提供；不存在的页面保留真实 404。Java 进程从 `server` 目录启动时，开发默认目录为 `../dist`；生产示例为 `/var/www/tzme`。数据库保存图片地址；`public/assets/` 包含内置图片，后台上传目录需随站点备份和迁移。国内 SEO/GEO 的完整发布步骤见 [deploy/seo-launch.md](deploy/seo-launch.md)。
+
+## 国内 SEO / GEO
+
+正式中文版域名为 `https://www.tzme.net`。服务器从当前 MySQL 中读取已发布资料，直接返回中文标题、摘要、主体内容、真实链接及结构化资料，Vue 加载后接管交互。相同 URL 对普通访客、百度、360、搜狗等抓取程序返回相同内容。后台保存产品、企业介绍、联系方式或搜索配置后，新请求立即使用最新资料。
+
+后台入口为 **页面展示 → 搜索与 AI 展示**（`/admin/seo`），所有管理员均可维护。基础页面可分别填写标题与摘要；产品、资讯及有已发布产品的行业自动生成，也可单独覆盖。制造服务问答支持增删、排序、分段回答及显示开关，显示在关于我们、产品中心、产品详情和联系页面；问题与回答同步用于 FAQ 结构化资料。ICP备案号仅在填写真实号码后显示工信部查询链接。百度、必应、360、搜狗提供的标签验证 `content` 值在同一入口填写，保存后出现在初始 HTML 中。
+
+公开入口：`/robots.txt`、`/sitemap.xml`、`/site-map`、`/llms.txt`。站点地图只列出已发布产品、资讯、基础页面和有产品的行业；隐藏的项目模块、后台、草稿、已删除及不存在的详情页不进入地图。不存在或未发布的详情页返回 404；旧产品分类路径和尾斜杠路径重定向至规范地址。搜索、筛选、分页及 `admin-preview` 页面不建立重复索引；产品返回路径与常见推广参数保留交互，规范链接指向干净的产品地址。
+
+元数据通过 `/api/seo/page` 供 Vue 路由切换使用，公开基础配置通过 `/api/seo/settings` 提供；完整配置使用受登录保护的 `GET/PUT /api/seo/settings/admin`。配置保存在 `site_settings` 的 `seo` 记录，默认源为 `server/src/main/resources/seo-defaults.json`。升级脚本 `26-seo-settings.sql` 仅初始化缺失配置，保留后续后台修改；`node scripts/build-seo-settings-migration.mjs` 同步生成升级 SQL，`npm run db:build` 同时包含完整安装 SQL。结构化资料包含企业、网页、面包屑、产品、资讯与可见问答，价格、评价和修改日期不做补造。
+
+公开 HTML 嵌入的数据只来自公开配置与已发布记录，沿用公开联系资料并排除邮件通知配置。管理账号、密码、客户咨询及附件均不进入页面或资料索引。Java 使用前端构建的模板标记生成页面，模板缺失或旧版构建不满足要求时返回 503，避免把空白页面作为正常内容收录。开发服务器和 `npm run preview` 使用相同资料接口生成首屏 HTML；首屏资料复用于 Vue 初始化，减少重复读取。图片、字体、PDF 资源和既有三维设备素材继续使用项目本地资源。
+
+SEO 集成测试位于 `server/src/test/java/com/tzme/cms/seo/SeoIntegrationTest.java`，运行 `mvn test` 使用 H2 内存数据库验证源码可读性、发布状态、规范链接、真实 404、问答、权限和脚本转义。前端正常构建命令仍为 `npm run build`；可用 Maven 属性 `-Dtzme.package-name=tzme-cms-seo` 生成独立包名，方便在现有服务运行时准备验证包。
 
 ## 导入、备份、更新基础数据
 

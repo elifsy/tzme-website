@@ -8,7 +8,8 @@ public final class ApiAccess {
     private ApiAccess() {}
     public static String path(HttpServletRequest request) { return request.getRequestURI().substring(request.getContextPath().length()); }
     private static final Set<String> PUBLIC_READS = Set.of("/api/products", "/api/articles", "/api/industries", "/api/projects", "/api/certifications",
-        "/api/site-settings", "/api/about-tzme", "/api/contact-settings", "/api/home-capabilities", "/api/home-global", "/api/home-solutions", "/api/product-showcase", "/api/analytics/config");
+        "/api/site-settings", "/api/about-tzme", "/api/contact-settings", "/api/home-capabilities", "/api/home-global", "/api/home-solutions", "/api/product-showcase", "/api/analytics/config",
+        "/api/seo/settings", "/api/seo/page", "/api/seo/document");
     public static boolean publicRequest(HttpServletRequest request) {
         String path = path(request), method = request.getMethod();
         if (Set.of("GET", "HEAD").contains(method)) return PUBLIC_READS.contains(path)

@@ -20,6 +20,7 @@ import ProductShowcaseManager from "../components/ProductShowcaseManager.vue";
 import AboutTzmeManager from "../components/AboutTzmeManager.vue";
 import AdminAccountsManager from '../components/AdminAccountsManager.vue';
 import AdminPasswordForm from '../components/AdminPasswordForm.vue';
+import SeoManager from '../components/SeoManager.vue';
 import { currentAccount, isSuperAdmin, signOut } from '../services/session.js';
 import AdminSidebar from "../components/AdminSidebar.vue";
 import AnalyticsManager from "../components/AnalyticsManager.vue";
@@ -119,6 +120,7 @@ const contactManager = ref(null);
 const inquiriesManager = ref(null);
 const mailManager = ref(null);
 const accountsManager = ref(null), passwordDialog = ref(false), passwordBusy = ref(false);
+const seoManager = ref(null);
 async function userAction(action) {
   if (!(await confirmDiscard())) return;
   if (action === 'password') { passwordDialog.value = true; return; }
@@ -333,6 +335,7 @@ async function refresh() {
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
   else if (tab.value === 'mail') mailManager.value?.load();
   else if (tab.value === 'accounts') accountsManager.value?.load();
+  else if (tab.value === 'seo') seoManager.value?.load();
   else { load(); loadIndustries(); }
 }
 onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
@@ -536,6 +539,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <ContactSettingsManager v-else-if="tab === 'contact' || tab === 'forms'" :mode="tab === 'forms' ? 'inquiry' : 'company'" :key="tab" ref="contactManager" />
         <EmailNotificationsManager v-else-if="tab === 'mail'" ref="mailManager" />
         <AdminAccountsManager v-else-if="tab === 'accounts' && isSuperAdmin" ref="accountsManager" />
+        <SeoManager v-else-if="tab === 'seo'" ref="seoManager" />
 
         <footer class="admin-footer">
           {{ $t('admin.tzmeContentManagement') }}
