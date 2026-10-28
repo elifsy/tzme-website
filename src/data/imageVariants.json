@@ -1,0 +1,3190 @@
+{
+  "/assets/tzme-j/backgrounds/footer-coast.webp": {
+    "fingerprint": "b3dfaffe9fa3",
+    "width": 1983,
+    "height": 793,
+    "originalBytes": 494866,
+    "variants": [
+      {
+        "src": "/assets/optimized/footer-coast-b3dfaffe9fa3-w480.webp",
+        "width": 480,
+        "height": 192,
+        "bytes": 21648
+      },
+      {
+        "src": "/assets/optimized/footer-coast-b3dfaffe9fa3-w960.webp",
+        "width": 960,
+        "height": 384,
+        "bytes": 84142
+      },
+      {
+        "src": "/assets/optimized/footer-coast-b3dfaffe9fa3-w1600.webp",
+        "width": 1600,
+        "height": 640,
+        "bytes": 225484
+      },
+      {
+        "src": "/assets/optimized/footer-coast-b3dfaffe9fa3-w1983.webp",
+        "width": 1983,
+        "height": 793,
+        "bytes": 382324
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/1111111-natgeo.jpg": {
+    "fingerprint": "16418b12b88a",
+    "width": 1999,
+    "height": 786,
+    "originalBytes": 995977,
+    "variants": [
+      {
+        "src": "/assets/optimized/1111111-natgeo-16418b12b88a-w480.webp",
+        "width": 480,
+        "height": 189,
+        "bytes": 29448
+      },
+      {
+        "src": "/assets/optimized/1111111-natgeo-16418b12b88a-w960.webp",
+        "width": 960,
+        "height": 377,
+        "bytes": 109936
+      },
+      {
+        "src": "/assets/optimized/1111111-natgeo-16418b12b88a-w1600.webp",
+        "width": 1600,
+        "height": 629,
+        "bytes": 309402
+      },
+      {
+        "src": "/assets/optimized/1111111-natgeo-16418b12b88a-w1999.webp",
+        "width": 1999,
+        "height": 786,
+        "bytes": 487236
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/1111111.jpg": {
+    "fingerprint": "db58f2c66968",
+    "width": 1999,
+    "height": 786,
+    "originalBytes": 678619,
+    "variants": [
+      {
+        "src": "/assets/optimized/1111111-db58f2c66968-w480.webp",
+        "width": 480,
+        "height": 189,
+        "bytes": 26402
+      },
+      {
+        "src": "/assets/optimized/1111111-db58f2c66968-w960.webp",
+        "width": 960,
+        "height": 377,
+        "bytes": 93228
+      },
+      {
+        "src": "/assets/optimized/1111111-db58f2c66968-w1600.webp",
+        "width": 1600,
+        "height": 629,
+        "bytes": 250724
+      },
+      {
+        "src": "/assets/optimized/1111111-db58f2c66968-w1999.webp",
+        "width": 1999,
+        "height": 786,
+        "bytes": 384842
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/harbor-clean.png": {
+    "fingerprint": "b7f8fb05d720",
+    "width": 1999,
+    "height": 786,
+    "originalBytes": 2957156,
+    "variants": [
+      {
+        "src": "/assets/optimized/harbor-clean-b7f8fb05d720-w480.webp",
+        "width": 480,
+        "height": 189,
+        "bytes": 25324
+      },
+      {
+        "src": "/assets/optimized/harbor-clean-b7f8fb05d720-w960.webp",
+        "width": 960,
+        "height": 377,
+        "bytes": 89006
+      },
+      {
+        "src": "/assets/optimized/harbor-clean-b7f8fb05d720-w1600.webp",
+        "width": 1600,
+        "height": 629,
+        "bytes": 246822
+      },
+      {
+        "src": "/assets/optimized/harbor-clean-b7f8fb05d720-w1999.webp",
+        "width": 1999,
+        "height": 786,
+        "bytes": 377590
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/harbor-clean2.png": {
+    "fingerprint": "3b5835dd47fd",
+    "width": 1916,
+    "height": 821,
+    "originalBytes": 3411099,
+    "variants": [
+      {
+        "src": "/assets/optimized/harbor-clean2-3b5835dd47fd-w480.webp",
+        "width": 480,
+        "height": 206,
+        "bytes": 42784
+      },
+      {
+        "src": "/assets/optimized/harbor-clean2-3b5835dd47fd-w960.webp",
+        "width": 960,
+        "height": 411,
+        "bytes": 159488
+      },
+      {
+        "src": "/assets/optimized/harbor-clean2-3b5835dd47fd-w1600.webp",
+        "width": 1600,
+        "height": 686,
+        "bytes": 350992
+      },
+      {
+        "src": "/assets/optimized/harbor-clean2-3b5835dd47fd-w1916.webp",
+        "width": 1916,
+        "height": 821,
+        "bytes": 516362
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/harbor-overhead-v2.webp": {
+    "fingerprint": "850bc06f6525",
+    "width": 1983,
+    "height": 793,
+    "originalBytes": 925466,
+    "variants": [
+      {
+        "src": "/assets/optimized/harbor-overhead-v2-850bc06f6525-w480.webp",
+        "width": 480,
+        "height": 192,
+        "bytes": 28988
+      },
+      {
+        "src": "/assets/optimized/harbor-overhead-v2-850bc06f6525-w960.webp",
+        "width": 960,
+        "height": 384,
+        "bytes": 115500
+      },
+      {
+        "src": "/assets/optimized/harbor-overhead-v2-850bc06f6525-w1600.webp",
+        "width": 1600,
+        "height": 640,
+        "bytes": 304986
+      },
+      {
+        "src": "/assets/optimized/harbor-overhead-v2-850bc06f6525-w1983.webp",
+        "width": 1983,
+        "height": 793,
+        "bytes": 466582
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/harbor-overhead.webp": {
+    "fingerprint": "5211eaeddb2b",
+    "width": 1983,
+    "height": 793,
+    "originalBytes": 686038,
+    "variants": [
+      {
+        "src": "/assets/optimized/harbor-overhead-5211eaeddb2b-w480.webp",
+        "width": 480,
+        "height": 192,
+        "bytes": 29264
+      },
+      {
+        "src": "/assets/optimized/harbor-overhead-5211eaeddb2b-w960.webp",
+        "width": 960,
+        "height": 384,
+        "bytes": 114156
+      },
+      {
+        "src": "/assets/optimized/harbor-overhead-5211eaeddb2b-w1600.webp",
+        "width": 1600,
+        "height": 640,
+        "bytes": 305932
+      },
+      {
+        "src": "/assets/optimized/harbor-overhead-5211eaeddb2b-w1983.webp",
+        "width": 1983,
+        "height": 793,
+        "bytes": 495266
+      }
+    ]
+  },
+  "/assets/tzme-j/banners/team-equipment.jpg": {
+    "fingerprint": "3200107bc08a",
+    "width": 6016,
+    "height": 4016,
+    "originalBytes": 12807219,
+    "variants": [
+      {
+        "src": "/assets/optimized/team-equipment-3200107bc08a-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 34468
+      },
+      {
+        "src": "/assets/optimized/team-equipment-3200107bc08a-w960.webp",
+        "width": 960,
+        "height": 641,
+        "bytes": 116412
+      },
+      {
+        "src": "/assets/optimized/team-equipment-3200107bc08a-w1600.webp",
+        "width": 1600,
+        "height": 1068,
+        "bytes": 283786
+      },
+      {
+        "src": "/assets/optimized/team-equipment-3200107bc08a-w2400.webp",
+        "width": 2400,
+        "height": 1602,
+        "bytes": 483434
+      }
+    ]
+  },
+  "/assets/tzme-j/brand/official-mark.jpg": {
+    "fingerprint": "f898c5d146c8",
+    "width": 2559,
+    "height": 1772,
+    "originalBytes": 653193,
+    "variants": [
+      {
+        "src": "/assets/optimized/official-mark-f898c5d146c8-w160.webp",
+        "width": 160,
+        "height": 111,
+        "bytes": 4264
+      },
+      {
+        "src": "/assets/optimized/official-mark-f898c5d146c8-w320.webp",
+        "width": 320,
+        "height": 222,
+        "bytes": 8420
+      }
+    ]
+  },
+  "/assets/tzme-j/factories/greenland-aerial.jpg": {
+    "fingerprint": "85f19e17bbaa",
+    "width": 5472,
+    "height": 3648,
+    "originalBytes": 8424310,
+    "variants": [
+      {
+        "src": "/assets/optimized/greenland-aerial-85f19e17bbaa-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 40582
+      },
+      {
+        "src": "/assets/optimized/greenland-aerial-85f19e17bbaa-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 141780
+      },
+      {
+        "src": "/assets/optimized/greenland-aerial-85f19e17bbaa-w1600.webp",
+        "width": 1600,
+        "height": 1067,
+        "bytes": 379728
+      },
+      {
+        "src": "/assets/optimized/greenland-aerial-85f19e17bbaa-w2400.webp",
+        "width": 2400,
+        "height": 1600,
+        "bytes": 674284
+      }
+    ]
+  },
+  "/assets/tzme-j/factories/headquarters.jpg": {
+    "fingerprint": "607e16f70bd0",
+    "width": 4000,
+    "height": 2250,
+    "originalBytes": 4102702,
+    "variants": [
+      {
+        "src": "/assets/optimized/headquarters-607e16f70bd0-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 33882
+      },
+      {
+        "src": "/assets/optimized/headquarters-607e16f70bd0-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 110378
+      },
+      {
+        "src": "/assets/optimized/headquarters-607e16f70bd0-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 263784
+      },
+      {
+        "src": "/assets/optimized/headquarters-607e16f70bd0-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 639426
+      }
+    ]
+  },
+  "/assets/tzme-j/factories/welding-detail.jpg": {
+    "fingerprint": "be4d49455d8c",
+    "width": 5345,
+    "height": 3553,
+    "originalBytes": 2494680,
+    "variants": [
+      {
+        "src": "/assets/optimized/welding-detail-be4d49455d8c-w480.webp",
+        "width": 480,
+        "height": 319,
+        "bytes": 32982
+      },
+      {
+        "src": "/assets/optimized/welding-detail-be4d49455d8c-w960.webp",
+        "width": 960,
+        "height": 638,
+        "bytes": 82608
+      },
+      {
+        "src": "/assets/optimized/welding-detail-be4d49455d8c-w1600.webp",
+        "width": 1600,
+        "height": 1064,
+        "bytes": 174398
+      },
+      {
+        "src": "/assets/optimized/welding-detail-be4d49455d8c-w2400.webp",
+        "width": 2400,
+        "height": 1595,
+        "bytes": 286832
+      }
+    ]
+  },
+  "/assets/tzme-j/factories/zhenhan-aerial.jpg": {
+    "fingerprint": "688c6e3ca113",
+    "width": 4000,
+    "height": 2250,
+    "originalBytes": 4223918,
+    "variants": [
+      {
+        "src": "/assets/optimized/zhenhan-aerial-688c6e3ca113-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 33188
+      },
+      {
+        "src": "/assets/optimized/zhenhan-aerial-688c6e3ca113-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 117958
+      },
+      {
+        "src": "/assets/optimized/zhenhan-aerial-688c6e3ca113-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 298888
+      },
+      {
+        "src": "/assets/optimized/zhenhan-aerial-688c6e3ca113-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 694424
+      }
+    ]
+  },
+  "/assets/tzme-j/news/annual-gala.jpg": {
+    "fingerprint": "52f8ca248003",
+    "width": 1280,
+    "height": 853,
+    "originalBytes": 122078,
+    "variants": [
+      {
+        "src": "/assets/optimized/annual-gala-52f8ca248003-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 29702
+      },
+      {
+        "src": "/assets/optimized/annual-gala-52f8ca248003-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 67886
+      },
+      {
+        "src": "/assets/optimized/annual-gala-52f8ca248003-w1280.webp",
+        "width": 1280,
+        "height": 853,
+        "bytes": 96470
+      }
+    ]
+  },
+  "/assets/tzme-j/news/canada-energy.jpg": {
+    "fingerprint": "590e9ca543fe",
+    "width": 1600,
+    "height": 898,
+    "originalBytes": 169381,
+    "variants": [
+      {
+        "src": "/assets/optimized/canada-energy-590e9ca543fe-w480.webp",
+        "width": 480,
+        "height": 269,
+        "bytes": 23640
+      },
+      {
+        "src": "/assets/optimized/canada-energy-590e9ca543fe-w960.webp",
+        "width": 960,
+        "height": 539,
+        "bytes": 81736
+      },
+      {
+        "src": "/assets/optimized/canada-energy-590e9ca543fe-w1600.webp",
+        "width": 1600,
+        "height": 898,
+        "bytes": 192152
+      }
+    ]
+  },
+  "/assets/tzme-j/news/news-intro-linework.webp": {
+    "fingerprint": "aaf4ef3b1848",
+    "width": 2172,
+    "height": 724,
+    "originalBytes": 283326,
+    "variants": [
+      {
+        "src": "/assets/optimized/news-intro-linework-aaf4ef3b1848-w480.webp",
+        "width": 480,
+        "height": 160,
+        "bytes": 10786
+      },
+      {
+        "src": "/assets/optimized/news-intro-linework-aaf4ef3b1848-w960.webp",
+        "width": 960,
+        "height": 320,
+        "bytes": 36058
+      },
+      {
+        "src": "/assets/optimized/news-intro-linework-aaf4ef3b1848-w1600.webp",
+        "width": 1600,
+        "height": 533,
+        "bytes": 92032
+      },
+      {
+        "src": "/assets/optimized/news-intro-linework-aaf4ef3b1848-w2172.webp",
+        "width": 2172,
+        "height": 724,
+        "bytes": 162832
+      }
+    ]
+  },
+  "/assets/tzme-j/news/news-intro-ocean.webp": {
+    "fingerprint": "ab2e29893d15",
+    "width": 2079,
+    "height": 756,
+    "originalBytes": 480672,
+    "variants": [
+      {
+        "src": "/assets/optimized/news-intro-ocean-ab2e29893d15-w480.webp",
+        "width": 480,
+        "height": 175,
+        "bytes": 14966
+      },
+      {
+        "src": "/assets/optimized/news-intro-ocean-ab2e29893d15-w960.webp",
+        "width": 960,
+        "height": 349,
+        "bytes": 58894
+      },
+      {
+        "src": "/assets/optimized/news-intro-ocean-ab2e29893d15-w1600.webp",
+        "width": 1600,
+        "height": 582,
+        "bytes": 163524
+      },
+      {
+        "src": "/assets/optimized/news-intro-ocean-ab2e29893d15-w2079.webp",
+        "width": 2079,
+        "height": 756,
+        "bytes": 295390
+      }
+    ]
+  },
+  "/assets/tzme-j/products/belt-conveyor.jpg": {
+    "fingerprint": "5ca5a6802fb6",
+    "width": 2848,
+    "height": 4256,
+    "originalBytes": 1260639,
+    "variants": [
+      {
+        "src": "/assets/optimized/belt-conveyor-5ca5a6802fb6-w480.webp",
+        "width": 480,
+        "height": 717,
+        "bytes": 107174
+      },
+      {
+        "src": "/assets/optimized/belt-conveyor-5ca5a6802fb6-w960.webp",
+        "width": 960,
+        "height": 1435,
+        "bytes": 371874
+      },
+      {
+        "src": "/assets/optimized/belt-conveyor-5ca5a6802fb6-w1600.webp",
+        "width": 1600,
+        "height": 2391,
+        "bytes": 829000
+      },
+      {
+        "src": "/assets/optimized/belt-conveyor-5ca5a6802fb6-w2400.webp",
+        "width": 2400,
+        "height": 3587,
+        "bytes": 1317066
+      }
+    ]
+  },
+  "/assets/tzme-j/products/bridge-equipment.jpg": {
+    "fingerprint": "1635bf8970a5",
+    "width": 1600,
+    "height": 1200,
+    "originalBytes": 188822,
+    "variants": [
+      {
+        "src": "/assets/optimized/bridge-equipment-1635bf8970a5-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 28812
+      },
+      {
+        "src": "/assets/optimized/bridge-equipment-1635bf8970a5-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 86522
+      },
+      {
+        "src": "/assets/optimized/bridge-equipment-1635bf8970a5-w1600.webp",
+        "width": 1600,
+        "height": 1200,
+        "bytes": 193784
+      }
+    ]
+  },
+  "/assets/tzme-j/products/bucket-wheel-excavator.jpg": {
+    "fingerprint": "ad23618a5461",
+    "width": 3264,
+    "height": 2448,
+    "originalBytes": 1525944,
+    "variants": [
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-ad23618a5461-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 40340
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-ad23618a5461-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 139834
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-ad23618a5461-w1600.webp",
+        "width": 1600,
+        "height": 1200,
+        "bytes": 266046
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-ad23618a5461-w2400.webp",
+        "width": 2400,
+        "height": 1800,
+        "bytes": 561412
+      }
+    ]
+  },
+  "/assets/tzme-j/products/environmental.jpg": {
+    "fingerprint": "9e99e06bcae0",
+    "width": 1280,
+    "height": 960,
+    "originalBytes": 121914,
+    "variants": [
+      {
+        "src": "/assets/optimized/environmental-9e99e06bcae0-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 27284
+      },
+      {
+        "src": "/assets/optimized/environmental-9e99e06bcae0-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 76552
+      },
+      {
+        "src": "/assets/optimized/environmental-9e99e06bcae0-w1280.webp",
+        "width": 1280,
+        "height": 960,
+        "bytes": 118578
+      }
+    ]
+  },
+  "/assets/tzme-j/products/grab-unloader.jpg": {
+    "fingerprint": "d452b70c9989",
+    "width": 6000,
+    "height": 3376,
+    "originalBytes": 11048830,
+    "variants": [
+      {
+        "src": "/assets/optimized/grab-unloader-d452b70c9989-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 22092
+      },
+      {
+        "src": "/assets/optimized/grab-unloader-d452b70c9989-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 67990
+      },
+      {
+        "src": "/assets/optimized/grab-unloader-d452b70c9989-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 163124
+      },
+      {
+        "src": "/assets/optimized/grab-unloader-d452b70c9989-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 283940
+      }
+    ]
+  },
+  "/assets/tzme-j/products/metallurgy.jpg": {
+    "fingerprint": "97723cec5d11",
+    "width": 1440,
+    "height": 1080,
+    "originalBytes": 96590,
+    "variants": [
+      {
+        "src": "/assets/optimized/metallurgy-97723cec5d11-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 25788
+      },
+      {
+        "src": "/assets/optimized/metallurgy-97723cec5d11-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 77406
+      },
+      {
+        "src": "/assets/optimized/metallurgy-97723cec5d11-w1440.webp",
+        "width": 1440,
+        "height": 1080,
+        "bytes": 133382
+      }
+    ]
+  },
+  "/assets/tzme-j/products/pipe-rack.jpg": {
+    "fingerprint": "edfc7b92b3f8",
+    "width": 2284,
+    "height": 1402,
+    "originalBytes": 1202708,
+    "variants": [
+      {
+        "src": "/assets/optimized/pipe-rack-edfc7b92b3f8-w480.webp",
+        "width": 480,
+        "height": 295,
+        "bytes": 26884
+      },
+      {
+        "src": "/assets/optimized/pipe-rack-edfc7b92b3f8-w960.webp",
+        "width": 960,
+        "height": 589,
+        "bytes": 82930
+      },
+      {
+        "src": "/assets/optimized/pipe-rack-edfc7b92b3f8-w1600.webp",
+        "width": 1600,
+        "height": 982,
+        "bytes": 200248
+      },
+      {
+        "src": "/assets/optimized/pipe-rack-edfc7b92b3f8-w2284.webp",
+        "width": 2284,
+        "height": 1402,
+        "bytes": 376278
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/agv-cutout.webp": {
+    "fingerprint": "b3037454559d",
+    "width": 1774,
+    "height": 887,
+    "originalBytes": 257490,
+    "variants": [
+      {
+        "src": "/assets/optimized/agv-cutout-b3037454559d-w480.webp",
+        "width": 480,
+        "height": 240,
+        "bytes": 34690
+      },
+      {
+        "src": "/assets/optimized/agv-cutout-b3037454559d-w960.webp",
+        "width": 960,
+        "height": 480,
+        "bytes": 98448
+      },
+      {
+        "src": "/assets/optimized/agv-cutout-b3037454559d-w1600.webp",
+        "width": 1600,
+        "height": 800,
+        "bytes": 193434
+      },
+      {
+        "src": "/assets/optimized/agv-cutout-b3037454559d-w1774.webp",
+        "width": 1774,
+        "height": 887,
+        "bytes": 253562
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/ausmelt-furnace-cutout.webp": {
+    "fingerprint": "95a9e1e4aeea",
+    "width": 1855,
+    "height": 848,
+    "originalBytes": 369210,
+    "variants": [
+      {
+        "src": "/assets/optimized/ausmelt-furnace-cutout-95a9e1e4aeea-w480.webp",
+        "width": 480,
+        "height": 219,
+        "bytes": 41618
+      },
+      {
+        "src": "/assets/optimized/ausmelt-furnace-cutout-95a9e1e4aeea-w960.webp",
+        "width": 960,
+        "height": 439,
+        "bytes": 127900
+      },
+      {
+        "src": "/assets/optimized/ausmelt-furnace-cutout-95a9e1e4aeea-w1600.webp",
+        "width": 1600,
+        "height": 731,
+        "bytes": 261822
+      },
+      {
+        "src": "/assets/optimized/ausmelt-furnace-cutout-95a9e1e4aeea-w1855.webp",
+        "width": 1855,
+        "height": 848,
+        "bytes": 363236
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/bridge-erection-machine-cutout.webp": {
+    "fingerprint": "8d93d2c89f37",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 337974,
+    "variants": [
+      {
+        "src": "/assets/optimized/bridge-erection-machine-cutout-8d93d2c89f37-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 50876
+      },
+      {
+        "src": "/assets/optimized/bridge-erection-machine-cutout-8d93d2c89f37-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 159176
+      },
+      {
+        "src": "/assets/optimized/bridge-erection-machine-cutout-8d93d2c89f37-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 331112
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/bridge-fabrication-machine-cutout.webp": {
+    "fingerprint": "af9bf4ba83fa",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 480186,
+    "variants": [
+      {
+        "src": "/assets/optimized/bridge-fabrication-machine-cutout-af9bf4ba83fa-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 72666
+      },
+      {
+        "src": "/assets/optimized/bridge-fabrication-machine-cutout-af9bf4ba83fa-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 228788
+      },
+      {
+        "src": "/assets/optimized/bridge-fabrication-machine-cutout-af9bf4ba83fa-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 479320
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/bridge-steel-structure-cutout.webp": {
+    "fingerprint": "4abe41478e86",
+    "width": 1091,
+    "height": 1442,
+    "originalBytes": 419148,
+    "variants": [
+      {
+        "src": "/assets/optimized/bridge-steel-structure-cutout-4abe41478e86-w480.webp",
+        "width": 480,
+        "height": 634,
+        "bytes": 101022
+      },
+      {
+        "src": "/assets/optimized/bridge-steel-structure-cutout-4abe41478e86-w960.webp",
+        "width": 960,
+        "height": 1269,
+        "bytes": 309068
+      },
+      {
+        "src": "/assets/optimized/bridge-steel-structure-cutout-4abe41478e86-w1091.webp",
+        "width": 1091,
+        "height": 1442,
+        "bytes": 420656
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/bucket-wheel-excavator-cutout.webp": {
+    "fingerprint": "ec85075ab0d6",
+    "width": 1720,
+    "height": 914,
+    "originalBytes": 661974,
+    "variants": [
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-cutout-ec85075ab0d6-w480.webp",
+        "width": 480,
+        "height": 255,
+        "bytes": 73876
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-cutout-ec85075ab0d6-w960.webp",
+        "width": 960,
+        "height": 510,
+        "bytes": 239770
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-cutout-ec85075ab0d6-w1600.webp",
+        "width": 1600,
+        "height": 850,
+        "bytes": 491730
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-cutout-ec85075ab0d6-w1720.webp",
+        "width": 1720,
+        "height": 914,
+        "bytes": 640684
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/bulk-hopper-cutout.webp": {
+    "fingerprint": "ff2328d48e22",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 192760,
+    "variants": [
+      {
+        "src": "/assets/optimized/bulk-hopper-cutout-ff2328d48e22-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 41100
+      },
+      {
+        "src": "/assets/optimized/bulk-hopper-cutout-ff2328d48e22-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 105550
+      },
+      {
+        "src": "/assets/optimized/bulk-hopper-cutout-ff2328d48e22-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 193786
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/bulk-ship-loader-cutout.webp": {
+    "fingerprint": "1101998ea63d",
+    "width": 1535,
+    "height": 1025,
+    "originalBytes": 598088,
+    "variants": [
+      {
+        "src": "/assets/optimized/bulk-ship-loader-cutout-1101998ea63d-w480.webp",
+        "width": 480,
+        "height": 321,
+        "bytes": 81508
+      },
+      {
+        "src": "/assets/optimized/bulk-ship-loader-cutout-1101998ea63d-w960.webp",
+        "width": 960,
+        "height": 641,
+        "bytes": 254582
+      },
+      {
+        "src": "/assets/optimized/bulk-ship-loader-cutout-1101998ea63d-w1535.webp",
+        "width": 1535,
+        "height": 1025,
+        "bytes": 588926
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/conveying-cutout.webp": {
+    "fingerprint": "e3c38c9ab8b3",
+    "width": 1026,
+    "height": 1533,
+    "originalBytes": 524568,
+    "variants": [
+      {
+        "src": "/assets/optimized/conveying-cutout-e3c38c9ab8b3-w480.webp",
+        "width": 480,
+        "height": 717,
+        "bytes": 126042
+      },
+      {
+        "src": "/assets/optimized/conveying-cutout-e3c38c9ab8b3-w960.webp",
+        "width": 960,
+        "height": 1434,
+        "bytes": 404344
+      },
+      {
+        "src": "/assets/optimized/conveying-cutout-e3c38c9ab8b3-w1026.webp",
+        "width": 1026,
+        "height": 1533,
+        "bytes": 514010
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/crane-cutout.webp": {
+    "fingerprint": "8e3191af7fb1",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 315698,
+    "variants": [
+      {
+        "src": "/assets/optimized/crane-cutout-8e3191af7fb1-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 49418
+      },
+      {
+        "src": "/assets/optimized/crane-cutout-8e3191af7fb1-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 149838
+      },
+      {
+        "src": "/assets/optimized/crane-cutout-8e3191af7fb1-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 309664
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/crushing-station-cutout.webp": {
+    "fingerprint": "379f7e350cd9",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 459128,
+    "variants": [
+      {
+        "src": "/assets/optimized/crushing-station-cutout-379f7e350cd9-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 73868
+      },
+      {
+        "src": "/assets/optimized/crushing-station-cutout-379f7e350cd9-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 230514
+      },
+      {
+        "src": "/assets/optimized/crushing-station-cutout-379f7e350cd9-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 467036
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/cyclone-separator-cutout.webp": {
+    "fingerprint": "5e18d2420048",
+    "width": 1024,
+    "height": 1536,
+    "originalBytes": 91052,
+    "variants": [
+      {
+        "src": "/assets/optimized/cyclone-separator-cutout-5e18d2420048-w480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 29064
+      },
+      {
+        "src": "/assets/optimized/cyclone-separator-cutout-5e18d2420048-w960.webp",
+        "width": 960,
+        "height": 1440,
+        "bytes": 79148
+      },
+      {
+        "src": "/assets/optimized/cyclone-separator-cutout-5e18d2420048-w1024.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 97718
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/electric-furnace-cutout.webp": {
+    "fingerprint": "9712aad791e6",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 317626,
+    "variants": [
+      {
+        "src": "/assets/optimized/electric-furnace-cutout-9712aad791e6-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 56846
+      },
+      {
+        "src": "/assets/optimized/electric-furnace-cutout-9712aad791e6-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 164038
+      },
+      {
+        "src": "/assets/optimized/electric-furnace-cutout-9712aad791e6-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 322768
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/factory-building-module-cutout.webp": {
+    "fingerprint": "a8fbd2cf2173",
+    "width": 1774,
+    "height": 887,
+    "originalBytes": 696096,
+    "variants": [
+      {
+        "src": "/assets/optimized/factory-building-module-cutout-a8fbd2cf2173-w480.webp",
+        "width": 480,
+        "height": 240,
+        "bytes": 74594
+      },
+      {
+        "src": "/assets/optimized/factory-building-module-cutout-a8fbd2cf2173-w960.webp",
+        "width": 960,
+        "height": 480,
+        "bytes": 231836
+      },
+      {
+        "src": "/assets/optimized/factory-building-module-cutout-a8fbd2cf2173-w1600.webp",
+        "width": 1600,
+        "height": 800,
+        "bytes": 502644
+      },
+      {
+        "src": "/assets/optimized/factory-building-module-cutout-a8fbd2cf2173-w1774.webp",
+        "width": 1774,
+        "height": 887,
+        "bytes": 678968
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/feeder-cutout.webp": {
+    "fingerprint": "0082a2af2227",
+    "width": 1774,
+    "height": 887,
+    "originalBytes": 286576,
+    "variants": [
+      {
+        "src": "/assets/optimized/feeder-cutout-0082a2af2227-w480.webp",
+        "width": 480,
+        "height": 240,
+        "bytes": 36812
+      },
+      {
+        "src": "/assets/optimized/feeder-cutout-0082a2af2227-w960.webp",
+        "width": 960,
+        "height": 480,
+        "bytes": 108024
+      },
+      {
+        "src": "/assets/optimized/feeder-cutout-0082a2af2227-w1600.webp",
+        "width": 1600,
+        "height": 800,
+        "bytes": 216372
+      },
+      {
+        "src": "/assets/optimized/feeder-cutout-0082a2af2227-w1774.webp",
+        "width": 1774,
+        "height": 887,
+        "bytes": 276610
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/ferris-wheel-cutout.webp": {
+    "fingerprint": "2e1aaf33ddb8",
+    "width": 1536,
+    "height": 1024,
+    "originalBytes": 747940,
+    "variants": [
+      {
+        "src": "/assets/optimized/ferris-wheel-cutout-2e1aaf33ddb8-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 94108
+      },
+      {
+        "src": "/assets/optimized/ferris-wheel-cutout-2e1aaf33ddb8-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 340600
+      },
+      {
+        "src": "/assets/optimized/ferris-wheel-cutout-2e1aaf33ddb8-w1536.webp",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 823554
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/flotation-machine-cutout.webp": {
+    "fingerprint": "d56dd582a12c",
+    "width": 1536,
+    "height": 1024,
+    "originalBytes": 145086,
+    "variants": [
+      {
+        "src": "/assets/optimized/flotation-machine-cutout-d56dd582a12c-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 21446
+      },
+      {
+        "src": "/assets/optimized/flotation-machine-cutout-d56dd582a12c-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 60174
+      },
+      {
+        "src": "/assets/optimized/flotation-machine-cutout-d56dd582a12c-w1536.webp",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 134828
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/grab-unloader.webp": {
+    "fingerprint": "681d054182c0",
+    "width": 1024,
+    "height": 1536,
+    "originalBytes": 494672,
+    "variants": [
+      {
+        "src": "/assets/optimized/grab-unloader-681d054182c0-w480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 121646
+      },
+      {
+        "src": "/assets/optimized/grab-unloader-681d054182c0-w960.webp",
+        "width": 960,
+        "height": 1440,
+        "bytes": 380120
+      },
+      {
+        "src": "/assets/optimized/grab-unloader-681d054182c0-w1024.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 485736
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/machinery-boom-cutout.webp": {
+    "fingerprint": "6d607ee49de7",
+    "width": 1956,
+    "height": 804,
+    "originalBytes": 467012,
+    "variants": [
+      {
+        "src": "/assets/optimized/machinery-boom-cutout-6d607ee49de7-w480.webp",
+        "width": 480,
+        "height": 197,
+        "bytes": 43874
+      },
+      {
+        "src": "/assets/optimized/machinery-boom-cutout-6d607ee49de7-w960.webp",
+        "width": 960,
+        "height": 395,
+        "bytes": 132612
+      },
+      {
+        "src": "/assets/optimized/machinery-boom-cutout-6d607ee49de7-w1600.webp",
+        "width": 1600,
+        "height": 658,
+        "bytes": 310782
+      },
+      {
+        "src": "/assets/optimized/machinery-boom-cutout-6d607ee49de7-w1956.webp",
+        "width": 1956,
+        "height": 804,
+        "bytes": 461424
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/mmi-house-cutout.webp": {
+    "fingerprint": "0b12ecda9c7d",
+    "width": 1536,
+    "height": 1024,
+    "originalBytes": 276154,
+    "variants": [
+      {
+        "src": "/assets/optimized/mmi-house-cutout-0b12ecda9c7d-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 43392
+      },
+      {
+        "src": "/assets/optimized/mmi-house-cutout-0b12ecda9c7d-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 124320
+      },
+      {
+        "src": "/assets/optimized/mmi-house-cutout-0b12ecda9c7d-w1536.webp",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 283624
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/offshore-pipe-piles-cutout.webp": {
+    "fingerprint": "fea5d04047c6",
+    "width": 1513,
+    "height": 1040,
+    "originalBytes": 261196,
+    "variants": [
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-cutout-fea5d04047c6-w480.webp",
+        "width": 480,
+        "height": 330,
+        "bytes": 49160
+      },
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-cutout-fea5d04047c6-w960.webp",
+        "width": 960,
+        "height": 660,
+        "bytes": 133080
+      },
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-cutout-fea5d04047c6-w1513.webp",
+        "width": 1513,
+        "height": 1040,
+        "bytes": 275318
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/offshore-pipeline-structure-cutout.webp": {
+    "fingerprint": "b4cfb73c091f",
+    "width": 2043,
+    "height": 770,
+    "originalBytes": 482504,
+    "variants": [
+      {
+        "src": "/assets/optimized/offshore-pipeline-structure-cutout-b4cfb73c091f-w480.webp",
+        "width": 480,
+        "height": 181,
+        "bytes": 46466
+      },
+      {
+        "src": "/assets/optimized/offshore-pipeline-structure-cutout-b4cfb73c091f-w960.webp",
+        "width": 960,
+        "height": 362,
+        "bytes": 143264
+      },
+      {
+        "src": "/assets/optimized/offshore-pipeline-structure-cutout-b4cfb73c091f-w1600.webp",
+        "width": 1600,
+        "height": 603,
+        "bytes": 321282
+      },
+      {
+        "src": "/assets/optimized/offshore-pipeline-structure-cutout-b4cfb73c091f-w2043.webp",
+        "width": 2043,
+        "height": 770,
+        "bytes": 503714
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/paper-scanner-cutout.webp": {
+    "fingerprint": "9be5727b8ac9",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 156064,
+    "variants": [
+      {
+        "src": "/assets/optimized/paper-scanner-cutout-9be5727b8ac9-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 29004
+      },
+      {
+        "src": "/assets/optimized/paper-scanner-cutout-9be5727b8ac9-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 84508
+      },
+      {
+        "src": "/assets/optimized/paper-scanner-cutout-9be5727b8ac9-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 168284
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/roller-coaster-cutout.webp": {
+    "fingerprint": "5982c7e240ee",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 266270,
+    "variants": [
+      {
+        "src": "/assets/optimized/roller-coaster-cutout-5982c7e240ee-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 47370
+      },
+      {
+        "src": "/assets/optimized/roller-coaster-cutout-5982c7e240ee-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 135040
+      },
+      {
+        "src": "/assets/optimized/roller-coaster-cutout-5982c7e240ee-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 262060
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/ropeway-cutout.webp": {
+    "fingerprint": "18bb8207b1c0",
+    "width": 1536,
+    "height": 1024,
+    "originalBytes": 314996,
+    "variants": [
+      {
+        "src": "/assets/optimized/ropeway-cutout-18bb8207b1c0-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 45982
+      },
+      {
+        "src": "/assets/optimized/ropeway-cutout-18bb8207b1c0-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 139286
+      },
+      {
+        "src": "/assets/optimized/ropeway-cutout-18bb8207b1c0-w1536.webp",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 314150
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/rotary-screen-cutout.webp": {
+    "fingerprint": "2bcc4eaf0568",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 424464,
+    "variants": [
+      {
+        "src": "/assets/optimized/rotary-screen-cutout-2bcc4eaf0568-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 65154
+      },
+      {
+        "src": "/assets/optimized/rotary-screen-cutout-2bcc4eaf0568-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 199448
+      },
+      {
+        "src": "/assets/optimized/rotary-screen-cutout-2bcc4eaf0568-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 412578
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/sedimentation-tank-cutout.webp": {
+    "fingerprint": "854e6dc61a62",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 211268,
+    "variants": [
+      {
+        "src": "/assets/optimized/sedimentation-tank-cutout-854e6dc61a62-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 38446
+      },
+      {
+        "src": "/assets/optimized/sedimentation-tank-cutout-854e6dc61a62-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 106110
+      },
+      {
+        "src": "/assets/optimized/sedimentation-tank-cutout-854e6dc61a62-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 211422
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/spreader-cutout.webp": {
+    "fingerprint": "6fd76e62e535",
+    "width": 2043,
+    "height": 770,
+    "originalBytes": 498836,
+    "variants": [
+      {
+        "src": "/assets/optimized/spreader-cutout-6fd76e62e535-w480.webp",
+        "width": 480,
+        "height": 181,
+        "bytes": 39540
+      },
+      {
+        "src": "/assets/optimized/spreader-cutout-6fd76e62e535-w960.webp",
+        "width": 960,
+        "height": 362,
+        "bytes": 128354
+      },
+      {
+        "src": "/assets/optimized/spreader-cutout-6fd76e62e535-w1600.webp",
+        "width": 1600,
+        "height": 603,
+        "bytes": 299630
+      },
+      {
+        "src": "/assets/optimized/spreader-cutout-6fd76e62e535-w2043.webp",
+        "width": 2043,
+        "height": 770,
+        "bytes": 484444
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/stacker-reclaimer-cutout.webp": {
+    "fingerprint": "10a55101b67d",
+    "width": 1538,
+    "height": 1023,
+    "originalBytes": 453104,
+    "variants": [
+      {
+        "src": "/assets/optimized/stacker-reclaimer-cutout-10a55101b67d-w480.webp",
+        "width": 480,
+        "height": 319,
+        "bytes": 58088
+      },
+      {
+        "src": "/assets/optimized/stacker-reclaimer-cutout-10a55101b67d-w960.webp",
+        "width": 960,
+        "height": 639,
+        "bytes": 194560
+      },
+      {
+        "src": "/assets/optimized/stacker-reclaimer-cutout-10a55101b67d-w1538.webp",
+        "width": 1538,
+        "height": 1023,
+        "bytes": 450274
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/thickener-cutout.webp": {
+    "fingerprint": "0cd842760ac9",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 499408,
+    "variants": [
+      {
+        "src": "/assets/optimized/thickener-cutout-0cd842760ac9-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 77790
+      },
+      {
+        "src": "/assets/optimized/thickener-cutout-0cd842760ac9-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 248288
+      },
+      {
+        "src": "/assets/optimized/thickener-cutout-0cd842760ac9-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 508502
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/wagon-tippler-cutout.webp": {
+    "fingerprint": "9cae6de52d2c",
+    "width": 1983,
+    "height": 793,
+    "originalBytes": 387428,
+    "variants": [
+      {
+        "src": "/assets/optimized/wagon-tippler-cutout-9cae6de52d2c-w480.webp",
+        "width": 480,
+        "height": 192,
+        "bytes": 35146
+      },
+      {
+        "src": "/assets/optimized/wagon-tippler-cutout-9cae6de52d2c-w960.webp",
+        "width": 960,
+        "height": 384,
+        "bytes": 103664
+      },
+      {
+        "src": "/assets/optimized/wagon-tippler-cutout-9cae6de52d2c-w1600.webp",
+        "width": 1600,
+        "height": 640,
+        "bytes": 230946
+      },
+      {
+        "src": "/assets/optimized/wagon-tippler-cutout-9cae6de52d2c-w1983.webp",
+        "width": 1983,
+        "height": 793,
+        "bytes": 377476
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/water-storage-tank-cutout.webp": {
+    "fingerprint": "7ee1790f58aa",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 141464,
+    "variants": [
+      {
+        "src": "/assets/optimized/water-storage-tank-cutout-7ee1790f58aa-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 25850
+      },
+      {
+        "src": "/assets/optimized/water-storage-tank-cutout-7ee1790f58aa-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 76920
+      },
+      {
+        "src": "/assets/optimized/water-storage-tank-cutout-7ee1790f58aa-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 147194
+      }
+    ]
+  },
+  "/assets/tzme-j/products/presentation/wind-tower-stacking-device-cutout.webp": {
+    "fingerprint": "70ef10ec3508",
+    "width": 1448,
+    "height": 1086,
+    "originalBytes": 257128,
+    "variants": [
+      {
+        "src": "/assets/optimized/wind-tower-stacking-device-cutout-70ef10ec3508-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 47814
+      },
+      {
+        "src": "/assets/optimized/wind-tower-stacking-device-cutout-70ef10ec3508-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 131964
+      },
+      {
+        "src": "/assets/optimized/wind-tower-stacking-device-cutout-70ef10ec3508-w1448.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 256642
+      }
+    ]
+  },
+  "/assets/tzme-j/products/rbct-shiploader.jpg": {
+    "fingerprint": "49dcf56be07d",
+    "width": 6016,
+    "height": 4016,
+    "originalBytes": 2491375,
+    "variants": [
+      {
+        "src": "/assets/optimized/rbct-shiploader-49dcf56be07d-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 38282
+      },
+      {
+        "src": "/assets/optimized/rbct-shiploader-49dcf56be07d-w960.webp",
+        "width": 960,
+        "height": 641,
+        "bytes": 125564
+      },
+      {
+        "src": "/assets/optimized/rbct-shiploader-49dcf56be07d-w1600.webp",
+        "width": 1600,
+        "height": 1068,
+        "bytes": 298746
+      },
+      {
+        "src": "/assets/optimized/rbct-shiploader-49dcf56be07d-w2400.webp",
+        "width": 2400,
+        "height": 1602,
+        "bytes": 496462
+      }
+    ]
+  },
+  "/assets/tzme-j/products/rotor-sail.jpg": {
+    "fingerprint": "8b98d6949030",
+    "width": 3554,
+    "height": 1999,
+    "originalBytes": 1448901,
+    "variants": [
+      {
+        "src": "/assets/optimized/rotor-sail-8b98d6949030-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 18098
+      },
+      {
+        "src": "/assets/optimized/rotor-sail-8b98d6949030-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 52466
+      },
+      {
+        "src": "/assets/optimized/rotor-sail-8b98d6949030-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 99086
+      },
+      {
+        "src": "/assets/optimized/rotor-sail-8b98d6949030-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 175796
+      }
+    ]
+  },
+  "/assets/tzme-j/products/stacker-reclaimer.jpg": {
+    "fingerprint": "9b2407fa055a",
+    "width": 3008,
+    "height": 2000,
+    "originalBytes": 3190749,
+    "variants": [
+      {
+        "src": "/assets/optimized/stacker-reclaimer-9b2407fa055a-w480.webp",
+        "width": 480,
+        "height": 319,
+        "bytes": 46082
+      },
+      {
+        "src": "/assets/optimized/stacker-reclaimer-9b2407fa055a-w960.webp",
+        "width": 960,
+        "height": 638,
+        "bytes": 163090
+      },
+      {
+        "src": "/assets/optimized/stacker-reclaimer-9b2407fa055a-w1600.webp",
+        "width": 1600,
+        "height": 1064,
+        "bytes": 425474
+      },
+      {
+        "src": "/assets/optimized/stacker-reclaimer-9b2407fa055a-w2400.webp",
+        "width": 2400,
+        "height": 1596,
+        "bytes": 715114
+      }
+    ]
+  },
+  "/assets/tzme-j/products/tourism.jpg": {
+    "fingerprint": "4e6f8ea73da0",
+    "width": 5669,
+    "height": 3780,
+    "originalBytes": 6328146,
+    "variants": [
+      {
+        "src": "/assets/optimized/tourism-4e6f8ea73da0-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 27640
+      },
+      {
+        "src": "/assets/optimized/tourism-4e6f8ea73da0-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 80014
+      },
+      {
+        "src": "/assets/optimized/tourism-4e6f8ea73da0-w1600.webp",
+        "width": 1600,
+        "height": 1067,
+        "bytes": 176910
+      },
+      {
+        "src": "/assets/optimized/tourism-4e6f8ea73da0-w2400.webp",
+        "width": 2400,
+        "height": 1600,
+        "bytes": 280874
+      }
+    ]
+  },
+  "/assets/tzme-j/projects/turkey-unloader-01.jpg": {
+    "fingerprint": "3fefeab93d80",
+    "width": 2880,
+    "height": 1620,
+    "originalBytes": 462412,
+    "variants": [
+      {
+        "src": "/assets/optimized/turkey-unloader-01-3fefeab93d80-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 29800
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-01-3fefeab93d80-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 102270
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-01-3fefeab93d80-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 277232
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-01-3fefeab93d80-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 472666
+      }
+    ]
+  },
+  "/assets/tzme-j/projects/turkey-unloader-02.jpg": {
+    "fingerprint": "22c9601bf225",
+    "width": 2880,
+    "height": 1620,
+    "originalBytes": 512784,
+    "variants": [
+      {
+        "src": "/assets/optimized/turkey-unloader-02-22c9601bf225-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 37176
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-02-22c9601bf225-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 120432
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-02-22c9601bf225-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 293946
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-02-22c9601bf225-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 514342
+      }
+    ]
+  },
+  "/assets/tzme-j/projects/turkey-unloader-03.jpg": {
+    "fingerprint": "9e5982593a19",
+    "width": 2880,
+    "height": 1620,
+    "originalBytes": 446975,
+    "variants": [
+      {
+        "src": "/assets/optimized/turkey-unloader-03-9e5982593a19-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 27536
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-03-9e5982593a19-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 95958
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-03-9e5982593a19-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 268632
+      },
+      {
+        "src": "/assets/optimized/turkey-unloader-03-9e5982593a19-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 444176
+      }
+    ]
+  },
+  "/assets/tzme-j/scenes/industrial-overview.webp": {
+    "fingerprint": "5891908989a5",
+    "width": 1536,
+    "height": 936,
+    "originalBytes": 89598,
+    "variants": [
+      {
+        "src": "/assets/optimized/industrial-overview-5891908989a5-w480.webp",
+        "width": 480,
+        "height": 293,
+        "bytes": 17038
+      },
+      {
+        "src": "/assets/optimized/industrial-overview-5891908989a5-w960.webp",
+        "width": 960,
+        "height": 585,
+        "bytes": 41238
+      },
+      {
+        "src": "/assets/optimized/industrial-overview-5891908989a5-w1536.webp",
+        "width": 1536,
+        "height": 936,
+        "bytes": 75300
+      }
+    ]
+  },
+  "/assets/tzme-products/bridge-steel-structure.webp": {
+    "fingerprint": "39e2ab1add10",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 95646,
+    "variants": [
+      {
+        "src": "/assets/optimized/bridge-steel-structure-39e2ab1add10-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 53162
+      },
+      {
+        "src": "/assets/optimized/bridge-steel-structure-39e2ab1add10-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 99566
+      }
+    ]
+  },
+  "/assets/tzme-products/bucket-wheel-excavator.webp": {
+    "fingerprint": "59bd58d33997",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 80434,
+    "variants": [
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-59bd58d33997-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 43886
+      },
+      {
+        "src": "/assets/optimized/bucket-wheel-excavator-59bd58d33997-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 83638
+      }
+    ]
+  },
+  "/assets/tzme-products/bulk-ship-loader.webp": {
+    "fingerprint": "1235901e974e",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 90670,
+    "variants": [
+      {
+        "src": "/assets/optimized/bulk-ship-loader-1235901e974e-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 48826
+      },
+      {
+        "src": "/assets/optimized/bulk-ship-loader-1235901e974e-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 95022
+      }
+    ]
+  },
+  "/assets/tzme-products/crushing-station.webp": {
+    "fingerprint": "9419655befb5",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 84126,
+    "variants": [
+      {
+        "src": "/assets/optimized/crushing-station-9419655befb5-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 46864
+      },
+      {
+        "src": "/assets/optimized/crushing-station-9419655befb5-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 86640
+      }
+    ]
+  },
+  "/assets/tzme-products/offshore-pipe-piles.webp": {
+    "fingerprint": "35c34fcf488e",
+    "width": 1920,
+    "height": 1319,
+    "originalBytes": 171198,
+    "variants": [
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-35c34fcf488e-w480.webp",
+        "width": 480,
+        "height": 330,
+        "bytes": 25922
+      },
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-35c34fcf488e-w960.webp",
+        "width": 960,
+        "height": 660,
+        "bytes": 71654
+      },
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-35c34fcf488e-w1600.webp",
+        "width": 1600,
+        "height": 1099,
+        "bytes": 133116
+      },
+      {
+        "src": "/assets/optimized/offshore-pipe-piles-35c34fcf488e-w1920.webp",
+        "width": 1920,
+        "height": 1319,
+        "bytes": 176454
+      }
+    ]
+  },
+  "/assets/tzme-products/roller-coaster.webp": {
+    "fingerprint": "0a843c014070",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 90138,
+    "variants": [
+      {
+        "src": "/assets/optimized/roller-coaster-0a843c014070-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 55570
+      },
+      {
+        "src": "/assets/optimized/roller-coaster-0a843c014070-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 94150
+      }
+    ]
+  },
+  "/assets/tzme-products/ropeway.webp": {
+    "fingerprint": "d2df157a9bad",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 104304,
+    "variants": [
+      {
+        "src": "/assets/optimized/ropeway-d2df157a9bad-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 53554
+      },
+      {
+        "src": "/assets/optimized/ropeway-d2df157a9bad-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 109086
+      }
+    ]
+  },
+  "/assets/tzme-products/spreader.webp": {
+    "fingerprint": "d43e18893615",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 105830,
+    "variants": [
+      {
+        "src": "/assets/optimized/spreader-d43e18893615-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 55560
+      },
+      {
+        "src": "/assets/optimized/spreader-d43e18893615-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 109022
+      }
+    ]
+  },
+  "/assets/tzme-products/stacker-reclaimer.webp": {
+    "fingerprint": "46db3136bcb0",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 104410,
+    "variants": [
+      {
+        "src": "/assets/optimized/stacker-reclaimer-46db3136bcb0-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 55922
+      },
+      {
+        "src": "/assets/optimized/stacker-reclaimer-46db3136bcb0-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 109134
+      }
+    ]
+  },
+  "/assets/tzme-products/thickener.webp": {
+    "fingerprint": "3576b21eddb0",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 115294,
+    "variants": [
+      {
+        "src": "/assets/optimized/thickener-3576b21eddb0-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 62846
+      },
+      {
+        "src": "/assets/optimized/thickener-3576b21eddb0-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 121724
+      }
+    ]
+  },
+  "/assets/tzme-products/water-storage-tank.webp": {
+    "fingerprint": "9b5a8ddd15f1",
+    "width": 700,
+    "height": 525,
+    "originalBytes": 122222,
+    "variants": [
+      {
+        "src": "/assets/optimized/water-storage-tank-9b5a8ddd15f1-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 65054
+      },
+      {
+        "src": "/assets/optimized/water-storage-tank-9b5a8ddd15f1-w700.webp",
+        "width": 700,
+        "height": 525,
+        "bytes": 127602
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/annual-gala-01.jpg": {
+    "fingerprint": "2b655f5b25c3",
+    "width": 900,
+    "height": 675,
+    "originalBytes": 166228,
+    "variants": [
+      {
+        "src": "/assets/optimized/annual-gala-01-2b655f5b25c3-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 46504
+      },
+      {
+        "src": "/assets/optimized/annual-gala-01-2b655f5b25c3-w900.webp",
+        "width": 900,
+        "height": 675,
+        "bytes": 114354
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/annual-gala-02.jpg": {
+    "fingerprint": "76a6c5c8e6ab",
+    "width": 900,
+    "height": 599,
+    "originalBytes": 152710,
+    "variants": [
+      {
+        "src": "/assets/optimized/annual-gala-02-76a6c5c8e6ab-w480.webp",
+        "width": 480,
+        "height": 319,
+        "bytes": 43298
+      },
+      {
+        "src": "/assets/optimized/annual-gala-02-76a6c5c8e6ab-w900.webp",
+        "width": 900,
+        "height": 599,
+        "bytes": 104870
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/annual-gala-03.jpg": {
+    "fingerprint": "088620358fe8",
+    "width": 900,
+    "height": 675,
+    "originalBytes": 99340,
+    "variants": [
+      {
+        "src": "/assets/optimized/annual-gala-03-088620358fe8-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 18280
+      },
+      {
+        "src": "/assets/optimized/annual-gala-03-088620358fe8-w900.webp",
+        "width": 900,
+        "height": 675,
+        "bytes": 50710
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/annual-gala-04.jpg": {
+    "fingerprint": "0277cd9d9c90",
+    "width": 900,
+    "height": 599,
+    "originalBytes": 107415,
+    "variants": [
+      {
+        "src": "/assets/optimized/annual-gala-04-0277cd9d9c90-w480.webp",
+        "width": 480,
+        "height": 319,
+        "bytes": 29462
+      },
+      {
+        "src": "/assets/optimized/annual-gala-04-0277cd9d9c90-w900.webp",
+        "width": 900,
+        "height": 599,
+        "bytes": 60708
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/borax-cage-mill-01.jpg": {
+    "fingerprint": "52478f723bbe",
+    "width": 1706,
+    "height": 1279,
+    "originalBytes": 259255,
+    "variants": [
+      {
+        "src": "/assets/optimized/borax-cage-mill-01-52478f723bbe-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 37154
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-01-52478f723bbe-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 113032
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-01-52478f723bbe-w1600.webp",
+        "width": 1600,
+        "height": 1200,
+        "bytes": 214170
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-01-52478f723bbe-w1706.webp",
+        "width": 1706,
+        "height": 1279,
+        "bytes": 269268
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/borax-cage-mill-02.jpg": {
+    "fingerprint": "796cb0ddb381",
+    "width": 2269,
+    "height": 1279,
+    "originalBytes": 145580,
+    "variants": [
+      {
+        "src": "/assets/optimized/borax-cage-mill-02-796cb0ddb381-w480.webp",
+        "width": 480,
+        "height": 271,
+        "bytes": 37684
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-02-796cb0ddb381-w960.webp",
+        "width": 960,
+        "height": 541,
+        "bytes": 105452
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-02-796cb0ddb381-w1600.webp",
+        "width": 1600,
+        "height": 902,
+        "bytes": 222864
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-02-796cb0ddb381-w2269.webp",
+        "width": 2269,
+        "height": 1279,
+        "bytes": 272912
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/borax-cage-mill-03.jpg": {
+    "fingerprint": "c934c2c4a0e7",
+    "width": 1898,
+    "height": 888,
+    "originalBytes": 347361,
+    "variants": [
+      {
+        "src": "/assets/optimized/borax-cage-mill-03-c934c2c4a0e7-w480.webp",
+        "width": 480,
+        "height": 225,
+        "bytes": 25484
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-03-c934c2c4a0e7-w960.webp",
+        "width": 960,
+        "height": 449,
+        "bytes": 80536
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-03-c934c2c4a0e7-w1600.webp",
+        "width": 1600,
+        "height": 749,
+        "bytes": 152288
+      },
+      {
+        "src": "/assets/optimized/borax-cage-mill-03-c934c2c4a0e7-w1898.webp",
+        "width": 1898,
+        "height": 888,
+        "bytes": 204026
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/brochure-zh-en-01.jpg": {
+    "fingerprint": "3153cd0499f8",
+    "width": 3222,
+    "height": 2200,
+    "originalBytes": 392787,
+    "variants": [
+      {
+        "src": "/assets/optimized/brochure-zh-en-01-3153cd0499f8-w480.webp",
+        "width": 480,
+        "height": 328,
+        "bytes": 15942
+      },
+      {
+        "src": "/assets/optimized/brochure-zh-en-01-3153cd0499f8-w960.webp",
+        "width": 960,
+        "height": 655,
+        "bytes": 52304
+      },
+      {
+        "src": "/assets/optimized/brochure-zh-en-01-3153cd0499f8-w1600.webp",
+        "width": 1600,
+        "height": 1092,
+        "bytes": 107372
+      },
+      {
+        "src": "/assets/optimized/brochure-zh-en-01-3153cd0499f8-w2400.webp",
+        "width": 2400,
+        "height": 1639,
+        "bytes": 209580
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/brochure-zh-ja-01.jpg": {
+    "fingerprint": "8f7c2aa91b7f",
+    "width": 3221,
+    "height": 2201,
+    "originalBytes": 416261,
+    "variants": [
+      {
+        "src": "/assets/optimized/brochure-zh-ja-01-8f7c2aa91b7f-w480.webp",
+        "width": 480,
+        "height": 328,
+        "bytes": 17078
+      },
+      {
+        "src": "/assets/optimized/brochure-zh-ja-01-8f7c2aa91b7f-w960.webp",
+        "width": 960,
+        "height": 656,
+        "bytes": 57202
+      },
+      {
+        "src": "/assets/optimized/brochure-zh-ja-01-8f7c2aa91b7f-w1600.webp",
+        "width": 1600,
+        "height": 1093,
+        "bytes": 117260
+      },
+      {
+        "src": "/assets/optimized/brochure-zh-ja-01-8f7c2aa91b7f-w2400.webp",
+        "width": 2400,
+        "height": 1640,
+        "bytes": 223984
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/canada-energy-01.jpg": {
+    "fingerprint": "590e9ca543fe",
+    "width": 1600,
+    "height": 898,
+    "originalBytes": 169381,
+    "variants": [
+      {
+        "src": "/assets/optimized/canada-energy-01-590e9ca543fe-w480.webp",
+        "width": 480,
+        "height": 269,
+        "bytes": 23640
+      },
+      {
+        "src": "/assets/optimized/canada-energy-01-590e9ca543fe-w960.webp",
+        "width": 960,
+        "height": 539,
+        "bytes": 81736
+      },
+      {
+        "src": "/assets/optimized/canada-energy-01-590e9ca543fe-w1600.webp",
+        "width": 1600,
+        "height": 898,
+        "bytes": 192152
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/canada-energy-02.jpg": {
+    "fingerprint": "794a23e58067",
+    "width": 1269,
+    "height": 712,
+    "originalBytes": 164403,
+    "variants": [
+      {
+        "src": "/assets/optimized/canada-energy-02-794a23e58067-w480.webp",
+        "width": 480,
+        "height": 269,
+        "bytes": 25398
+      },
+      {
+        "src": "/assets/optimized/canada-energy-02-794a23e58067-w960.webp",
+        "width": 960,
+        "height": 539,
+        "bytes": 81410
+      },
+      {
+        "src": "/assets/optimized/canada-energy-02-794a23e58067-w1269.webp",
+        "width": 1269,
+        "height": 712,
+        "bytes": 130074
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/canada-energy-03.jpg": {
+    "fingerprint": "125d2302ebbd",
+    "width": 864,
+    "height": 476,
+    "originalBytes": 139597,
+    "variants": [
+      {
+        "src": "/assets/optimized/canada-energy-03-125d2302ebbd-w480.webp",
+        "width": 480,
+        "height": 264,
+        "bytes": 40664
+      },
+      {
+        "src": "/assets/optimized/canada-energy-03-125d2302ebbd-w864.webp",
+        "width": 864,
+        "height": 476,
+        "bytes": 102882
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/canada-energy-04.jpg": {
+    "fingerprint": "90166e3be7b5",
+    "width": 1264,
+    "height": 948,
+    "originalBytes": 283944,
+    "variants": [
+      {
+        "src": "/assets/optimized/canada-energy-04-90166e3be7b5-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 49170
+      },
+      {
+        "src": "/assets/optimized/canada-energy-04-90166e3be7b5-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 145580
+      },
+      {
+        "src": "/assets/optimized/canada-energy-04-90166e3be7b5-w1264.webp",
+        "width": 1264,
+        "height": 948,
+        "bytes": 226304
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/n-expo-2026-01.png": {
+    "fingerprint": "8f9b5d5797aa",
+    "width": 1024,
+    "height": 360,
+    "originalBytes": 327814,
+    "variants": [
+      {
+        "src": "/assets/optimized/n-expo-2026-01-8f9b5d5797aa-w480.webp",
+        "width": 480,
+        "height": 169,
+        "bytes": 16352
+      },
+      {
+        "src": "/assets/optimized/n-expo-2026-01-8f9b5d5797aa-w960.webp",
+        "width": 960,
+        "height": 338,
+        "bytes": 39524
+      },
+      {
+        "src": "/assets/optimized/n-expo-2026-01-8f9b5d5797aa-w1024.webp",
+        "width": 1024,
+        "height": 360,
+        "bytes": 44980
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/tokyo-n-expo-01.jpg": {
+    "fingerprint": "8f430ec6a1bb",
+    "width": 1706,
+    "height": 1279,
+    "originalBytes": 199361,
+    "variants": [
+      {
+        "src": "/assets/optimized/tokyo-n-expo-01-8f430ec6a1bb-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 47080
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-01-8f430ec6a1bb-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 121740
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-01-8f430ec6a1bb-w1600.webp",
+        "width": 1600,
+        "height": 1200,
+        "bytes": 211564
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-01-8f430ec6a1bb-w1706.webp",
+        "width": 1706,
+        "height": 1279,
+        "bytes": 232238
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/tokyo-n-expo-02.jpg": {
+    "fingerprint": "406049545a83",
+    "width": 2276,
+    "height": 1280,
+    "originalBytes": 431300,
+    "variants": [
+      {
+        "src": "/assets/optimized/tokyo-n-expo-02-406049545a83-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 35158
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-02-406049545a83-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 108974
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-02-406049545a83-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 266364
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-02-406049545a83-w2276.webp",
+        "width": 2276,
+        "height": 1280,
+        "bytes": 448290
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/tokyo-n-expo-03.jpg": {
+    "fingerprint": "38f1ab2ce0c1",
+    "width": 1706,
+    "height": 1279,
+    "originalBytes": 192436,
+    "variants": [
+      {
+        "src": "/assets/optimized/tokyo-n-expo-03-38f1ab2ce0c1-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 29614
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-03-38f1ab2ce0c1-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 76016
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-03-38f1ab2ce0c1-w1600.webp",
+        "width": 1600,
+        "height": 1200,
+        "bytes": 134430
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-03-38f1ab2ce0c1-w1706.webp",
+        "width": 1706,
+        "height": 1279,
+        "bytes": 156144
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/tokyo-n-expo-04.jpg": {
+    "fingerprint": "e55b949b9c94",
+    "width": 4096,
+    "height": 2304,
+    "originalBytes": 593685,
+    "variants": [
+      {
+        "src": "/assets/optimized/tokyo-n-expo-04-e55b949b9c94-w480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 24470
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-04-e55b949b9c94-w960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 70576
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-04-e55b949b9c94-w1600.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 151632
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-04-e55b949b9c94-w2400.webp",
+        "width": 2400,
+        "height": 1350,
+        "bytes": 277372
+      }
+    ]
+  },
+  "/assets/tzme-newsroom/images/tokyo-n-expo-05.jpg": {
+    "fingerprint": "382ce5a6deb5",
+    "width": 1706,
+    "height": 1279,
+    "originalBytes": 209602,
+    "variants": [
+      {
+        "src": "/assets/optimized/tokyo-n-expo-05-382ce5a6deb5-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 47830
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-05-382ce5a6deb5-w960.webp",
+        "width": 960,
+        "height": 720,
+        "bytes": 128068
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-05-382ce5a6deb5-w1600.webp",
+        "width": 1600,
+        "height": 1200,
+        "bytes": 221440
+      },
+      {
+        "src": "/assets/optimized/tokyo-n-expo-05-382ce5a6deb5-w1706.webp",
+        "width": 1706,
+        "height": 1279,
+        "bytes": 244970
+      }
+    ]
+  },
+  "/assets/banner-culture.jpg": {
+    "fingerprint": "794a7a1fc0bc",
+    "width": 1920,
+    "height": 298,
+    "originalBytes": 104862,
+    "variants": [
+      {
+        "src": "/assets/optimized/banner-culture-794a7a1fc0bc-w480.webp",
+        "width": 480,
+        "height": 75,
+        "bytes": 9082
+      },
+      {
+        "src": "/assets/optimized/banner-culture-794a7a1fc0bc-w960.webp",
+        "width": 960,
+        "height": 149,
+        "bytes": 25208
+      },
+      {
+        "src": "/assets/optimized/banner-culture-794a7a1fc0bc-w1600.webp",
+        "width": 1600,
+        "height": 248,
+        "bytes": 52290
+      },
+      {
+        "src": "/assets/optimized/banner-culture-794a7a1fc0bc-w1920.webp",
+        "width": 1920,
+        "height": 298,
+        "bytes": 74236
+      }
+    ]
+  },
+  "/assets/banner-products.jpg": {
+    "fingerprint": "05328ad3415a",
+    "width": 1920,
+    "height": 298,
+    "originalBytes": 232466,
+    "variants": [
+      {
+        "src": "/assets/optimized/banner-products-05328ad3415a-w480.webp",
+        "width": 480,
+        "height": 75,
+        "bytes": 16610
+      },
+      {
+        "src": "/assets/optimized/banner-products-05328ad3415a-w960.webp",
+        "width": 960,
+        "height": 149,
+        "bytes": 59852
+      },
+      {
+        "src": "/assets/optimized/banner-products-05328ad3415a-w1600.webp",
+        "width": 1600,
+        "height": 248,
+        "bytes": 132776
+      },
+      {
+        "src": "/assets/optimized/banner-products-05328ad3415a-w1920.webp",
+        "width": 1920,
+        "height": 298,
+        "bytes": 196864
+      }
+    ]
+  },
+  "/assets/cert-2.jpg": {
+    "fingerprint": "78df42af18d4",
+    "width": 880,
+    "height": 1245,
+    "originalBytes": 218586,
+    "variants": [
+      {
+        "src": "/assets/optimized/cert-2-78df42af18d4-w480.webp",
+        "width": 480,
+        "height": 679,
+        "bytes": 39318
+      },
+      {
+        "src": "/assets/optimized/cert-2-78df42af18d4-w880.webp",
+        "width": 880,
+        "height": 1245,
+        "bytes": 124342
+      }
+    ]
+  },
+  "/assets/cert-3.jpg": {
+    "fingerprint": "4950c852b64f",
+    "width": 880,
+    "height": 1245,
+    "originalBytes": 211622,
+    "variants": [
+      {
+        "src": "/assets/optimized/cert-3-4950c852b64f-w480.webp",
+        "width": 480,
+        "height": 679,
+        "bytes": 49698
+      },
+      {
+        "src": "/assets/optimized/cert-3-4950c852b64f-w880.webp",
+        "width": 880,
+        "height": 1245,
+        "bytes": 117374
+      }
+    ]
+  },
+  "/assets/hero-01.jpg": {
+    "fingerprint": "ac319f497c4c",
+    "width": 1920,
+    "height": 859,
+    "originalBytes": 1438891,
+    "variants": [
+      {
+        "src": "/assets/optimized/hero-01-ac319f497c4c-w480.webp",
+        "width": 480,
+        "height": 215,
+        "bytes": 29462
+      },
+      {
+        "src": "/assets/optimized/hero-01-ac319f497c4c-w960.webp",
+        "width": 960,
+        "height": 430,
+        "bytes": 107576
+      },
+      {
+        "src": "/assets/optimized/hero-01-ac319f497c4c-w1600.webp",
+        "width": 1600,
+        "height": 716,
+        "bytes": 241250
+      },
+      {
+        "src": "/assets/optimized/hero-01-ac319f497c4c-w1920.webp",
+        "width": 1920,
+        "height": 859,
+        "bytes": 363310
+      }
+    ]
+  },
+  "/assets/hero-02.jpg": {
+    "fingerprint": "7d9015644167",
+    "width": 1920,
+    "height": 859,
+    "originalBytes": 1343321,
+    "variants": [
+      {
+        "src": "/assets/optimized/hero-02-7d9015644167-w480.webp",
+        "width": 480,
+        "height": 215,
+        "bytes": 30026
+      },
+      {
+        "src": "/assets/optimized/hero-02-7d9015644167-w960.webp",
+        "width": 960,
+        "height": 430,
+        "bytes": 93248
+      },
+      {
+        "src": "/assets/optimized/hero-02-7d9015644167-w1600.webp",
+        "width": 1600,
+        "height": 716,
+        "bytes": 192390
+      },
+      {
+        "src": "/assets/optimized/hero-02-7d9015644167-w1920.webp",
+        "width": 1920,
+        "height": 859,
+        "bytes": 290744
+      }
+    ]
+  },
+  "/assets/hero-03.jpg": {
+    "fingerprint": "7f502543d4f6",
+    "width": 1920,
+    "height": 859,
+    "originalBytes": 1223882,
+    "variants": [
+      {
+        "src": "/assets/optimized/hero-03-7f502543d4f6-w480.webp",
+        "width": 480,
+        "height": 215,
+        "bytes": 19630
+      },
+      {
+        "src": "/assets/optimized/hero-03-7f502543d4f6-w960.webp",
+        "width": 960,
+        "height": 430,
+        "bytes": 71652
+      },
+      {
+        "src": "/assets/optimized/hero-03-7f502543d4f6-w1600.webp",
+        "width": 1600,
+        "height": 716,
+        "bytes": 156708
+      },
+      {
+        "src": "/assets/optimized/hero-03-7f502543d4f6-w1920.webp",
+        "width": 1920,
+        "height": 859,
+        "bytes": 270014
+      }
+    ]
+  },
+  "/assets/n-2.jpg": {
+    "fingerprint": "689b3937514a",
+    "width": 1000,
+    "height": 662,
+    "originalBytes": 88578,
+    "variants": [
+      {
+        "src": "/assets/optimized/n-2-689b3937514a-w480.webp",
+        "width": 480,
+        "height": 318,
+        "bytes": 27082
+      },
+      {
+        "src": "/assets/optimized/n-2-689b3937514a-w960.webp",
+        "width": 960,
+        "height": 636,
+        "bytes": 70178
+      },
+      {
+        "src": "/assets/optimized/n-2-689b3937514a-w1000.webp",
+        "width": 1000,
+        "height": 662,
+        "bytes": 81102
+      }
+    ]
+  },
+  "/assets/p-bridge-1.jpg": {
+    "fingerprint": "45c213fa4e0e",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 710378,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-bridge-1-45c213fa4e0e-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 67752
+      },
+      {
+        "src": "/assets/optimized/p-bridge-1-45c213fa4e0e-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 208034
+      }
+    ]
+  },
+  "/assets/p-convey-2.jpg": {
+    "fingerprint": "d881f8dc756b",
+    "width": 880,
+    "height": 662,
+    "originalBytes": 357663,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-convey-2-d881f8dc756b-w480.webp",
+        "width": 480,
+        "height": 361,
+        "bytes": 34120
+      },
+      {
+        "src": "/assets/optimized/p-convey-2-d881f8dc756b-w880.webp",
+        "width": 880,
+        "height": 662,
+        "bytes": 71568
+      }
+    ]
+  },
+  "/assets/p-env-1.jpg": {
+    "fingerprint": "46f29138ad8a",
+    "width": 880,
+    "height": 656,
+    "originalBytes": 628512,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-env-1-46f29138ad8a-w480.webp",
+        "width": 480,
+        "height": 358,
+        "bytes": 50810
+      },
+      {
+        "src": "/assets/optimized/p-env-1-46f29138ad8a-w880.webp",
+        "width": 880,
+        "height": 656,
+        "bytes": 140804
+      }
+    ]
+  },
+  "/assets/p-metal-1.jpg": {
+    "fingerprint": "7c886fcf9c34",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 573474,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-metal-1-7c886fcf9c34-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 44046
+      },
+      {
+        "src": "/assets/optimized/p-metal-1-7c886fcf9c34-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 106236
+      }
+    ]
+  },
+  "/assets/p-mining-1.jpg": {
+    "fingerprint": "7d703475c722",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 536213,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-mining-1-7d703475c722-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 47464
+      },
+      {
+        "src": "/assets/optimized/p-mining-1-7d703475c722-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 138014
+      }
+    ]
+  },
+  "/assets/p-mining-2.jpg": {
+    "fingerprint": "fd471c6ef4fd",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 385410,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-mining-2-fd471c6ef4fd-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 43182
+      },
+      {
+        "src": "/assets/optimized/p-mining-2-fd471c6ef4fd-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 120034
+      }
+    ]
+  },
+  "/assets/p-mining-3.jpg": {
+    "fingerprint": "65c3844b1056",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 444703,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-mining-3-65c3844b1056-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 48664
+      },
+      {
+        "src": "/assets/optimized/p-mining-3-65c3844b1056-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 144224
+      }
+    ]
+  },
+  "/assets/p-mining-4.jpg": {
+    "fingerprint": "16e1ee7f194b",
+    "width": 880,
+    "height": 657,
+    "originalBytes": 709219,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-mining-4-16e1ee7f194b-w480.webp",
+        "width": 480,
+        "height": 358,
+        "bytes": 71318
+      },
+      {
+        "src": "/assets/optimized/p-mining-4-16e1ee7f194b-w880.webp",
+        "width": 880,
+        "height": 657,
+        "bytes": 209852
+      }
+    ]
+  },
+  "/assets/p-mining-5.jpg": {
+    "fingerprint": "5fafaf5e962c",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 554986,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-mining-5-5fafaf5e962c-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 48806
+      },
+      {
+        "src": "/assets/optimized/p-mining-5-5fafaf5e962c-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 138750
+      }
+    ]
+  },
+  "/assets/p-other-1.jpg": {
+    "fingerprint": "8affc1999c97",
+    "width": 1284,
+    "height": 857,
+    "originalBytes": 474695,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-other-1-8affc1999c97-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 27066
+      },
+      {
+        "src": "/assets/optimized/p-other-1-8affc1999c97-w960.webp",
+        "width": 960,
+        "height": 641,
+        "bytes": 69618
+      },
+      {
+        "src": "/assets/optimized/p-other-1-8affc1999c97-w1284.webp",
+        "width": 1284,
+        "height": 857,
+        "bytes": 101180
+      }
+    ]
+  },
+  "/assets/p-other-2.jpg": {
+    "fingerprint": "df8fcee167a4",
+    "width": 880,
+    "height": 1173,
+    "originalBytes": 810850,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-other-2-df8fcee167a4-w480.webp",
+        "width": 480,
+        "height": 640,
+        "bytes": 67382
+      },
+      {
+        "src": "/assets/optimized/p-other-2-df8fcee167a4-w880.webp",
+        "width": 880,
+        "height": 1173,
+        "bytes": 181942
+      }
+    ]
+  },
+  "/assets/p-other-3.jpg": {
+    "fingerprint": "c6733fd5fba7",
+    "width": 880,
+    "height": 660,
+    "originalBytes": 408944,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-other-3-c6733fd5fba7-w480.webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 26984
+      },
+      {
+        "src": "/assets/optimized/p-other-3-c6733fd5fba7-w880.webp",
+        "width": 880,
+        "height": 660,
+        "bytes": 77864
+      }
+    ]
+  },
+  "/assets/p-port-1.jpg": {
+    "fingerprint": "1479cfaab8fa",
+    "width": 1286,
+    "height": 858,
+    "originalBytes": 175061,
+    "variants": [
+      {
+        "src": "/assets/optimized/p-port-1-1479cfaab8fa-w480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 43306
+      },
+      {
+        "src": "/assets/optimized/p-port-1-1479cfaab8fa-w960.webp",
+        "width": 960,
+        "height": 640,
+        "bytes": 137396
+      },
+      {
+        "src": "/assets/optimized/p-port-1-1479cfaab8fa-w1286.webp",
+        "width": 1286,
+        "height": 858,
+        "bytes": 205398
+      }
+    ]
+  },
+  "/assets/video-poster.jpg": {
+    "fingerprint": "cd48d6dc910e",
+    "width": 735,
+    "height": 482,
+    "originalBytes": 139958,
+    "variants": [
+      {
+        "src": "/assets/optimized/video-poster-cd48d6dc910e-w480.webp",
+        "width": 480,
+        "height": 315,
+        "bytes": 30468
+      },
+      {
+        "src": "/assets/optimized/video-poster-cd48d6dc910e-w735.webp",
+        "width": 735,
+        "height": 482,
+        "bytes": 65146
+      }
+    ]
+  },
+  "/assets/worldmap.png": {
+    "fingerprint": "15008f3f7a0b",
+    "width": 1400,
+    "height": 550,
+    "originalBytes": 146633,
+    "variants": [
+      {
+        "src": "/assets/optimized/worldmap-15008f3f7a0b-w480.webp",
+        "width": 480,
+        "height": 189,
+        "bytes": 24838
+      },
+      {
+        "src": "/assets/optimized/worldmap-15008f3f7a0b-w960.webp",
+        "width": 960,
+        "height": 377,
+        "bytes": 60716
+      },
+      {
+        "src": "/assets/optimized/worldmap-15008f3f7a0b-w1400.webp",
+        "width": 1400,
+        "height": 550,
+        "bytes": 78242
+      }
+    ]
+  }
+}

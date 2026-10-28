@@ -12,26 +12,36 @@ import org.springframework.security.web.csrf.MissingCsrfTokenException;
 
 @Configuration
 public class AdminSecurityConfig {
-    @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(12); }
-    @Bean SecurityFilterChain apiSecurity(HttpSecurity http, AdminAccountRepository accounts) throws Exception {
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    SecurityFilterChain apiSecurity(HttpSecurity http, AdminAccountRepository accounts) throws Exception {
         http.formLogin(form -> form.disable()).httpBasic(basic -> basic.disable()).logout(logout -> logout.disable())
-            .requestCache(cache -> cache.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).sessionFixation(fixation -> fixation.changeSessionId()))
-            .csrf(csrf -> csrf.ignoringRequestMatchers(request -> "POST".equals(request.getMethod())
-                && java.util.Set.of("/api/inquiries", "/api/inquiry-attachments", "/api/analytics/events").contains(ApiAccess.path(request))))
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(ApiAccess::publicRequest).permitAll()
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/admin/accounts", "/api/admin/accounts/**").hasRole("SUPER_ADMIN")
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll())
-            .exceptionHandling(errors -> errors
-                .authenticationEntryPoint((request, response, error) -> SecurityJson.write(response, 401, "AUTH_REQUIRED", "请登录管理后台。"))
-                .accessDeniedHandler((request, response, error) -> {
-                    boolean csrf = error instanceof MissingCsrfTokenException || error instanceof InvalidCsrfTokenException;
-                    SecurityJson.write(response, 403, csrf ? "CSRF_INVALID" : "FORBIDDEN", csrf ? "登录校验已过期，请重新登录后再试。" : "当前账号没有此操作权限。");
-                }))
-            .addFilterBefore(new AccountSessionFilter(accounts), AuthorizationFilter.class);
+                .requestCache(cache -> cache.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionFixation(fixation -> fixation.changeSessionId()))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(request -> "POST".equals(request.getMethod())
+                        && java.util.Set.of("/api/inquiries", "/api/inquiry-attachments", "/api/analytics/events")
+                                .contains(ApiAccess.path(request))))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(ApiAccess::publicRequest).permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/admin/accounts", "/api/admin/accounts/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll())
+                .exceptionHandling(errors -> errors
+                        .authenticationEntryPoint((request, response, error) -> SecurityJson.write(response, 401,
+                                "AUTH_REQUIRED", "请登录管理后台。"))
+                        .accessDeniedHandler((request, response, error) -> {
+                            boolean csrf = error instanceof MissingCsrfTokenException
+                                    || error instanceof InvalidCsrfTokenException;
+                            SecurityJson.write(response, 403, csrf ? "CSRF_INVALID" : "FORBIDDEN",
+                                    csrf ? "登录校验已过期，请重新登录后再试。" : "当前账号没有此操作权限。");
+                        }))
+                .addFilterBefore(new AccountSessionFilter(accounts), AuthorizationFilter.class);
         return http.build();
     }
 }

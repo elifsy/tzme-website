@@ -37,7 +37,8 @@ public class UploadController {
         byte[] bytes = file.getBytes();
         String extension = imageExtension(bytes);
         if (extension == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only JPEG, PNG, GIF and WebP images are supported");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Only JPEG, PNG, GIF and WebP images are supported");
         Files.createDirectories(directory);
         String filename = UUID.randomUUID() + "." + extension;
         Files.write(directory.resolve(filename), bytes);
@@ -59,13 +60,18 @@ public class UploadController {
     }
 
     private static String imageExtension(byte[] bytes) {
-        if (bytes.length < 12) return null;
-        if ((bytes[0] & 0xff) == 0xff && (bytes[1] & 0xff) == 0xd8 && (bytes[2] & 0xff) == 0xff) return "jpg";
+        if (bytes.length < 12)
+            return null;
+        if ((bytes[0] & 0xff) == 0xff && (bytes[1] & 0xff) == 0xd8 && (bytes[2] & 0xff) == 0xff)
+            return "jpg";
         if ((bytes[0] & 0xff) == 0x89 && bytes[1] == 'P' && bytes[2] == 'N' && bytes[3] == 'G'
-                && bytes[4] == 13 && bytes[5] == 10 && bytes[6] == 26 && bytes[7] == 10) return "png";
+                && bytes[4] == 13 && bytes[5] == 10 && bytes[6] == 26 && bytes[7] == 10)
+            return "png";
         String header = new String(bytes, 0, 12, StandardCharsets.US_ASCII);
-        if (header.startsWith("GIF87a") || header.startsWith("GIF89a")) return "gif";
-        if (header.startsWith("RIFF") && header.substring(8).equals("WEBP")) return "webp";
+        if (header.startsWith("GIF87a") || header.startsWith("GIF89a"))
+            return "gif";
+        if (header.startsWith("RIFF") && header.substring(8).equals("WEBP"))
+            return "webp";
         return null;
     }
 }

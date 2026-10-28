@@ -1,165 +1,362 @@
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useDesignPage } from '../composables/useDesignPage.js'
-import { focusProjectContent } from '../utils/projectNavigation.js'
-import { localizedField } from '../services/catalog.js'
-import { useProjectCatalog } from '../services/projects.js'
-import { sanitizeRichText } from '../utils/richText.js'
-import SiteFooter from '../components/SiteFooter.vue'
-import SiteNav from '../components/SiteNav.vue'
-import ProjectCard from '../components/ProjectCard.vue'
-import { projectGalleries } from '../data/jDesign.js'
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { useDesignPage } from "../composables/useDesignPage.js";
+import { focusProjectContent } from "../utils/projectNavigation.js";
+import { localizedField } from "../services/catalog.js";
+import { useProjectCatalog } from "../services/projects.js";
+import { sanitizeRichText } from "../utils/richText.js";
+import SiteFooter from "../components/SiteFooter.vue";
+import SiteNav from "../components/SiteNav.vue";
+import ProjectCard from "../components/ProjectCard.vue";
+import { projectGalleries } from "../data/jDesign.js";
 
-const page = ref(null)
-const route = useRoute()
-const { t, locale } = useI18n({ useScope: 'global' })
-const { goTo } = useDesignPage('hc-project-detail', page)
-const { publishedProjects, loadProjects } = useProjectCatalog()
-const loading = ref(true)
-const project = computed(() => publishedProjects.value.find((item) => item.id === route.params.id))
-const gallery = computed(() => [...new Set([project.value?.image, ...(projectGalleries[project.value?.id] || [])].filter(Boolean))])
-const galleryRefs = new Map()
-const field = (name) => localizedField(project.value, name, locale.value)
-const metrics = computed(() => ['capacity', 'technology', 'scope'].map((name) => ({ name, label: field(`${name}Label`), value: field(name) })))
+const page = ref(null);
+const route = useRoute();
+const { t, locale } = useI18n({ useScope: "global" });
+const { goTo } = useDesignPage("hc-project-detail", page);
+const { publishedProjects, loadProjects } = useProjectCatalog();
+const loading = ref(true);
+const project = computed(() =>
+  publishedProjects.value.find((item) => item.id === route.params.id),
+);
+const gallery = computed(() => [
+  ...new Set(
+    [
+      project.value?.image,
+      ...(projectGalleries[project.value?.id] || []),
+    ].filter(Boolean),
+  ),
+]);
+const galleryRefs = new Map();
+const field = (name) => localizedField(project.value, name, locale.value);
+const metrics = computed(() =>
+  ["capacity", "technology", "scope"].map((name) => ({
+    name,
+    label: field(`${name}Label`),
+    value: field(name),
+  })),
+);
 const body = computed(() => {
-  const template = document.createElement('template')
-  template.innerHTML = sanitizeRichText(field('content') || field('summary'))
+  const template = document.createElement("template");
+  template.innerHTML = sanitizeRichText(field("content") || field("summary"));
   // Apply the readable page typography to CMS text while keeping its structure and emphasis.
-  template.content.querySelectorAll('[style]').forEach((element) => {
-    for (const property of ['color', 'background-color', 'font-size', 'font-family', 'line-height', 'text-indent']) element.style.removeProperty(property)
-    if (Number(element.style.fontWeight) > 0 && Number(element.style.fontWeight) < 400) element.style.fontWeight = '400'
-    if (!element.style.length) element.removeAttribute('style')
-  })
-  template.content.querySelectorAll('[color], [bgcolor], [size], [face]').forEach((element) => {
-    for (const attribute of ['color', 'bgcolor', 'size', 'face']) element.removeAttribute(attribute)
-  })
-  const headings = [...template.content.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-  const firstLevel = Math.min(...headings.map((heading) => Number(heading.tagName.slice(1))))
-  const sections = []
+  template.content.querySelectorAll("[style]").forEach((element) => {
+    for (const property of [
+      "color",
+      "background-color",
+      "font-size",
+      "font-family",
+      "line-height",
+      "text-indent",
+    ])
+      element.style.removeProperty(property);
+    if (
+      Number(element.style.fontWeight) > 0 &&
+      Number(element.style.fontWeight) < 400
+    )
+      element.style.fontWeight = "400";
+    if (!element.style.length) element.removeAttribute("style");
+  });
+  template.content
+    .querySelectorAll("[color], [bgcolor], [size], [face]")
+    .forEach((element) => {
+      for (const attribute of ["color", "bgcolor", "size", "face"])
+        element.removeAttribute(attribute);
+    });
+  const headings = [
+    ...template.content.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+  ];
+  const firstLevel = Math.min(
+    ...headings.map((heading) => Number(heading.tagName.slice(1))),
+  );
+  const sections = [];
   for (const [index, heading] of headings.entries()) {
-    const level = Math.min(6, Number(heading.tagName.slice(1)) + 3 - firstLevel)
-    const normalized = document.createElement(`h${level}`)
-    for (const attribute of [...heading.attributes]) normalized.setAttribute(attribute.name, attribute.value)
-    normalized.append(...heading.childNodes)
-    const title = normalized.textContent.trim()
+    const level = Math.min(
+      6,
+      Number(heading.tagName.slice(1)) + 3 - firstLevel,
+    );
+    const normalized = document.createElement(`h${level}`);
+    for (const attribute of [...heading.attributes])
+      normalized.setAttribute(attribute.name, attribute.value);
+    normalized.append(...heading.childNodes);
+    const title = normalized.textContent.trim();
     if (level === 3 && title) {
-      normalized.id = `project-section-${index + 1}`
-      normalized.tabIndex = -1
-      normalized.className = 'project-content-section-title'
-      sections.push({ id: normalized.id, title })
+      normalized.id = `project-section-${index + 1}`;
+      normalized.tabIndex = -1;
+      normalized.className = "project-content-section-title";
+      sections.push({ id: normalized.id, title });
     }
-    heading.replaceWith(normalized)
+    heading.replaceWith(normalized);
   }
-  template.content.querySelectorAll('table').forEach((table) => {
-    const region = document.createElement('div')
-    region.className = 'project-rich-table'
-    region.tabIndex = 0
-    region.setAttribute('role', 'region')
-    region.setAttribute('aria-label', table.querySelector('caption')?.textContent || t('site.projectDataTable'))
-    table.replaceWith(region)
-    region.append(table)
-  })
-  return { html: template.innerHTML, sections }
-})
+  template.content.querySelectorAll("table").forEach((table) => {
+    const region = document.createElement("div");
+    region.className = "project-rich-table";
+    region.tabIndex = 0;
+    region.setAttribute("role", "region");
+    region.setAttribute(
+      "aria-label",
+      table.querySelector("caption")?.textContent || t("site.projectDataTable"),
+    );
+    table.replaceWith(region);
+    region.append(table);
+  });
+  return { html: template.innerHTML, sections };
+});
 const related = computed(() => {
-  const others = publishedProjects.value.filter((item) => item.id !== project.value?.id)
-  const industry = project.value?.industryEn || project.value?.industryZh
-  return others.sort((a, b) => Number((b.industryEn || b.industryZh) === industry)
-    - Number((a.industryEn || a.industryZh) === industry)).slice(0, 3)
-})
-const listLink = computed(() => ({ path: '/projects', query: {
-  ...(typeof route.query.page === 'string' ? { page: route.query.page } : {}),
-  ...(typeof route.query.q === 'string' ? { q: route.query.q } : {}),
-} }))
-onMounted(async () => { await loadProjects(); loading.value = false })
-watch(() => route.params.id, async () => { await nextTick(); focusProjectContent('project-main') })
+  const others = publishedProjects.value.filter(
+    (item) => item.id !== project.value?.id,
+  );
+  const industry = project.value?.industryEn || project.value?.industryZh;
+  return others
+    .sort(
+      (a, b) =>
+        Number((b.industryEn || b.industryZh) === industry) -
+        Number((a.industryEn || a.industryZh) === industry),
+    )
+    .slice(0, 3);
+});
+const listLink = computed(() => ({
+  path: "/projects",
+  query: {
+    ...(typeof route.query.page === "string" ? { page: route.query.page } : {}),
+    ...(typeof route.query.q === "string" ? { q: route.query.q } : {}),
+  },
+}));
+onMounted(async () => {
+  await loadProjects();
+  loading.value = false;
+});
+watch(
+  () => route.params.id,
+  async () => {
+    await nextTick();
+    focusProjectContent("project-main");
+  },
+);
 </script>
 
 <template>
   <div ref="page" class="design-site project-detail project-site">
-    <a class="project-skip-link" href="#project-main" @click.prevent="focusProjectContent('project-main')">{{ $t('site.skipToProjectContent') }}</a>
+    <a
+      class="project-skip-link"
+      href="#project-main"
+      @click.prevent="focusProjectContent('project-main')"
+      >{{ $t("site.skipToProjectContent") }}</a
+    >
     <div class="hc-page">
       <SiteNav />
 
-      <main id="project-main" tabindex="-1" :aria-label="$t('site.navProjects')">
+      <main
+        id="project-main"
+        tabindex="-1"
+        :aria-label="$t('site.navProjects')"
+      >
         <template v-if="project">
-          <section class="project-detail-intro" aria-labelledby="project-title"><div class="hc-w">
-            <div class="project-detail-topbar">
-              <router-link class="project-back" :to="listLink"><span aria-hidden="true">←</span>{{ $t('site.backToProjects') }}</router-link>
-            </div>
-            <div class="project-detail-hero-grid" :class="{ 'project-detail-hero-no-image': !project.image }">
-              <div class="project-detail-hero-copy">
-                <h1 id="project-title" class="site-page-title">{{ field('title') }}</h1>
-                <div class="project-detail-tags">
-                  <el-tag v-if="field('industry')" effect="plain">{{ field('industry') }}</el-tag>
-                  <el-tag v-if="field('location')" effect="plain">{{ field('location') }}</el-tag>
-                </div>
-                <p v-if="field('summary')" class="project-detail-lead site-intro-description">{{ field('summary') }}</p>
+          <section class="project-detail-intro" aria-labelledby="project-title">
+            <div class="hc-w">
+              <div class="project-detail-topbar">
+                <router-link class="project-back" :to="listLink"
+                  ><span aria-hidden="true">←</span
+                  >{{ $t("site.backToProjects") }}</router-link
+                >
               </div>
-              <div v-if="project.image" class="project-detail-cover">
-                <el-image :src="project.image" :alt="field('imageAlt') || field('title')" fit="cover" :preview-src-list="gallery" preview-teleported hide-on-click-modal>
-                  <template #error><div class="project-image-fallback"><el-icon><Picture /></el-icon></div></template>
-                </el-image>
-                <div v-if="gallery.length > 1" class="j-gallery-thumbs"><el-image v-for="(image,index) in gallery" :key="image" :ref="el => el ? galleryRefs.set(index,el) : galleryRefs.delete(index)" :src="image" :alt="`${field('title')} ${index+1}`" fit="cover" :preview-src-list="gallery" :initial-index="index" preview-teleported hide-on-click-modal tabindex="0" role="button" @keydown.enter.prevent="galleryRefs.get(index)?.showPreview()" @keydown.space.prevent="galleryRefs.get(index)?.showPreview()" /></div>
-              </div>
-            </div>
-            <dl class="project-detail-metrics" :aria-label="$t('site.projectKeyFacts')">
-              <div v-for="metric in metrics" :key="metric.name"><dt>{{ metric.label }}</dt><dd>{{ metric.value }}</dd></div>
-            </dl>
-          </div></section>
-
-          <section class="hc-sec project-detail-content" aria-labelledby="project-details-title"><div class="hc-w">
-            <div class="project-content-heading">
-              <h2 id="project-details-title">{{ $t('site.projectDetails') }}</h2>
-            </div>
-            <div class="project-detail-layout">
-              <article class="project-article" aria-labelledby="project-details-title">
-                <el-card class="project-article-card" shadow="never">
-                  <div class="article-body" v-html="body.html"></div>
-                  <div class="project-article-footer">
-                    <router-link class="project-back" :to="listLink"><span aria-hidden="true">←</span>{{ $t('site.backToProjects') }}</router-link>
+              <div
+                class="project-detail-hero-grid"
+                :class="{ 'project-detail-hero-no-image': !project.image }"
+              >
+                <div class="project-detail-hero-copy">
+                  <h1 id="project-title" class="site-page-title">
+                    {{ field("title") }}
+                  </h1>
+                  <div class="project-detail-tags">
+                    <el-tag v-if="field('industry')" effect="plain">{{
+                      field("industry")
+                    }}</el-tag>
+                    <el-tag v-if="field('location')" effect="plain">{{
+                      field("location")
+                    }}</el-tag>
                   </div>
-                </el-card>
-              </article>
-              <aside class="project-detail-sidebar" :aria-label="$t('site.projectSupportingInformation')">
-                <el-card v-if="body.sections.length" class="project-toc-card" shadow="never">
-                  <nav class="project-content-toc" aria-labelledby="project-contents-title">
-                    <h3 id="project-contents-title">{{ $t('site.projectContents') }}</h3>
-                    <ol>
-                      <li v-for="section in body.sections" :key="section.id">
-                        <a :href="`#${section.id}`" @click.prevent="focusProjectContent(section.id)">
-                          {{ section.title }}
-                        </a>
-                      </li>
-                    </ol>
-                  </nav>
-                </el-card>
-                <el-card class="project-contact-panel" shadow="never">
-                  <h3 id="project-contact-title">{{ $t('site.projectContactTitle') }}</h3>
-                  <p>{{ $t('site.projectContactText') }}</p>
-                  <el-button type="primary" class="site-filter-button" @click="goTo('/contact')">{{ $t('site.contactUs') }}<el-icon aria-hidden="true"><ArrowRight /></el-icon></el-button>
-                </el-card>
-              </aside>
+                  <p
+                    v-if="field('summary')"
+                    class="project-detail-lead site-intro-description"
+                  >
+                    {{ field("summary") }}
+                  </p>
+                </div>
+                <div v-if="project.image" class="project-detail-cover">
+                  <el-image
+                    :src="project.image"
+                    :alt="field('imageAlt') || field('title')"
+                    fit="cover"
+                    :preview-src-list="gallery"
+                    preview-teleported
+                    hide-on-click-modal
+                  >
+                    <template #error
+                      ><div class="project-image-fallback">
+                        <el-icon><Picture /></el-icon></div
+                    ></template>
+                  </el-image>
+                  <div v-if="gallery.length > 1" class="j-gallery-thumbs">
+                    <el-image
+                      v-for="(image, index) in gallery"
+                      :key="image"
+                      :ref="
+                        (el) =>
+                          el
+                            ? galleryRefs.set(index, el)
+                            : galleryRefs.delete(index)
+                      "
+                      :src="image"
+                      :alt="`${field('title')} ${index + 1}`"
+                      fit="cover"
+                      :preview-src-list="gallery"
+                      :initial-index="index"
+                      preview-teleported
+                      hide-on-click-modal
+                      tabindex="0"
+                      role="button"
+                      @keydown.enter.prevent="
+                        galleryRefs.get(index)?.showPreview()
+                      "
+                      @keydown.space.prevent="
+                        galleryRefs.get(index)?.showPreview()
+                      "
+                    />
+                  </div>
+                </div>
+              </div>
+              <dl
+                class="project-detail-metrics"
+                :aria-label="$t('site.projectKeyFacts')"
+              >
+                <div v-for="metric in metrics" :key="metric.name">
+                  <dt>{{ metric.label }}</dt>
+                  <dd>{{ metric.value }}</dd>
+                </div>
+              </dl>
             </div>
-          </div></section>
+          </section>
 
-          <section v-if="related.length" class="hc-sec projects-related" aria-labelledby="related-projects-title"><div class="hc-w">
-            <div class="projects-section-heading"><div><span class="hc-kick">{{ $t('site.selectedProjects') }}</span><h2 id="related-projects-title">{{ $t('site.moreProjects') }}</h2></div>
-              <router-link class="project-back" to="/projects">{{ $t('site.viewAllProjects') }}<span aria-hidden="true">→</span></router-link>
+          <section
+            class="hc-sec project-detail-content"
+            aria-labelledby="project-details-title"
+          >
+            <div class="hc-w">
+              <div class="project-content-heading">
+                <h2 id="project-details-title">
+                  {{ $t("site.projectDetails") }}
+                </h2>
+              </div>
+              <div class="project-detail-layout">
+                <article
+                  class="project-article"
+                  aria-labelledby="project-details-title"
+                >
+                  <el-card class="project-article-card" shadow="never">
+                    <div class="article-body" v-html="body.html"></div>
+                    <div class="project-article-footer">
+                      <router-link class="project-back" :to="listLink"
+                        ><span aria-hidden="true">←</span
+                        >{{ $t("site.backToProjects") }}</router-link
+                      >
+                    </div>
+                  </el-card>
+                </article>
+                <aside
+                  class="project-detail-sidebar"
+                  :aria-label="$t('site.projectSupportingInformation')"
+                >
+                  <el-card
+                    v-if="body.sections.length"
+                    class="project-toc-card"
+                    shadow="never"
+                  >
+                    <nav
+                      class="project-content-toc"
+                      aria-labelledby="project-contents-title"
+                    >
+                      <h3 id="project-contents-title">
+                        {{ $t("site.projectContents") }}
+                      </h3>
+                      <ol>
+                        <li v-for="section in body.sections" :key="section.id">
+                          <a
+                            :href="`#${section.id}`"
+                            @click.prevent="focusProjectContent(section.id)"
+                          >
+                            {{ section.title }}
+                          </a>
+                        </li>
+                      </ol>
+                    </nav>
+                  </el-card>
+                  <el-card class="project-contact-panel" shadow="never">
+                    <h3 id="project-contact-title">
+                      {{ $t("site.projectContactTitle") }}
+                    </h3>
+                    <p>{{ $t("site.projectContactText") }}</p>
+                    <el-button
+                      type="primary"
+                      class="site-filter-button"
+                      @click="goTo('/contact')"
+                      >{{ $t("site.contactUs")
+                      }}<el-icon aria-hidden="true"><ArrowRight /></el-icon
+                    ></el-button>
+                  </el-card>
+                </aside>
+              </div>
             </div>
-            <div class="hc-proj projects-catalog-grid"><ProjectCard v-for="item in related" :key="item.id" :project="item" /></div>
-          </div></section>
+          </section>
+
+          <section
+            v-if="related.length"
+            class="hc-sec projects-related"
+            aria-labelledby="related-projects-title"
+          >
+            <div class="hc-w">
+              <div class="projects-section-heading">
+                <div>
+                  <span class="hc-kick">{{ $t("site.selectedProjects") }}</span>
+                  <h2 id="related-projects-title">
+                    {{ $t("site.moreProjects") }}
+                  </h2>
+                </div>
+                <router-link class="project-back" to="/projects"
+                  >{{ $t("site.viewAllProjects")
+                  }}<span aria-hidden="true">→</span></router-link
+                >
+              </div>
+              <div class="hc-proj projects-catalog-grid">
+                <ProjectCard
+                  v-for="item in related"
+                  :key="item.id"
+                  :project="item"
+                />
+              </div>
+            </div>
+          </section>
         </template>
-        <section v-else class="hc-sec project-unavailable hc-w" :aria-busy="loading">
+        <section
+          v-else
+          class="hc-sec project-unavailable hc-w"
+          :aria-busy="loading"
+        >
           <el-skeleton v-if="loading" :rows="8" animated />
-          <el-empty v-else :description="$t('site.projectNotFound')"><el-button type="primary" class="site-filter-button" @click="goTo('/projects')">{{ $t('site.backToProjects') }}</el-button></el-empty>
+          <el-empty v-else :description="$t('site.projectNotFound')"
+            ><el-button
+              type="primary"
+              class="site-filter-button"
+              @click="goTo('/projects')"
+              >{{ $t("site.backToProjects") }}</el-button
+            ></el-empty
+          >
         </section>
       </main>
 
       <SiteFooter />
     </div>
-
   </div>
 </template>

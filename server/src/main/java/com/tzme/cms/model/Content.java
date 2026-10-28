@@ -54,6 +54,10 @@ public class Content {
     private String specificationsZh;
     private Boolean showOnHome;
     private Integer homeOrder;
+    @Transient private List<ArticleAttachment> attachments;
+
+    public List<ArticleAttachment> getAttachments() { return attachments; }
+    public void setAttachments(List<ArticleAttachment> value) { attachments = value; }
 
     protected Content() {
     }

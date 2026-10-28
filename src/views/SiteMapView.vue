@@ -1,14 +1,152 @@
 <script setup>
-import { computed, onMounted } from 'vue'
-import SiteNav from '../components/SiteNav.vue'
-import SiteFooter from '../components/SiteFooter.vue'
-import { useProductCatalog } from '../services/catalog.js'
-import { useArticleCatalog } from '../services/articles.js'
-import { useIndustryCatalog } from '../services/industries.js'
-const {products,loadProducts}=useProductCatalog(),{publishedArticles,loadArticles}=useArticleCatalog(),{industries,loadIndustries}=useIndustryCatalog()
-const publishedProducts=computed(()=>products.value.filter(item=>item.status==='published'))
-const activeIndustries=computed(()=>industries.value.filter(item=>item.status==='published'&&publishedProducts.value.some(product=>product.industries.includes(item.id))))
-onMounted(()=>Promise.all([loadProducts(),loadArticles(),loadIndustries()]))
+import { computed, onMounted } from "vue";
+import SiteNav from "../components/SiteNav.vue";
+import SiteFooter from "../components/SiteFooter.vue";
+import { useProductCatalog } from "../services/catalog.js";
+import { useArticleCatalog } from "../services/articles.js";
+import { useIndustryCatalog } from "../services/industries.js";
+const { products, loadProducts } = useProductCatalog(),
+  { publishedArticles, loadArticles } = useArticleCatalog(),
+  { industries, loadIndustries } = useIndustryCatalog();
+const publishedProducts = computed(() =>
+  products.value.filter((item) => item.status === "published"),
+);
+const activeIndustries = computed(() =>
+  industries.value.filter(
+    (item) =>
+      item.status === "published" &&
+      publishedProducts.value.some((product) =>
+        product.industries.includes(item.id),
+      ),
+  ),
+);
+onMounted(() =>
+  Promise.all([loadProducts(), loadArticles(), loadIndustries()]),
+);
 </script>
-<template><main class="design-site site-refined"><div class="hc-page"><SiteNav/><section class="site-map-intro hc-w"><span>网站导航 / SITE MAP</span><h1 class="site-page-title">从行业到装备，<br>了解重钢机械。</h1><p>企业资料、行业装备与已公开资讯。</p></section><div class="site-map-content hc-w"><section><h2>企业资料</h2><ul><li><router-link to="/">首页</router-link></li><li><router-link to="/about">关于我们</router-link></li><li><router-link to="/about#manufacturing-bases">制造基地</router-link></li><li><router-link to="/about#certificates-title">资质资料</router-link></li><li><router-link to="/contact">联系我们</router-link></li></ul></section><section><h2>应用行业</h2><ul><li v-for="item in activeIndustries" :key="item.id"><router-link :to="{path:'/solutions',query:{industry:item.id}}">{{ item.titleZh }}</router-link></li></ul></section><section><h2>产品资料</h2><ul><li v-for="item in publishedProducts" :key="item.id"><router-link :to="'/solutions/'+item.id">{{ item.titleZh }}</router-link></li></ul></section><section><h2>新闻资讯</h2><ul><li v-for="item in publishedArticles" :key="item.id"><router-link :to="'/insights/'+item.id">{{ item.titleZh }}</router-link></li></ul></section></div><SiteFooter/></div></main></template>
-<style scoped>.site-map-intro{padding-block:64px 38px}.site-map-intro>span{font-size:11px;color:#6b8798;letter-spacing:1px}.site-map-intro h1{margin:16px 0 18px}.site-map-intro>p{font-size:14px;color:#6b8798}.site-map-content{padding-bottom:60px;display:grid;grid-template-columns:1fr 1fr;gap:40px}.site-map-content section{border-top:1px solid #cfdee7;padding-top:23px}.site-map-content h2{font-size:23px;color:#123a50;margin:0 0 20px}.site-map-content ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 24px}.site-map-content a{color:#3b687c;font-size:13px;text-decoration:none}.site-map-content a:hover{color:#087f91;text-decoration:underline}@media(max-width:700px){.site-map-intro{padding-top:24px}.site-map-content{grid-template-columns:1fr;gap:30px}.site-map-content h2{font-size:21px}.site-map-content a{font-size:12px}}</style>
+<template>
+  <main class="design-site site-refined">
+    <div class="hc-page">
+      <SiteNav />
+      <section class="site-map-intro hc-w">
+        <span>网站导航 / SITE MAP</span>
+        <h1 class="site-page-title">从行业到装备，<br />了解重钢机械。</h1>
+        <p>企业资料、行业装备与已公开资讯。</p>
+      </section>
+      <div class="site-map-content hc-w">
+        <section>
+          <h2>企业资料</h2>
+          <ul>
+            <li><router-link to="/">首页</router-link></li>
+            <li><router-link to="/about">关于我们</router-link></li>
+            <li>
+              <router-link to="/about#manufacturing-bases"
+                >制造基地</router-link
+              >
+            </li>
+            <li>
+              <router-link to="/about#certificates-title">资质资料</router-link>
+            </li>
+            <li><router-link to="/contact">联系我们</router-link></li>
+          </ul>
+        </section>
+        <section>
+          <h2>应用行业</h2>
+          <ul>
+            <li v-for="item in activeIndustries" :key="item.id">
+              <router-link
+                :to="{ path: '/solutions', query: { industry: item.id } }"
+                >{{ item.titleZh }}</router-link
+              >
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>产品资料</h2>
+          <ul>
+            <li v-for="item in publishedProducts" :key="item.id">
+              <router-link :to="'/solutions/' + item.id">{{
+                item.titleZh
+              }}</router-link>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>新闻资讯</h2>
+          <ul>
+            <li v-for="item in publishedArticles" :key="item.id">
+              <router-link :to="'/insights/' + item.id">{{
+                item.titleZh
+              }}</router-link>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <SiteFooter />
+    </div>
+  </main>
+</template>
+<style scoped>
+.site-map-intro {
+  padding-block: 64px 38px;
+}
+.site-map-intro > span {
+  font-size: 11px;
+  color: #6b8798;
+  letter-spacing: 1px;
+}
+.site-map-intro h1 {
+  margin: 16px 0 18px;
+}
+.site-map-intro > p {
+  font-size: 14px;
+  color: #6b8798;
+}
+.site-map-content {
+  padding-bottom: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.site-map-content section {
+  border-top: 1px solid #cfdee7;
+  padding-top: 23px;
+}
+.site-map-content h2 {
+  font-size: 23px;
+  color: #123a50;
+  margin: 0 0 20px;
+}
+.site-map-content ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px 24px;
+}
+.site-map-content a {
+  color: #3b687c;
+  font-size: 13px;
+  text-decoration: none;
+}
+.site-map-content a:hover {
+  color: #087f91;
+  text-decoration: underline;
+}
+@media (max-width: 700px) {
+  .site-map-intro {
+    padding-top: 24px;
+  }
+  .site-map-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .site-map-content h2 {
+    font-size: 21px;
+  }
+  .site-map-content a {
+    font-size: 12px;
+  }
+}
+</style>

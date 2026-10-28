@@ -32,7 +32,7 @@ public class CertificationController {
     @GetMapping
     public List<Certification> list() {
         return repository.findAllByOrderBySortOrderAscTitleEnAsc().stream()
-            .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList();
+                .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList();
     }
 
     @PostMapping
@@ -98,7 +98,8 @@ public class CertificationController {
         }
         if ("published".equals(input.getStatus())
                 && (input.getImage() == null || input.getImage().isBlank())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A certificate image is required before publishing");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "A certificate image is required before publishing");
         }
         if (input.getIssuedAt() != null && input.getExpiresAt() != null
                 && input.getExpiresAt().isBefore(input.getIssuedAt())) {

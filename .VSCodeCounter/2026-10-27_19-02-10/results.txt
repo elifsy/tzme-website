@@ -1,0 +1,477 @@
+Date : 2026-10-27 19:02:10
+Directory : d:\peoject\tzme-ui-corporate
+Total : 386 files,  44549 codes, 438 comments, 1796 blanks, all 46783 lines
+
+Languages
++-----------------+------------+------------+------------+------------+------------+
+| language        | files      | code       | comment    | blank      | total      |
++-----------------+------------+------------+------------+------------+------------+
+| JSON            |         27 |     13,835 |          0 |         27 |     13,862 |
+| Vue             |         85 |      8,948 |         24 |        377 |      9,349 |
+| JavaScript      |        110 |      7,094 |        129 |        296 |      7,519 |
+| MS SQL          |         53 |      4,260 |        143 |        154 |      4,557 |
+| PostCSS         |         20 |      3,871 |         84 |        147 |      4,102 |
+| Java            |         62 |      3,834 |         19 |        355 |      4,208 |
+| HTML            |          2 |      1,971 |         13 |        115 |      2,099 |
+| Markdown        |          8 |        430 |          0 |        259 |        689 |
+| Properties      |          2 |        183 |         24 |         46 |        253 |
+| PowerShell      |          2 |         50 |          2 |          5 |         57 |
+| XML             |         14 |         43 |          0 |         14 |         57 |
+| Java Properties |          1 |         30 |          0 |          1 |         31 |
++-----------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                       | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                          |        386 |     44,549 |        438 |      1,796 |     46,783 |
+| . (Files)                                                                                                  |          6 |      5,089 |         17 |        271 |      5,377 |
+| assets                                                                                                     |          1 |          1 |          0 |          1 |          2 |
+| database                                                                                                   |         42 |      7,534 |         92 |        161 |      7,787 |
+| database (Files)                                                                                           |          3 |      1,612 |         53 |        109 |      1,774 |
+| database\baseline                                                                                          |         15 |      4,692 |          0 |         15 |      4,707 |
+| database\migrations                                                                                        |         24 |      1,230 |         39 |         37 |      1,306 |
+| deploy                                                                                                     |          6 |        290 |         24 |         98 |        412 |
+| public                                                                                                     |         15 |         37 |          0 |         21 |         58 |
+| public\assets                                                                                              |         15 |         37 |          0 |         21 |         58 |
+| public\assets (Files)                                                                                      |          2 |         18 |          0 |          2 |         20 |
+| public\assets\industry-icons                                                                               |         10 |         10 |          0 |         10 |         20 |
+| public\assets\optimized                                                                                    |          1 |          3 |          0 |          3 |          6 |
+| public\assets\tzme-j                                                                                       |          1 |          1 |          0 |          1 |          2 |
+| public\assets\tzme-j\maps                                                                                  |          1 |          1 |          0 |          1 |          2 |
+| public\assets\tzme-partners                                                                                |          1 |          5 |          0 |          5 |         10 |
+| scripts                                                                                                    |         39 |      2,037 |         31 |         78 |      2,146 |
+| server                                                                                                     |         98 |      5,716 |         72 |        425 |      6,213 |
+| server (Files)                                                                                             |          2 |         39 |          2 |          5 |         46 |
+| server\src                                                                                                 |         96 |      5,677 |         70 |        420 |      6,167 |
+| server\src\main                                                                                            |         93 |      5,258 |         70 |        410 |      5,738 |
+| server\src\main\java                                                                                       |         59 |      3,415 |         19 |        345 |      3,779 |
+| server\src\main\java\com                                                                                   |         59 |      3,415 |         19 |        345 |      3,779 |
+| server\src\main\java\com\tzme                                                                              |         59 |      3,415 |         19 |        345 |      3,779 |
+| server\src\main\java\com\tzme\cms                                                                          |         59 |      3,415 |         19 |        345 |      3,779 |
+| server\src\main\java\com\tzme\cms (Files)                                                                  |          1 |         11 |          0 |          3 |         14 |
+| server\src\main\java\com\tzme\cms\auth                                                                     |         13 |        373 |          2 |         40 |        415 |
+| server\src\main\java\com\tzme\cms\controller                                                               |         18 |      1,387 |         10 |        127 |      1,524 |
+| server\src\main\java\com\tzme\cms\model                                                                    |          9 |        611 |          1 |        120 |        732 |
+| server\src\main\java\com\tzme\cms\repository                                                               |          8 |        106 |          1 |         25 |        132 |
+| server\src\main\java\com\tzme\cms\seo                                                                      |          6 |        497 |          0 |         18 |        515 |
+| server\src\main\java\com\tzme\cms\service                                                                  |          4 |        430 |          5 |         12 |        447 |
+| server\src\main\resources                                                                                  |         34 |      1,843 |         51 |         65 |      1,959 |
+| server\src\main\resources (Files)                                                                          |          7 |        329 |          0 |          7 |        336 |
+| server\src\main\resources\db                                                                               |         27 |      1,514 |         51 |         58 |      1,623 |
+| server\src\test                                                                                            |          3 |        419 |          0 |         10 |        429 |
+| server\src\test\java                                                                                       |          3 |        419 |          0 |         10 |        429 |
+| server\src\test\java\com                                                                                   |          3 |        419 |          0 |         10 |        429 |
+| server\src\test\java\com\tzme                                                                              |          3 |        419 |          0 |         10 |        429 |
+| server\src\test\java\com\tzme\cms                                                                          |          3 |        419 |          0 |         10 |        429 |
+| server\src\test\java\com\tzme\cms\auth                                                                     |          1 |        144 |          0 |          4 |        148 |
+| server\src\test\java\com\tzme\cms\controller                                                               |          1 |         61 |          0 |          3 |         64 |
+| server\src\test\java\com\tzme\cms\seo                                                                      |          1 |        214 |          0 |          3 |        217 |
+| src                                                                                                        |        179 |     23,845 |        202 |        741 |     24,788 |
+| src (Files)                                                                                                |          3 |        193 |          2 |          7 |        202 |
+| src\components                                                                                             |         71 |      6,767 |         21 |        301 |      7,089 |
+| src\composables                                                                                            |          4 |        163 |          2 |         20 |        185 |
+| src\config                                                                                                 |          1 |         18 |          1 |          1 |         20 |
+| src\data                                                                                                   |         22 |      6,694 |         19 |         52 |      6,765 |
+| src\i18n                                                                                                   |          9 |      1,697 |          2 |         18 |      1,717 |
+| src\i18n (Files)                                                                                           |          6 |        319 |          0 |         13 |        332 |
+| src\i18n\locales                                                                                           |          3 |      1,378 |          2 |          5 |      1,385 |
+| src\services                                                                                               |         23 |        852 |         11 |         53 |        916 |
+| src\style                                                                                                  |         18 |      3,859 |         84 |        145 |      4,088 |
+| src\three                                                                                                  |          8 |      1,277 |         48 |         46 |      1,371 |
+| src\utils                                                                                                  |          7 |        196 |          9 |         26 |        231 |
+| src\views                                                                                                  |         13 |      2,129 |          3 |         72 |      2,204 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+
+| filename                                                                                                   | language        | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+
+| d:\peoject\tzme-ui-corporate\README.md                                                                     | Markdown        |        219 |          0 |        149 |        368 |
+| d:\peoject\tzme-ui-corporate\assets\world-dots.svg                                                         | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\database\00-create-database.sql                                               | MS SQL          |          2 |          1 |          1 |          4 |
+| d:\peoject\tzme-ui-corporate\database\README.md                                                            | Markdown        |         96 |          0 |         50 |        146 |
+| d:\peoject\tzme-ui-corporate\database\baseline\about-tzme.json                                             | JSON            |        172 |          0 |          1 |        173 |
+| d:\peoject\tzme-ui-corporate\database\baseline\capability-process-details.json                             | JSON            |         26 |          0 |          1 |         27 |
+| d:\peoject\tzme-ui-corporate\database\baseline\company-overview-zh.json                                    | JSON            |          7 |          0 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\database\baseline\contact-facilities.json                                     | JSON            |         22 |          0 |          1 |         23 |
+| d:\peoject\tzme-ui-corporate\database\baseline\contact-settings.json                                       | JSON            |        196 |          0 |          1 |        197 |
+| d:\peoject\tzme-ui-corporate\database\baseline\home-capabilities.json                                      | JSON            |         92 |          0 |          1 |         93 |
+| d:\peoject\tzme-ui-corporate\database\baseline\home-solutions.json                                         | JSON            |        170 |          0 |          1 |        171 |
+| d:\peoject\tzme-ui-corporate\database\baseline\j-design.json                                               | JSON            |        390 |          0 |          1 |        391 |
+| d:\peoject\tzme-ui-corporate\database\baseline\newsroom.json                                               | JSON            |        443 |          0 |          1 |        444 |
+| d:\peoject\tzme-ui-corporate\database\baseline\official-products.json                                      | JSON            |      1,031 |          0 |          1 |      1,032 |
+| d:\peoject\tzme-ui-corporate\database\baseline\product-catalog-sync.json                                   | JSON            |        274 |          0 |          1 |        275 |
+| d:\peoject\tzme-ui-corporate\database\baseline\product-presentation-images.json                            | JSON            |        236 |          0 |          1 |        237 |
+| d:\peoject\tzme-ui-corporate\database\baseline\quality-positioning.json                                    | JSON            |        992 |          0 |          1 |        993 |
+| d:\peoject\tzme-ui-corporate\database\baseline\records.json                                                | JSON            |        574 |          0 |          1 |        575 |
+| d:\peoject\tzme-ui-corporate\database\baseline\site-settings.json                                          | JSON            |         67 |          0 |          1 |         68 |
+| d:\peoject\tzme-ui-corporate\database\install.sql                                                          | MS SQL          |      1,514 |         52 |         58 |      1,624 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-15-home-solutions.sql                             | MS SQL          |          5 |          1 |          1 |          7 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-15-j-design.sql                                   | MS SQL          |         99 |          2 |          1 |        102 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-15-official-products.sql                          | MS SQL          |        237 |          3 |          1 |        241 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-16-capability-process.sql                         | MS SQL          |         16 |          1 |          1 |         18 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-16-contact-facilities.sql                         | MS SQL          |         10 |          1 |          1 |         12 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-16-quality-positioning.sql                        | MS SQL          |         87 |          2 |          1 |         90 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-17-product-showcase.sql                           | MS SQL          |          5 |          1 |          1 |          7 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-19-product-presentation.sql                       | MS SQL          |         14 |          2 |          2 |         18 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-20-product-catalog-sync.sql                       | MS SQL          |         80 |          3 |          1 |         84 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-20-product-cutouts.sql                            | MS SQL          |        136 |          2 |          1 |        139 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-20-product-layout.sql                             | MS SQL          |          7 |          2 |          1 |         10 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-22-china-map-tianjin.sql                          | MS SQL          |          6 |          2 |          1 |          9 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-22-global-map-locations.sql                       | MS SQL          |         12 |          2 |          1 |         15 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-24-company-overview.sql                           | MS SQL          |          5 |          2 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-26-admin-accounts.sql                             | MS SQL          |         15 |          1 |          1 |         17 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-26-seo-settings.sql                               | MS SQL          |          4 |          1 |          1 |          6 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-27-newsroom.sql                                   | MS SQL          |        136 |          3 |          1 |        140 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-about-tzme.sql                                    | MS SQL          |         65 |          1 |          1 |         67 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-analytics.sql                                     | MS SQL          |         21 |          1 |          1 |         23 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-column-comments.sql                               | MS SQL          |        175 |          2 |         12 |        189 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-contact-inquiries.sql                             | MS SQL          |         45 |          1 |          2 |         48 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-home-capabilities.sql                             | MS SQL          |         30 |          1 |          1 |         32 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-industry-icons.sql                                | MS SQL          |         14 |          1 |          1 |         16 |
+| d:\peoject\tzme-ui-corporate\database\migrations\2026-10-social-links.sql                                  | MS SQL          |          6 |          1 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\deploy\admin-maintenance.md                                                   | Markdown        |         24 |          0 |          9 |         33 |
+| d:\peoject\tzme-ui-corporate\deploy\analytics-events.md                                                    | Markdown        |         22 |          0 |          7 |         29 |
+| d:\peoject\tzme-ui-corporate\deploy\loading-performance.md                                                 | Markdown        |         24 |          0 |         16 |         40 |
+| d:\peoject\tzme-ui-corporate\deploy\nginx-dual-site.conf                                                   | Properties      |        135 |         22 |         36 |        193 |
+| d:\peoject\tzme-ui-corporate\deploy\nginx.conf                                                             | Properties      |         48 |          2 |         10 |         60 |
+| d:\peoject\tzme-ui-corporate\deploy\seo-launch.md                                                          | Markdown        |         37 |          0 |         20 |         57 |
+| d:\peoject\tzme-ui-corporate\index.html                                                                    | HTML            |         43 |          3 |          1 |         47 |
+| d:\peoject\tzme-ui-corporate\package-lock.json                                                             | JSON            |      2,755 |          0 |          1 |      2,756 |
+| d:\peoject\tzme-ui-corporate\package.json                                                                  | JSON            |         34 |          0 |          1 |         35 |
+| d:\peoject\tzme-ui-corporate\proto.html                                                                    | HTML            |      1,928 |         10 |        114 |      2,052 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\amusement.svg                                    | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\construction.svg                                 | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\energy.svg                                       | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\environmental.svg                                | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\lifting-transport.svg                            | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\metallurgy.svg                                   | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\mining.svg                                       | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\ports.svg                                        | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\steel-structures.svg                             | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\industry-icons\testing.svg                                      | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\optimized\README.md                                             | Markdown        |          3 |          0 |          3 |          6 |
+| d:\peoject\tzme-ui-corporate\public\assets\site-document.css                                               | PostCSS         |          4 |          0 |          1 |          5 |
+| d:\peoject\tzme-ui-corporate\public\assets\tzme-j\maps\world-dots.svg                                      | XML             |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\public\assets\tzme-logo.svg                                                   | XML             |         14 |          0 |          1 |         15 |
+| d:\peoject\tzme-ui-corporate\public\assets\tzme-partners\README.md                                         | Markdown        |          5 |          0 |          5 |         10 |
+| d:\peoject\tzme-ui-corporate\scripts\build-about-baseline.mjs                                              | JavaScript      |         36 |          1 |          2 |         39 |
+| d:\peoject\tzme-ui-corporate\scripts\build-capabilities-baseline.mjs                                       | JavaScript      |         18 |          0 |          2 |         20 |
+| d:\peoject\tzme-ui-corporate\scripts\build-capability-process-migration.mjs                                | JavaScript      |         15 |          0 |          2 |         17 |
+| d:\peoject\tzme-ui-corporate\scripts\build-certificate-previews.mjs                                        | JavaScript      |         61 |          0 |          5 |         66 |
+| d:\peoject\tzme-ui-corporate\scripts\build-company-overview-migration.mjs                                  | JavaScript      |         20 |          0 |          2 |         22 |
+| d:\peoject\tzme-ui-corporate\scripts\build-contact-baseline.mjs                                            | JavaScript      |         34 |          0 |          2 |         36 |
+| d:\peoject\tzme-ui-corporate\scripts\build-contact-facilities-migration.mjs                                | JavaScript      |         16 |          0 |          2 |         18 |
+| d:\peoject\tzme-ui-corporate\scripts\build-database.mjs                                                    | JavaScript      |        288 |          8 |          2 |        298 |
+| d:\peoject\tzme-ui-corporate\scripts\build-home-solutions-migration.mjs                                    | JavaScript      |          7 |          0 |          2 |          9 |
+| d:\peoject\tzme-ui-corporate\scripts\build-image-variants.mjs                                              | JavaScript      |         47 |          1 |          2 |         50 |
+| d:\peoject\tzme-ui-corporate\scripts\build-j-design-migration.mjs                                          | JavaScript      |         69 |          1 |          1 |         71 |
+| d:\peoject\tzme-ui-corporate\scripts\build-map-locations-migration.mjs                                     | JavaScript      |         42 |          0 |          4 |         46 |
+| d:\peoject\tzme-ui-corporate\scripts\build-newsroom-migration.mjs                                          | JavaScript      |         34 |          0 |          2 |         36 |
+| d:\peoject\tzme-ui-corporate\scripts\build-official-products-migration.mjs                                 | JavaScript      |         34 |          2 |          2 |         38 |
+| d:\peoject\tzme-ui-corporate\scripts\build-product-catalog-sync-migration.mjs                              | JavaScript      |         26 |          2 |          2 |         30 |
+| d:\peoject\tzme-ui-corporate\scripts\build-product-cutouts-migration.mjs                                   | JavaScript      |         18 |          0 |          2 |         20 |
+| d:\peoject\tzme-ui-corporate\scripts\build-product-layout-migration.mjs                                    | JavaScript      |         15 |          0 |          2 |         17 |
+| d:\peoject\tzme-ui-corporate\scripts\build-product-presentation-migration.mjs                              | JavaScript      |         23 |          0 |          2 |         25 |
+| d:\peoject\tzme-ui-corporate\scripts\build-product-showcase-migration.mjs                                  | JavaScript      |          7 |          0 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\scripts\build-quality-positioning-migration.mjs                               | JavaScript      |         27 |          0 |          2 |         29 |
+| d:\peoject\tzme-ui-corporate\scripts\build-seo-settings-migration.mjs                                      | JavaScript      |         10 |          0 |          1 |         11 |
+| d:\peoject\tzme-ui-corporate\scripts\build-world-map.mjs                                                   | JavaScript      |         52 |          2 |          2 |         56 |
+| d:\peoject\tzme-ui-corporate\scripts\check-analytics-contract.mjs                                          | JavaScript      |         26 |          0 |          2 |         28 |
+| d:\peoject\tzme-ui-corporate\scripts\check-article-categories.mjs                                          | JavaScript      |         39 |          0 |          2 |         41 |
+| d:\peoject\tzme-ui-corporate\scripts\check-industrial-layout.mjs                                           | JavaScript      |         76 |          6 |          2 |         84 |
+| d:\peoject\tzme-ui-corporate\scripts\check-industrial-motion.mjs                                           | JavaScript      |        181 |          0 |          2 |        183 |
+| d:\peoject\tzme-ui-corporate\scripts\check-industrial-picking.mjs                                          | JavaScript      |         20 |          0 |          2 |         22 |
+| d:\peoject\tzme-ui-corporate\scripts\check-industrial-quality.mjs                                          | JavaScript      |         35 |          0 |          2 |         37 |
+| d:\peoject\tzme-ui-corporate\scripts\check-industrial-regions.mjs                                          | JavaScript      |         81 |          0 |          2 |         83 |
+| d:\peoject\tzme-ui-corporate\scripts\check-j-design.mjs                                                    | JavaScript      |         61 |          0 |          1 |         62 |
+| d:\peoject\tzme-ui-corporate\scripts\check-loading.mjs                                                     | JavaScript      |         48 |          0 |          3 |         51 |
+| d:\peoject\tzme-ui-corporate\scripts\check-product-showcase.mjs                                            | JavaScript      |        199 |          2 |          2 |        203 |
+| d:\peoject\tzme-ui-corporate\scripts\check-three-scroll.mjs                                                | JavaScript      |         93 |          2 |          3 |         98 |
+| d:\peoject\tzme-ui-corporate\scripts\check-three-showcase.mjs                                              | JavaScript      |        143 |          3 |          1 |        147 |
+| d:\peoject\tzme-ui-corporate\scripts\database.ps1                                                          | PowerShell      |         28 |          0 |          1 |         29 |
+| d:\peoject\tzme-ui-corporate\scripts\export-database.mjs                                                   | JavaScript      |         39 |          0 |          2 |         41 |
+| d:\peoject\tzme-ui-corporate\scripts\import-database.mjs                                                   | JavaScript      |         15 |          0 |          2 |         17 |
+| d:\peoject\tzme-ui-corporate\scripts\migrate-static-content.mjs                                            | JavaScript      |         52 |          1 |          2 |         55 |
+| d:\peoject\tzme-ui-corporate\scripts\prepare-assets.mjs                                                    | JavaScript      |          2 |          0 |          1 |          3 |
+| d:\peoject\tzme-ui-corporate\server\pom.xml                                                                | XML             |         17 |          0 |          1 |         18 |
+| d:\peoject\tzme-ui-corporate\server\run.ps1                                                                | PowerShell      |         22 |          2 |          4 |         28 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\TzmeCmsApplication.java                     | Java            |         11 |          0 |          3 |         14 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AccountSessionFilter.java              | Java            |         26 |          1 |          3 |         30 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminAccount.java                      | Java            |         23 |          0 |          4 |         27 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminAccountController.java            | Java            |         21 |          0 |          3 |         24 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminAccountRepository.java            | Java            |          9 |          0 |          3 |         12 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminAccountService.java               | Java            |         94 |          1 |          3 |         98 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminBootstrap.java                    | Java            |         39 |          0 |          3 |         42 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminPrincipal.java                    | Java            |          7 |          0 |          3 |         10 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AdminSecurityConfig.java               | Java            |         35 |          0 |          3 |         38 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\ApiAccess.java                         | Java            |         21 |          0 |          3 |         24 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AuthController.java                    | Java            |         42 |          0 |          3 |         45 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\AuthErrors.java                        | Java            |         18 |          0 |          3 |         21 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\LoginThrottle.java                     | Java            |         25 |          0 |          3 |         28 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\auth\SecurityJson.java                      | Java            |         13 |          0 |          3 |         16 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\AboutTzmeController.java         | Java            |         87 |          0 |         10 |         97 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\AnalyticsController.java         | Java            |        114 |          1 |          3 |        118 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\CertificationController.java     | Java            |        100 |          0 |          9 |        109 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\ContactSettingsController.java   | Java            |         13 |          0 |          3 |         16 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\ContentController.java           | Java            |        108 |          3 |         12 |        123 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\HomeCapabilitiesController.java  | Java            |        100 |          1 |         11 |        112 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\HomeGlobalController.java        | Java            |         73 |          0 |          8 |         81 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\HomeSolutionsController.java     | Java            |         84 |          0 |         11 |         95 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\IndustryController.java          | Java            |        103 |          1 |          9 |        113 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\InquiryAttachmentController.java | Java            |         71 |          0 |          3 |         74 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\InquiryController.java           | Java            |         99 |          0 |          7 |        106 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\MailSettingsController.java      | Java            |         12 |          0 |          3 |         15 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\ModelUploadController.java       | Java            |         79 |          0 |          3 |         82 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\PartnersController.java          | Java            |         13 |          0 |          3 |         16 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\ProductShowcaseController.java   | Java            |        152 |          2 |         11 |        165 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\ProjectController.java           | Java            |         89 |          2 |         10 |        101 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\SiteSettingsController.java      | Java            |         26 |          0 |          3 |         29 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\controller\UploadController.java            | Java            |         64 |          0 |          8 |         72 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\Certification.java                    | Java            |         68 |          0 |         15 |         83 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\Content.java                          | Java            |        162 |          0 |         28 |        190 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\HomeGlobal.java                       | Java            |         17 |          0 |          5 |         22 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\HomeGlobalSettings.java               | Java            |         44 |          1 |          7 |         52 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\Industry.java                         | Java            |         54 |          0 |          6 |         60 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\Inquiry.java                          | Java            |        105 |          0 |         22 |        127 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\InquiryAttachment.java                | Java            |         27 |          0 |          3 |         30 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\Project.java                          | Java            |        116 |          0 |         31 |        147 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\model\SiteSettings.java                     | Java            |         18 |          0 |          3 |         21 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\CertificationRepository.java     | Java            |          7 |          0 |          3 |         10 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\ContentRepository.java           | Java            |         19 |          1 |          5 |         25 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\HomeGlobalRepository.java        | Java            |          4 |          0 |          3 |          7 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\IndustryRepository.java          | Java            |          7 |          0 |          3 |         10 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\InquiryAttachmentRepository.java | Java            |         14 |          0 |          2 |         16 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\InquiryRepository.java           | Java            |         30 |          0 |          3 |         33 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\ProjectRepository.java           | Java            |         13 |          0 |          3 |         16 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\repository\SiteSettingsRepository.java      | Java            |         12 |          0 |          3 |         15 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\seo\PublicSiteData.java                     | Java            |         49 |          0 |          3 |         52 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\seo\SeoApiController.java                   | Java            |         20 |          0 |          3 |         23 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\seo\SeoHtmlRenderer.java                    | Java            |        165 |          0 |          3 |        168 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\seo\SeoPageService.java                     | Java            |        140 |          0 |          3 |        143 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\seo\SeoPublicController.java                | Java            |         46 |          0 |          3 |         49 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\seo\SeoSettingsService.java                 | Java            |         77 |          0 |          3 |         80 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\service\AnalyticsService.java               | Java            |         78 |          1 |          3 |         82 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\service\ContactSettingsService.java         | Java            |        201 |          2 |          3 |        206 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\service\InquiryNotificationService.java     | Java            |         82 |          2 |          3 |         87 |
+| d:\peoject\tzme-ui-corporate\server\src\main\java\com\tzme\cms\service\PartnersService.java                | Java            |         69 |          0 |          3 |         72 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\application.properties                              | Java Properties |         30 |          0 |          1 |         31 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\01-schema.sql                                    | MS SQL          |        146 |          2 |         11 |        159 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\02-data.sql                                      | MS SQL          |        138 |         10 |         10 |        158 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\03-comments.sql                                  | MS SQL          |        175 |          2 |         12 |        189 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\04-contact.sql                                   | MS SQL          |         45 |          1 |          2 |         48 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\05-social-links.sql                              | MS SQL          |          6 |          1 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\06-industry-icons.sql                            | MS SQL          |         14 |          1 |          1 |         16 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\07-home-capabilities.sql                         | MS SQL          |         30 |          1 |          1 |         32 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\08-analytics.sql                                 | MS SQL          |         21 |          1 |          1 |         23 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\09-about-tzme.sql                                | MS SQL          |         65 |          1 |          1 |         67 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\10-j-design.sql                                  | MS SQL          |         99 |          2 |          1 |        102 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\11-official-products.sql                         | MS SQL          |        237 |          3 |          1 |        241 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\12-home-solutions.sql                            | MS SQL          |          5 |          1 |          1 |          7 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\13-contact-facilities.sql                        | MS SQL          |         10 |          1 |          1 |         12 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\14-quality-positioning.sql                       | MS SQL          |         87 |          2 |          1 |         90 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\15-capability-process.sql                        | MS SQL          |         16 |          1 |          1 |         18 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\16-product-showcase.sql                          | MS SQL          |          5 |          1 |          1 |          7 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\17-product-presentation-schema.sql               | MS SQL          |          6 |          1 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\18-product-presentation.sql                      | MS SQL          |          8 |          1 |          1 |         10 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\19-product-cutouts.sql                           | MS SQL          |        136 |          2 |          1 |        139 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\20-product-catalog-sync.sql                      | MS SQL          |         80 |          3 |          1 |         84 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\21-product-layout-schema.sql                     | MS SQL          |          7 |          2 |          1 |         10 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\22-global-map-locations.sql                      | MS SQL          |         12 |          2 |          1 |         15 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\23-china-map-tianjin.sql                         | MS SQL          |          6 |          2 |          1 |          9 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\24-company-overview.sql                          | MS SQL          |          5 |          2 |          1 |          8 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\25-admin-accounts.sql                            | MS SQL          |         15 |          1 |          1 |         17 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\26-seo-settings.sql                              | MS SQL          |          4 |          1 |          1 |          6 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\db\27-newsroom.sql                                  | MS SQL          |        136 |          3 |          1 |        140 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\home-global-defaults.json                           | JSON            |         22 |          0 |          1 |         23 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\image-variants.json                                 | JSON            |          1 |          0 |          1 |          2 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\partners-defaults.json                              | JSON            |         34 |          0 |          1 |         35 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\product-showcase-defaults.json                      | JSON            |        122 |          0 |          1 |        123 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\projects-seed.json                                  | JSON            |         98 |          0 |          1 |         99 |
+| d:\peoject\tzme-ui-corporate\server\src\main\resources\seo-defaults.json                                   | JSON            |         22 |          0 |          1 |         23 |
+| d:\peoject\tzme-ui-corporate\server\src\test\java\com\tzme\cms\auth\AdminAuthIntegrationTest.java          | Java            |        144 |          0 |          4 |        148 |
+| d:\peoject\tzme-ui-corporate\server\src\test\java\com\tzme\cms\controller\AnalyticsControllerTest.java     | Java            |         61 |          0 |          3 |         64 |
+| d:\peoject\tzme-ui-corporate\server\src\test\java\com\tzme\cms\seo\SeoIntegrationTest.java                 | Java            |        214 |          0 |          3 |        217 |
+| d:\peoject\tzme-ui-corporate\src\App.vue                                                                   | Vue             |         52 |          0 |          4 |         56 |
+| d:\peoject\tzme-ui-corporate\src\components\AboutCompanyIntro.vue                                          | Vue             |        127 |          0 |          5 |        132 |
+| d:\peoject\tzme-ui-corporate\src\components\AboutTzmeContent.vue                                           | Vue             |         44 |          0 |          4 |         48 |
+| d:\peoject\tzme-ui-corporate\src\components\AboutTzmeManager.vue                                           | Vue             |        186 |          0 |          7 |        193 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminAccountsManager.vue                                       | Vue             |         89 |          0 |          2 |         91 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminContentPreview.vue                                        | Vue             |         18 |          0 |          3 |         21 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminEditorDialog.vue                                          | Vue             |         63 |          0 |          3 |         66 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminEditorPanel.vue                                           | Vue             |         12 |          0 |          2 |         14 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminHomepageMap.vue                                           | Vue             |         28 |          0 |          2 |         30 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminLoginForm.vue                                             | Vue             |         22 |          0 |          1 |         23 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminPasswordForm.vue                                          | Vue             |         27 |          0 |          1 |         28 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminPreviewFrame.vue                                          | Vue             |         32 |          0 |          3 |         35 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminPreviewViewport.vue                                       | Vue             |         84 |          0 |          5 |         89 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminSaveBar.vue                                               | Vue             |         17 |          0 |          3 |         20 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminSessionGate.vue                                           | Vue             |         34 |          0 |          1 |         35 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminSidebar.vue                                               | Vue             |        248 |          1 |         16 |        265 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminWorkflowGuide.vue                                         | Vue             |         18 |          0 |          3 |         21 |
+| d:\peoject\tzme-ui-corporate\src\components\AdminWorkspaceHome.vue                                         | Vue             |         52 |          0 |          3 |         55 |
+| d:\peoject\tzme-ui-corporate\src\components\AnalyticsManager.vue                                           | Vue             |        257 |          0 |          3 |        260 |
+| d:\peoject\tzme-ui-corporate\src\components\AnalyticsTrend.vue                                             | Vue             |         53 |          0 |          3 |         56 |
+| d:\peoject\tzme-ui-corporate\src\components\CapabilityIcon.vue                                             | Vue             |         17 |          0 |          4 |         21 |
+| d:\peoject\tzme-ui-corporate\src\components\CertificateDetailsDialog.vue                                   | Vue             |        141 |          1 |          5 |        147 |
+| d:\peoject\tzme-ui-corporate\src\components\CertificationsManager.vue                                      | Vue             |        253 |          0 |         14 |        267 |
+| d:\peoject\tzme-ui-corporate\src\components\CompanyStatistics.vue                                          | Vue             |         32 |          0 |          3 |         35 |
+| d:\peoject\tzme-ui-corporate\src\components\ContactDetails.vue                                             | Vue             |         23 |          0 |          3 |         26 |
+| d:\peoject\tzme-ui-corporate\src\components\ContactFacilityFields.vue                                      | Vue             |         29 |          0 |          3 |         32 |
+| d:\peoject\tzme-ui-corporate\src\components\ContactIntro.vue                                               | Vue             |        209 |          2 |          5 |        216 |
+| d:\peoject\tzme-ui-corporate\src\components\ContactSettingsManager.vue                                     | Vue             |        210 |          0 |          6 |        216 |
+| d:\peoject\tzme-ui-corporate\src\components\EmailNotificationsManager.vue                                  | Vue             |        171 |          0 |          5 |        176 |
+| d:\peoject\tzme-ui-corporate\src\components\EquipmentImage.vue                                             | Vue             |         44 |          0 |          4 |         48 |
+| d:\peoject\tzme-ui-corporate\src\components\EquipmentScene3D.vue                                           | Vue             |        151 |          1 |          4 |        156 |
+| d:\peoject\tzme-ui-corporate\src\components\GlobalReachManager.vue                                         | Vue             |        304 |          0 |          6 |        310 |
+| d:\peoject\tzme-ui-corporate\src\components\GlobalReachSection.vue                                         | Vue             |        124 |          0 |          5 |        129 |
+| d:\peoject\tzme-ui-corporate\src\components\HomeCapabilitiesManager.vue                                    | Vue             |        180 |          0 |          7 |        187 |
+| d:\peoject\tzme-ui-corporate\src\components\HomeCapabilitiesSection.vue                                    | Vue             |        184 |          0 |          7 |        191 |
+| d:\peoject\tzme-ui-corporate\src\components\HomeIndustryNavigation.vue                                     | Vue             |         83 |          1 |          4 |         88 |
+| d:\peoject\tzme-ui-corporate\src\components\HomeSolutionsManager.vue                                       | Vue             |        146 |          0 |          6 |        152 |
+| d:\peoject\tzme-ui-corporate\src\components\HomeSolutionsSection.vue                                       | Vue             |         90 |          0 |          4 |         94 |
+| d:\peoject\tzme-ui-corporate\src\components\ImageUpload.vue                                                | Vue             |        130 |          0 |          5 |        135 |
+| d:\peoject\tzme-ui-corporate\src\components\IndustriesManager.vue                                          | Vue             |        206 |          0 |         14 |        220 |
+| d:\peoject\tzme-ui-corporate\src\components\IndustryIcon.vue                                               | Vue             |         16 |          0 |          4 |         20 |
+| d:\peoject\tzme-ui-corporate\src\components\InquiriesManager.vue                                           | Vue             |         81 |          0 |          4 |         85 |
+| d:\peoject\tzme-ui-corporate\src\components\InquiryDetailsDialog.vue                                       | Vue             |         71 |          0 |          5 |         76 |
+| d:\peoject\tzme-ui-corporate\src\components\InquiryForm.vue                                                | Vue             |        169 |          2 |          4 |        175 |
+| d:\peoject\tzme-ui-corporate\src\components\LanguageSwitcher.vue                                           | Vue             |         11 |          0 |          3 |         14 |
+| d:\peoject\tzme-ui-corporate\src\components\LegacyDataMigration.vue                                        | Vue             |         49 |          0 |          4 |         53 |
+| d:\peoject\tzme-ui-corporate\src\components\ManufacturingFilm.vue                                          | Vue             |         16 |          0 |          1 |         17 |
+| d:\peoject\tzme-ui-corporate\src\components\ManufacturingQuality.vue                                       | Vue             |         43 |          0 |          3 |         46 |
+| d:\peoject\tzme-ui-corporate\src\components\ModelUpload.vue                                                | Vue             |         26 |          0 |          1 |         27 |
+| d:\peoject\tzme-ui-corporate\src\components\NewsArticlePresentation.vue                                    | Vue             |         42 |          0 |          3 |         45 |
+| d:\peoject\tzme-ui-corporate\src\components\NewsIntro.vue                                                  | Vue             |         65 |          0 |          4 |         69 |
+| d:\peoject\tzme-ui-corporate\src\components\PartnersManager.vue                                            | Vue             |         93 |          0 |          4 |         97 |
+| d:\peoject\tzme-ui-corporate\src\components\PartnersSection.vue                                            | Vue             |         24 |          0 |          3 |         27 |
+| d:\peoject\tzme-ui-corporate\src\components\PdfFirstPage.vue                                               | Vue             |         85 |          2 |          6 |         93 |
+| d:\peoject\tzme-ui-corporate\src\components\PortEquipmentMonogram.vue                                      | Vue             |         72 |          1 |          6 |         79 |
+| d:\peoject\tzme-ui-corporate\src\components\ProductDetailPresentation.vue                                  | Vue             |        170 |          4 |          3 |        177 |
+| d:\peoject\tzme-ui-corporate\src\components\ProductShowcase.vue                                            | Vue             |        206 |          0 |          4 |        210 |
+| d:\peoject\tzme-ui-corporate\src\components\ProductShowcaseManager.vue                                     | Vue             |        159 |          0 |          4 |        163 |
+| d:\peoject\tzme-ui-corporate\src\components\ProjectCard.vue                                                | Vue             |         36 |          0 |          3 |         39 |
+| d:\peoject\tzme-ui-corporate\src\components\ProjectsManager.vue                                            | Vue             |        245 |          0 |          6 |        251 |
+| d:\peoject\tzme-ui-corporate\src\components\RichTextEditor.vue                                             | Vue             |        156 |          2 |          5 |        163 |
+| d:\peoject\tzme-ui-corporate\src\components\SceneProductPopover.vue                                        | Vue             |         11 |          0 |          1 |         12 |
+| d:\peoject\tzme-ui-corporate\src\components\SeoKnowledgeSection.vue                                        | Vue             |         18 |          0 |          1 |         19 |
+| d:\peoject\tzme-ui-corporate\src\components\SeoManager.vue                                                 | Vue             |         56 |          0 |          1 |         57 |
+| d:\peoject\tzme-ui-corporate\src\components\SiteFooter.vue                                                 | Vue             |        160 |          0 |          5 |        165 |
+| d:\peoject\tzme-ui-corporate\src\components\SiteLogo.vue                                                   | Vue             |         12 |          0 |          2 |         14 |
+| d:\peoject\tzme-ui-corporate\src\components\SiteNav.vue                                                    | Vue             |        128 |          0 |          8 |        136 |
+| d:\peoject\tzme-ui-corporate\src\components\SocialLinkIcon.vue                                             | Vue             |         22 |          0 |          4 |         26 |
+| d:\peoject\tzme-ui-corporate\src\components\SocialLinks.vue                                                | Vue             |         30 |          1 |          4 |         35 |
+| d:\peoject\tzme-ui-corporate\src\components\SocialLinksEditor.vue                                          | Vue             |         94 |          0 |          4 |         98 |
+| d:\peoject\tzme-ui-corporate\src\components\SubsidiaryCards.vue                                            | Vue             |         70 |          0 |          3 |         73 |
+| d:\peoject\tzme-ui-corporate\src\components\WorldReachMap.vue                                              | Vue             |        193 |          3 |          4 |        200 |
+| d:\peoject\tzme-ui-corporate\src\composables\useAdminEditorState.js                                        | JavaScript      |         10 |          0 |          2 |         12 |
+| d:\peoject\tzme-ui-corporate\src\composables\useDesignPage.js                                              | JavaScript      |         64 |          1 |          9 |         74 |
+| d:\peoject\tzme-ui-corporate\src\composables\useEquipmentDepth.js                                          | JavaScript      |         46 |          1 |          2 |         49 |
+| d:\peoject\tzme-ui-corporate\src\composables\useSiteNavigation.js                                          | JavaScript      |         43 |          0 |          7 |         50 |
+| d:\peoject\tzme-ui-corporate\src\config\imageUploads.js                                                    | JavaScript      |         18 |          1 |          1 |         20 |
+| d:\peoject\tzme-ui-corporate\src\data\aboutTzme.js                                                         | JavaScript      |         24 |          0 |          3 |         27 |
+| d:\peoject\tzme-ui-corporate\src\data\adminWorkspace.js                                                    | JavaScript      |         37 |          1 |          3 |         41 |
+| d:\peoject\tzme-ui-corporate\src\data\analyticsEvents.js                                                   | JavaScript      |          8 |          1 |          1 |         10 |
+| d:\peoject\tzme-ui-corporate\src\data\articleDetails.js                                                    | JavaScript      |         18 |          1 |          1 |         20 |
+| d:\peoject\tzme-ui-corporate\src\data\capabilities.js                                                      | JavaScript      |         26 |          0 |          3 |         29 |
+| d:\peoject\tzme-ui-corporate\src\data\certificatePreviews.json                                             | JSON            |         62 |          0 |          1 |         63 |
+| d:\peoject\tzme-ui-corporate\src\data\certifications.js                                                    | JavaScript      |         38 |          1 |          1 |         40 |
+| d:\peoject\tzme-ui-corporate\src\data\contactFacilities.js                                                 | JavaScript      |         20 |          0 |          3 |         23 |
+| d:\peoject\tzme-ui-corporate\src\data\content.js                                                           | JavaScript      |        158 |          0 |          3 |        161 |
+| d:\peoject\tzme-ui-corporate\src\data\equipmentPresentationImages.json                                     | JSON            |        367 |          0 |          1 |        368 |
+| d:\peoject\tzme-ui-corporate\src\data\globalReach.js                                                       | JavaScript      |         24 |          1 |          4 |         29 |
+| d:\peoject\tzme-ui-corporate\src\data\homeSolutions.js                                                     | JavaScript      |         38 |          1 |          6 |         45 |
+| d:\peoject\tzme-ui-corporate\src\data\imageVariants.json                                                   | JSON            |      3,190 |          0 |          1 |      3,191 |
+| d:\peoject\tzme-ui-corporate\src\data\industries.js                                                        | JavaScript      |         19 |          0 |          3 |         22 |
+| d:\peoject\tzme-ui-corporate\src\data\jCompany.js                                                          | JavaScript      |         19 |          1 |          1 |         21 |
+| d:\peoject\tzme-ui-corporate\src\data\jDesign.js                                                           | JavaScript      |         18 |          1 |          1 |         20 |
+| d:\peoject\tzme-ui-corporate\src\data\mapCountries.json                                                    | JSON            |      2,436 |          0 |          1 |      2,437 |
+| d:\peoject\tzme-ui-corporate\src\data\mapLocations.js                                                      | JavaScript      |         15 |          6 |          6 |         27 |
+| d:\peoject\tzme-ui-corporate\src\data\productDetails.js                                                    | JavaScript      |         74 |          2 |          1 |         77 |
+| d:\peoject\tzme-ui-corporate\src\data\productShowcase.js                                                   | JavaScript      |         34 |          2 |          1 |         37 |
+| d:\peoject\tzme-ui-corporate\src\data\projects.js                                                          | JavaScript      |         43 |          1 |          2 |         46 |
+| d:\peoject\tzme-ui-corporate\src\data\socialLinks.js                                                       | JavaScript      |         26 |          0 |          5 |         31 |
+| d:\peoject\tzme-ui-corporate\src\i18n\aboutTzme.js                                                         | JavaScript      |         34 |          0 |          2 |         36 |
+| d:\peoject\tzme-ui-corporate\src\i18n\analytics.js                                                         | JavaScript      |         86 |          0 |          1 |         87 |
+| d:\peoject\tzme-ui-corporate\src\i18n\capabilities.js                                                      | JavaScript      |         42 |          0 |          2 |         44 |
+| d:\peoject\tzme-ui-corporate\src\i18n\contact.js                                                           | JavaScript      |         93 |          0 |          2 |         95 |
+| d:\peoject\tzme-ui-corporate\src\i18n\homeSolutions.js                                                     | JavaScript      |         44 |          0 |          1 |         45 |
+| d:\peoject\tzme-ui-corporate\src\i18n\index.js                                                             | JavaScript      |         20 |          0 |          5 |         25 |
+| d:\peoject\tzme-ui-corporate\src\i18n\locales\en.js                                                        | JavaScript      |        678 |          0 |          1 |        679 |
+| d:\peoject\tzme-ui-corporate\src\i18n\locales\index.js                                                     | JavaScript      |         12 |          2 |          3 |         17 |
+| d:\peoject\tzme-ui-corporate\src\i18n\locales\zh.js                                                        | JavaScript      |        688 |          0 |          1 |        689 |
+| d:\peoject\tzme-ui-corporate\src\main.js                                                                   | JavaScript      |        133 |          2 |          2 |        137 |
+| d:\peoject\tzme-ui-corporate\src\services\aboutTzme.js                                                     | JavaScript      |         32 |          0 |          2 |         34 |
+| d:\peoject\tzme-ui-corporate\src\services\analytics.js                                                     | JavaScript      |        176 |          2 |          2 |        180 |
+| d:\peoject\tzme-ui-corporate\src\services\api.js                                                           | JavaScript      |         69 |          2 |          3 |         74 |
+| d:\peoject\tzme-ui-corporate\src\services\articles.js                                                      | JavaScript      |         17 |          0 |          5 |         22 |
+| d:\peoject\tzme-ui-corporate\src\services\capabilities.js                                                  | JavaScript      |         32 |          0 |          2 |         34 |
+| d:\peoject\tzme-ui-corporate\src\services\catalog.js                                                       | JavaScript      |         22 |          0 |          3 |         25 |
+| d:\peoject\tzme-ui-corporate\src\services\certifications.js                                                | JavaScript      |          6 |          0 |          2 |          8 |
+| d:\peoject\tzme-ui-corporate\src\services\contactSettings.js                                               | JavaScript      |         37 |          0 |          2 |         39 |
+| d:\peoject\tzme-ui-corporate\src\services\globalReach.js                                                   | JavaScript      |         48 |          0 |          2 |         50 |
+| d:\peoject\tzme-ui-corporate\src\services\homeSolutions.js                                                 | JavaScript      |         32 |          0 |          2 |         34 |
+| d:\peoject\tzme-ui-corporate\src\services\imageUpload.js                                                   | JavaScript      |         22 |          0 |          3 |         25 |
+| d:\peoject\tzme-ui-corporate\src\services\industries.js                                                    | JavaScript      |          7 |          0 |          2 |          9 |
+| d:\peoject\tzme-ui-corporate\src\services\inquiries.js                                                     | JavaScript      |          3 |          0 |          2 |          5 |
+| d:\peoject\tzme-ui-corporate\src\services\legacyMigration.js                                               | JavaScript      |         64 |          2 |          2 |         68 |
+| d:\peoject\tzme-ui-corporate\src\services\mailSettings.js                                                  | JavaScript      |         16 |          0 |          2 |         18 |
+| d:\peoject\tzme-ui-corporate\src\services\pageStartup.js                                                   | JavaScript      |         26 |          3 |          3 |         32 |
+| d:\peoject\tzme-ui-corporate\src\services\partners.js                                                      | JavaScript      |         26 |          0 |          2 |         28 |
+| d:\peoject\tzme-ui-corporate\src\services\productShowcase.js                                               | JavaScript      |         28 |          0 |          2 |         30 |
+| d:\peoject\tzme-ui-corporate\src\services\projects.js                                                      | JavaScript      |         29 |          0 |          2 |         31 |
+| d:\peoject\tzme-ui-corporate\src\services\publicBootstrap.js                                               | JavaScript      |         16 |          1 |          1 |         18 |
+| d:\peoject\tzme-ui-corporate\src\services\seo.js                                                           | JavaScript      |         60 |          0 |          2 |         62 |
+| d:\peoject\tzme-ui-corporate\src\services\session.js                                                       | JavaScript      |         54 |          1 |          3 |         58 |
+| d:\peoject\tzme-ui-corporate\src\services\website.js                                                       | JavaScript      |         30 |          0 |          2 |         32 |
+| d:\peoject\tzme-ui-corporate\src\style.css                                                                 | PostCSS         |          8 |          0 |          1 |          9 |
+| d:\peoject\tzme-ui-corporate\src\style\admin-auth.css                                                      | PostCSS         |          8 |          0 |          1 |          9 |
+| d:\peoject\tzme-ui-corporate\src\style\admin-editor.css                                                    | PostCSS         |        108 |          0 |          1 |        109 |
+| d:\peoject\tzme-ui-corporate\src\style\admin-message-box.css                                               | PostCSS         |         87 |          0 |          1 |         88 |
+| d:\peoject\tzme-ui-corporate\src\style\admin-workspace.css                                                 | PostCSS         |         21 |          0 |          1 |         22 |
+| d:\peoject\tzme-ui-corporate\src\style\catalog-intro.css                                                   | PostCSS         |        110 |          1 |          5 |        116 |
+| d:\peoject\tzme-ui-corporate\src\style\design-adapter.css                                                  | PostCSS         |        789 |          1 |          1 |        791 |
+| d:\peoject\tzme-ui-corporate\src\style\design-j.css                                                        | PostCSS         |         21 |          8 |          2 |         31 |
+| d:\peoject\tzme-ui-corporate\src\style\design-reference.css                                                | PostCSS         |      1,693 |         51 |         41 |      1,785 |
+| d:\peoject\tzme-ui-corporate\src\style\home-first-screen.css                                               | PostCSS         |         45 |          3 |         10 |         58 |
+| d:\peoject\tzme-ui-corporate\src\style\news-list.css                                                       | PostCSS         |         83 |          1 |          1 |         85 |
+| d:\peoject\tzme-ui-corporate\src\style\news.css                                                            | PostCSS         |         50 |          0 |          1 |         51 |
+| d:\peoject\tzme-ui-corporate\src\style\product-detail-hero.css                                             | PostCSS         |        134 |          6 |         33 |        173 |
+| d:\peoject\tzme-ui-corporate\src\style\product-detail.css                                                  | PostCSS         |         65 |          0 |          2 |         67 |
+| d:\peoject\tzme-ui-corporate\src\style\projects.css                                                        | PostCSS         |        310 |          3 |          6 |        319 |
+| d:\peoject\tzme-ui-corporate\src\style\site-layout.css                                                     | PostCSS         |         86 |          2 |         18 |        106 |
+| d:\peoject\tzme-ui-corporate\src\style\site-mobile-nav.css                                                 | PostCSS         |         88 |          0 |          8 |         96 |
+| d:\peoject\tzme-ui-corporate\src\style\site-refinement.css                                                 | PostCSS         |        132 |          6 |          8 |        146 |
+| d:\peoject\tzme-ui-corporate\src\style\site-typography.css                                                 | PostCSS         |         29 |          2 |          5 |         36 |
+| d:\peoject\tzme-ui-corporate\src\three\createIndustrialViewer.js                                           | JavaScript      |        384 |         16 |          4 |        404 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialCabins.js                                                 | JavaScript      |         15 |          2 |          3 |         20 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialIsland.js                                                 | JavaScript      |        159 |          9 |          7 |        175 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialMotion.js                                                 | JavaScript      |        127 |          8 |          6 |        141 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialPicking.js                                                | JavaScript      |         14 |          2 |          1 |         17 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialQuality.js                                                | JavaScript      |         35 |          2 |          1 |         38 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialRegions.js                                                | JavaScript      |         64 |          6 |          5 |         75 |
+| d:\peoject\tzme-ui-corporate\src\three\industrialScene.js                                                  | JavaScript      |        479 |          3 |         19 |        501 |
+| d:\peoject\tzme-ui-corporate\src\utils\adminContent.js                                                     | JavaScript      |         16 |          0 |          4 |         20 |
+| d:\peoject\tzme-ui-corporate\src\utils\articleCategories.js                                                | JavaScript      |         23 |          2 |          4 |         29 |
+| d:\peoject\tzme-ui-corporate\src\utils\equipmentPresentation.js                                            | JavaScript      |         73 |          5 |          7 |         85 |
+| d:\peoject\tzme-ui-corporate\src\utils\pdfPreview.js                                                       | JavaScript      |         21 |          1 |          5 |         27 |
+| d:\peoject\tzme-ui-corporate\src\utils\projectNavigation.js                                                | JavaScript      |          9 |          0 |          1 |         10 |
+| d:\peoject\tzme-ui-corporate\src\utils\responsiveImages.js                                                 | JavaScript      |         10 |          0 |          2 |         12 |
+| d:\peoject\tzme-ui-corporate\src\utils\richText.js                                                         | JavaScript      |         44 |          1 |          3 |         48 |
+| d:\peoject\tzme-ui-corporate\src\views\AboutView.vue                                                       | Vue             |        212 |          0 |         10 |        222 |
+| d:\peoject\tzme-ui-corporate\src\views\AdminLoginView.vue                                                  | Vue             |         32 |          0 |          1 |         33 |
+| d:\peoject\tzme-ui-corporate\src\views\AdminView.vue                                                       | Vue             |      1,116 |          0 |         22 |      1,138 |
+| d:\peoject\tzme-ui-corporate\src\views\ContactView.vue                                                     | Vue             |         40 |          0 |          2 |         42 |
+| d:\peoject\tzme-ui-corporate\src\views\HomeView.vue                                                        | Vue             |         85 |          0 |          3 |         88 |
+| d:\peoject\tzme-ui-corporate\src\views\InsightsView.vue                                                    | Vue             |        108 |          0 |          4 |        112 |
+| d:\peoject\tzme-ui-corporate\src\views\NewsDetailView.vue                                                  | Vue             |         60 |          0 |          4 |         64 |
+| d:\peoject\tzme-ui-corporate\src\views\NotFoundView.vue                                                    | Vue             |          3 |          0 |          1 |          4 |
+| d:\peoject\tzme-ui-corporate\src\views\ProductDetailView.vue                                               | Vue             |         34 |          0 |          4 |         38 |
+| d:\peoject\tzme-ui-corporate\src\views\ProductsView.vue                                                    | Vue             |        169 |          2 |          5 |        176 |
+| d:\peoject\tzme-ui-corporate\src\views\ProjectDetailView.vue                                               | Vue             |        157 |          1 |          8 |        166 |
+| d:\peoject\tzme-ui-corporate\src\views\ProjectsView.vue                                                    | Vue             |         99 |          0 |          7 |        106 |
+| d:\peoject\tzme-ui-corporate\src\views\SiteMapView.vue                                                     | Vue             |         14 |          0 |          1 |         15 |
+| d:\peoject\tzme-ui-corporate\vite.config.js                                                                | JavaScript      |        110 |          4 |          5 |        119 |
+| Total                                                                                                      |                 |     44,549 |        438 |      1,796 |     46,783 |
++------------------------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+

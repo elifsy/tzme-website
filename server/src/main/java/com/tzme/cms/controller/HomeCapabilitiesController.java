@@ -17,7 +17,8 @@ import java.util.Set;
 @RequestMapping("/api/home-capabilities")
 public class HomeCapabilitiesController {
     private static final int MAX_STEPS = 8;
-    private static final Set<String> ICON_NAMES = Set.of("requirements", "materials", "inspection", "idea", "engineering", "design", "fabrication", "assembly", "delivery", "general");
+    private static final Set<String> ICON_NAMES = Set.of("requirements", "materials", "inspection", "idea",
+            "engineering", "design", "fabrication", "assembly", "delivery", "general");
     private final SiteSettingsRepository repository;
     private final ObjectMapper mapper;
 
@@ -28,7 +29,9 @@ public class HomeCapabilitiesController {
 
     @GetMapping
     public JsonNode get() throws JsonProcessingException {
-        var row = repository.findById("capabilities").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Initialize the homepage capabilities configuration first"));
+        var row = repository.findById("capabilities")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Initialize the homepage capabilities configuration first"));
         return mapper.readTree(row.getConfiguration());
     }
 
@@ -36,15 +39,21 @@ public class HomeCapabilitiesController {
     @Transactional
     public ObjectNode save(@RequestBody ObjectNode input) throws JsonProcessingException {
         var value = input.deepCopy();
-        var row = repository.findForUpdate("capabilities").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Initialize the homepage capabilities configuration first"));
+        var row = repository.findForUpdate("capabilities")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Initialize the homepage capabilities configuration first"));
         var stored = mapper.readTree(row.getConfiguration());
         var descriptions = new HashMap<String, JsonNode>();
-        for (var step : stored.path("steps")) if (step.has("description")) descriptions.put(step.path("id").asText(), step.get("description"));
-        // Preserve descriptions from older clients by stable step ID, including after sorting.
+        for (var step : stored.path("steps"))
+            if (step.has("description"))
+                descriptions.put(step.path("id").asText(), step.get("description"));
+        // Preserve descriptions from older clients by stable step ID, including after
+        // sorting.
         for (var step : value.path("steps")) {
             if (step instanceof ObjectNode item && !item.has("description")) {
                 var description = descriptions.get(item.path("id").asText());
-                item.set("description", description == null ? mapper.createObjectNode().put("zh", "") : description.deepCopy());
+                item.set("description",
+                        description == null ? mapper.createObjectNode().put("zh", "") : description.deepCopy());
             }
         }
         validate(value);
@@ -54,8 +63,10 @@ public class HomeCapabilitiesController {
     }
 
     private static void validate(ObjectNode value) {
-        exactKeys(value, Set.of("enabled", "kicker", "titleLine1", "titleLine2", "description", "image", "imageAlt", "steps"));
-        if (!value.path("enabled").isBoolean()) invalid("Invalid section visibility");
+        exactKeys(value,
+                Set.of("enabled", "kicker", "titleLine1", "titleLine2", "description", "image", "imageAlt", "steps"));
+        if (!value.path("enabled").isBoolean())
+            invalid("Invalid section visibility");
         translated(value.path("kicker"), 100, true, false);
         translated(value.path("titleLine1"), 120, true, false);
         translated(value.path("titleLine2"), 120, false, false);
@@ -63,49 +74,73 @@ public class HomeCapabilitiesController {
         translated(value.path("imageAlt"), 255, false, false);
         image(value, "image", true);
         var steps = value.path("steps");
-        if (!steps.isArray() || steps.size() > MAX_STEPS) invalid("Maximum 8 capability steps");
+        if (!steps.isArray() || steps.size() > MAX_STEPS)
+            invalid("Maximum 8 capability steps");
         var ids = new HashSet<String>();
         int visible = 0;
         for (var step : steps) {
-            if (!(step instanceof ObjectNode)) invalid("Invalid capability step");
+            if (!(step instanceof ObjectNode))
+                invalid("Invalid capability step");
             var item = (ObjectNode) step;
             exactKeys(item, Set.of("id", "label", "description", "enabled", "iconMode", "iconName", "icon"));
-            if (!item.path("id").isTextual() || !item.path("id").asText().matches("[a-zA-Z0-9-]{1,100}") || !ids.add(item.path("id").asText())) invalid("Invalid capability step ID");
-            if (!item.path("enabled").isBoolean()) invalid("Invalid step visibility");
+            if (!item.path("id").isTextual() || !item.path("id").asText().matches("[a-zA-Z0-9-]{1,100}")
+                    || !ids.add(item.path("id").asText()))
+                invalid("Invalid capability step ID");
+            if (!item.path("enabled").isBoolean())
+                invalid("Invalid step visibility");
             boolean enabled = item.path("enabled").asBoolean();
-            if (enabled) visible++;
+            if (enabled)
+                visible++;
             translated(item.path("label"), 100, enabled, false);
             translated(item.path("description"), 600, false, true);
-            if (!Set.of("preset", "image").contains(item.path("iconMode").asText()) || !ICON_NAMES.contains(item.path("iconName").asText())) invalid("Invalid capability icon");
+            if (!Set.of("preset", "image").contains(item.path("iconMode").asText())
+                    || !ICON_NAMES.contains(item.path("iconName").asText()))
+                invalid("Invalid capability icon");
             image(item, "icon", false);
-            if (enabled && item.path("iconMode").asText().equals("image") && item.path("icon").asText().isEmpty()) invalid("Upload an icon for each visible image step");
+            if (enabled && item.path("iconMode").asText().equals("image") && item.path("icon").asText().isEmpty())
+                invalid("Upload an icon for each visible image step");
         }
-        if (value.path("enabled").asBoolean() && visible == 0) invalid("A visible section requires at least one enabled step");
+        if (value.path("enabled").asBoolean() && visible == 0)
+            invalid("A visible section requires at least one enabled step");
     }
 
     private static void exactKeys(ObjectNode value, Set<String> fields) {
-        if (value.size() != fields.size()) invalid("Configuration fields are incomplete");
-        value.fieldNames().forEachRemaining(key -> { if (!fields.contains(key)) invalid("Unknown configuration field"); });
+        if (value.size() != fields.size())
+            invalid("Configuration fields are incomplete");
+        value.fieldNames().forEachRemaining(key -> {
+            if (!fields.contains(key))
+                invalid("Unknown configuration field");
+        });
     }
 
     private static void translated(JsonNode value, int max, boolean required, boolean multiline) {
-        if (!value.isObject() || value.size() > 30 || !value.path("zh").isTextual() || (value.has("en") && !value.path("en").isTextual())) invalid("Complete Chinese text");
+        if (!value.isObject() || value.size() > 30 || !value.path("zh").isTextual()
+                || (value.has("en") && !value.path("en").isTextual()))
+            invalid("Complete Chinese text");
         value.fields().forEachRemaining(entry -> {
-            if (!entry.getKey().matches("[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*") || !entry.getValue().isTextual()) invalid("Invalid translated text");
+            if (!entry.getKey().matches("[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*") || !entry.getValue().isTextual())
+                invalid("Invalid translated text");
             String text = entry.getValue().asText().trim();
-            if (text.length() > max || (!multiline && (text.contains("\n") || text.contains("\r"))) || (required && entry.getKey().equals("zh") && text.isBlank())) invalid("Invalid or missing translated text");
+            if (text.length() > max || (!multiline && (text.contains("\n") || text.contains("\r")))
+                    || (required && entry.getKey().equals("zh") && text.isBlank()))
+                invalid("Invalid or missing translated text");
             ((ObjectNode) value).put(entry.getKey(), text);
         });
     }
 
     private static void image(ObjectNode value, String key, boolean background) {
-        if (!value.path(key).isTextual()) invalid("Invalid image");
+        if (!value.path(key).isTextual())
+            invalid("Invalid image");
         String path = value.path(key).asText().trim();
-        boolean uploaded = path.matches("/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)");
+        boolean uploaded = path.matches(
+                "/api/uploads/images/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpg|png|gif|webp)");
         boolean preset = background && path.matches("/assets/[a-zA-Z0-9_-]+\\.(jpg|png|gif|webp)");
-        if (!path.isEmpty() && !uploaded && !preset) invalid("Select an uploaded image");
+        if (!path.isEmpty() && !uploaded && !preset)
+            invalid("Select an uploaded image");
         value.put(key, path);
     }
 
-    private static void invalid(String message) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message); }
+    private static void invalid(String message) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+    }
 }

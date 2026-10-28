@@ -27,8 +27,8 @@ public class HomeGlobalController {
 
     @GetMapping
     public HomeGlobalSettings get() throws JsonProcessingException {
-        var existing = repository.findById(1L).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Import the database initialization SQL first"));
+        var existing = repository.findById(1L).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Import the database initialization SQL first"));
         return mapper.readValue(existing.getConfiguration(), HomeGlobalSettings.class).withMapDefaults();
     }
 
@@ -39,8 +39,10 @@ public class HomeGlobalController {
         for (var text : List.of(input.kicker(), input.titleLine1(), input.description(), input.imageAlt())) {
             requireText(text);
         }
-        for (var statistic : input.statistics()) requireText(statistic.label());
-        if (input.showButton()) requireText(input.buttonText());
+        for (var statistic : input.statistics())
+            requireText(statistic.label());
+        if (input.showButton())
+            requireText(input.buttonText());
         if (("image".equals(input.mapMode()) && !safeUrl(input.image())) || !safeUrl(input.buttonLink())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Use an absolute site path or an HTTP(S) URL");
         }
@@ -48,10 +50,12 @@ public class HomeGlobalController {
         for (var point : input.mapPoints()) {
             requireText(point.label());
             if (!pointIds.add(point.id()) || !Double.isFinite(point.x()) || !Double.isFinite(point.y())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Map points must have unique IDs and finite coordinates");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Map points must have unique IDs and finite coordinates");
             }
             if (point.label().en().length() > 120 || point.label().zh().length() > 120) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Map point names must be at most 120 characters");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Map point names must be at most 120 characters");
             }
         }
         var record = new HomeGlobal();
@@ -69,12 +73,16 @@ public class HomeGlobalController {
 
     private static boolean safeUrl(String value) {
         if (!value.equals(value.trim()) || value.chars().anyMatch(c -> c <= 32 || c == 127)
-                || value.contains("\\")) return false;
+                || value.contains("\\"))
+            return false;
         try {
             URI uri = URI.create(value);
-            if (value.startsWith("/") && !value.startsWith("//")) return uri.getRawAuthority() == null;
+            if (value.startsWith("/") && !value.startsWith("//"))
+                return uri.getRawAuthority() == null;
             return ("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()))
                     && uri.getHost() != null && uri.getUserInfo() == null;
-        } catch (IllegalArgumentException error) { return false; }
+        } catch (IllegalArgumentException error) {
+            return false;
+        }
     }
 }

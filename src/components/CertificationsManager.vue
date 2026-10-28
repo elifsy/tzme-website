@@ -1,88 +1,135 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Edit, Promotion } from '@element-plus/icons-vue'
-import AdminEditorDialog from './AdminEditorDialog.vue'
-import AdminEditorPanel from './AdminEditorPanel.vue'
-import { useAdminEditorState } from '../composables/useAdminEditorState.js'
-import ImageUpload from './ImageUpload.vue'
-import { useCertificationCatalog } from '../services/certifications.js'
-import { apiRequest } from '../services/api.js'
-import { isPdf } from '../data/jDesign.js'
+import { computed, onMounted, reactive, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { Delete, Edit, Promotion } from "@element-plus/icons-vue";
+import AdminEditorDialog from "./AdminEditorDialog.vue";
+import AdminEditorPanel from "./AdminEditorPanel.vue";
+import { useAdminEditorState } from "../composables/useAdminEditorState.js";
+import ImageUpload from "./ImageUpload.vue";
+import { useCertificationCatalog } from "../services/certifications.js";
+import { apiRequest } from "../services/api.js";
+import { isPdf } from "../data/jDesign.js";
 
-const { t, locale } = useI18n({ useScope: 'global' })
-const { certifications: records, loadCertifications } = useCertificationCatalog()
-const loading = ref(false)
-const saving = ref(false)
-const imageUploading = ref(false)
-const dialogOpen = ref(false)
-const editingLocale = ref('zh')
-const hasCertificateImage = (item) => typeof item.image === 'string' && Boolean(item.image.trim())
-const publishedCount = computed(() => records.value.filter((item) => item.status === 'published' && hasCertificateImage(item)).length)
-const missingPublishedImages = computed(() => records.value.filter((item) => item.status === 'published' && !hasCertificateImage(item)).length)
+const { t, locale } = useI18n({ useScope: "global" });
+const { certifications: records, loadCertifications } =
+  useCertificationCatalog();
+const loading = ref(false);
+const saving = ref(false);
+const imageUploading = ref(false);
+const dialogOpen = ref(false);
+const editingLocale = ref("zh");
+const hasCertificateImage = (item) =>
+  typeof item.image === "string" && Boolean(item.image.trim());
+const publishedCount = computed(
+  () =>
+    records.value.filter(
+      (item) => item.status === "published" && hasCertificateImage(item),
+    ).length,
+);
+const missingPublishedImages = computed(
+  () =>
+    records.value.filter(
+      (item) => item.status === "published" && !hasCertificateImage(item),
+    ).length,
+);
 const form = reactive({
-  id: '', titleEn: '', titleZh: '', summaryEn: '', summaryZh: '',
-  issuerEn: '', issuerZh: '', certificateNo: '', issuedAt: '', expiresAt: '',
-  image: '', sortOrder: 10, status: 'published',
-})
-const editorOriginal = ref('')
-const editorDirty = computed(() => dialogOpen.value && JSON.stringify(form) !== editorOriginal.value)
-useAdminEditorState({ dirty: editorDirty, saving, loading, uploading: imageUploading })
+  id: "",
+  titleEn: "",
+  titleZh: "",
+  summaryEn: "",
+  summaryZh: "",
+  issuerEn: "",
+  issuerZh: "",
+  certificateNo: "",
+  issuedAt: "",
+  expiresAt: "",
+  image: "",
+  sortOrder: 10,
+  status: "published",
+});
+const editorOriginal = ref("");
+const editorDirty = computed(
+  () => dialogOpen.value && JSON.stringify(form) !== editorOriginal.value,
+);
+useAdminEditorState({
+  dirty: editorDirty,
+  saving,
+  loading,
+  uploading: imageUploading,
+});
 
 function field(item, name) {
-  return locale.value === 'zh'
-    ? item[`${name}Zh`] || item[`${name}En`] || ''
-    : item[`${name}En`] || ''
+  return locale.value === "zh"
+    ? item[`${name}Zh`] || item[`${name}En`] || ""
+    : item[`${name}En`] || "";
 }
 
 async function load() {
-  loading.value = true
-  records.value = await loadCertifications()
-  loading.value = false
+  loading.value = true;
+  records.value = await loadCertifications();
+  loading.value = false;
 }
 
 function openEditor(item = null) {
-  editingLocale.value = 'zh'
+  editingLocale.value = "zh";
   Object.assign(form, {
-    id: item?.id || '',
-    titleEn: item?.titleEn || '', titleZh: item?.titleZh || '',
-    summaryEn: item?.summaryEn || '', summaryZh: item?.summaryZh || '',
-    issuerEn: item?.issuerEn || '', issuerZh: item?.issuerZh || '',
-    certificateNo: item?.certificateNo || '',
-    issuedAt: item?.issuedAt || '', expiresAt: item?.expiresAt || '',
-    image: item?.image || '',
+    id: item?.id || "",
+    titleEn: item?.titleEn || "",
+    titleZh: item?.titleZh || "",
+    summaryEn: item?.summaryEn || "",
+    summaryZh: item?.summaryZh || "",
+    issuerEn: item?.issuerEn || "",
+    issuerZh: item?.issuerZh || "",
+    certificateNo: item?.certificateNo || "",
+    issuedAt: item?.issuedAt || "",
+    expiresAt: item?.expiresAt || "",
+    image: item?.image || "",
     sortOrder: Number(item?.sortOrder ?? (records.value.length + 1) * 10),
-    status: item?.status || 'published',
-  })
-  editorOriginal.value = JSON.stringify(form)
-  dialogOpen.value = true
+    status: item?.status || "published",
+  });
+  editorOriginal.value = JSON.stringify(form);
+  dialogOpen.value = true;
 }
 
 async function persist(record, update) {
   try {
-    await apiRequest('/api/certifications' + (update ? '/' + encodeURIComponent(record.id) : ''), {
-      method: update ? 'PUT' : 'POST', body: { ...record, issuedAt: record.issuedAt || null, expiresAt: record.expiresAt || null },
-    });
-    await load(); ElMessage.success(t('admin.contentSaved')); return true;
-  } catch { ElMessage.error(t('admin.apiWriteFailed')); return false; }
+    await apiRequest(
+      "/api/certifications" +
+        (update ? "/" + encodeURIComponent(record.id) : ""),
+      {
+        method: update ? "PUT" : "POST",
+        body: {
+          ...record,
+          issuedAt: record.issuedAt || null,
+          expiresAt: record.expiresAt || null,
+        },
+      },
+    );
+    await load();
+    ElMessage.success(t("admin.contentSaved"));
+    return true;
+  } catch {
+    ElMessage.error(t("admin.apiWriteFailed"));
+    return false;
+  }
 }
 
 async function save() {
-  if (saving.value || imageUploading.value) return
+  if (saving.value || imageUploading.value) return;
   if (!form.titleZh.trim()) {
-    ElMessage.warning(t('admin.bothTitlesRequired'))
-    return
+    ElMessage.warning(t("admin.bothTitlesRequired"));
+    return;
   }
   if (form.issuedAt && form.expiresAt && form.expiresAt < form.issuedAt) {
-    ElMessage.warning(t('admin.certInvalidDateRange'))
-    return
+    ElMessage.warning(t("admin.certInvalidDateRange"));
+    return;
   }
-  if (form.status === 'published' && !hasCertificateImage(form)) {
-    ElMessage.warning(t('admin.certImageRequired'))
-    return
+  if (form.status === "published" && !hasCertificateImage(form)) {
+    ElMessage.warning(t("admin.certImageRequired"));
+    return;
   }
-  saving.value = true
+  saving.value = true;
   const record = {
     ...form,
     id: form.id || `cert-${Date.now()}`,
@@ -90,43 +137,54 @@ async function save() {
     titleZh: form.titleZh.trim(),
     image: form.image.trim(),
     sortOrder: Number(form.sortOrder) || 0,
+  };
+  try {
+    if (await persist(record, Boolean(form.id))) dialogOpen.value = false;
+  } finally {
+    saving.value = false;
   }
-  try { if (await persist(record, Boolean(form.id))) dialogOpen.value = false }
-  finally { saving.value = false }
 }
 
 async function toggle(item) {
-  const record = { ...item, status: item.status === 'published' ? 'draft' : 'published' }
-  if (record.status === 'published' && !hasCertificateImage(record)) {
-    ElMessage.warning(t('admin.certImageRequired'))
-    openEditor(record)
-    return
+  const record = {
+    ...item,
+    status: item.status === "published" ? "draft" : "published",
+  };
+  if (record.status === "published" && !hasCertificateImage(record)) {
+    ElMessage.warning(t("admin.certImageRequired"));
+    openEditor(record);
+    return;
   }
-  await persist(record, true)
+  await persist(record, true);
 }
 
 async function remove(item) {
   try {
     await ElMessageBox.confirm(
-      t('admin.deleteConfirm', { title: field(item, 'title') }),
-      t('admin.certDeleteTitle'),
+      t("admin.deleteConfirm", { title: field(item, "title") }),
+      t("admin.certDeleteTitle"),
       {
-        confirmButtonText: t('admin.delete'),
-        cancelButtonText: t('admin.cancel'),
-        type: 'warning',
+        confirmButtonText: t("admin.delete"),
+        cancelButtonText: t("admin.cancel"),
+        type: "warning",
       },
-    )
+    );
   } catch {
-    return
+    return;
   }
   try {
-    await apiRequest('/api/certifications/' + encodeURIComponent(item.id), { method: 'DELETE' });
-    await load(); ElMessage.success(t('admin.contentDeleted'));
-  } catch { ElMessage.error(t('admin.apiWriteFailed')); }
+    await apiRequest("/api/certifications/" + encodeURIComponent(item.id), {
+      method: "DELETE",
+    });
+    await load();
+    ElMessage.success(t("admin.contentDeleted"));
+  } catch {
+    ElMessage.error(t("admin.apiWriteFailed"));
+  }
 }
 
-defineExpose({ load, openEditor })
-onMounted(load)
+defineExpose({ load, openEditor });
+onMounted(load);
 </script>
 
 <template>
@@ -134,55 +192,158 @@ onMounted(load)
     <template #header>
       <div class="card-heading">
         <div>
-          <strong>{{ $t('admin.certifications') }}</strong>
-          <small>{{ publishedCount }} {{ $t('admin.certPublishedCount') }} · {{ records.length }} {{ $t('admin.records') }}</small>
+          <strong>{{ $t("admin.certifications") }}</strong>
+          <small
+            >{{ publishedCount }} {{ $t("admin.certPublishedCount") }} ·
+            {{ records.length }} {{ $t("admin.records") }}</small
+          >
         </div>
-        <el-button type="primary" @click="openEditor()">{{ $t('admin.certAdd') }}</el-button>
+        <el-button type="primary" @click="openEditor()">{{
+          $t("admin.certAdd")
+        }}</el-button>
       </div>
     </template>
-    <el-alert v-if="missingPublishedImages" class="cert-image-alert" type="warning" show-icon :closable="false"
-      :title="$t('admin.certMissingImages', { count: missingPublishedImages })" />
-    <el-table :data="records" v-loading="loading" row-key="id" :empty-text="$t('admin.certEmpty')">
+    <el-alert
+      v-if="missingPublishedImages"
+      class="cert-image-alert"
+      type="warning"
+      show-icon
+      :closable="false"
+      :title="$t('admin.certMissingImages', { count: missingPublishedImages })"
+    />
+    <el-table
+      :data="records"
+      v-loading="loading"
+      row-key="id"
+      :empty-text="$t('admin.certEmpty')"
+    >
       <el-table-column :label="$t('admin.certName')" min-width="230">
         <template #default="{ row }">
           <div class="cert-name-cell">
-            <a v-if="isPdf(row.image)" :href="row.image" target="_blank" rel="noopener" class="cert-thumbnail cert-thumbnail-empty" :aria-label="field(row,'title')"><el-icon><Document /></el-icon></a>
-            <el-image v-else-if="row.image" :src="row.image" fit="cover" class="cert-thumbnail" />
-            <span v-else class="cert-thumbnail cert-thumbnail-empty"><el-icon><Picture /></el-icon></span>
-            <span><strong>{{ field(row, 'title') }}</strong><small>{{ field(row, 'summary') }}</small>
-              <el-tag v-if="!hasCertificateImage(row)" class="cert-image-missing" type="warning" size="small">{{ $t('admin.certImageMissing') }}</el-tag>
+            <a
+              v-if="isPdf(row.image)"
+              :href="row.image"
+              target="_blank"
+              rel="noopener"
+              class="cert-thumbnail cert-thumbnail-empty"
+              :aria-label="field(row, 'title')"
+              ><el-icon><Document /></el-icon
+            ></a>
+            <el-image
+              v-else-if="row.image"
+              :src="row.image"
+              fit="cover"
+              class="cert-thumbnail"
+            />
+            <span v-else class="cert-thumbnail cert-thumbnail-empty"
+              ><el-icon><Picture /></el-icon
+            ></span>
+            <span
+              ><strong>{{ field(row, "title") }}</strong
+              ><small>{{ field(row, "summary") }}</small>
+              <el-tag
+                v-if="!hasCertificateImage(row)"
+                class="cert-image-missing"
+                type="warning"
+                size="small"
+                >{{ $t("admin.certImageMissing") }}</el-tag
+              >
             </span>
           </div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('admin.certIssuer')" min-width="150">
-        <template #default="{ row }">{{ field(row, 'issuer') || '—' }}</template>
+        <template #default="{ row }">{{
+          field(row, "issuer") || "—"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="certificateNo" :label="$t('admin.certNumber')" min-width="130">
-        <template #default="{ row }">{{ row.certificateNo || '—' }}</template>
+      <el-table-column
+        prop="certificateNo"
+        :label="$t('admin.certNumber')"
+        min-width="130"
+      >
+        <template #default="{ row }">{{ row.certificateNo || "—" }}</template>
       </el-table-column>
       <el-table-column :label="$t('admin.certValidity')" min-width="170">
-        <template #default="{ row }">{{ row.issuedAt || '—' }} → {{ row.expiresAt || '—' }}</template>
+        <template #default="{ row }"
+          >{{ row.issuedAt || "—" }} → {{ row.expiresAt || "—" }}</template
+        >
       </el-table-column>
-      <el-table-column prop="sortOrder" :label="$t('admin.certOrder')" width="85" />
+      <el-table-column
+        prop="sortOrder"
+        :label="$t('admin.certOrder')"
+        width="85"
+      />
       <el-table-column :label="$t('admin.status')" width="110">
         <template #default="{ row }">
-          <el-tag :type="row.status === 'published' ? 'success' : 'warning'" size="small">
-            {{ $t(row.status === 'published' ? 'admin.published' : 'admin.draft') }}
+          <el-tag
+            :type="row.status === 'published' ? 'success' : 'warning'"
+            size="small"
+          >
+            {{
+              $t(row.status === "published" ? "admin.published" : "admin.draft")
+            }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('admin.actions')" width="150" align="right" fixed="right">
+      <el-table-column
+        :label="$t('admin.actions')"
+        width="150"
+        align="right"
+        fixed="right"
+      >
         <template #default="{ row }">
           <div class="cert-table-actions">
-            <el-tooltip :content="$t('admin.edit')" :trigger="['hover', 'focus']" placement="top">
-              <el-button link type="primary" :icon="Edit" :aria-label="$t('admin.edit')" @click="openEditor(row)" />
+            <el-tooltip
+              :content="$t('admin.edit')"
+              :trigger="['hover', 'focus']"
+              placement="top"
+            >
+              <el-button
+                link
+                type="primary"
+                :icon="Edit"
+                :aria-label="$t('admin.edit')"
+                @click="openEditor(row)"
+              />
             </el-tooltip>
-            <el-tooltip :content="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" :trigger="['hover', 'focus']" placement="top">
-              <el-button link :type="row.status === 'published' ? 'warning' : 'success'" :icon="Promotion" :aria-label="$t(row.status === 'published' ? 'admin.unpublish' : 'admin.publish')" @click="toggle(row)" />
+            <el-tooltip
+              :content="
+                $t(
+                  row.status === 'published'
+                    ? 'admin.unpublish'
+                    : 'admin.publish',
+                )
+              "
+              :trigger="['hover', 'focus']"
+              placement="top"
+            >
+              <el-button
+                link
+                :type="row.status === 'published' ? 'warning' : 'success'"
+                :icon="Promotion"
+                :aria-label="
+                  $t(
+                    row.status === 'published'
+                      ? 'admin.unpublish'
+                      : 'admin.publish',
+                  )
+                "
+                @click="toggle(row)"
+              />
             </el-tooltip>
-            <el-tooltip :content="$t('admin.delete')" :trigger="['hover', 'focus']" placement="top">
-              <el-button link type="danger" :icon="Delete" :aria-label="$t('admin.delete')" @click="remove(row)" />
+            <el-tooltip
+              :content="$t('admin.delete')"
+              :trigger="['hover', 'focus']"
+              placement="top"
+            >
+              <el-button
+                link
+                type="danger"
+                :icon="Delete"
+                :aria-label="$t('admin.delete')"
+                @click="remove(row)"
+              />
             </el-tooltip>
           </div>
         </template>
@@ -190,22 +351,50 @@ onMounted(load)
     </el-table>
   </el-card>
 
-  <AdminEditorDialog v-model="dialogOpen" :title="$t(form.id ? 'admin.certEdit' : 'admin.certAdd')"
-    :description="$t('admin.certDescription')" icon="CircleCheckFilled" width="min(1100px, calc(100vw - 40px))"
-    :status="form.status" :dirty="editorDirty" :saving="saving" :save-disabled="imageUploading" @save="save">
+  <AdminEditorDialog
+    v-model="dialogOpen"
+    :title="$t(form.id ? 'admin.certEdit' : 'admin.certAdd')"
+    :description="$t('admin.certDescription')"
+    icon="CircleCheckFilled"
+    width="min(1100px, calc(100vw - 40px))"
+    :status="form.status"
+    :dirty="editorDirty"
+    :saving="saving"
+    :save-disabled="imageUploading"
+    @save="save"
+  >
     <el-form :model="form" label-position="top" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">
-          <AdminEditorPanel step="01" :title="$t('admin.editorBilingualContent')" :description="$t('admin.editorBilingualDescription')">
-            <el-alert class="bilingual-tip" type="info" :closable="false" show-icon :title="$t('admin.certBilingualHint')" />
+          <AdminEditorPanel
+            step="01"
+            :title="$t('admin.editorBilingualContent')"
+            :description="$t('admin.editorBilingualDescription')"
+          >
+            <el-alert
+              class="bilingual-tip"
+              type="info"
+              :closable="false"
+              show-icon
+              :title="$t('admin.certBilingualHint')"
+            />
             <el-tabs v-model="editingLocale">
-
               <el-tab-pane :label="$t('admin.chinese')" name="zh">
                 <el-form-item :label="$t('admin.certNameZh')" required>
-                  <el-input v-model="form.titleZh" maxlength="255" show-word-limit />
+                  <el-input
+                    v-model="form.titleZh"
+                    maxlength="255"
+                    show-word-limit
+                  />
                 </el-form-item>
                 <el-form-item :label="$t('admin.certSummaryZh')">
-                  <el-input v-model="form.summaryZh" type="textarea" :rows="3" maxlength="3000" show-word-limit />
+                  <el-input
+                    v-model="form.summaryZh"
+                    type="textarea"
+                    :rows="3"
+                    maxlength="3000"
+                    show-word-limit
+                  />
                 </el-form-item>
                 <el-form-item :label="$t('admin.certIssuerZh')">
                   <el-input v-model="form.issuerZh" maxlength="255" />
@@ -213,35 +402,102 @@ onMounted(load)
               </el-tab-pane>
             </el-tabs>
           </AdminEditorPanel>
-          <AdminEditorPanel step="02" :title="$t('admin.editorCertificateDetails')" :description="$t('admin.editorCertificateDescription')">
+          <AdminEditorPanel
+            step="02"
+            :title="$t('admin.editorCertificateDetails')"
+            :description="$t('admin.editorCertificateDescription')"
+          >
             <div class="cms-field-grid">
-              <el-form-item :label="$t('admin.certNumber')"><el-input v-model="form.certificateNo" maxlength="255" /></el-form-item>
+              <el-form-item :label="$t('admin.certNumber')"
+                ><el-input v-model="form.certificateNo" maxlength="255"
+              /></el-form-item>
               <el-form-item :label="$t('admin.certOrder')">
-                <el-input-number v-model="form.sortOrder" :min="0" :max="9999" controls-position="right" />
+                <el-input-number
+                  v-model="form.sortOrder"
+                  :min="0"
+                  :max="9999"
+                  controls-position="right"
+                />
               </el-form-item>
               <el-form-item :label="$t('admin.certIssuedAt')">
-                <el-date-picker v-model="form.issuedAt" type="date" value-format="YYYY-MM-DD" :placeholder="$t('admin.certSelectDate')" />
+                <el-date-picker
+                  v-model="form.issuedAt"
+                  type="date"
+                  value-format="YYYY-MM-DD"
+                  :placeholder="$t('admin.certSelectDate')"
+                />
               </el-form-item>
               <el-form-item :label="$t('admin.certExpiresAt')">
-                <el-date-picker v-model="form.expiresAt" type="date" value-format="YYYY-MM-DD" :placeholder="$t('admin.certSelectDate')" />
+                <el-date-picker
+                  v-model="form.expiresAt"
+                  type="date"
+                  value-format="YYYY-MM-DD"
+                  :placeholder="$t('admin.certSelectDate')"
+                />
               </el-form-item>
             </div>
           </AdminEditorPanel>
         </div>
         <aside class="cms-editor-aside">
-          <AdminEditorPanel step="03" :title="$t('admin.editorDisplaySettings')" :description="$t('admin.editorDisplayDescription')">
-            <el-form-item :label="$t('admin.certImage')" :required="form.status === 'published'">
-              <template v-if="isPdf(form.image)"><el-link :href="form.image" target="_blank" rel="noopener" type="primary">{{ locale === 'zh' ? '查看证书 PDF 原件' : 'Open certificate PDF' }}</el-link><el-input v-model="form.image" :aria-label="locale === 'zh' ? '证书文件路径' : 'Certificate document path'" /></template>
-              <ImageUpload v-else v-model="form.image" kind="certification" :active="dialogOpen" :context-key="form.id"
-                :disabled="saving" @uploading="imageUploading = $event" />
-              <p class="cert-image-requirement">{{ $t('admin.certImageRequirement') }}</p>
+          <AdminEditorPanel
+            step="03"
+            :title="$t('admin.editorDisplaySettings')"
+            :description="$t('admin.editorDisplayDescription')"
+          >
+            <el-form-item
+              :label="$t('admin.certImage')"
+              :required="form.status === 'published'"
+            >
+              <template v-if="isPdf(form.image)"
+                ><el-link
+                  :href="form.image"
+                  target="_blank"
+                  rel="noopener"
+                  type="primary"
+                  >{{
+                    locale === "zh"
+                      ? "查看证书 PDF 原件"
+                      : "Open certificate PDF"
+                  }}</el-link
+                ><el-input
+                  v-model="form.image"
+                  :aria-label="
+                    locale === 'zh'
+                      ? '证书文件路径'
+                      : 'Certificate document path'
+                  "
+              /></template>
+              <ImageUpload
+                v-else
+                v-model="form.image"
+                kind="certification"
+                :active="dialogOpen"
+                :context-key="form.id"
+                :disabled="saving"
+                @uploading="imageUploading = $event"
+              />
+              <p class="cert-image-requirement">
+                {{ $t("admin.certImageRequirement") }}
+              </p>
             </el-form-item>
             <el-form-item :label="$t('admin.status2')">
               <el-radio-group v-model="form.status" class="cms-status-options">
-                <el-radio-button value="published">{{ $t('admin.published2') }}</el-radio-button>
-                <el-radio-button value="draft">{{ $t('admin.draft2') }}</el-radio-button>
+                <el-radio-button value="published">{{
+                  $t("admin.published2")
+                }}</el-radio-button>
+                <el-radio-button value="draft">{{
+                  $t("admin.draft2")
+                }}</el-radio-button>
               </el-radio-group>
-              <p class="cms-field-hint">{{ $t(form.status === 'published' ? 'admin.editorPublishedHint' : 'admin.editorDraftHint') }}</p>
+              <p class="cms-field-hint">
+                {{
+                  $t(
+                    form.status === "published"
+                      ? "admin.editorPublishedHint"
+                      : "admin.editorDraftHint",
+                  )
+                }}
+              </p>
             </el-form-item>
           </AdminEditorPanel>
         </aside>
@@ -251,16 +507,63 @@ onMounted(load)
 </template>
 
 <style scoped>
-.cert-name-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.cert-name-cell > span:last-child { min-width: 0; }
-.cert-name-cell strong, .cert-name-cell small { display: block; }
-.cert-name-cell strong { color: #263544; font-size: 12px; }
-.cert-name-cell small { margin-top: 3px; overflow: hidden; color: #8995a1; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.cert-thumbnail { width: 48px; height: 48px; flex: none; border-radius: 4px; }
-.cert-thumbnail-empty { display: grid; place-items: center; background: #eef3f8; color: #9baabd; font-size: 20px; }
-.cert-table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-.cert-table-actions :deep(.el-button) { margin-left: 0; }
-.cert-image-alert { margin-bottom: 16px; }
-.cert-image-missing { margin-top: 5px; }
-.cert-image-requirement { margin-top: 10px; color: #53647b; font-size: 12px; line-height: 1.75; }
+.cert-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.cert-name-cell > span:last-child {
+  min-width: 0;
+}
+.cert-name-cell strong,
+.cert-name-cell small {
+  display: block;
+}
+.cert-name-cell strong {
+  color: #263544;
+  font-size: 12px;
+}
+.cert-name-cell small {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #8995a1;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cert-thumbnail {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 4px;
+}
+.cert-thumbnail-empty {
+  display: grid;
+  place-items: center;
+  background: #eef3f8;
+  color: #9baabd;
+  font-size: 20px;
+}
+.cert-table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.cert-table-actions :deep(.el-button) {
+  margin-left: 0;
+}
+.cert-image-alert {
+  margin-bottom: 16px;
+}
+.cert-image-missing {
+  margin-top: 5px;
+}
+.cert-image-requirement {
+  margin-top: 10px;
+  color: #53647b;
+  font-size: 12px;
+  line-height: 1.75;
+}
 </style>

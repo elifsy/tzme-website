@@ -8,8 +8,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/contact-settings")
 public class ContactSettingsController {
     private final ContactSettingsService service;
-    public ContactSettingsController(ContactSettingsService service) { this.service = service; }
-    @GetMapping public ObjectNode get() { return service.publicConfiguration(); }
-    @GetMapping("/admin") public ObjectNode admin() { return service.adminConfiguration(); }
-    @PutMapping("/admin") public ObjectNode save(@RequestBody ObjectNode value) { return service.save(value); }
+
+    public ContactSettingsController(ContactSettingsService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public ObjectNode get() {
+        return service.publicConfiguration();
+    }
+
+    @GetMapping("/admin")
+    public ObjectNode admin() {
+        return service.adminConfiguration();
+    }
+
+    @PutMapping("/admin")
+    public ObjectNode save(@RequestBody ObjectNode value) {
+        return service.save(value);
+    }
 }

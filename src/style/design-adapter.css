@@ -70,7 +70,7 @@
   white-space: nowrap;
 }
 .design-site .hc-nav .hc-menu a::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   bottom: 2px;
@@ -633,7 +633,7 @@
 }
 .design-site.product-detail .product-detail-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: clamp(40px, 7vw, 110px);
 }
 .design-site.product-detail .product-detail-content .hc-h2 {
@@ -660,7 +660,7 @@
   position: relative;
 }
 .design-site.product-detail .product-feature-list li::before {
-  content: '→';
+  content: "→";
   color: var(--blue-2);
   position: absolute;
   left: 0;
@@ -721,14 +721,14 @@
   border-bottom: 1px solid var(--line-d2);
   color: inherit;
   text-decoration: none;
-  transition: background .2s;
+  transition: background 0.2s;
 }
 .design-site .hc-ind > a.hc-ind-item:last-child {
   border-bottom: 0;
 }
 .design-site .hc-ind > a.hc-ind-item:hover,
 .design-site .hc-ind > a.hc-ind-item:focus-visible {
-  background: rgba(255, 255, 255, .05);
+  background: rgba(255, 255, 255, 0.05);
 }
 .design-site .product-industry-filter,
 .design-site .news-category-filter {

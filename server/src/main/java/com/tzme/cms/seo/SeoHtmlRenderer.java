@@ -8,6 +8,8 @@ import java.util.regex.Matcher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
+import org.springframework.core.io.ClassPathResource;
+import java.util.regex.Pattern;
 import static com.tzme.cms.seo.SeoPageService.*;
 
 @Service
@@ -16,13 +18,16 @@ public class SeoHtmlRenderer {
     private final SeoPageService pages;
     private final Path frontend;
     private final SeoSettingsService settings;
-    public SeoHtmlRenderer(ObjectMapper mapper, SeoPageService pages, SeoSettingsService settings, @Value("${tzme.frontend-dir:../dist}") String frontend) {
+    private final JsonNode imageVariants;
+    public SeoHtmlRenderer(ObjectMapper mapper, SeoPageService pages, SeoSettingsService settings, @Value("${tzme.frontend-dir:../dist}") String frontend) throws java.io.IOException {
         this.mapper = mapper; this.pages = pages; this.settings = settings; this.frontend = Path.of(frontend).toAbsolutePath().normalize();
+        try (var input = new ClassPathResource("image-variants.json").getInputStream()) { imageVariants = mapper.readTree(input); }
     }
     public record Bundle(SeoPageService.Page page, String head, String body, String bootstrap) {}
     public Bundle bundle(SeoPageService.Document document) {
         var page = document.page();
         var initial = new LinkedHashMap<>(document.data().bootstrap()); initial.put("/api/seo/settings", settings.publicView(document.configuration()));
+        initial.put("/api/seo/page", page);
         String bootstrap = page.kind().equals("admin") || page.status() != 200 ? "" : "<script id=\"site-bootstrap\" type=\"application/json\">" + json(initial) + "</script>";
         return new Bundle(page, head(document), page.kind().equals("admin") ? "" : body(document), bootstrap);
     }
@@ -72,7 +77,25 @@ public class SeoHtmlRenderer {
         html.append("</main><footer class=\"sd-footer\"><div class=\"sd-wrap\"><strong>").append(COMPANY).append("</strong>");
         contactDetails(html,snapshot.contact().path("contact")); html.append(link("/site-map","网站地图")).append(" · ").append(link("/about#certificates-title","资质资料")).append(" · ").append(link("https://www.tzmeglobal.com/","English"));
         String icp = document.configuration().path("icpNumber").asText(); if (!icp.isBlank()) html.append("<p>").append(link("https://beian.miit.gov.cn/",icp)).append("</p>");
-        return html.append("</div></footer></div>").toString();
+        return optimizeImages(html.append("</div></footer></div>").toString());
+    }
+    private String optimizeImages(String html) {
+        return Pattern.compile("<img\\b[^>]*>").matcher(html).replaceAll(match -> {
+            String tag = match.group(); var source = Pattern.compile("\\bsrc=\"([^\"]+)\"").matcher(tag);
+            if (!source.find()) return Matcher.quoteReplacement(tag);
+            String original = source.group(1); var variants = imageVariants.path(original).path("variants");
+            if (!variants.isArray() || variants.isEmpty()) return Matcher.quoteReplacement(tag);
+            int width = original.equals(LOGO) ? 160 : 960;
+            JsonNode chosen = variants.get(variants.size() - 1);
+            var srcset = new StringJoiner(", ");
+            for (var variant : variants) { srcset.add(variant.path("src").asText() + " " + variant.path("width").asInt() + "w"); }
+            for (var variant : variants) if (variant.path("width").asInt() >= width) { chosen = variant; break; }
+            tag = tag.substring(0, source.start(1)) + e(chosen.path("src").asText()) + tag.substring(source.end(1));
+            String sizes = original.equals(LOGO) ? "95px" : tag.contains("sd-card-image") ? "(max-width:700px) 50vw, 33vw" : original.equals(HARBOR) ? "100vw" : "(max-width:700px) 100vw, 55vw";
+            tag = tag.replaceFirst("<img", "<img srcset=\"" + e(srcset.toString()) + "\" sizes=\"" + sizes + "\"");
+            if (!tag.contains("loading=") && !tag.contains("fetchpriority=")) tag = tag.replaceFirst("<img", "<img loading=\"lazy\" decoding=\"async\"");
+            return Matcher.quoteReplacement(tag);
+        });
     }
     private void home(StringBuilder html, SeoPageService.Document document) {
         var data = document.data();
@@ -82,6 +105,7 @@ public class SeoHtmlRenderer {
         html.append(link("/about","了解制造基地与企业资料 →")).append("</section>");
         industries(html,data); html.append("<section class=\"sd-wrap sd-section\"><h2>行业装备与产品</h2>"); cards(html,data.products().stream().filter(item->Boolean.TRUE.equals(item.getShowOnHome())).sorted(Comparator.comparingInt(item->item.getHomeOrder()==null?999:item.getHomeOrder())).limit(5).toList()); html.append("</section>");
         quality(html,data.capabilities());
+        partners(html, data, "showOnHome");
     }
     private void about(StringBuilder html, SeoPageService.Document document) {
         var about = document.data().about().path("about");
@@ -93,6 +117,18 @@ public class SeoHtmlRenderer {
         for (var item : document.data().contact().path("subsidiaries")) if (item.path("enabled").asBoolean()) facility(html,item);
         html.append("</section><section id=\"certificates-title\" class=\"sd-wrap sd-section\"><h2>公开资质与质量资料</h2><ul>");
         for (var item : document.data().certificates()) { html.append("<li><h3>").append(e(value(item.getTitleZh(),item.getTitleEn()))).append("</h3>"); paragraphs(html,value(item.getSummaryZh(),item.getSummaryEn())); if(item.getExpiresAt()!=null) html.append("<p>有效期至：").append(item.getExpiresAt()).append("，适用范围以证书文件为准。</p>"); html.append("</li>"); }
+        html.append("</ul></section>");
+        partners(html, document.data(), "showOnAbout");
+    }
+    private void partners(StringBuilder html, PublicSiteData.Snapshot data, String placement) {
+        var config = data.bootstrap().get("/api/partners");
+        if (!(config instanceof JsonNode value) || !value.path("enabled").asBoolean() || !value.path(placement).asBoolean()) return;
+        if (!value.path("items").isArray() || value.path("items").isEmpty()) return;
+        html.append("<section id=\"partners\" class=\"sd-wrap sd-section\"><p>").append(e(value.path("kicker").asText())).append("</p><h2>").append(e(value.path("title").asText())).append("</h2>");
+        paragraphs(html, value.path("description").asText()); html.append("<ul class=\"sd-partners\" style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;list-style:none;padding:0\">");
+        for (var item : value.path("items")) if (item.path("enabled").asBoolean()) {
+            html.append("<li><img src=\"").append(e(item.path("image").asText())).append("\" alt=\"").append(e(item.path("name").asText())).append("\" width=\"180\" height=\"100\" loading=\"lazy\" style=\"max-width:100%;object-fit:contain\"></li>");
+        }
         html.append("</ul></section>");
     }
     private void catalog(StringBuilder html, SeoPageService.Document document) {
@@ -113,7 +149,18 @@ public class SeoHtmlRenderer {
         html.append("<section class=\"sd-wrap sd-section\"><h2>同类产品</h2><ul class=\"sd-link-list\">");for(var item:document.data().products())if(!item.getId().equals(product.getId())&&item.getIndustries().stream().anyMatch(product.getIndustries()::contains))html.append("<li>").append(link("/solutions/"+item.getId(),name(item))).append("</li>");html.append("</ul></section>");
     }
     private void news(StringBuilder html,List<Content> articles){html.append("<section class=\"sd-wrap sd-section\"><h1>新闻资讯</h1><p>企业动态与装备制造、交付信息。</p>");cards(html,articles);html.append("</section>");}
-    private void article(StringBuilder html,SeoPageService.Document document){var item=document.record();html.append("<article class=\"sd-wrap sd-section sd-article\"><nav class=\"sd-breadcrumb\">").append(link("/insights","← 新闻资讯")).append("</nav>");if(item.getDate()!=null)html.append("<time datetime=\"").append(item.getDate()).append("\">").append(item.getDate()).append("</time>");html.append("<h1>").append(e(name(item))).append("</h1>");paragraphs(html,summary(item));image(html,item.getImage(),name(item),"sd-article-cover");paragraphs(html,value(item.getContentZh(),item.getContent(),item.getSummaryZh()));html.append("<p>发布机构：").append(COMPANY).append("</p></article>");}
+    private void article(StringBuilder html,SeoPageService.Document document){
+        var item=document.record();
+        html.append("<article class=\"sd-wrap sd-section sd-article\"><nav class=\"sd-breadcrumb\">").append(link("/insights","← 新闻资讯")).append("</nav>");
+        if(item.getDate()!=null)html.append("<time datetime=\"").append(item.getDate()).append("\">").append(item.getDate()).append("</time>");
+        html.append("<h1>").append(e(name(item))).append("</h1>");paragraphs(html,summary(item));image(html,item.getImage(),name(item),"sd-article-cover");paragraphs(html,value(item.getContentZh(),item.getContent(),item.getSummaryZh()));
+        if(item.getAttachments()!=null&&!item.getAttachments().isEmpty()){
+            html.append("<section><h2>资料下载</h2><ul>");
+            for(var file:item.getAttachments())html.append("<li><a href=\"").append(e(file.getUrl())).append("\" download=\"").append(e(file.getName())).append("\">").append(e(file.getName())).append("</a></li>");
+            html.append("</ul></section>");
+        }
+        html.append("<p>发布机构：").append(COMPANY).append("</p></article>");
+    }
     private void contact(StringBuilder html,SeoPageService.Document document){hero(html,"联系我们 / CONTACT TZME","下一项制造需求，从交流开始。","告诉我们您的图纸、工况、质量要求与交付计划，一起明确设备制造与交付需求。","");html.append("<section class=\"sd-wrap sd-section\"><h2>直接联系</h2>");contactDetails(html,document.data().contact().path("contact"));html.append("<h2>咨询资料准备</h2><p>设备名称、图纸、工况与物料说明、质量检验要求、数量及交付计划。</p><p>启用浏览器 JavaScript 后可在本页填写咨询表单，也可通过上述邮箱或电话联系。</p></section>");}
     private void industries(StringBuilder html,PublicSiteData.Snapshot data){html.append("<nav class=\"sd-industries sd-wrap\" aria-label=\"应用行业\">");for(var industry:data.industries())if(data.products().stream().anyMatch(item->item.getIndustries().contains(industry.getId())))html.append(link("/solutions?industry="+industry.getId(),value(industry.getTitleZh(),industry.getTitleEn())));html.append("</nav>");}
     private void cards(StringBuilder html,List<Content> records){html.append("<div class=\"sd-card-grid\">");for(var item:records){String path=("articles".equals(item.getType())?"/insights/":"/solutions/")+item.getId();html.append("<article><a href=\"").append(e(path)).append("\">");image(html,"articles".equals(item.getType())?item.getImage():value(item.getPresentationImage(),item.getImage()),name(item),"sd-card-image");html.append("<h3>").append(e(name(item))).append("</h3></a>");paragraphs(html,summary(item));html.append("</article>");}html.append("</div>");}

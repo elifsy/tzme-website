@@ -22,6 +22,7 @@ import './build-product-layout-migration.mjs'
 import './build-map-locations-migration.mjs'
 import './build-company-overview-migration.mjs'
 import './build-seo-settings-migration.mjs'
+import './build-newsroom-migration.mjs'
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
 const recordPath = 'database/baseline/records.json'
@@ -289,6 +290,9 @@ appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/reso
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/25-admin-accounts.sql', 'utf8'))
 writeFileSync('database/migrations/2026-10-26-admin-accounts.sql', readFileSync('server/src/main/resources/db/25-admin-accounts.sql', 'utf8'))
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/26-seo-settings.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/27-newsroom.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/28-article-attachments.sql', 'utf8'))
+writeFileSync('database/migrations/2026-10-28-article-attachments.sql', readFileSync('server/src/main/resources/db/28-article-attachments.sql', 'utf8'))
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

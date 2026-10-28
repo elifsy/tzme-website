@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, provide, reactive, ref, watch } from "vue";
+import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, provide, reactive, ref, watch } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -9,30 +9,33 @@ import {
   Plus,
   Promotion,
   Refresh,
+  View,
 } from "@element-plus/icons-vue";
-import CertificationsManager from "../components/CertificationsManager.vue";
-import IndustriesManager from "../components/IndustriesManager.vue";
-import ProjectsManager from "../components/ProjectsManager.vue";
-import GlobalReachManager from "../components/GlobalReachManager.vue";
-import HomeCapabilitiesManager from "../components/HomeCapabilitiesManager.vue";
-import HomeSolutionsManager from "../components/HomeSolutionsManager.vue";
-import ProductShowcaseManager from "../components/ProductShowcaseManager.vue";
-import AboutTzmeManager from "../components/AboutTzmeManager.vue";
-import AdminAccountsManager from '../components/AdminAccountsManager.vue';
-import AdminPasswordForm from '../components/AdminPasswordForm.vue';
-import SeoManager from '../components/SeoManager.vue';
+const CertificationsManager = defineAsyncComponent(() => import('../components/CertificationsManager.vue'));
+const IndustriesManager = defineAsyncComponent(() => import('../components/IndustriesManager.vue'));
+const ProjectsManager = defineAsyncComponent(() => import('../components/ProjectsManager.vue'));
+const GlobalReachManager = defineAsyncComponent(() => import('../components/GlobalReachManager.vue'));
+const HomeCapabilitiesManager = defineAsyncComponent(() => import('../components/HomeCapabilitiesManager.vue'));
+const HomeSolutionsManager = defineAsyncComponent(() => import('../components/HomeSolutionsManager.vue'));
+const ProductShowcaseManager = defineAsyncComponent(() => import('../components/ProductShowcaseManager.vue'));
+const AboutTzmeManager = defineAsyncComponent(() => import('../components/AboutTzmeManager.vue'));
+const AdminAccountsManager = defineAsyncComponent(() => import('../components/AdminAccountsManager.vue'));
+const AdminPasswordForm = defineAsyncComponent(() => import('../components/AdminPasswordForm.vue'));
+const SeoManager = defineAsyncComponent(() => import('../components/SeoManager.vue'));
 import { currentAccount, isSuperAdmin, signOut } from '../services/session.js';
 import AdminSidebar from "../components/AdminSidebar.vue";
-import AnalyticsManager from "../components/AnalyticsManager.vue";
+const AnalyticsManager = defineAsyncComponent(() => import('../components/AnalyticsManager.vue'));
+const PartnersManager = defineAsyncComponent(() => import('../components/PartnersManager.vue'));
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
 import AdminEditorDialog from "../components/AdminEditorDialog.vue";
 import AdminEditorPanel from "../components/AdminEditorPanel.vue";
 import ImageUpload from "../components/ImageUpload.vue";
-import ContactSettingsManager from "../components/ContactSettingsManager.vue";
-import InquiriesManager from "../components/InquiriesManager.vue";
-import EmailNotificationsManager from "../components/EmailNotificationsManager.vue";
+const ArticleAttachmentsUpload = defineAsyncComponent(() => import('../components/ArticleAttachmentsUpload.vue'));
+const ContactSettingsManager = defineAsyncComponent(() => import('../components/ContactSettingsManager.vue'));
+const InquiriesManager = defineAsyncComponent(() => import('../components/InquiriesManager.vue'));
+const EmailNotificationsManager = defineAsyncComponent(() => import('../components/EmailNotificationsManager.vue'));
 import AdminWorkspaceHome from '../components/AdminWorkspaceHome.vue';
-import AdminHomepageMap from '../components/AdminHomepageMap.vue';
+const AdminHomepageMap = defineAsyncComponent(() => import('../components/AdminHomepageMap.vue'));
 import AdminWorkflowGuide from '../components/AdminWorkflowGuide.vue';
 import AdminPreviewFrame from '../components/AdminPreviewFrame.vue';
 import AdminContentPreview from '../components/AdminContentPreview.vue';
@@ -46,6 +49,8 @@ import { useInquiryCatalog } from "../services/inquiries.js";
 import { apiRequest, dataErrors } from "../services/api.js";
 import { industryField, useIndustryCatalog } from "../services/industries.js";
 import { equipmentLayouts, normalizeEquipmentLayout } from '../utils/equipmentPresentation.js';
+import { articleCategoryKey, groupArticleCategories, isDownloadArticle } from '../utils/articleCategories.js';
+import { contentMissingFields, contentNeedsAttention, contentPublicPath } from '../utils/adminContent.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -53,7 +58,8 @@ const RichTextEditor = defineAsyncComponent(() => import('../components/RichText
 const bodyImageUploading = ref(false);
 const coverImageUploading = ref(false);
 const presentationImageUploading = ref(false);
-const imageUploading = computed(() => bodyImageUploading.value || coverImageUploading.value || presentationImageUploading.value);
+const attachmentUploading = ref(false);
+const imageUploading = computed(() => bodyImageUploading.value || coverImageUploading.value || presentationImageUploading.value || attachmentUploading.value);
 const editorFullscreen = ref(false);
 const { t, locale } = useI18n({ useScope: "global" });
 const tab = computed(() => route.params.view || "overview");
@@ -65,7 +71,12 @@ const homepageManager = ref(null);
 const contentPreview = ref(null);
 const modalOriginal = ref('');
 const search = ref(''), statusFilter = ref('all'), homeFilter = ref('all');
-watch(() => [route.params.view, route.query.home], () => { search.value = ''; statusFilter.value = 'all'; homeFilter.value = route.query.home === '1' ? 'home' : 'all'; }, { immediate: true });
+const categoryFilter = ref(''), qualityFilter = ref('all');
+watch(() => [route.params.view, route.query.home, route.query.check, route.query.category], () => {
+  search.value = ''; statusFilter.value = 'all'; homeFilter.value = route.query.home === '1' ? 'home' : 'all';
+  categoryFilter.value = typeof route.query.category === 'string' ? route.query.category : '';
+  qualityFilter.value = route.query.check === 'incomplete' ? 'incomplete' : 'all';
+}, { immediate: true });
 const sidebarPreferenceKey = 'tzme-admin-sidebar-collapsed';
 const sidebarMedia = window.matchMedia('(max-width: 680px)');
 const smallSidebarScreen = ref(sidebarMedia.matches);
@@ -116,11 +127,18 @@ const solutionsManager = ref(null);
 const productShowcaseManager = ref(null);
 const aboutManager = ref(null);
 const analyticsManager = ref(null);
+const partnersManager = ref(null);
 const contactManager = ref(null);
 const inquiriesManager = ref(null);
 const mailManager = ref(null);
 const accountsManager = ref(null), passwordDialog = ref(false), passwordBusy = ref(false);
 const seoManager = ref(null);
+const currentPublicPreview = computed(() => {
+  if (tab.value === 'about') return aboutManager.value?.publicPath || (route.query.page === 'about' ? '/about' : '/');
+  if (['contact','forms'].includes(tab.value)) return contactManager.value?.publicPath || currentModule.value.preview;
+  if (tab.value === 'seo') return seoManager.value?.publicPath || '/';
+  return currentModule.value.preview;
+});
 async function userAction(action) {
   if (!(await confirmDiscard())) return;
   if (action === 'password') { passwordDialog.value = true; return; }
@@ -136,6 +154,7 @@ const loading = ref(true);
 const modal = ref(false);
 const kind = ref("products");
 const saving = ref(false);
+const coverImageError = ref(false);
 const editingLocale = ref("zh");
 const form = reactive({
   id: "",
@@ -159,6 +178,10 @@ const form = reactive({
   detailLayout: "auto",
   status: "published",
   date: "",
+  attachments: [],
+});
+watch(() => form.image, value => {
+  if (String(value || '').trim()) coverImageError.value = false;
 });
 
 const publishedProducts = computed(
@@ -176,9 +199,19 @@ const currentItems = computed(() =>
     const keyword = search.value.trim().toLowerCase();
     return (!keyword || [field(item, 'title'), field(item, 'category'), industryNames(item.industries)].some(value => value.toLowerCase().includes(keyword)))
       && (statusFilter.value === 'all' || item.status === statusFilter.value)
-      && (tab.value !== 'products' || homeFilter.value !== 'home' || item.showOnHome);
+      && (tab.value !== 'products' || homeFilter.value !== 'home' || item.showOnHome)
+      && (tab.value !== 'articles' || !categoryFilter.value || articleCategoryKey(item) === categoryFilter.value)
+      && (qualityFilter.value !== 'incomplete' || contentNeedsAttention(item, tab.value));
   }),
 );
+const articleCategories = computed(() => groupArticleCategories(articles.value));
+const hasContentFilters = computed(() => Boolean(search.value.trim() || statusFilter.value !== 'all' || homeFilter.value !== 'all' || categoryFilter.value || qualityFilter.value !== 'all'));
+const editorPublicPath = computed(() => contentPublicPath((kind.value === 'products' ? products.value : articles.value).find(item => item.id === form.id), kind.value));
+function clearContentFilters() {
+  search.value = ''; statusFilter.value = 'all'; homeFilter.value = 'all'; categoryFilter.value = ''; qualityFilter.value = 'all';
+  const query = { ...route.query }; delete query.home; delete query.check; delete query.category;
+  router.replace({ path: route.path, query });
+}
 const hasUnsavedChanges = computed(() => Boolean(pageEditor.value?.dirty || (modal.value && JSON.stringify(form) !== modalOriginal.value)));
 const editorBusy = computed(() => Boolean(pageEditor.value?.busy || saving.value || imageUploading.value || passwordBusy.value));
 async function confirmDiscard() {
@@ -227,7 +260,7 @@ function openEditor(type, item) {
     titleEn: item?.titleEn || item?.title || "",
     titleZh: item?.titleZh || "",
     categoryEn: item?.categoryEn || item?.category || "",
-    categoryZh: item?.categoryZh || "",
+    categoryZh: type === 'articles' ? articleCategoryKey(item) || '公司新闻' : item?.categoryZh || "",
     industries: [...(item?.industries || (item?.industry ? [item.industry] : []))],
     summaryEn: item?.summaryEn || item?.summary || "",
     summaryZh: item?.summaryZh || "",
@@ -244,8 +277,10 @@ function openEditor(type, item) {
     detailLayout: normalizeEquipmentLayout(item?.detailLayout) || "auto",
     status: item?.status || "draft",
     date: item?.date || new Date().toISOString().slice(0, 10),
+    attachments: (item?.attachments || []).map(file => ({ ...file })),
   });
   modalOriginal.value = JSON.stringify(form);
+  coverImageError.value = false;
   modal.value = true;
 }
 
@@ -259,7 +294,18 @@ async function save() {
     ElMessage.warning(t('admin.publicationDateRequired'));
     return;
   }
+  if (kind.value === 'articles' && !String(form.image || '').trim()) {
+    coverImageError.value = true;
+    ElMessage.warning(t('admin.newsCoverRequired'));
+    await nextTick();
+    const field = document.querySelector('.cms-editor-form .news-cover-field');
+    field?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    field?.querySelector('.image-upload-picker button')?.focus({ preventScroll: true });
+    return;
+  }
   if (kind.value === 'articles') {
+    form.categoryZh = String(form.categoryZh || '').trim();
+    if (!form.categoryZh) form.categoryEn = '';
     form.contentZh = sanitizeRichText(form.contentZh);
   }
   if (kind.value === 'products' && (!form.industries.length ||
@@ -331,6 +377,7 @@ async function refresh() {
   else if (tab.value === 'product-showcase') productShowcaseManager.value?.load();
   else if (tab.value === 'about') aboutManager.value?.load();
   else if (tab.value === 'analytics') analyticsManager.value?.load();
+  else if (tab.value === 'partners') partnersManager.value?.load();
   else if (tab.value === 'contact' || tab.value === 'forms') contactManager.value?.load();
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
   else if (tab.value === 'mail') mailManager.value?.load();
@@ -375,9 +422,10 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
             </div>
             <h1>{{ currentModule.label }}</h1>
             <p>{{ currentModule.description }}</p>
+            <span v-if="currentModule.archived" class="admin-heading-archived">官网暂未展示 · 资料继续保留</span>
           </div>
           <div class="admin-actions">
-            <a v-if="currentModule.preview" class="admin-public-preview" :href="currentModule.preview" target="_blank" rel="noopener noreferrer">查看已保存网页 ↗</a>
+            <a v-if="currentPublicPreview" class="admin-public-preview" :href="currentPublicPreview" target="_blank" rel="noopener noreferrer">查看已保存网页 ↗</a>
             <el-button :icon="Refresh" @click="refresh">{{
               $t('admin.refresh')
             }}</el-button>
@@ -428,12 +476,20 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           <el-alert v-if="tab === 'products'" class="home-product-tip" type="info" :closable="false"
             :title="$t('admin.homeSelectionCount', { count: homeProductCount, max: MAX_HOME_PRODUCTS })"
             :description="$t('admin.homeSelectionHint')" />
-          <div class="admin-content-filters"><el-input v-model="search" clearable placeholder="搜索名称、分类或行业" aria-label="搜索内容"/><el-select v-model="statusFilter" aria-label="筛选发布状态"><el-option label="全部状态" value="all"/><el-option label="已发布" value="published"/><el-option label="草稿" value="draft"/></el-select><el-select v-if="tab === 'products'" v-model="homeFilter" aria-label="筛选首页推荐"><el-option label="全部产品" value="all"/><el-option label="首页推荐产品" value="home"/></el-select><router-link v-if="tab === 'products'" to="/admin/solutions">填写首页方案文案 ↗</router-link></div>
+          <div class="admin-content-filters">
+            <el-input v-model="search" clearable :placeholder="tab === 'articles' ? '搜索新闻标题、类别' : '搜索产品名称、类型或行业'" aria-label="搜索内容"/>
+            <el-select v-model="statusFilter" aria-label="筛选发布状态"><el-option label="全部状态" value="all"/><el-option label="已发布" value="published"/><el-option label="草稿" value="draft"/></el-select>
+            <el-select v-if="tab === 'articles'" v-model="categoryFilter" placeholder="全部类别" aria-label="筛选新闻类别"><el-option label="全部类别" value=""/><el-option v-for="category in articleCategories" :key="category.id" :label="category.titleZh" :value="category.id"/></el-select>
+            <el-select v-if="tab === 'products'" v-model="homeFilter" aria-label="筛选首页推荐"><el-option label="全部产品" value="all"/><el-option label="首页推荐产品" value="home"/></el-select>
+            <el-select v-model="qualityFilter" aria-label="筛选资料完整度"><el-option label="全部资料" value="all"/><el-option label="待完善资料" value="incomplete"/></el-select>
+            <el-button v-if="hasContentFilters" text @click="clearContentFilters">清除筛选</el-button>
+            <router-link v-if="tab === 'products'" to="/admin/solutions">填写首页方案文案 ↗</router-link>
+          </div>
           <el-table
             :data="currentItems"
             v-loading="loading"
             row-key="id"
-            :empty-text="$t('admin.noContentYetCreateYourFirstRecord')"
+            :empty-text="hasContentFilters ? '没有匹配的记录，可清除筛选后查看全部。' : $t('admin.noContentYetCreateYourFirstRecord')"
           >
             <el-table-column :label="$t('admin.content')" min-width="300">
               <template #default="{ row }"
@@ -450,23 +506,12 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                   <div>
                     <strong>{{ field(row, "title") }}</strong
                     ><small>{{ field(row, "summary") }}</small>
-                    <div class="bilingual-badges">
-                      <el-tag
-                        size="small"
-                        :type="row.titleZh ? 'success' : 'warning'"
-                        effect="plain"
-                        >{{
-                          row.titleZh
-                            ? $t('admin.zhPresent')
-                            : $t('admin.zhMissing')
-                        }}</el-tag
-                      >
-                    </div>
+                    <div v-if="contentNeedsAttention(row, tab)" class="bilingual-badges"><el-tag size="small" type="warning" effect="plain">待补充：{{ contentMissingFields(row, tab).join('、') }}</el-tag></div>
                   </div>
                 </div></template
               >
             </el-table-column>
-            <el-table-column :label="$t('admin.category')" width="150"
+            <el-table-column :label="tab === 'articles' ? '资讯类别' : '产品类型'" width="150"
               ><template #default="{ row }"
                 ><el-tag size="small" effect="plain" type="info">{{
                   field(row, "category") || $t('admin.general')
@@ -496,14 +541,15 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 ></template
               ></el-table-column
             >
-            <el-table-column prop="date" :label="$t('admin.updated')" width="130"
+            <el-table-column v-if="tab === 'articles'" prop="homeOrder" label="列表顺序" width="105" align="center"><template #default="{ row }">{{ Number(row.homeOrder) > 0 ? row.homeOrder : '按日期' }}</template></el-table-column>
+            <el-table-column v-if="tab === 'articles'" prop="date" label="发布日期" width="130"
               ><template #default="{ row }">{{
                 row.date || "—"
               }}</template></el-table-column
             >
-            <el-table-column :label="$t('admin.actions')" width="150" align="right"
+            <el-table-column :label="$t('admin.actions')" width="175" align="right"
               ><template #default="{ row }"
-                ><el-button
+                ><a v-if="contentPublicPath(row, tab)" class="admin-record-preview" :href="contentPublicPath(row, tab)" target="_blank" rel="noopener noreferrer" title="查看已保存网页" aria-label="查看已保存网页"><el-icon><View /></el-icon></a><el-button
                   link
                   type="primary"
                   :icon="Edit"
@@ -532,6 +578,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <ProductShowcaseManager v-else-if="tab === 'product-showcase'" ref="productShowcaseManager" />
         <AboutTzmeManager v-else-if="tab === 'about'" ref="aboutManager" />
         <AnalyticsManager v-else-if="tab === 'analytics'" ref="analyticsManager" />
+        <PartnersManager v-else-if="tab === 'partners'" ref="partnersManager" />
         <CertificationsManager v-else-if="tab === 'certifications'" ref="certManager" />
         <IndustriesManager v-else-if="tab === 'industries'" ref="industryManager" :products="products" />
 
@@ -562,8 +609,12 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                     <el-form-item :label="$t('admin.titleChinese')" required>
                       <el-input v-model="form.titleZh" :placeholder="$t('admin.enterChineseTitle')" />
                     </el-form-item>
-                    <el-form-item :label="$t('admin.categoryChinese')">
-                      <el-input v-model="form.categoryZh" :placeholder="$t('admin.exampleMiningChinese')" />
+                    <el-form-item :label="kind === 'articles' ? '资讯类别' : '产品类型'">
+                      <el-select v-if="kind === 'articles'" v-model="form.categoryZh" filterable allow-create default-first-option clearable placeholder="选择已有类别，或输入新类别后回车" aria-label="资讯类别">
+                        <el-option v-for="category in articleCategories" :key="category.id" :label="category.titleZh" :value="category.id"/>
+                      </el-select>
+                      <el-input v-else v-model="form.categoryZh" placeholder="例如：装卸船设备、输送设备" />
+                      <p v-if="kind === 'articles'" class="cms-field-hint">公司新闻、展会活动、下载中心为固定类型，始终保留。也可输入自定义类别后按回车创建，仅影响当前文章。</p>
                     </el-form-item>
                   </div>
               <el-form-item v-if="kind === 'products'" :label="$t('admin.productIndustry')" required>
@@ -575,11 +626,19 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
               <el-form-item v-if="kind === 'articles'" :label="$t('admin.publicationDate')" required>
                 <el-date-picker v-model="form.date" type="date" value-format="YYYY-MM-DD" :clearable="false" />
               </el-form-item>
+              <el-form-item v-if="kind === 'articles'" label="列表顺序（可选）">
+                <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
+                <p class="cms-field-hint">数字越小越靠前；留空时排在已设置顺序的资讯之后，并按发布日期排序。</p>
+              </el-form-item>
                   <el-form-item :label="$t('admin.summaryChinese')">
                     <el-input v-model="form.summaryZh" type="textarea" :rows="3" :placeholder="$t('admin.chineseSummaryPlaceholder')" />
                   </el-form-item>
+                  <p v-if="editorPublicPath" class="cms-field-hint">搜索标题和摘要默认采用已发布资料。<router-link :to="{ path: '/admin/seo', query: { page: editorPublicPath } }">维护此页搜索展示 ↗</router-link></p>
             </AdminEditorPanel>
-            <AdminEditorPanel step="02" :title="kind === 'products' ? '产品详情与参数' : '新闻正文'" :description="kind === 'products' ? '介绍、特点和参数会显示在产品详情页，支持分行填写。' : '正文支持排版与插入图片，保存前可查看填写效果。'">
+            <AdminEditorPanel v-if="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length)" step="02" title="资料附件" description="上传产品手册、技术资料等下载文件，正文中原有的下载链接仍会保留。">
+              <ArticleAttachmentsUpload v-model="form.attachments" :active="modal" :context-key="`article-${form.id}`" :disabled="saving" @uploading="attachmentUploading = $event" />
+            </AdminEditorPanel>
+            <AdminEditorPanel :step="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length) ? '03' : '02'" :title="kind === 'products' ? '产品详情与参数' : '新闻正文'" :description="kind === 'products' ? '介绍、特点和参数会显示在产品详情页，支持分行填写。' : '正文支持排版与插入图片，保存前可查看填写效果。'">
                   <el-form-item v-if="kind === 'articles'" :label="$t('admin.articleChinese')">
                     <RichTextEditor v-if="modal && editingLocale === 'zh'" :key="'zh-' + locale"
                       v-model="form.contentZh" :placeholder="$t('admin.chineseArticlePlaceholder')"
@@ -607,8 +666,9 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
             </AdminEditorPanel>
           </div>
           <aside class="cms-editor-aside">
-            <AdminEditorPanel step="03" title="封面与发布" description="上传对外展示的图片，再选择保存为草稿或发布到官网。">
-              <el-form-item :label="$t('admin.editorDisplayImage')">
+            <AdminEditorPanel :step="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length) ? '04' : '03'" title="封面与发布" description="上传对外展示的图片，再选择保存为草稿或发布到官网。">
+              <el-form-item class="news-cover-field" prop="image" :label="$t('admin.editorDisplayImage')"
+                :required="kind === 'articles'" :error="kind === 'articles' && coverImageError ? $t('admin.newsCoverRequired') : ''">
                 <ImageUpload v-model="form.image" :kind="kind === 'products' ? 'product' : 'news'" :active="modal"
                   :context-key="`${kind}-${form.id}`" :disabled="saving" @uploading="coverImageUploading = $event" />
               </el-form-item>
@@ -639,7 +699,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
               </el-form-item>
             </AdminEditorPanel>
-            <AdminPreviewFrame ref="contentPreview" :title="kind === 'products' ? '产品填写效果预览' : '资讯填写效果预览'" :public-path="form.id ? (kind === 'products' ? '/solutions/' : '/insights/') + form.id : ''"><AdminContentPreview :kind="kind" :record="form"/></AdminPreviewFrame>
+            <AdminPreviewFrame ref="contentPreview" :title="kind === 'products' ? '产品填写效果预览' : '资讯填写效果预览'" :public-path="editorPublicPath"><AdminContentPreview :kind="kind" :record="form"/></AdminPreviewFrame>
           </aside>
         </div>
       </el-form>
@@ -1012,9 +1072,6 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 }
 .full-width {
   width: 100%;
-}
-.el-message-box {
-  max-width: calc(100vw - 32px);
 }
 @media (max-width: 1050px) {
   .admin-shell { --admin-sidebar-width: 205px; }

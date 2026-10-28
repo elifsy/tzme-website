@@ -4,8 +4,90 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <meta name="theme-color" content="#087f91" />
+    <style>
+      #site-startup {
+        display: none;
+      }
+      html[data-site-boot="loading"] #app {
+        visibility: hidden;
+      }
+      html[data-site-boot="loading"] #site-startup {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 22px;
+        background: #f5fafb;
+        color: #587686;
+        font:
+          12px/1.8 "Segoe UI",
+          "Microsoft YaHei",
+          sans-serif;
+      }
+      #site-startup img {
+        display: block;
+        width: 73px;
+        height: 65px;
+        object-fit: contain;
+      }
+      #site-startup .site-startup-line {
+        width: 96px;
+        height: 2px;
+        overflow: hidden;
+        background: #dcebee;
+      }
+      #site-startup .site-startup-line::after {
+        content: "";
+        display: block;
+        width: 42px;
+        height: 100%;
+        background: #087f91;
+        animation: site-startup-progress 1.1s ease-in-out infinite alternate;
+      }
+      @keyframes site-startup-progress {
+        to {
+          transform: translateX(54px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #site-startup .site-startup-line::after {
+          animation: none;
+          width: 100%;
+        }
+      }
+    </style>
+    <script>
+      // Avoid painting the simplified server document before Vue replaces it.
+      // All visitors receive the same readable HTML; script failures reveal it.
+      (function () {
+        var root = document.documentElement;
+        root.setAttribute("data-site-boot", "loading");
+        var timer;
+        function finish() {
+          var pending = root.hasAttribute("data-site-boot");
+          clearTimeout(timer);
+          root.removeAttribute("data-site-boot");
+          if (pending) window.dispatchEvent(new Event("tzme:page-ready"));
+        }
+        window.__tzmeSiteBoot = { finish: finish };
+        timer = setTimeout(finish, 8000);
+        window.addEventListener(
+          "error",
+          function (event) {
+            if (event.target instanceof HTMLScriptElement) finish();
+          },
+          true,
+        );
+        window.addEventListener("unhandledrejection", finish, { once: true });
+      })();
+    </script>
     <!--site:head:start-->
-    <meta name="description" content="天津重钢机械装备股份有限公司，专注非标机械装备制造，以产品质量为核心，提供结构制造、焊接加工、装配检验与交付服务。" />
+    <meta
+      name="description"
+      content="天津重钢机械装备股份有限公司，专注非标机械装备制造，以产品质量为核心，提供结构制造、焊接加工、装配检验与交付服务。"
+    />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <title>天津重钢机械装备股份有限公司｜非标机械装备制造 · 品质交付</title>
     <!--site:head:end-->
@@ -13,6 +95,15 @@
   </head>
   <body>
     <div id="app"><!--site:body--></div>
+    <div id="site-startup" role="status" aria-label="页面加载中">
+      <img
+        src="/assets/tzme-j/brand/official-mark-small.webp"
+        width="73"
+        height="65"
+        alt=""
+      /><span class="site-startup-line" aria-hidden="true"></span
+      ><span>正在加载…</span>
+    </div>
     <!--site:bootstrap-->
     <script type="module" src="/src/main.js"></script>
   </body>

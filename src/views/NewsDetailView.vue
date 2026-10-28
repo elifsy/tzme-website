@@ -1,50 +1,70 @@
 <script setup>
-import { useSiteContent } from '../services/website.js'
-const { siteAsset } = useSiteContent()
-import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useDesignPage } from '../composables/useDesignPage.js'
-import { localizedField } from '../services/catalog.js'
-import { articleCategoryKey, articleDate, articlePath, useArticleCatalog } from '../services/articles.js'
-import { sanitizeRichText } from '../utils/richText.js'
-import SiteFooter from '../components/SiteFooter.vue'
-import SiteNav from '../components/SiteNav.vue'
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { useDesignPage } from "../composables/useDesignPage.js";
+import { localizedField } from "../services/catalog.js";
+import {
+  articleCategoryKey,
+  resolveArticleCategory,
+  articlePath,
+  useArticleCatalog,
+} from "../services/articles.js";
+import NewsArticlePresentation from "../components/NewsArticlePresentation.vue";
+import SiteFooter from "../components/SiteFooter.vue";
+import SiteNav from "../components/SiteNav.vue";
 
-const page = ref(null)
-const route = useRoute()
-const { locale } = useI18n({ useScope: 'global' })
-const { goTo } = useDesignPage('hc-news-detail', page)
-const { publishedArticles, loadArticles } = useArticleCatalog()
-const loading = ref(true)
-const field = (item, name) => localizedField(item, name, locale.value)
-const articleIndex = computed(() => publishedArticles.value.findIndex((item) => item.id === route.params.id))
-const article = computed(() => publishedArticles.value[articleIndex.value])
-const selectedCategory = computed(() => typeof route.query.category === 'string' ? route.query.category : '')
-const navigationArticles = computed(() => selectedCategory.value
-  ? publishedArticles.value.filter((item) => articleCategoryKey(item) === selectedCategory.value)
-  : publishedArticles.value)
-const navigationIndex = computed(() => navigationArticles.value.findIndex((item) => item.id === route.params.id))
-const previous = computed(() => navigationIndex.value > 0 ? navigationArticles.value[navigationIndex.value - 1] : null)
-const next = computed(() => navigationIndex.value >= 0 ? navigationArticles.value[navigationIndex.value + 1] : null)
+const page = ref(null);
+const route = useRoute();
+const { locale } = useI18n({ useScope: "global" });
+const { goTo } = useDesignPage("hc-news-detail", page);
+const { publishedArticles, loadArticles } = useArticleCatalog();
+const loading = ref(true);
+const field = (item, name) => localizedField(item, name, locale.value);
+const articleIndex = computed(() =>
+  publishedArticles.value.findIndex((item) => item.id === route.params.id),
+);
+const article = computed(() => publishedArticles.value[articleIndex.value]);
+const selectedCategory = computed(() =>
+  resolveArticleCategory(route.query.category, publishedArticles.value),
+);
+const navigationArticles = computed(() =>
+  selectedCategory.value
+    ? publishedArticles.value.filter(
+        (item) => articleCategoryKey(item) === selectedCategory.value,
+      )
+    : publishedArticles.value,
+);
+const navigationIndex = computed(() =>
+  navigationArticles.value.findIndex((item) => item.id === route.params.id),
+);
+const previous = computed(() =>
+  navigationIndex.value > 0
+    ? navigationArticles.value[navigationIndex.value - 1]
+    : null,
+);
+const next = computed(() =>
+  navigationIndex.value >= 0
+    ? navigationArticles.value[navigationIndex.value + 1]
+    : null,
+);
 const listQuery = computed(() => ({
   ...(route.query.page ? { page: route.query.page } : {}),
   ...(selectedCategory.value ? { category: selectedCategory.value } : {}),
-}))
-const listLink = computed(() => ({ path: '/insights', query: listQuery.value }))
-const detailLink = (id) => ({ path: articlePath(id), query: listQuery.value })
-const body = computed(() => {
-  const template = document.createElement('template')
-  template.innerHTML = sanitizeRichText(field(article.value, 'content') || field(article.value, 'summary'))
-  const headings = [...template.content.querySelectorAll('h1, h2, h3')].map((heading, index) => {
-    heading.id = `article-heading-${index}`
-    return { id: heading.id, text: heading.textContent }
-  })
-  return { html: template.innerHTML, headings }
-})
-function scrollToHeading(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
-onMounted(async () => { await loadArticles(); loading.value = false })
-watch(() => route.params.id, () => window.scrollTo({ top: 0, behavior: 'instant' }))
+}));
+const listLink = computed(() => ({
+  path: "/insights",
+  query: listQuery.value,
+}));
+const detailLink = (id) => ({ path: articlePath(id), query: listQuery.value });
+onMounted(async () => {
+  await loadArticles();
+  loading.value = false;
+});
+watch(
+  () => route.params.id,
+  () => window.scrollTo({ top: 0, behavior: "instant" }),
+);
 </script>
 
 <template>
@@ -52,39 +72,39 @@ watch(() => route.params.id, () => window.scrollTo({ top: 0, behavior: 'instant'
     <div class="hc-page">
       <SiteNav />
       <template v-if="article">
-        <section id="article-overview" class="hc-sec article-intro"><div class="hc-w">
-          <router-link class="news-text-link article-back" :to="listLink">← {{ $t('site.backToNews') }}</router-link>
-          <div class="refine-article-head-grid" :class="{ 'without-cover': !article.image }"><div>
-          <div class="news-meta"><el-tag effect="plain">{{ field(article, 'category') }}</el-tag><time :datetime="article.date">{{ articleDate(article.date) }}</time></div>
-          <h1 class="site-page-title">{{ field(article, 'title') }}</h1><p v-if="field(article, 'summary')" class="article-lead site-intro-description">{{ field(article, 'summary') }}</p>
-          </div><figure v-if="article.image" class="article-cover"><img :src="article.image" :alt="field(article, 'title')" decoding="async" /></figure></div>
-        </div></section>
-        <section class="hc-sec article-content-section"><div class="hc-w article-layout">
-          <article>
-            <div class="article-body" v-html="body.html"></div>
+        <NewsArticlePresentation :record="article" @contact="goTo('/contact')">
+          <template #back
+            ><router-link class="news-text-link article-back" :to="listLink"
+              >← {{ $t("site.backToNews") }}</router-link
+            ></template
+          >
+          <template #navigation>
             <nav class="article-pagination" :aria-label="$t('site.newsroom')">
-              <router-link v-if="previous" :to="detailLink(previous.id)"><span>← {{ $t('site.previousArticle') }}</span><strong>{{ field(previous, 'title') }}</strong></router-link>
+              <router-link v-if="previous" :to="detailLink(previous.id)"
+                ><span>← {{ $t("site.previousArticle") }}</span
+                ><strong>{{ field(previous, "title") }}</strong></router-link
+              >
               <div v-else></div>
-              <router-link v-if="next" :to="detailLink(next.id)"><span>{{ $t('site.nextArticle') }} →</span><strong>{{ field(next, 'title') }}</strong></router-link>
+              <router-link v-if="next" :to="detailLink(next.id)"
+                ><span>{{ $t("site.nextArticle") }} →</span
+                ><strong>{{ field(next, "title") }}</strong></router-link
+              >
             </nav>
-            <router-link class="news-text-link" :to="listLink">← {{ $t('site.backToNews') }}</router-link>
-          </article>
-          <aside class="article-sidebar">
-            <div class="article-toc"><span class="hc-kick">{{ $t('site.articleContents') }}</span>
-              <a href="#article-overview" @click.prevent="scrollToHeading('article-overview')">{{ $t('site.articleOverview') }}</a>
-              <a v-for="heading in body.headings" :key="heading.id" :href="`#${heading.id}`" @click.prevent="scrollToHeading(heading.id)">{{ heading.text }}</a>
-            </div>
-            <div class="article-contact"><h2>{{ $t('site.newsContactTitle') }}</h2><p>{{ $t('site.newsContactText') }}</p>
-              <el-button type="primary" @click="goTo('/contact')">{{ $t('site.contactUs') }} →</el-button></div>
-          </aside>
-        </div></section>
+            <router-link class="news-text-link" :to="listLink"
+              >← {{ $t("site.backToNews") }}</router-link
+            >
+          </template>
+        </NewsArticlePresentation>
       </template>
       <section v-else class="hc-sec article-unavailable hc-w">
         <el-skeleton v-if="loading" :rows="8" animated />
-        <el-empty v-else :description="$t('site.newsNotFound')"><el-button type="primary" @click="goTo('/insights')">{{ $t('site.backToNews') }}</el-button></el-empty>
+        <el-empty v-else :description="$t('site.newsNotFound')"
+          ><el-button type="primary" @click="goTo('/insights')">{{
+            $t("site.backToNews")
+          }}</el-button></el-empty
+        >
       </section>
       <SiteFooter />
     </div>
-
   </main>
 </template>

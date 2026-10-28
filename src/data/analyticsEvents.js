@@ -1,0 +1,30 @@
+// Keep these identifiers compatible with the server allowlist and historical reports.
+export const clientAnalyticsEvents = [
+  "page_view",
+  "page_engagement",
+  "navigation_click",
+  "cta_click",
+  "content_click",
+  "industry_filter",
+  "product_type_filter",
+  "news_filter",
+  "social_click",
+  "contact_click",
+  "inquiry_start",
+  "inquiry_submit",
+  "inquiry_error",
+  "language_change",
+  "language_outbound",
+  "pagination",
+  "model_select",
+  "model_hover",
+  "model_control",
+  "certificate_view",
+  "download_click",
+  "quality_step",
+  "map_location",
+];
+export const analyticsEventNames = [
+  ...clientAnalyticsEvents,
+  "inquiry_success",
+];

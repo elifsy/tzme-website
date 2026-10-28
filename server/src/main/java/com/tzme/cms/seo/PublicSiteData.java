@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.*;
 import com.tzme.cms.model.*;
 import com.tzme.cms.repository.*;
 import com.tzme.cms.service.ContactSettingsService;
+import com.tzme.cms.service.PartnersService;
+import com.tzme.cms.service.ArticleAttachmentService;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +19,12 @@ public class PublicSiteData {
     private final HomeGlobalRepository global;
     private final ContactSettingsService contact;
     private final ObjectMapper mapper;
+    private final PartnersService partners;
+    private final ArticleAttachmentService attachments;
     public PublicSiteData(ContentRepository content, IndustryRepository industries, CertificationRepository certificates,
-            SiteSettingsRepository settings, HomeGlobalRepository global, ContactSettingsService contact, ObjectMapper mapper) {
-        this.content = content; this.industries = industries; this.certificates = certificates; this.settings = settings; this.global = global; this.contact = contact; this.mapper = mapper;
+            SiteSettingsRepository settings, HomeGlobalRepository global, ContactSettingsService contact, ObjectMapper mapper, PartnersService partners, ArticleAttachmentService attachments) {
+        this.content = content; this.industries = industries; this.certificates = certificates; this.settings = settings; this.global = global; this.contact = contact; this.mapper = mapper; this.partners = partners;
+        this.attachments = attachments;
     }
     public record Snapshot(JsonNode website, JsonNode about, JsonNode contact, JsonNode capabilities,
         List<Content> products, List<Content> articles, List<Industry> industries, List<Certification> certificates, Map<String, Object> bootstrap) {}
@@ -29,7 +34,7 @@ public class PublicSiteData {
     }
     @Transactional(readOnly = true) public Snapshot read() {
         var products = content.findAllByTypeOrderByDateDesc("products").stream().filter(item -> "published".equals(item.getStatus())).toList();
-        var articles = content.findAllByTypeOrderByDateDesc("articles").stream().filter(item -> "published".equals(item.getStatus())).toList();
+        var articles = attachments.populate(content.findAllForDisplay("articles").stream().filter(item -> "published".equals(item.getStatus())).toList());
         var visibleIndustries = industries.findAllByOrderBySortOrderAscTitleEnAsc().stream().filter(item -> "published".equals(item.getStatus())).toList();
         var visibleCertificates = certificates.findAllByOrderBySortOrderAscTitleEnAsc().stream().filter(item -> "published".equals(item.getStatus())).toList();
         var website = setting("website"); var about = setting("about-tzme"); var capabilities = setting("capabilities");
@@ -39,6 +44,7 @@ public class PublicSiteData {
         bootstrap.put("/api/products", products); bootstrap.put("/api/articles", articles); bootstrap.put("/api/industries", visibleIndustries);
         bootstrap.put("/api/certifications", visibleCertificates); bootstrap.put("/api/about-tzme", about); bootstrap.put("/api/home-capabilities", capabilities);
         bootstrap.put("/api/home-solutions", setting("home-solutions")); bootstrap.put("/api/product-showcase", setting("product-showcase"));
+        bootstrap.put("/api/partners", partners.get());
         global.findById(1L).ifPresent(row -> {
             try { bootstrap.put("/api/home-global", mapper.readValue(row.getConfiguration(), HomeGlobalSettings.class).withMapDefaults()); }
             catch (Exception error) { throw new IllegalStateException("Invalid global reach configuration", error); }

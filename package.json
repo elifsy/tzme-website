@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/build-certificate-previews.mjs",
+    "predev": "node scripts/prepare-assets.mjs",
     "dev": "vite --host 0.0.0.0",
-    "prebuild": "node scripts/build-certificate-previews.mjs",
+    "prebuild": "node scripts/prepare-assets.mjs",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "db:build": "node scripts/build-database.mjs",

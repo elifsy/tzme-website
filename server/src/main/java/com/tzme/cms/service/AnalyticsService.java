@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class AnalyticsService {
-    public static final Set<String> CLIENT_EVENTS = Set.of("page_view", "page_engagement", "navigation_click", "cta_click", "industry_filter", "news_filter", "social_click", "contact_click", "inquiry_start", "inquiry_submit", "inquiry_error", "language_change", "pagination", "content_click");
+    public static final Set<String> CLIENT_EVENTS = Set.of("page_view", "page_engagement", "navigation_click", "cta_click", "industry_filter", "news_filter", "social_click", "contact_click", "inquiry_start", "inquiry_submit", "inquiry_error", "language_change", "pagination", "content_click",
+        "product_type_filter", "language_outbound", "model_select", "model_hover", "model_control", "certificate_view", "download_click", "quality_step", "map_location");
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
     private final TransactionTemplate independentTransaction;
@@ -39,6 +40,7 @@ public class AnalyticsService {
     public static String pageKey(String path) {
         if (path.equals("/")) return "home";
         if (Set.of("/about", "/contact", "/solutions", "/projects", "/insights").contains(path)) return path.substring(1);
+        if (path.equals("/site-map")) return "site_map";
         if (path.matches("/solutions/[a-zA-Z0-9._%~-]+(/[a-zA-Z0-9._%~-]+)?")) return "product_detail";
         if (path.matches("/projects/[a-zA-Z0-9._%~-]+")) return "project_detail";
         if (path.matches("/insights/[a-zA-Z0-9._%~-]+")) return "news_detail";

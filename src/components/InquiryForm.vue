@@ -1,174 +1,531 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
-import { UploadFilled } from '@element-plus/icons-vue'
-import { apiRequest } from '../services/api.js'
-import { contactText, inquiryFieldLabels, useContactSettings } from '../services/contactSettings.js'
-import { industryField, useIndustryCatalog } from '../services/industries.js'
-import { inquiryAnalyticsContext, trackEvent } from '../services/analytics.js'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
+import { useI18n } from "vue-i18n";
+import { ElMessage } from "element-plus";
+import { UploadFilled } from "@element-plus/icons-vue";
+import { apiRequest } from "../services/api.js";
+import {
+  contactText,
+  inquiryFieldLabels,
+  useContactSettings,
+} from "../services/contactSettings.js";
+import { industryField, useIndustryCatalog } from "../services/industries.js";
+import { inquiryAnalyticsContext, trackEvent } from "../services/analytics.js";
 
-const props = defineProps({ placement: { type: String, default: 'contact' }, preview: Boolean, compact: Boolean, showHeading: { type: Boolean, default: true }, configuration: { type: Object, default: null } })
-const { t, locale } = useI18n({ useScope: 'global' })
-const { contactSettings } = useContactSettings()
-const { industries, loadIndustries } = useIndustryCatalog()
-const activeIndustries = computed(() => industries.value.filter(item => item.status === 'published'))
-const config = computed(() => props.configuration || contactSettings.value)
-const form = reactive(Object.fromEntries(Object.keys(inquiryFieldLabels).map(key => [key, ''])))
-const OTHER_INDUSTRY = '__tzme_other_industry__'
-const industrySelection = ref('')
-const isOtherIndustry = computed(() => industrySelection.value === OTHER_INDUSTRY)
-const formRef = ref(null)
-const fileList = ref([])
-const submitting = ref(false)
-const uploadRef = ref(null)
-const uploads = new Map()
-const inProgress = computed(() => fileList.value.some(file => ['ready', 'uploading'].includes(file.status)))
-const hasFailed = computed(() => fileList.value.some(file => file.status === 'fail'))
-const accept = computed(() => config.value?.upload.allowedExtensions.map(value => `.${value}`).join(',') || '')
-const fieldLabel = key => t(inquiryFieldLabels[key]).replace(/\s*[*＊]\s*$/, '')
-const rules = computed(() => Object.fromEntries(Object.keys(inquiryFieldLabels).map(key => [key, [
-  ...(config.value?.form.requiredFields.includes(key) || (key === 'industry' && isOtherIndustry.value) ? [{ required: true, whitespace: true, message: t('contactUi.required', { field: fieldLabel(key) }), trigger: 'blur' }] : []),
-  ...(key === 'email' ? [{ type: 'email', message: t('site.inquiryInvalidEmail'), trigger: 'blur' }] : []),
-]])))
+const props = defineProps({
+  placement: { type: String, default: "contact" },
+  preview: Boolean,
+  compact: Boolean,
+  showHeading: { type: Boolean, default: true },
+  configuration: { type: Object, default: null },
+});
+const { t, locale } = useI18n({ useScope: "global" });
+const { contactSettings } = useContactSettings();
+const { industries, loadIndustries } = useIndustryCatalog();
+const activeIndustries = computed(() =>
+  industries.value.filter((item) => item.status === "published"),
+);
+const config = computed(() => props.configuration || contactSettings.value);
+const form = reactive(
+  Object.fromEntries(Object.keys(inquiryFieldLabels).map((key) => [key, ""])),
+);
+const OTHER_INDUSTRY = "__tzme_other_industry__";
+const industrySelection = ref("");
+const isOtherIndustry = computed(
+  () => industrySelection.value === OTHER_INDUSTRY,
+);
+const formRef = ref(null);
+const fileList = ref([]);
+const submitting = ref(false);
+const uploadRef = ref(null);
+const uploads = new Map();
+const inProgress = computed(() =>
+  fileList.value.some((file) => ["ready", "uploading"].includes(file.status)),
+);
+const hasFailed = computed(() =>
+  fileList.value.some((file) => file.status === "fail"),
+);
+const accept = computed(
+  () =>
+    config.value?.upload.allowedExtensions
+      .map((value) => `.${value}`)
+      .join(",") || "",
+);
+const fieldLabel = (key) =>
+  t(inquiryFieldLabels[key]).replace(/\s*[*＊]\s*$/, "");
+const rules = computed(() =>
+  Object.fromEntries(
+    Object.keys(inquiryFieldLabels).map((key) => [
+      key,
+      [
+        ...(config.value?.form.requiredFields.includes(key) ||
+        (key === "industry" && isOtherIndustry.value)
+          ? [
+              {
+                required: true,
+                whitespace: true,
+                message: t("contactUi.required", { field: fieldLabel(key) }),
+                trigger: "blur",
+              },
+            ]
+          : []),
+        ...(key === "email"
+          ? [
+              {
+                type: "email",
+                message: t("site.inquiryInvalidEmail"),
+                trigger: "blur",
+              },
+            ]
+          : []),
+      ],
+    ]),
+  ),
+);
 // Clear messages from the previous language without resetting the entered values.
-watch(locale, () => formRef.value?.clearValidate(), { flush: 'post' })
-let disposed = false
-let started = false
+watch(locale, () => formRef.value?.clearValidate(), { flush: "post" });
+let disposed = false;
+let started = false;
 function selectIndustry(value) {
   // The option marker stays in the UI; the inquiry stores the entered industry.
-  form.industry = value === OTHER_INDUSTRY ? '' : value || ''
-  formRef.value?.clearValidate('industry')
+  form.industry = value === OTHER_INDUSTRY ? "" : value || "";
+  formRef.value?.clearValidate("industry");
 }
 function trackStart(event) {
-  if (props.preview) return
-  if (started || !event.target.closest('input,textarea,.el-select')) return
-  started = true
-  trackEvent('inquiry_start', props.placement)
+  if (props.preview) return;
+  if (started || !event.target.closest("input,textarea,.el-select")) return;
+  started = true;
+  trackEvent("inquiry_start", props.placement);
 }
 function beforeUpload(file) {
-  if (props.preview) return false
-  const extension = file.name.split('.').pop().toLowerCase()
-  if (!config.value.upload.allowedExtensions.includes(extension) || file.size <= 0 || file.size > config.value.upload.maxFileSizeMb * 1024 * 1024) {
-    ElMessage.warning(t('contactUi.fileInvalid', { size: config.value.upload.maxFileSizeMb, types: config.value.upload.allowedExtensions.join(', ').toUpperCase() }))
-    return false
+  if (props.preview) return false;
+  const extension = file.name.split(".").pop().toLowerCase();
+  if (
+    !config.value.upload.allowedExtensions.includes(extension) ||
+    file.size <= 0 ||
+    file.size > config.value.upload.maxFileSizeMb * 1024 * 1024
+  ) {
+    ElMessage.warning(
+      t("contactUi.fileInvalid", {
+        size: config.value.upload.maxFileSizeMb,
+        types: config.value.upload.allowedExtensions.join(", ").toUpperCase(),
+      }),
+    );
+    return false;
   }
-  return !submitting.value
+  return !submitting.value;
 }
 function uploadFile(options) {
-  if (props.preview) return Promise.reject(new DOMException('Preview does not upload files', 'AbortError'))
+  if (props.preview)
+    return Promise.reject(
+      new DOMException("Preview does not upload files", "AbortError"),
+    );
   return new Promise((resolve, reject) => {
-    const request = new XMLHttpRequest()
-    uploads.set(options.file.uid, request)
-    const body = new FormData(); body.append('file', options.file)
-    request.open('POST', '/api/inquiry-attachments')
-    request.upload.onprogress = event => {
-      if (event.lengthComputable) options.onProgress({ percent: event.loaded / event.total * 100 })
-    }
-    const finish = () => uploads.delete(options.file.uid)
+    const request = new XMLHttpRequest();
+    uploads.set(options.file.uid, request);
+    const body = new FormData();
+    body.append("file", options.file);
+    request.open("POST", "/api/inquiry-attachments");
+    request.upload.onprogress = (event) => {
+      if (event.lengthComputable)
+        options.onProgress({ percent: (event.loaded / event.total) * 100 });
+    };
+    const finish = () => uploads.delete(options.file.uid);
     request.onload = () => {
-      finish()
+      finish();
       try {
-        if (request.status < 200 || request.status >= 300) throw new Error(`HTTP ${request.status}`)
-        const result = JSON.parse(request.responseText)
-        if (!result?.id || !result?.originalName) throw new Error('Invalid attachment response')
-        resolve(result)
-      } catch (error) { reject(error) }
-    }
-    request.onerror = () => { finish(); reject(new Error('Upload failed')) }
-    request.onabort = () => { finish(); reject(new DOMException('Upload canceled', 'AbortError')) }
-    request.send(body)
-  })
+        if (request.status < 200 || request.status >= 300)
+          throw new Error(`HTTP ${request.status}`);
+        const result = JSON.parse(request.responseText);
+        if (!result?.id || !result?.originalName)
+          throw new Error("Invalid attachment response");
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    request.onerror = () => {
+      finish();
+      reject(new Error("Upload failed"));
+    };
+    request.onabort = () => {
+      finish();
+      reject(new DOMException("Upload canceled", "AbortError"));
+    };
+    request.send(body);
+  });
 }
-function removeFile(file) { uploads.get(file.uid)?.abort() }
-function uploadError(error) { if (!disposed && error.name !== 'AbortError') ElMessage.error(t('contactUi.uploadFailed')) }
+function removeFile(file) {
+  uploads.get(file.uid)?.abort();
+}
+function uploadError(error) {
+  if (!disposed && error.name !== "AbortError")
+    ElMessage.error(t("contactUi.uploadFailed"));
+}
 async function submit() {
-  if (props.preview) return
-  if (submitting.value || inProgress.value || hasFailed.value || !config.value.form.enabled) return
-  try { await formRef.value.validate() } catch { return }
-  if (disposed || submitting.value) return
-  submitting.value = true
-  trackEvent('inquiry_submit', props.placement)
+  if (props.preview) return;
+  if (
+    submitting.value ||
+    inProgress.value ||
+    hasFailed.value ||
+    !config.value.form.enabled
+  )
+    return;
   try {
-    const values = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]))
-    await apiRequest('/api/inquiries', { method: 'POST', body: { ...values, locale: locale.value, analytics: inquiryAnalyticsContext(), attachmentIds: fileList.value.filter(file => file.status === 'success').map(file => file.response.id) } })
-    if (disposed) return
-    Object.keys(form).forEach(key => { form[key] = '' })
-    industrySelection.value = ''
-    started = false
-    fileList.value = []; uploadRef.value?.clearFiles(); formRef.value.clearValidate()
-    ElMessage.success(contactText(config.value.form.successText, locale.value))
+    await formRef.value.validate();
   } catch {
-    trackEvent('inquiry_error', props.placement)
-    if (!disposed) ElMessage.error(t('contactUi.submitFailed', { email: config.value.contact.emails.join(' / ') || config.value.contact.phone }))
-  } finally { if (!disposed) submitting.value = false }
+    return;
+  }
+  if (disposed || submitting.value) return;
+  submitting.value = true;
+  trackEvent("inquiry_submit", props.placement);
+  try {
+    const values = Object.fromEntries(
+      Object.entries(form).map(([key, value]) => [key, value.trim()]),
+    );
+    await apiRequest("/api/inquiries", {
+      method: "POST",
+      body: {
+        ...values,
+        locale: locale.value,
+        analytics: inquiryAnalyticsContext(),
+        attachmentIds: fileList.value
+          .filter((file) => file.status === "success")
+          .map((file) => file.response.id),
+      },
+    });
+    if (disposed) return;
+    Object.keys(form).forEach((key) => {
+      form[key] = "";
+    });
+    industrySelection.value = "";
+    started = false;
+    fileList.value = [];
+    uploadRef.value?.clearFiles();
+    formRef.value.clearValidate();
+    ElMessage.success(contactText(config.value.form.successText, locale.value));
+  } catch {
+    trackEvent("inquiry_error", props.placement);
+    if (!disposed)
+      ElMessage.error(
+        t("contactUi.submitFailed", {
+          email:
+            config.value.contact.emails.join(" / ") ||
+            config.value.contact.phone,
+        }),
+      );
+  } finally {
+    if (!disposed) submitting.value = false;
+  }
 }
-onMounted(loadIndustries)
-onBeforeUnmount(() => { disposed = true; uploads.forEach(request => request.abort()); uploads.clear() })
+onMounted(loadIndustries);
+onBeforeUnmount(() => {
+  disposed = true;
+  uploads.forEach((request) => request.abort());
+  uploads.clear();
+});
 </script>
 
 <template>
-  <div v-if="config && (preview || config.form[placement === 'home' ? 'showOnHome' : 'showOnContact'])" class="hc-form inquiry-form" :class="{ 'inquiry-form-compact': compact }" @click.stop @keydown.stop @focusin="trackStart">
+  <div
+    v-if="
+      config &&
+      (preview ||
+        config.form[placement === 'home' ? 'showOnHome' : 'showOnContact'])
+    "
+    class="hc-form inquiry-form"
+    :class="{ 'inquiry-form-compact': compact }"
+    @click.stop
+    @keydown.stop
+    @focusin="trackStart"
+  >
     <template v-if="config.form.enabled">
-      <span v-if="showHeading" class="hc-kick inquiry-form-title">{{ compact ? contactText(config.form.title, locale).replace(/^\s*\d+\s*[\/／、.．]\s*/, '') : contactText(config.form.title, locale) }}</span>
-      <el-form ref="formRef" :model="form" :rules="rules" :validate-on-rule-change="false" label-position="top" :disabled="submitting" @submit.prevent="submit">
+      <span v-if="showHeading" class="hc-kick inquiry-form-title">{{
+        compact
+          ? contactText(config.form.title, locale).replace(
+              /^\s*\d+\s*[\/／、.．]\s*/,
+              "",
+            )
+          : contactText(config.form.title, locale)
+      }}</span>
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        :validate-on-rule-change="false"
+        label-position="top"
+        :disabled="submitting"
+        @submit.prevent="submit"
+      >
         <div class="inquiry-fields">
-          <el-form-item v-for="key in ['name', 'company', 'country', 'email', 'phone', 'industry']" :key="key" :prop="key" :label="fieldLabel(key)">
+          <el-form-item
+            v-for="key in [
+              'name',
+              'company',
+              'country',
+              'email',
+              'phone',
+              'industry',
+            ]"
+            :key="key"
+            :prop="key"
+            :label="fieldLabel(key)"
+          >
             <template v-if="key === 'industry'">
-              <el-select v-model="industrySelection" filterable default-first-option clearable :validate-event="false" :teleported="!preview"
-                :placeholder="$t('contactUi.industryPlaceholder')" @change="selectIndustry">
-                <el-option v-for="industry in activeIndustries" :key="industry.id" :label="industryField(industry, 'title', locale)" :value="industryField(industry, 'title', locale)" />
-                <el-option :value="OTHER_INDUSTRY" :label="$t('contactUi.otherIndustry')" />
+              <el-select
+                v-model="industrySelection"
+                filterable
+                default-first-option
+                clearable
+                :validate-event="false"
+                :teleported="!preview"
+                :placeholder="$t('contactUi.industryPlaceholder')"
+                @change="selectIndustry"
+              >
+                <el-option
+                  v-for="industry in activeIndustries"
+                  :key="industry.id"
+                  :label="industryField(industry, 'title', locale)"
+                  :value="industryField(industry, 'title', locale)"
+                />
+                <el-option
+                  :value="OTHER_INDUSTRY"
+                  :label="$t('contactUi.otherIndustry')"
+                />
               </el-select>
-              <el-input v-if="isOtherIndustry" v-model="form.industry" class="inquiry-industry-custom" maxlength="255" autocomplete="off"
-                :aria-label="fieldLabel('industry')" :placeholder="$t('contactUi.otherIndustryPlaceholder')" />
+              <el-input
+                v-if="isOtherIndustry"
+                v-model="form.industry"
+                class="inquiry-industry-custom"
+                maxlength="255"
+                autocomplete="off"
+                :aria-label="fieldLabel('industry')"
+                :placeholder="$t('contactUi.otherIndustryPlaceholder')"
+              />
             </template>
-            <el-input v-else v-model="form[key]" :type="key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'" maxlength="255" :autocomplete="{ name: 'name', company: 'organization', country: 'country-name', email: 'email', phone: 'tel' }[key]" :placeholder="fieldLabel(key)" />
+            <el-input
+              v-else
+              v-model="form[key]"
+              :type="
+                key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'
+              "
+              maxlength="255"
+              :autocomplete="
+                {
+                  name: 'name',
+                  company: 'organization',
+                  country: 'country-name',
+                  email: 'email',
+                  phone: 'tel',
+                }[key]
+              "
+              :placeholder="fieldLabel(key)"
+            />
           </el-form-item>
         </div>
-        <el-form-item prop="requirements" :label="$t('site.projectRequirements')">
-          <el-input v-model="form.requirements" type="textarea" :rows="4" maxlength="6000" show-word-limit :placeholder="$t('site.capacityMaterialHandledSiteConditionsRequiredDeliveryDate')" />
+        <el-form-item
+          prop="requirements"
+          :label="$t('site.projectRequirements')"
+        >
+          <el-input
+            v-model="form.requirements"
+            type="textarea"
+            :rows="4"
+            maxlength="6000"
+            show-word-limit
+            :placeholder="
+              $t(
+                'site.capacityMaterialHandledSiteConditionsRequiredDeliveryDate',
+              )
+            "
+          />
         </el-form-item>
-        <el-form-item v-if="config.upload.enabled" :label="$t('contactUi.attachments')" class="inquiry-attachment-field">
-          <el-upload ref="uploadRef" v-model:file-list="fileList" drag :accept="accept" :limit="config.upload.maxFiles" :before-upload="beforeUpload" :http-request="uploadFile" :on-remove="removeFile" :on-error="uploadError" :on-exceed="() => ElMessage.warning($t('contactUi.fileCount', { count: config.upload.maxFiles }))" :disabled="submitting || preview" class="inquiry-upload">
+        <el-form-item
+          v-if="config.upload.enabled"
+          :label="$t('contactUi.attachments')"
+          class="inquiry-attachment-field"
+        >
+          <el-upload
+            ref="uploadRef"
+            v-model:file-list="fileList"
+            drag
+            :accept="accept"
+            :limit="config.upload.maxFiles"
+            :before-upload="beforeUpload"
+            :http-request="uploadFile"
+            :on-remove="removeFile"
+            :on-error="uploadError"
+            :on-exceed="
+              () =>
+                ElMessage.warning(
+                  $t('contactUi.fileCount', { count: config.upload.maxFiles }),
+                )
+            "
+            :disabled="submitting || preview"
+            class="inquiry-upload"
+          >
             <el-icon class="inquiry-upload-icon"><UploadFilled /></el-icon>
-            <div>{{ $t('site.dragAndDropOrClickToUpload') }}</div>
-            <template #tip><p class="inquiry-upload-tip">{{ $t('contactUi.uploadHint', { size: config.upload.maxFileSizeMb, count: config.upload.maxFiles, types: config.upload.allowedExtensions.join(' / ').toUpperCase() }) }}</p></template>
+            <div>{{ $t("site.dragAndDropOrClickToUpload") }}</div>
+            <template #tip
+              ><p class="inquiry-upload-tip">
+                {{
+                  $t("contactUi.uploadHint", {
+                    size: config.upload.maxFileSizeMb,
+                    count: config.upload.maxFiles,
+                    types: config.upload.allowedExtensions
+                      .join(" / ")
+                      .toUpperCase(),
+                  })
+                }}
+              </p></template
+            >
           </el-upload>
         </el-form-item>
-        <p v-if="inProgress" class="inquiry-upload-status" role="status">{{ $t('contactUi.uploading') }}</p>
-        <p v-if="hasFailed" class="inquiry-upload-status" role="alert">{{ $t('contactUi.uploadFailed') }}</p>
+        <p v-if="inProgress" class="inquiry-upload-status" role="status">
+          {{ $t("contactUi.uploading") }}
+        </p>
+        <p v-if="hasFailed" class="inquiry-upload-status" role="alert">
+          {{ $t("contactUi.uploadFailed") }}
+        </p>
         <div class="inquiry-submit">
-          <p v-if="config.form.showPrivacy">{{ contactText(config.form.privacyText, locale) }}</p>
-          <el-button type="primary" native-type="submit" class="hc-btn solid" :loading="submitting" :disabled="inProgress || hasFailed" @click.stop>{{ contactText(config.form.buttonText, locale) }}<i aria-hidden="true">→</i></el-button>
+          <p v-if="config.form.showPrivacy">
+            {{ contactText(config.form.privacyText, locale) }}
+          </p>
+          <el-button
+            type="primary"
+            native-type="submit"
+            class="hc-btn solid"
+            :loading="submitting"
+            :disabled="inProgress || hasFailed"
+            @click.stop
+            >{{ contactText(config.form.buttonText, locale)
+            }}<i aria-hidden="true">→</i></el-button
+          >
         </div>
       </el-form>
     </template>
-    <el-alert v-else :title="contactText(config.form.closedText, locale)" type="info" :closable="false" show-icon />
+    <el-alert
+      v-else
+      :title="contactText(config.form.closedText, locale)"
+      type="info"
+      :closable="false"
+      show-icon
+    />
   </div>
 </template>
 
 <style scoped>
-.inquiry-form { min-width: 0; }
-.inquiry-form-title { display: block; margin-bottom: 24px; }
-.inquiry-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
-.inquiry-form :deep(.el-form-item__label) { color: #dce6ef; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
-.inquiry-form :deep(.el-select) { width: 100%; }
-.inquiry-industry-custom { width: 100%; margin-top: 10px; }
-.inquiry-form :deep(.el-input__wrapper), .inquiry-form :deep(.el-select__wrapper), .inquiry-form :deep(.el-textarea__inner) { background: #112a3a; box-shadow: 0 0 0 1px #476276 inset; color: #f3f7fb; }
-.inquiry-form :deep(.el-input__inner), .inquiry-form :deep(.el-select__selected-item) { color: #f3f7fb; }
-.inquiry-form :deep(.el-input__inner::placeholder), .inquiry-form :deep(.el-textarea__inner::placeholder), .inquiry-form :deep(.el-select__placeholder) { color: #aebfce; }
-.inquiry-form :deep(.el-input__count) { background: #112a3a; color: #bdccda; }
-.inquiry-form :deep(.el-form-item__error) { color: #ffb2a9; }
-.inquiry-upload { width: 100%; }
-.inquiry-upload :deep(.el-upload), .inquiry-upload :deep(.el-upload-dragger) { width: 100%; }
-.inquiry-upload :deep(.el-upload-dragger) { background: #112a3a; border-color: #68869c; padding: 22px 12px; color: #edf4fa; line-height: 1.8; }
-.inquiry-upload-icon { font-size: 28px; color: #93c7f7; }
-.inquiry-upload-tip, .inquiry-upload-status { color: #bdccda; font-size: 12px; line-height: 1.7; margin: 8px 0 0; }
-.inquiry-upload :deep(.el-upload-list__item-name), .inquiry-upload :deep(.el-upload-list__item .el-icon--close) { color: #dce6ef; }
-.inquiry-upload :deep(.el-upload-list__item:hover) { background: #1d394c; }
-.inquiry-submit { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.inquiry-submit p { font-size: 12px; color: #bdccda; line-height: 1.7; flex: 1; }
-.inquiry-submit .hc-btn { min-height: 42px; height: auto; white-space: normal; }
-@media (max-width: 560px) { .inquiry-fields { grid-template-columns: 1fr; } .inquiry-submit { align-items: stretch; flex-direction: column; } }
+.inquiry-form {
+  min-width: 0;
+}
+.inquiry-form-title {
+  display: block;
+  margin-bottom: 24px;
+}
+.inquiry-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+}
+.inquiry-form :deep(.el-form-item__label) {
+  color: #dce6ef;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.inquiry-form :deep(.el-select) {
+  width: 100%;
+}
+.inquiry-industry-custom {
+  width: 100%;
+  margin-top: 10px;
+}
+.inquiry-form :deep(.el-input__wrapper),
+.inquiry-form :deep(.el-select__wrapper),
+.inquiry-form :deep(.el-textarea__inner) {
+  background: #112a3a;
+  box-shadow: 0 0 0 1px #476276 inset;
+  color: #f3f7fb;
+}
+.inquiry-form :deep(.el-input__inner),
+.inquiry-form :deep(.el-select__selected-item) {
+  color: #f3f7fb;
+}
+.inquiry-form :deep(.el-input__inner::placeholder),
+.inquiry-form :deep(.el-textarea__inner::placeholder),
+.inquiry-form :deep(.el-select__placeholder) {
+  color: #aebfce;
+}
+.inquiry-form :deep(.el-input__count) {
+  background: #112a3a;
+  color: #bdccda;
+}
+.inquiry-form :deep(.el-form-item__error) {
+  color: #ffb2a9;
+}
+.inquiry-upload {
+  width: 100%;
+}
+.inquiry-upload :deep(.el-upload),
+.inquiry-upload :deep(.el-upload-dragger) {
+  width: 100%;
+}
+.inquiry-upload :deep(.el-upload-dragger) {
+  background: #112a3a;
+  border-color: #68869c;
+  padding: 22px 12px;
+  color: #edf4fa;
+  line-height: 1.8;
+}
+.inquiry-upload-icon {
+  font-size: 28px;
+  color: #93c7f7;
+}
+.inquiry-upload-tip,
+.inquiry-upload-status {
+  color: #bdccda;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 8px 0 0;
+}
+.inquiry-upload :deep(.el-upload-list__item-name),
+.inquiry-upload :deep(.el-upload-list__item .el-icon--close) {
+  color: #dce6ef;
+}
+.inquiry-upload :deep(.el-upload-list__item:hover) {
+  background: #1d394c;
+}
+.inquiry-submit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.inquiry-submit p {
+  font-size: 12px;
+  color: #bdccda;
+  line-height: 1.7;
+  flex: 1;
+}
+.inquiry-submit .hc-btn {
+  min-height: 42px;
+  height: auto;
+  white-space: normal;
+}
+@media (max-width: 560px) {
+  .inquiry-fields {
+    grid-template-columns: 1fr;
+  }
+  .inquiry-submit {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
 </style>

@@ -6,17 +6,26 @@ import { Download, InfoFilled, Refresh } from '@element-plus/icons-vue'
 import AnalyticsTrend from './AnalyticsTrend.vue'
 import { availableLocales } from '../i18n/locales/index.js'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
-import { useArticleCatalog } from '../services/articles.js'
+import { resolveArticleCategory, useArticleCatalog } from '../services/articles.js'
 import { useProjectCatalog } from '../services/projects.js'
 import { industryField, useIndustryCatalog } from '../services/industries.js'
 import { useContactSettings } from '../services/contactSettings.js'
 import { sessionFetch } from '../services/session.js'
+import { analyticsEventNames } from '../data/analyticsEvents.js'
+import { useCertificationCatalog } from '../services/certifications.js'
+import { useGlobalReach } from '../services/globalReach.js'
+import { useCapabilities } from '../services/capabilities.js'
+import { capabilityText } from '../data/capabilities.js'
+import { globalReachText } from '../data/globalReach.js'
 const { t, locale } = useI18n({ useScope: 'global' })
 const { products } = useProductCatalog()
 const { articles, newsCategories } = useArticleCatalog()
 const { contactSettings } = useContactSettings()
 const { projects, loadProjects } = useProjectCatalog()
 const { industries, loadIndustries } = useIndustryCatalog()
+const { certifications, loadCertifications } = useCertificationCatalog()
+const { globalReach, loadGlobalReach } = useGlobalReach()
+const { capabilities, loadCapabilities } = useCapabilities()
 const dayString = date => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date)
 const today = () => dayString(new Date())
 const calendarDay = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -26,7 +35,7 @@ const report = ref(null), records = ref([]), total = ref(0), currentPage = ref(1
 const loading = ref(false), recordsLoading = ref(false), error = ref(false), recordsError = ref(false)
 const collecting = ref(false), configReady = ref(false), saving = ref(false), updated = ref('')
 let reportAbort, recordsAbort, configAbort, disposed = false
-const eventNames = ['page_view', 'page_engagement', 'navigation_click', 'cta_click', 'content_click', 'industry_filter', 'news_filter', 'social_click', 'contact_click', 'inquiry_start', 'inquiry_submit', 'inquiry_success', 'inquiry_error', 'language_change', 'pagination']
+const eventNames = analyticsEventNames
 const shortcuts = computed(() => [7, 30, 90].map(days => ({ text: t(`analyticsAdmin.last${days}`), value: () => range(days).map(day => new Date(`${day}T00:00:00`)) })))
 const summary = computed(() => report.value?.summary || {})
 const integer = value => Number(value || 0).toLocaleString(locale.value === 'zh' ? 'zh-CN' : 'en-US')
@@ -44,7 +53,7 @@ const languageLabel = code => availableLocales.find(item => item.code === code)?
 const sourceLabel = name => name === 'direct' ? t('analyticsAdmin.direct') : name
 function pageLabel(path, key) {
   const parts = path.split('/').filter(Boolean)
-  const type = key || (path === '/' ? 'home' : parts.length > 1 ? ({ solutions: 'product_detail', projects: 'project_detail', insights: 'news_detail' }[parts[0]]) : parts[0])
+  const type = key || (path === '/' ? 'home' : path === '/site-map' ? 'site_map' : parts.length > 1 ? ({ solutions: 'product_detail', projects: 'project_detail', insights: 'news_detail' }[parts[0]]) : parts[0])
   const collection = parts[0] === 'solutions' ? products.value : parts[0] === 'projects' ? projects.value : parts[0] === 'insights' ? articles.value : []
   let id = parts.at(-1)
   try { id = decodeURIComponent(id || '') } catch { /* Keep malformed historical paths readable. */ }
@@ -54,23 +63,53 @@ function pageLabel(path, key) {
 function targetLabel(item) {
   const target = item.target
   if (!target) return '—'
+  if (item.name === 'download_click') {
+    try { return decodeURIComponent(target.split('/').at(-1)) } catch { return target }
+  }
   if (target.startsWith('/')) return pageLabel(target)
-  if (item.name === 'industry_filter') {
+  if (['industry_filter', 'model_select', 'model_hover'].includes(item.name)) {
     return target === 'all' ? t('analyticsAdmin.all') : industryField(industries.value.find(industry => industry.id === target), 'title', locale.value) || target
   }
-  if (item.name === 'news_filter') return target === 'all' ? t('analyticsAdmin.all') : localizedField(newsCategories.value.find(category => category.id === target), 'title', locale.value) || target
+  if (item.name === 'product_type_filter') {
+    if (target === 'all') return t('analyticsAdmin.all')
+    const separator = target.indexOf(':')
+    const category = target.slice(separator + 1)
+    const product = products.value.find(product => [product.categoryEn, product.category, product.categoryZh].includes(category))
+    return t(`analyticsAdmin.${target.startsWith('remove:') ? 'typeRemoved' : 'typeAdded'}`, { type: localizedField(product, 'category', locale.value) || category })
+  }
+  if (item.name === 'news_filter') {
+    const categoryId = resolveArticleCategory(target, articles.value)
+    return target === 'all' ? t('analyticsAdmin.all') : localizedField(newsCategories.value.find(category => category.id === categoryId), 'title', locale.value) || target
+  }
+  if (item.name === 'model_control') {
+    const [action, id] = target.split(':')
+    const name = industryField(industries.value.find(industry => industry.id === id), 'title', locale.value) || id || ''
+    const keys = { reset: 'modelReset', 'zoom-in': 'modelZoomIn', 'zoom-out': 'modelZoomOut', inspect: 'modelInspect', equipment: 'modelEquipment' }
+    return keys[action] ? t(`analyticsAdmin.${keys[action]}`, { name }) : target
+  }
+  if (item.name === 'certificate_view') return localizedField(certifications.value.find(item => item.id === target), 'title', locale.value) || target
+  if (item.name === 'quality_step') return capabilityText(capabilities.value?.steps?.find(step => step.id === target)?.label, locale.value) || target
+  if (item.name === 'map_location') return globalReachText(globalReach.value?.mapPoints?.find(point => point.id === target)?.label, locale.value) || target
   if (item.name === 'social_click') {
     const [platform, id] = target.split(':')
     const link = contactSettings.value?.contact.socialLinks?.[locale.value]?.find(link => link.id === id)
     return link?.label || t(`contactAdmin.socialPlatforms.${platform}`)
   }
   if (['inquiry_start', 'inquiry_submit', 'inquiry_error'].includes(item.name)) return t(target === 'home' ? 'analyticsAdmin.homeForm' : 'analyticsAdmin.contactForm')
-  if (item.name === 'language_change') return languageLabel(target)
+  if (['language_change', 'language_outbound'].includes(item.name)) return languageLabel(target)
   if (item.name === 'cta_click') {
     const key = Object.entries(availableLocales.find(item => item.code === 'en')?.messages.site || {}).find(([, value]) => value === target)?.[0]
     if (key) return t(`site.${key}`)
   }
-  const keys = { all: 'all', 'website-button': 'websiteButton', 'nav-contact': 'navContact', email: 'email', phone: 'phone' }
+  const keys = { all: 'all', 'website-button': 'websiteButton', 'nav-contact': 'navContact', email: 'email', phone: 'phone',
+    'banner-1': 'homeBanner', 'home-all-solutions': 'homeSolutions', 'home-industries-all': 'homeIndustries',
+    'footer-contact': 'footerContact', 'catalog-browse-all': 'catalogBrowse', 'industry-equipment': 'industryEquipment',
+    'catalog-clear-filters': 'catalogClear', 'product-types-expand': 'typesExpand', 'product-types-collapse': 'typesCollapse', 'manufacturing-film': 'manufacturingFilm', 'partners-expand': 'partnersExpand', 'partners-collapse': 'partnersCollapse' }
+  if (item.name === 'pagination') {
+    const [list, count] = target.split(':')
+    const keys = { products: 'productCount', news: 'newsPage', certifications: 'certificatePage', projects: 'projectPage' }
+    if (keys[list]) return t(`analyticsAdmin.${keys[list]}`, { count })
+  }
   return keys[target] ? t(`analyticsAdmin.${keys[target]}`) : target
 }
 function params() {
@@ -139,7 +178,7 @@ function exportTrend() {
 watch([dates, language, selectedDevice], () => { currentPage.value = 1; load() })
 watch(tab, value => { if (value === 'records') loadRecords() })
 watch(eventName, () => { currentPage.value = 1; loadRecords() })
-onMounted(() => { load(); loadProjects(); loadIndustries() })
+onMounted(() => { load(); loadProjects(); loadIndustries(); loadCertifications(); loadGlobalReach(); loadCapabilities() })
 onBeforeUnmount(() => { disposed = true; reportAbort?.abort(); recordsAbort?.abort(); configAbort?.abort() })
 defineExpose({ load })
 </script>

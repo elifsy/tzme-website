@@ -16,17 +16,22 @@ public class ProjectController {
     private static final int MAX_HOME_PROJECTS = 3;
     private final ProjectRepository repository;
 
-    public ProjectController(ProjectRepository repository) { this.repository = repository; }
+    public ProjectController(ProjectRepository repository) {
+        this.repository = repository;
+    }
 
     @GetMapping
-    public List<Project> list() { return repository.findAllByOrderBySortOrderAscIdAsc().stream()
-        .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList(); }
+    public List<Project> list() {
+        return repository.findAllByOrderBySortOrderAscIdAsc().stream()
+                .filter(item -> ApiAccess.authenticated() || "published".equals(item.getStatus())).toList();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     public Project create(@RequestBody Project input) {
-        if (input.getId() == null || input.getId().isBlank()) input.setId("project-" + UUID.randomUUID());
+        if (input.getId() == null || input.getId().isBlank())
+            input.setId("project-" + UUID.randomUUID());
         validate(input);
         if (repository.existsById(input.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Project already exists");
@@ -38,7 +43,8 @@ public class ProjectController {
     @PutMapping("/{id}")
     @Transactional
     public Project update(@PathVariable String id, @RequestBody Project input) {
-        if (!repository.existsById(id)) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (!repository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         input.setId(id);
         validate(input);
         enforceHomeLimit(input);
@@ -58,14 +64,17 @@ public class ProjectController {
     }
 
     private void enforceHomeLimit(Project input) {
-        if (!input.isShowOnHome()) return;
-        // Lock the current records until commit so concurrent saves share the same limit.
+        if (!input.isShowOnHome())
+            return;
+        // Lock the current records until commit so concurrent saves share the same
+        // limit.
         long selected = repository.lockForHomepageSelection().stream()
                 .filter(project -> project.isShowOnHome() && !"deleted".equals(project.getStatus())
                         && !project.getId().equals(input.getId()))
                 .count();
         if (selected >= MAX_HOME_PROJECTS) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The homepage can feature at most three projects");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "The homepage can feature at most three projects");
         }
     }
 
