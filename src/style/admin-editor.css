@@ -12,9 +12,9 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  margin: 32px auto;
-  max-height: calc(100vh - 64px);
-  max-height: calc(100dvh - 64px);
+  margin: 24px auto;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 18px;
   background: #f5f7fb;
@@ -24,7 +24,7 @@
 }
 .cms-editor-dialog.el-dialog > .el-dialog__header {
   flex-shrink: 0;
-  padding: 24px 68px 24px 28px;
+  padding: 20px 68px 20px 24px;
   margin: 0;
   border-bottom: 1px solid #e6ebf2;
   border-radius: 18px 18px 0 0;
@@ -101,34 +101,85 @@
   background: currentColor;
 }
 .cms-editor-dialog.el-dialog > .el-dialog__body {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
   flex: 1;
   min-height: 0;
   max-height: none;
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
+  overflow: hidden;
 }
 .cms-editor-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
-  gap: 20px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 .cms-editor-main,
 .cms-editor-aside {
-  min-width: 0;
+  display: contents;
 }
-.cms-editor-main {
+.cms-editor-content { flex: 1; min-width: 0; min-height: 0; padding: 24px; overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.cms-editor-navigation {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 24px;
+  border-bottom: 1px solid #e2e9f2;
+  background: #f5f7fbfa;
+  backdrop-filter: blur(8px);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.cms-editor-navigation button {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 13px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #63758b;
+  font: 500 12px/1.5 Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  cursor: pointer;
+}
+.cms-editor-navigation button > span { color: #94a4b7; font-size: 10px; font-variant-numeric: tabular-nums; }
+.cms-editor-navigation button:hover { color: #3273ce; background: #eaf0f8; }
+.cms-editor-navigation button[aria-current="location"] { color: #2868bd; border-color: #d6e4f7; background: #fff; box-shadow: 0 1px 4px #20324b08; }
+.cms-editor-navigation button[aria-current="location"] > span { color: #3273ce; }
+.cms-editor-navigation button:focus-visible { outline: 2px solid #3273ce; outline-offset: 2px; }
+.cms-editor-dialog .cms-editor-panel { scroll-margin-top: 80px; }
+.cms-editor-dialog .el-form-item { scroll-margin-top: 80px; }
+.cms-editor-dialog .cms-editor-panel .image-upload {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+  align-items: start;
   gap: 18px;
 }
-.cms-editor-aside {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+.cms-editor-dialog .cms-editor-panel .image-upload-preview { height: 156px; }
+.cms-editor-dialog .cms-editor-panel .image-upload-certification .image-upload-preview { height: 220px; }
+.cms-editor-dialog .cms-editor-panel .image-upload-industryIcon .image-upload-preview { height: 128px; }
+.cms-editor-dialog .image-upload-guidance { padding: 10px 12px; }
+.cms-editor-dialog .image-upload-guidance p { font-size: 11px; line-height: 1.6; }
+.cms-editor-dialog .image-upload-picker .el-upload-dragger { padding: 12px; }
+.cms-editor-dialog .cms-status-options { max-width: 360px; }
+.cms-editor-dialog .cms-switch-row { max-width: 520px; }
+.cms-editor-dialog .el-input-number { max-width: 320px; }
+.cms-editor-dialog .product-detail-layout-select { max-width: 520px; }
+.cms-editor-dialog .el-form-item__content > .cms-field-hint { flex-basis: 100%; width: 100%; }
+.cms-media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 0 22px; }
+.cms-inline-preview > summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; color: #3273ce; font-size: 12px; cursor: pointer; list-style: none; }
+.cms-inline-preview > summary::after { content: '+'; font-size: 20px; line-height: 1; }
+.cms-inline-preview[open] > summary::after { content: '−'; }
+.cms-inline-preview[open] > summary { margin-bottom: 18px; }
+.cms-inline-preview > summary:focus-visible { outline: 2px solid #3273ce; outline-offset: 4px; }
+.cms-inline-preview .project-card-preview { max-width: 400px; margin-inline: auto; }
 .cms-editor-panel {
   min-width: 0;
   padding: 22px;
@@ -437,16 +488,14 @@
   margin-right: 6px;
 }
 @media (max-width: 900px) {
-  .cms-editor-layout {
-    grid-template-columns: minmax(0, 1fr) 255px;
-    gap: 16px;
-  }
-  .cms-editor-dialog.el-dialog > .el-dialog__body {
+  .cms-editor-layout { gap: 16px; }
+  .cms-editor-dialog .cms-editor-content {
     padding: 18px;
   }
   .cms-editor-panel {
     padding: 18px;
   }
+  .cms-editor-navigation { padding: 10px 18px; }
 }
 @media (max-width: 720px) {
   .cms-editor-dialog.el-dialog {
@@ -478,16 +527,12 @@
     top: 20px;
     right: 13px;
   }
-  .cms-editor-dialog.el-dialog > .el-dialog__body {
+  .cms-editor-dialog .cms-editor-content {
     padding: 14px;
   }
-  .cms-editor-layout {
-    grid-template-columns: 1fr;
-  }
-  .cms-editor-aside {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
+  .cms-editor-navigation { padding: 8px 14px; }
+  .cms-editor-navigation button { padding-inline: 10px; font-size: 11px; }
+  .cms-media-grid { grid-template-columns: minmax(0, 1fr); }
   .cms-field-grid {
     grid-template-columns: 1fr;
     gap: 0;
@@ -502,4 +547,11 @@
   .cms-editor-footer-note {
     display: none;
   }
+}
+@media (max-width: 480px) {
+  .cms-editor-dialog .cms-editor-panel .image-upload { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .cms-editor-dialog .cms-editor-panel .image-upload-preview { height: 148px; }
+  .cms-editor-dialog .cms-editor-panel .image-upload-industryIcon .image-upload-preview { height: 128px; }
+  .cms-editor-footer-actions { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .cms-editor-footer-actions .el-button { min-width: 76px; padding-inline: 12px; }
 }

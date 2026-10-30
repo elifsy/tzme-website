@@ -11,6 +11,7 @@ const props = defineProps({
   editable: Boolean,
   disabled: Boolean,
   selectedId: { type: String, default: "" },
+  appearance: { type: String, default: "" },
 });
 const emit = defineEmits(["add", "select", "move", "remove", "activate"]);
 const { t, locale } = useI18n({ useScope: "global" });
@@ -71,8 +72,9 @@ const routes = computed(() => {
           ),
         ),
       };
-      const travelDuration = 4.5 + distance / 60;
-      const duration = travelDuration + 20;
+      const blueGray = props.appearance === "blue-gray";
+      const travelDuration = blueGray ? 6 + distance / 80 : 4.5 + distance / 60;
+      const duration = travelDuration + (blueGray ? 40 : 20);
       const travelEnd = travelDuration / duration;
       const phase =
         ([...point.id].reduce(
@@ -94,7 +96,7 @@ const routes = computed(() => {
       ];
     });
 });
-let visibilityObserver, sizeObserver, motionPreference;
+let visibilityObserver, sizeObserver, motionPreference, mapDocument;
 function syncPlayback() {
   if (!routeLayer.value) return;
   // Let SVG run the motion natively, without Vue updates or geometry reads per frame.
@@ -102,26 +104,28 @@ function syncPlayback() {
   else routeLayer.value.unpauseAnimations();
 }
 function syncVisibility() {
-  pageVisible.value = !document.hidden;
+  pageVisible.value = !mapDocument.hidden;
 }
 function syncMotionPreference() {
   reducedMotion.value = motionPreference.matches;
 }
 watch([motionPaused, routeLayer], syncPlayback, { flush: "post" });
 onMounted(() => {
-  motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mapDocument = canvas.value.ownerDocument;
+  const mapWindow = mapDocument.defaultView;
+  motionPreference = mapWindow.matchMedia("(prefers-reduced-motion: reduce)");
   syncMotionPreference();
   motionPreference.addEventListener("change", syncMotionPreference);
   syncVisibility();
-  document.addEventListener("visibilitychange", syncVisibility);
-  visibilityObserver = new IntersectionObserver(
+  mapDocument.addEventListener("visibilitychange", syncVisibility);
+  visibilityObserver = new mapWindow.IntersectionObserver(
     ([entry]) => {
       inView.value = entry.isIntersecting;
     },
     { threshold: 0.05 },
   );
   visibilityObserver.observe(canvas.value);
-  sizeObserver = new ResizeObserver(([entry]) => {
+  sizeObserver = new mapWindow.ResizeObserver(([entry]) => {
     const width = entry.contentRect.width;
     if (width > 0) shipScale.value = ((width < 480 ? 0.7 : 0.9) * 1000) / width;
   });
@@ -132,7 +136,7 @@ onBeforeUnmount(() => {
   visibilityObserver?.disconnect();
   sizeObserver?.disconnect();
   motionPreference?.removeEventListener("change", syncMotionPreference);
-  document.removeEventListener("visibilitychange", syncVisibility);
+  mapDocument?.removeEventListener("visibilitychange", syncVisibility);
 });
 const pointButtons = new Map();
 const visibleId = computed(
@@ -140,11 +144,15 @@ const visibleId = computed(
 );
 const language = computed(() => props.localeCode || locale.value);
 const name = (point) => globalReachText(point.label, language.value);
+const originName = (point) => props.appearance === "blue-gray"
+  ? `${name(point)} · ${language.value === 'zh' ? '天津' : 'Tianjin'}`
+  : name(point);
 const names = computed(() =>
   props.points.map(name).join(language.value === "zh" ? "、" : ", "),
 );
 function markerLabel(point) {
   if (props.editable) return name(point);
+  if (point.id === origin.value?.id) return originName(point);
   // City and country markers can share just a few screen pixels. Keep their
   // real coordinates and expose nearby names together in the public tooltip.
   const area = point.id.match(/^(?:country|city)-([A-Z]{2})(?:-|$)/)?.[1];
@@ -199,7 +207,7 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() });
 </script>
 
 <template>
-  <figure class="world-reach-map" :aria-label="description">
+  <figure class="world-reach-map" :class="{ 'is-blue-gray': appearance === 'blue-gray' }" :aria-label="description">
     <div
       ref="canvas"
       class="world-map-canvas"
@@ -274,6 +282,7 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() });
         :key="point.id"
         type="button"
         class="world-map-point"
+        :data-point-id="point.id"
         :ref="
           (element) =>
             element
@@ -308,7 +317,7 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() });
           v-if="origin?.id === point.id && !editable && visibleId !== point.id"
           class="world-map-origin-name"
           aria-hidden="true"
-          >{{ name(point) }}</span
+          >{{ originName(point) }}</span
         >
         <span
           v-if="visibleId === point.id"
@@ -318,7 +327,7 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() });
         >
       </button>
     </div>
-    <figcaption class="world-map-caption">
+    <figcaption v-if="appearance !== 'blue-gray' || editable" class="world-map-caption">
       <span class="world-map-legend" aria-hidden="true"></span>
       <span
         ><slot name="caption">{{
@@ -526,6 +535,20 @@ defineExpose({ focusPoint: (id) => pointButtons.get(id)?.focus() });
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+}
+/* Option A is opt-in: the CMS point editor retains its own styling. */
+.world-reach-map.is-blue-gray { color: #527383; }
+.world-reach-map.is-blue-gray .world-map-land { opacity: 1; filter: saturate(.7) brightness(.8); }
+.world-reach-map.is-blue-gray .world-map-route { stroke: #218b9d; opacity: .3; stroke-width: .8; }
+.world-reach-map.is-blue-gray .world-map-route.is-active { opacity: .9; stroke-width: 1.5; }
+.world-reach-map.is-blue-gray .world-map-halo { display: none; }
+.world-reach-map.is-blue-gray .world-map-core { width: 6px; height: 6px; background: #16899a; border: 1px solid #e3f2f5; box-shadow: none; }
+.world-reach-map.is-blue-gray .is-origin .world-map-core { width: 14px; height: 14px; background: #07879a; border: 2px solid #e5f5f7; box-shadow: 0 0 0 4px #16899a1a; }
+.world-reach-map.is-blue-gray .world-map-origin-name { left: 50%; top: auto; bottom: calc(50% + 24px); transform: translateX(-50%); padding: 0; background: transparent; color: #123a50; font-weight: 600; }
+.world-reach-map.is-blue-gray .world-map-point:focus-visible { outline-color: #087f91; }
+.world-reach-map.is-blue-gray .world-map-label { border: 0; border-radius: 3px; background: #123a50f5; box-shadow: 0 4px 16px #123a501a; font-size: 12px; }
+@media (max-width: 600px) {
+  .world-reach-map.is-blue-gray .world-map-origin-name { bottom: calc(50% + 22px); font-size: 10px; }
 }
 @media (forced-colors: active) {
   .world-map-core,

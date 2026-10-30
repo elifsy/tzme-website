@@ -99,7 +99,7 @@ public class CertificationController {
         if ("published".equals(input.getStatus())
                 && (input.getImage() == null || input.getImage().isBlank())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A certificate image is required before publishing");
+                    "A certificate PDF or image is required before publishing");
         }
         if (input.getIssuedAt() != null && input.getExpiresAt() != null
                 && input.getExpiresAt().isBefore(input.getIssuedAt())) {

@@ -1292,8 +1292,6 @@ code {
   border: 1px solid var(--line-d);
   border-radius: 6px;
   padding: 8px 0;
-}
-.hc-ind {
   border-left: 1px solid var(--line-d);
 }
 .hc-ind > div {

@@ -280,6 +280,7 @@ npm run db:build
 | 邮件通知配置 | `GET/PUT /api/mail-settings`，密码不回显 |
 | 咨询附件 | `POST /api/inquiry-attachments`，`GET /api/inquiry-attachments/{id}` |
 | 图片 | `POST /api/uploads/images`，`GET /api/uploads/images/{filename}` |
+| 资质证书 | `POST /api/uploads/certificates`，`GET /api/uploads/certificates/{filename}`；PDF 最大 20 MB，JPG / PNG / GIF / WebP 图片最大 5 MB；上传需登录及 CSRF，原件支持在线预览 |
 | 三维模型 | `POST /api/uploads/models`，`GET /api/uploads/models/{filename}`；自包含 GLB 2.0，最大 40 MB |
 | 埋点上报 | `POST /api/analytics/events`，每批最多 20 条，按事件 ID 去重 |
 | 采集开关 | `GET/PUT /api/analytics/config` |

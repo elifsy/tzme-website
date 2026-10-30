@@ -4,6 +4,9 @@ import { useI18n } from "vue-i18n";
 import { ElMessage } from "element-plus";
 import { Picture, UploadFilled } from "@element-plus/icons-vue";
 import { imageRecommendations } from "../config/imageUploads.js";
+import { isPdf } from "../data/jDesign.js";
+import PdfFirstPage from "./PdfFirstPage.vue";
+import { CERTIFICATE_ACCEPT, uploadCertificateFile, validateCertificateFile } from "../services/certificateUpload.js";
 import {
   IMAGE_ACCEPT,
   uploadImageFile,
@@ -23,6 +26,8 @@ const emit = defineEmits(["update:modelValue", "uploading"]);
 const { t } = useI18n({ useScope: "global" });
 const uploading = ref(false);
 const dimensions = ref(null);
+const certificate = computed(() => props.kind === "certification");
+const pdf = computed(() => certificate.value && isPdf(props.modelValue));
 const recommendation = computed(
   () => imageRecommendations[props.kind] || imageRecommendations.product,
 );
@@ -60,10 +65,10 @@ function onImageLoad(event) {
 function beforeUpload(file) {
   if (props.disabled || uploading.value || !props.active) return false;
   try {
-    validateImageFile(file);
+    (certificate.value ? validateCertificateFile : validateImageFile)(file);
     return true;
   } catch {
-    ElMessage.warning(t("admin.richImageLimit"));
+    ElMessage.warning(t(certificate.value ? "admin.certFileLimit" : "admin.richImageLimit"));
     return false;
   }
 }
@@ -75,13 +80,13 @@ async function upload({ file }) {
   uploading.value = true;
   emit("uploading", true);
   try {
-    const result = await uploadImageFile(file, { signal: controller.signal });
+    const result = await (certificate.value ? uploadCertificateFile : uploadImageFile)(file, { signal: controller.signal });
     if (!disposed && request === controller && props.active)
       emit("update:modelValue", result.url);
     return result;
   } catch (error) {
     if (!disposed && request === controller && error.name !== "AbortError")
-      ElMessage.error(t("admin.richImageUploadFailed"));
+      ElMessage.error(t(certificate.value ? "admin.certUploadFailed" : "admin.richImageUploadFailed"));
     throw error;
   } finally {
     if (request === controller) {
@@ -104,8 +109,9 @@ onBeforeUnmount(() => {
     :aria-busy="uploading"
   >
     <div class="image-upload-preview">
+      <PdfFirstPage v-if="pdf" :key="modelValue" :source="modelValue" :label="alt || $t('admin.certPreview')" />
       <el-image
-        v-if="modelValue"
+        v-else-if="modelValue"
         :key="modelValue"
         :src="modelValue"
         :alt="alt || $t('admin.editorImagePreview')"
@@ -121,13 +127,13 @@ onBeforeUnmount(() => {
       </el-image>
       <div v-else class="image-upload-empty">
         <el-icon><Picture /></el-icon
-        ><span>{{ $t("admin.editorImagePreview") }}</span>
+        ><span>{{ $t(certificate ? "admin.certPreview" : "admin.editorImagePreview") }}</span>
       </div>
     </div>
     <div class="image-upload-details">
       <el-upload
         drag
-        :accept="IMAGE_ACCEPT"
+        :accept="certificate ? CERTIFICATE_ACCEPT : IMAGE_ACCEPT"
         :show-file-list="false"
         :before-upload="beforeUpload"
         :http-request="upload"
@@ -141,13 +147,14 @@ onBeforeUnmount(() => {
           :disabled="disabled || uploading || !active"
         >
           <el-icon v-if="!uploading"><UploadFilled /></el-icon
-          >{{ $t(modelValue ? "admin.imageReplace" : "admin.imageChoose") }}
+          >{{ $t(certificate ? (modelValue ? "admin.certReplace" : "admin.certChoose") : (modelValue ? "admin.imageReplace" : "admin.imageChoose")) }}
         </el-button>
         <span class="image-upload-drop-hint">{{
-          $t("admin.imageDropHint")
+          $t(certificate ? "admin.certDropHint" : "admin.imageDropHint")
         }}</span>
       </el-upload>
       <div v-if="modelValue" class="image-upload-current" aria-live="polite">
+        <a v-if="certificate" :href="modelValue" target="_blank" rel="noopener noreferrer">{{ $t('admin.certOpenOriginal') }} ↗</a>
         <span v-if="dimensions">{{
           $t("admin.imageCurrentDimensions", dimensions)
         }}</span>
@@ -159,14 +166,21 @@ onBeforeUnmount(() => {
           :disabled="disabled || uploading || !active"
           @click="emit('update:modelValue', '')"
         >
-          {{ $t("admin.imageRemove") }}
+          {{ $t(certificate ? "admin.certRemove" : "admin.imageRemove") }}
         </el-button>
       </div>
       <div class="image-upload-guidance">
-        <strong>{{ $t("admin.imageRecommendation", recommendation) }}</strong>
-        <p>{{ $t(recommendation.hint) }}</p>
-        <p>{{ $t("admin.imageFormatHint") }}</p>
-        <p>{{ $t("admin.imageSaveHint") }}</p>
+        <template v-if="certificate">
+          <strong>{{ $t('admin.certFileFormats') }}</strong>
+          <p>{{ $t('admin.certFileLimit') }}</p>
+          <p>{{ $t('admin.certPreviewHint') }}</p>
+        </template>
+        <template v-else>
+          <strong>{{ $t("admin.imageRecommendation", recommendation) }}</strong>
+          <p>{{ $t(recommendation.hint) }}</p>
+          <p>{{ $t("admin.imageFormatHint") }}</p>
+        </template>
+        <p>{{ $t(certificate ? "admin.certSaveHint" : "admin.imageSaveHint") }}</p>
       </div>
     </div>
   </div>

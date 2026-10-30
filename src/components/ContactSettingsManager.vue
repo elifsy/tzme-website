@@ -60,7 +60,6 @@ watch(
 );
 const editingLocale = ref("zh");
 const subsidiaryPreviewPage = ref("about");
-const formPreviewPage = ref("contact");
 const error = ref("");
 const original = ref("");
 const dirty = computed(() => JSON.stringify(form.value) !== original.value);
@@ -215,9 +214,7 @@ onBeforeUnmount(() => {
 useAdminEditorState({ dirty, saving, loading, uploading });
 const publicPath = computed(() =>
   props.mode === "inquiry"
-    ? formPreviewPage.value === "home"
-      ? "/"
-      : "/contact"
+    ? "/contact"
     : activeTab.value === "social"
       ? "/"
       : activeTab.value === "subsidiaries" &&
@@ -593,31 +590,19 @@ defineExpose({ load, publicPath });
           </AdminEditorPanel>
         </div>
         <aside v-if="activeTab === 'form'" class="contact-form-preview">
-          <el-radio-group
-            v-model="formPreviewPage"
-            class="subsidiary-preview-pages"
-            aria-label="选择表单预览位置"
-            ><el-radio-button value="contact">联系我们</el-radio-button
-            ><el-radio-button value="home"
-              >首页</el-radio-button
-            ></el-radio-group
-          ><el-alert
-            v-if="
-              !form.form[
-                formPreviewPage === 'home' ? 'showOnHome' : 'showOnContact'
-              ]
-            "
-            title="此位置已关闭表单展示，下面仍可预览编辑内容"
+          <el-alert
+            v-if="!form.form.enabled || (!form.form.showOnHome && !form.form.showOnContact)"
+            title="表单展示已关闭，下面仍可预览编辑内容"
             type="info"
             :closable="false"
           /><AdminPreviewFrame
             title="咨询表单效果预览"
-            :public-path="formPreviewPage === 'home' ? '/' : '/contact'"
+            public-path="/contact"
             ><section class="hc-sec">
               <div class="hc-w inquiry-preview-content">
                 <InquiryForm
                   :configuration="form"
-                  :placement="formPreviewPage"
+                  placement="contact"
                   preview
                 />
               </div></section

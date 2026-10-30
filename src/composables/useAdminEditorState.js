@@ -1,6 +1,7 @@
 import { inject, onBeforeUnmount, shallowRef, unref } from "vue";
 
 export const adminEditorKey = Symbol("admin-editor-state");
+export const adminDialogSectionsKey = Symbol("admin-dialog-sections");
 export const createAdminEditorState = () => shallowRef(null);
 export function useAdminEditorState(state) {
   const current = inject(adminEditorKey, null);

@@ -184,13 +184,7 @@ watch(() => form.image, value => {
   if (String(value || '').trim()) coverImageError.value = false;
 });
 
-const publishedProducts = computed(
-  () => products.value.filter((item) => item.status === "published").length,
-);
 const homeProductCount = computed(() => products.value.filter((item) => item.showOnHome).length);
-const publishedArticles = computed(
-  () => articles.value.filter((item) => item.status === "published").length,
-);
 const newInquiries = computed(
   () => inquiries.value.filter((item) => item.status === "new").length,
 );
@@ -623,13 +617,15 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                   <el-option v-for="industry in industryRecords" :key="industry.id" :label="industryOptionLabel(industry)" :value="industry.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="kind === 'articles'" :label="$t('admin.publicationDate')" required>
+              <div v-if="kind === 'articles'" class="cms-field-grid">
+              <el-form-item :label="$t('admin.publicationDate')" required>
                 <el-date-picker v-model="form.date" type="date" value-format="YYYY-MM-DD" :clearable="false" />
               </el-form-item>
-              <el-form-item v-if="kind === 'articles'" label="列表顺序（可选）">
+              <el-form-item label="列表顺序（可选）">
                 <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
                 <p class="cms-field-hint">数字越小越靠前；留空时排在已设置顺序的资讯之后，并按发布日期排序。</p>
               </el-form-item>
+              </div>
                   <el-form-item :label="$t('admin.summaryChinese')">
                     <el-input v-model="form.summaryZh" type="textarea" :rows="3" :placeholder="$t('admin.chineseSummaryPlaceholder')" />
                   </el-form-item>
@@ -667,6 +663,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           </div>
           <aside class="cms-editor-aside">
             <AdminEditorPanel :step="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length) ? '04' : '03'" title="封面与发布" description="上传对外展示的图片，再选择保存为草稿或发布到官网。">
+              <div class="cms-media-grid">
               <el-form-item class="news-cover-field" prop="image" :label="$t('admin.editorDisplayImage')"
                 :required="kind === 'articles'" :error="kind === 'articles' && coverImageError ? $t('admin.newsCoverRequired') : ''">
                 <ImageUpload v-model="form.image" :kind="kind === 'products' ? 'product' : 'news'" :active="modal"
@@ -676,6 +673,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 <ImageUpload v-model="form.presentationImage" kind="productPresentation" :active="modal"
                   :context-key="`${kind}-${form.id}`" :disabled="saving" :alt="form.titleZh" @uploading="presentationImageUploading = $event" />
               </el-form-item>
+              </div>
               <el-form-item v-if="kind === 'products'" label="详情页布局">
                 <el-select v-model="form.detailLayout" class="product-detail-layout-select" :disabled="saving" aria-label="详情页布局">
                   <el-option v-for="layout in equipmentLayouts" :key="layout.value" :label="layout.label" :value="layout.value" />
@@ -699,12 +697,12 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                 <el-input-number v-model="form.homeOrder" :min="1" :max="999" controls-position="right" />
               </el-form-item>
             </AdminEditorPanel>
-            <AdminPreviewFrame ref="contentPreview" :title="kind === 'products' ? '产品填写效果预览' : '资讯填写效果预览'" :public-path="editorPublicPath"><AdminContentPreview :kind="kind" :record="form"/></AdminPreviewFrame>
+            <AdminPreviewFrame ref="contentPreview" compact :title="kind === 'products' ? '产品填写效果预览' : '资讯填写效果预览'" :public-path="editorPublicPath"><AdminContentPreview :kind="kind" :record="form"/></AdminPreviewFrame>
           </aside>
         </div>
       </el-form>
     </AdminEditorDialog>
-    <el-dialog v-model="passwordDialog" class="admin-password-dialog" title="修改我的密码" width="min(440px, calc(100vw - 32px))" :close-on-click-modal="false" :close-on-press-escape="!passwordBusy" :show-close="!passwordBusy" append-to-body destroy-on-close><AdminPasswordForm @busy="passwordBusy = $event" @success="passwordChanged" /></el-dialog>
+    <el-dialog v-model="passwordDialog" class="admin-password-dialog cms-compact-dialog" title="修改我的密码" width="min(440px, calc(100vw - 32px))" :close-on-click-modal="false" :close-on-press-escape="!passwordBusy" :show-close="!passwordBusy" append-to-body destroy-on-close><AdminPasswordForm @busy="passwordBusy = $event" @success="passwordChanged" /></el-dialog>
   </el-container>
 </template>
 

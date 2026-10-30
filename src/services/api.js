@@ -103,3 +103,39 @@ export function createCollection(path, normalize = (item) => item) {
   registerDataLoader(path, load);
   return { records, loading, load };
 }
+
+export function createSettingsResource(
+  path,
+  { validate, loadError, saveError, clearOnError = true },
+) {
+  const settings = ref(null);
+  let pending;
+  function load() {
+    if (pending) return pending;
+    pending = (async () => {
+      try {
+        const value = await apiRequest(path);
+        if (!validate(value)) throw new Error(loadError);
+        settings.value = value;
+        dataErrors.delete(path);
+        return value;
+      } catch (error) {
+        if (clearOnError) settings.value = null;
+        dataErrors.set(path, error.message);
+        return null;
+      } finally {
+        pending = undefined;
+      }
+    })();
+    return pending;
+  }
+  async function save(value) {
+    const saved = await apiRequest(path, { method: "PUT", body: value });
+    if (!validate(saved)) throw new Error(saveError);
+    settings.value = saved;
+    dataErrors.delete(path);
+    return saved;
+  }
+  registerDataLoader(path, load);
+  return { settings, load, save };
+}

@@ -59,7 +59,7 @@ public class UploadController {
                 .body(new FileSystemResource(path));
     }
 
-    private static String imageExtension(byte[] bytes) {
+    static String imageExtension(byte[] bytes) {
         if (bytes.length < 12)
             return null;
         if ((bytes[0] & 0xff) == 0xff && (bytes[1] & 0xff) == 0xd8 && (bytes[2] & 0xff) == 0xff)

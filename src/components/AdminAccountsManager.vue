@@ -314,6 +314,7 @@ defineExpose({ load });
     </p>
     <el-dialog
       v-model="open"
+      class="cms-compact-dialog"
       :title="editingId ? '修改账号信息' : '新增普通管理员'"
       width="min(480px, calc(100vw - 32px))"
       :before-close="closeEditor"
@@ -369,6 +370,7 @@ defineExpose({ load });
     </el-dialog>
     <el-dialog
       :model-value="Boolean(resetTarget)"
+      class="cms-compact-dialog"
       title="重置账号密码"
       width="min(440px, calc(100vw - 32px))"
       :before-close="closeEditor"

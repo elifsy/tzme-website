@@ -204,6 +204,50 @@ watch(
 </template>
 
 <style scoped>
+.hc-nav .hc-nav-r :deep(.site-header-language) {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 14px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.hc-nav .hc-nav-r :deep(.site-header-language .hc-lang-option) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 36px;
+  padding: 0;
+  color: #647f8c;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+.hc-nav .hc-nav-r :deep(.site-header-language a.hc-lang-option:hover) {
+  color: #087f91;
+}
+.hc-nav .hc-nav-r :deep(.site-header-language a.hc-lang-option::after) {
+  content: '↗';
+  margin-left: 8px;
+  font-size: 13px;
+}
+.hc-nav .hc-nav-r :deep(.site-header-language .hc-lang-option.active) {
+  color: #087f91;
+  font-weight: 600;
+  cursor: default;
+}
+.hc-nav .hc-nav-r :deep(.site-header-language .hc-lang-separator) {
+  color: #c0d1d7;
+  font-size: 11px;
+  font-weight: 400;
+}
 @media (max-width: 700px) {
   .hc-nav .hc-nav-r :deep(.site-header-language) {
     display: none !important;

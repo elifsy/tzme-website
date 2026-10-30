@@ -210,6 +210,29 @@
   outline: 2px solid #087f91;
   outline-offset: 5px;
 }
+.cms-compact-dialog.el-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 40px);
+  margin: 20px auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e4eaf2;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 20px 70px #20324b26;
+}
+.cms-compact-dialog.el-dialog > .el-dialog__header { flex-shrink: 0; padding: 20px 56px 20px 24px; margin: 0; border-bottom: 1px solid #e6ebf2; background: #f7f9fc; }
+.cms-compact-dialog .el-dialog__title { color: #20324b; font-size: 18px; font-weight: 600; }
+.cms-compact-dialog .el-dialog__headerbtn { top: 16px; right: 14px; }
+.cms-compact-dialog.el-dialog > .el-dialog__body { min-height: 0; padding: 22px 24px; overflow: auto; overscroll-behavior: contain; }
+.cms-compact-dialog .admin-auth-form { gap: 18px; }
+.cms-compact-dialog .admin-account-dialog-actions { position: sticky; bottom: -22px; z-index: 1; margin-top: 2px; padding: 16px 0 0; border-top: 1px solid #e6ebf2; background: #fff; }
+@media (max-width: 600px) {
+  .cms-compact-dialog.el-dialog { margin: 12px auto; max-height: calc(100dvh - 24px); }
+  .cms-compact-dialog.el-dialog > .el-dialog__header { padding-left: 20px; }
+  .cms-compact-dialog.el-dialog > .el-dialog__body { padding: 20px; }
+}
 @media (max-width: 1000px) {
   .admin-login-page {
     grid-template-columns: 0.9fr 1fr;

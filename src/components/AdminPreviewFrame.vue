@@ -7,9 +7,10 @@ const props = defineProps({
   source: { type: String, default: "" },
   publicPath: { type: String, default: "" },
   initialDevice: { type: String, default: "" },
+  compact: Boolean,
 });
 const device = ref(
-    props.initialDevice || (props.source ? "desktop" : "mobile"),
+    props.initialDevice || (props.source || (props.compact && window.innerWidth > 720) ? "desktop" : "mobile"),
   ),
   expanded = ref(false);
 const width = computed(() => (device.value === "mobile" ? 390 : 1440));
@@ -21,7 +22,7 @@ defineExpose({
 </script>
 
 <template>
-  <section class="admin-preview-frame">
+  <section class="admin-preview-frame" :class="{ 'is-compact': compact }">
     <div class="admin-preview-heading">
       <div>
         <h3>{{ title }}</h3>
@@ -37,7 +38,8 @@ defineExpose({
         source ? "已保存页面" : "实时预览"
       }}</span>
     </div>
-    <div class="admin-preview-toolbar">
+    <el-button v-if="compact" plain :icon="FullScreen" class="admin-preview-open" @click="expanded = true">打开效果预览</el-button>
+    <div v-else class="admin-preview-toolbar">
       <div class="admin-preview-devices" role="group" aria-label="选择预览设备">
         <button
           type="button"
@@ -61,10 +63,10 @@ defineExpose({
         >放大</el-button
       >
     </div>
-    <AdminPreviewViewport :width="width" :source="source"
+    <AdminPreviewViewport v-if="!compact" :width="width" :source="source"
       ><slot
     /></AdminPreviewViewport>
-    <div class="admin-preview-note">
+    <div v-if="!compact" class="admin-preview-note">
       <span>{{ width }} px · 按真实视口比例展示</span
       ><a
         v-if="publicPath || source"
@@ -119,6 +121,12 @@ defineExpose({
 </template>
 
 <style scoped>
+.admin-preview-frame.is-compact { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 20px; }
+.is-compact .admin-preview-heading { flex: 1; align-items: center; }
+.admin-preview-open { flex-shrink: 0; }
+@media (max-width: 600px) {
+  .admin-preview-frame.is-compact { align-items: stretch; flex-direction: column; gap: 14px; }
+}
 .admin-preview-frame {
   min-width: 0;
   padding: 20px;

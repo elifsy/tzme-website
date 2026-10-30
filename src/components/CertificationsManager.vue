@@ -442,35 +442,16 @@ onMounted(load);
           <AdminEditorPanel
             step="03"
             :title="$t('admin.editorDisplaySettings')"
-            :description="$t('admin.editorDisplayDescription')"
+            :description="$t('admin.certDisplayDescription')"
           >
             <el-form-item
               :label="$t('admin.certImage')"
               :required="form.status === 'published'"
             >
-              <template v-if="isPdf(form.image)"
-                ><el-link
-                  :href="form.image"
-                  target="_blank"
-                  rel="noopener"
-                  type="primary"
-                  >{{
-                    locale === "zh"
-                      ? "查看证书 PDF 原件"
-                      : "Open certificate PDF"
-                  }}</el-link
-                ><el-input
-                  v-model="form.image"
-                  :aria-label="
-                    locale === 'zh'
-                      ? '证书文件路径'
-                      : 'Certificate document path'
-                  "
-              /></template>
               <ImageUpload
-                v-else
                 v-model="form.image"
                 kind="certification"
+                :alt="form.titleZh"
                 :active="dialogOpen"
                 :context-key="form.id"
                 :disabled="saving"

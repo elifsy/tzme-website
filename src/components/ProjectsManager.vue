@@ -548,7 +548,9 @@ onMounted(load);
               $t(editingLocale === 'zh' ? 'admin.chinese' : 'admin.english')
             "
           >
-            <div class="design-site project-card-preview">
+            <details class="cms-inline-preview">
+              <summary>查看项目卡片效果</summary>
+              <div class="design-site project-card-preview">
               <div class="hc-proj">
                 <ProjectCard
                   :project="form"
@@ -556,7 +558,8 @@ onMounted(load);
                   preview
                 />
               </div>
-            </div>
+              </div>
+            </details>
           </AdminEditorPanel>
         </aside>
       </div>

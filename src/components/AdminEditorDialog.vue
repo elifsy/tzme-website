@@ -1,5 +1,7 @@
 <script setup>
+import { computed, nextTick, onBeforeUnmount, provide, ref, shallowRef, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { adminDialogSectionsKey } from "../composables/useAdminEditorState.js";
 import "../style/admin-editor.css";
 
 const props = defineProps({
@@ -20,6 +22,63 @@ const props = defineProps({
   closeLabel: { type: String, default: "" },
 });
 const emit = defineEmits(["update:modelValue", "save", "preview"]);
+const content = ref(null), activeSection = ref("");
+const registeredSections = shallowRef([]);
+const sections = computed(() => [...registeredSections.value].sort((a, b) => {
+  if (a.element === b.element) return 0;
+  return a.element.compareDocumentPosition(b.element) & 4 ? -1 : 1;
+}));
+let scrollBody, scrollFrame, disposed = false;
+function updateActive() {
+  scrollFrame = undefined;
+  if (!scrollBody || !sections.value.length) { activeSection.value = ""; return; }
+  if (scrollBody.scrollHeight > scrollBody.clientHeight + 2 && scrollBody.scrollTop + scrollBody.clientHeight >= scrollBody.scrollHeight - 2) {
+    activeSection.value = sections.value.at(-1).id;
+    return;
+  }
+  const threshold = scrollBody.getBoundingClientRect().top + 24;
+  let current = sections.value[0];
+  for (const section of sections.value) {
+    if (section.element.getBoundingClientRect().top <= threshold) current = section;
+    else break;
+  }
+  activeSection.value = current.id;
+}
+function scheduleActive() {
+  if (disposed) return;
+  if (scrollFrame == null) scrollFrame = requestAnimationFrame(updateActive);
+}
+provide(adminDialogSectionsKey, {
+  register(section) {
+    registeredSections.value = [...registeredSections.value.filter(item => item.id !== section.id), section];
+    nextTick(scheduleActive);
+  },
+  unregister(id) {
+    registeredSections.value = registeredSections.value.filter(item => item.id !== id);
+    nextTick(scheduleActive);
+  },
+});
+watch(content, element => {
+  scrollBody?.removeEventListener("scroll", scheduleActive);
+  scrollBody = element;
+  scrollBody?.addEventListener("scroll", scheduleActive, { passive: true });
+  nextTick(scheduleActive);
+}, { flush: "post" });
+async function goToSection(section) {
+  if (!scrollBody) return;
+  section.element.querySelectorAll("details.cms-inline-preview").forEach(item => { item.open = true; });
+  await nextTick();
+  activeSection.value = section.id;
+  scrollBody.scrollTo({
+    top: scrollBody.scrollTop + section.element.getBoundingClientRect().top - scrollBody.getBoundingClientRect().top - 16,
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+  });
+}
+onBeforeUnmount(() => {
+  disposed = true;
+  scrollBody?.removeEventListener("scroll", scheduleActive);
+  if (scrollFrame != null) cancelAnimationFrame(scrollFrame);
+});
 async function mayClose() {
   if (props.saving || props.saveDisabled) {
     ElMessage.info("正在保存或上传，请稍候。");
@@ -87,7 +146,14 @@ async function close() {
         </el-tag>
       </div>
     </template>
-    <slot />
+    <nav v-if="sections.length > 1" class="cms-editor-navigation" aria-label="编辑内容导航">
+      <button v-for="(section, index) in sections" :key="section.id" type="button"
+        :aria-controls="section.id" :aria-current="activeSection === section.id ? 'location' : undefined"
+        @click="goToSection(section)">
+        <span aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>{{ section.title() }}
+      </button>
+    </nav>
+    <div ref="content" class="cms-editor-content"><slot /></div>
     <template #footer>
       <div class="cms-editor-footer">
         <span class="cms-editor-footer-note"

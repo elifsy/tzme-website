@@ -22,7 +22,7 @@ public final class ApiAccess {
         String path = path(request), method = request.getMethod();
         if (Set.of("GET", "HEAD").contains(method))
             return PUBLIC_READS.contains(path)
-                    || path.matches("/api/uploads/(images|models)/[^/]+") || path.matches("/api/article-attachments/[^/]+") || path.equals("/api/auth/csrf");
+                    || path.matches("/api/uploads/(images|models|certificates)/[^/]+") || path.matches("/api/article-attachments/[^/]+") || path.equals("/api/auth/csrf");
         return method.equals("POST")
                 && Set.of("/api/inquiries", "/api/inquiry-attachments", "/api/analytics/events").contains(path);
     }

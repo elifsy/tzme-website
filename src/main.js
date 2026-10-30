@@ -7,16 +7,10 @@ import {
   ChatDotRound,
   CircleCheckFilled,
   DataBoard,
-  Delete,
   Document,
-  Edit,
   EditPen,
-  Link,
   Picture,
   Plus,
-  Promotion,
-  Refresh,
-  View,
 } from "@element-plus/icons-vue";
 import "element-plus/theme-chalk/el-message.css";
 import "element-plus/theme-chalk/el-message-box.css";
@@ -142,16 +136,10 @@ for (const [name, component] of Object.entries({
   ChatDotRound,
   CircleCheckFilled,
   DataBoard,
-  Delete,
   Document,
-  Edit,
   EditPen,
-  Link,
   Picture,
   Plus,
-  Promotion,
-  Refresh,
-  View,
 }))
   app.component(name, component);
 // Keep the readable server document as a failure/no-script fallback. Show the
