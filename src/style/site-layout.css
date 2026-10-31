@@ -34,6 +34,20 @@
   .design-site.design-site .j-hero-copy {
     left: var(--site-content-inset);
   }
+
+  .design-site.design-site .hc-nav .j-brand { gap: 18px; }
+  .design-site.design-site .hc-nav .j-brand .site-logo {
+    width: 88px;
+    height: 80px;
+    transform: none;
+  }
+}
+
+@media (min-width: 1051px) and (max-width: 1439px) {
+  .design-site.design-site .hc-nav .hc-menu a {
+    font-size: 17px;
+    font-weight: 700;
+  }
 }
 
 @media (min-width: 1440px) {
@@ -49,10 +63,66 @@
   }
   .design-site.design-site .j-brand strong { font-size: 22px; }
   .design-site.design-site .j-brand small { font-size: 17px; }
+  .design-site.design-site .hc-nav .j-brand { gap: 24px; }
+  .design-site.design-site .hc-nav .j-brand .site-logo {
+    width: 104px;
+    height: 100px;
+  }
   .design-site.design-site .hc-nav .hc-menu { gap: clamp(24px, 2.9vw, 48px); }
   .design-site.design-site .hc-nav .hc-menu a { font-size: 17px; }
   .design-site.design-site .hc-nav-r { margin-left: 112px; }
   .design-site.design-site .hc-nav .hc-lang-option { font-size: 16px; }
+}
+
+/* Laptop header: brand and primary links share the main row; language sits
+   at the lower right, outside the menu's horizontal spacing. */
+@media (min-width: 1051px) and (max-width: 1599px) {
+  html:has(.design-site) { scroll-padding-top: 152px; }
+
+  .design-site.design-site {
+    --site-nav-height: 128px;
+  }
+
+  .design-site.design-site .hc-page .hc-nav-in {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 24px;
+    column-gap: clamp(24px, 3vw, 48px);
+    row-gap: 0;
+    padding-block: 16px 8px;
+    box-sizing: border-box;
+  }
+
+  .design-site.design-site .hc-page .hc-logo {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: center;
+  }
+
+  .design-site.design-site .hc-page .hc-nav .hc-menu {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    align-self: end;
+    margin: 0;
+    transform: translateX(clamp(28px, 3vw, 48px));
+  }
+
+  .design-site.design-site .hc-page .hc-nav-r {
+    position: absolute;
+    right: 24px;
+    bottom: 8px;
+    margin: 0;
+  }
+
+  .design-site.design-site .hc-page .hc-nav .site-header-language,
+  .design-site.design-site .hc-page .hc-nav .site-header-language .hc-lang-option {
+    height: 24px;
+  }
+
+  .design-site.design-site .hc-page .hc-nav .site-header-language .hc-lang-option {
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 1100px) {
@@ -70,6 +140,11 @@
     --site-mobile-intro-space: 24px;
     --site-hero-copy-top: var(--site-mobile-intro-space);
     --site-hero-kicker-line-height: 18px;
+  }
+
+  .design-site.design-site .hc-nav .j-brand .site-logo {
+    width: 52px;
+    height: 53px;
   }
 
   /* Override the legacy mobile .hc-sec !important only for page intros. */

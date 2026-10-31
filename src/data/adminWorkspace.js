@@ -1,5 +1,18 @@
 // One registry for navigation, page headings, related tasks and public previews.
 export const adminModules = {
+  rankings: {
+    label: "关键词排名",
+    group: "workspace",
+    icon: "TrendCharts",
+    description: "持续记录百度电脑端与手机端的实际搜索排名，查看关键词升降、命中页面和历史趋势。",
+    related: ["seo", "analytics"],
+  },
+  logs: {
+    label: "操作日志",
+    group: "system",
+    icon: "Document",
+    description: "查看后台人员的登录和维护记录，按操作人、时间、模块及结果查询。日志仅供查看，不提供修改或删除。",
+  },
   accounts: {
     label: "账号管理",
     group: "system",
@@ -38,7 +51,7 @@ export const adminModules = {
     description:
       "维护国内网站的搜索标题、摘要、公开问答和站长验证信息；已发布的企业与产品资料自动生成可读取页面。",
     steps: ["确认正式域名与企业资料", "标题、摘要与问答", "平台验证与站点地图"],
-    related: ["products", "about", "contact"],
+    related: ["rankings", "products", "about", "contact"],
     preview: "/",
   },
   industries: {
@@ -189,7 +202,7 @@ export const adminGroups = [
     key: "workspace",
     label: "工作台",
     icon: "DataBoard",
-    items: ["overview", "analytics"],
+    items: ["overview", "analytics", "rankings"],
   },
   {
     key: "content",
@@ -232,8 +245,7 @@ export const adminGroups = [
     key: "system",
     label: "系统管理",
     icon: "Setting",
-    items: ["accounts"],
-    superAdminOnly: true,
+    items: ["logs", "accounts"],
   },
 ].map((group) => ({
   ...group,

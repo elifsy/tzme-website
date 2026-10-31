@@ -1633,3 +1633,76 @@ CREATE TABLE IF NOT EXISTS article_attachments (
   created_at DATETIME(6) NOT NULL,
   INDEX idx_article_attachments_article (article_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Append-only operation history. Actor snapshots remain after accounts are renamed/deleted.
+-- Request/response bodies, passwords, SMTP secrets and file contents are never stored.
+CREATE TABLE IF NOT EXISTS admin_operation_logs (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  request_id VARCHAR(36) NOT NULL,
+  created_at DATETIME(6) NOT NULL,
+  actor_id VARCHAR(36) NULL,
+  username VARCHAR(64) NOT NULL,
+  display_name VARCHAR(64) NOT NULL,
+  role VARCHAR(24) NOT NULL,
+  module VARCHAR(40) NOT NULL,
+  action VARCHAR(32) NOT NULL,
+  target_id VARCHAR(180) NOT NULL,
+  target_name VARCHAR(255) NOT NULL,
+  summary VARCHAR(500) NOT NULL,
+  success BOOLEAN NOT NULL,
+  status_code INT NOT NULL,
+  result_message VARCHAR(80) NOT NULL,
+  method VARCHAR(10) NOT NULL,
+  path VARCHAR(500) NOT NULL,
+  address VARCHAR(64) NOT NULL,
+  duration_ms BIGINT NOT NULL,
+  INDEX idx_operation_time (created_at, id),
+  INDEX idx_operation_actor_time (actor_id, created_at),
+  INDEX idx_operation_module_time (module, created_at)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Monitoring dimensions are immutable; history stores only observed rankings.
+CREATE TABLE IF NOT EXISTS seo_rank_keywords (
+ id VARCHAR(36) NOT NULL PRIMARY KEY,
+ monitor_key VARCHAR(64) NOT NULL,
+ keyword VARCHAR(160) NOT NULL,
+ engine VARCHAR(12) NOT NULL,
+ device VARCHAR(12) NOT NULL,
+ target_host VARCHAR(253) NOT NULL,
+ search_depth INT NOT NULL,
+ notes VARCHAR(1000) NOT NULL,
+ enabled BOOLEAN NOT NULL,
+ archived BOOLEAN NOT NULL,
+ created_at DATETIME(6) NOT NULL,
+ updated_at DATETIME(6) NOT NULL,
+ latest_status VARCHAR(20) NOT NULL,
+ latest_rank INT NULL,
+ latest_observed_at DATETIME(6) NULL,
+ latest_source VARCHAR(20) NOT NULL,
+ previous_status VARCHAR(20) NOT NULL,
+ previous_rank INT NULL,
+ best_rank INT NULL,
+ matched_url VARCHAR(2000) NOT NULL,
+ snapshot_count BIGINT NOT NULL,
+ last_attempt_at DATETIME(6) NULL,
+ last_error VARCHAR(200) NOT NULL,
+ checking_until DATETIME(6) NULL,
+ revision BIGINT NOT NULL DEFAULT 0,
+ CONSTRAINT uk_rank_monitor_key UNIQUE (monitor_key)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS seo_rank_snapshots (
+ id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ keyword_id VARCHAR(36) NOT NULL,
+ observed_at DATETIME(6) NOT NULL,
+ recorded_at DATETIME(6) NOT NULL,
+ status VARCHAR(20) NOT NULL,
+ position INT NULL,
+ checked_depth INT NOT NULL,
+ matched_url VARCHAR(2000) NOT NULL,
+ source VARCHAR(20) NOT NULL,
+ notes VARCHAR(1000) NOT NULL,
+ error VARCHAR(200) NOT NULL,
+ INDEX idx_rank_history (keyword_id, observed_at, id),
+ CONSTRAINT uk_rank_observation UNIQUE (keyword_id, observed_at),
+ CONSTRAINT fk_rank_keyword FOREIGN KEY (keyword_id) REFERENCES seo_rank_keywords(id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

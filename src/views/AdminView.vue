@@ -20,6 +20,8 @@ const HomeSolutionsManager = defineAsyncComponent(() => import('../components/Ho
 const ProductShowcaseManager = defineAsyncComponent(() => import('../components/ProductShowcaseManager.vue'));
 const AboutTzmeManager = defineAsyncComponent(() => import('../components/AboutTzmeManager.vue'));
 const AdminAccountsManager = defineAsyncComponent(() => import('../components/AdminAccountsManager.vue'));
+const OperationLogsManager = defineAsyncComponent(() => import('../components/OperationLogsManager.vue'));
+const KeywordRankingsManager = defineAsyncComponent(() => import('../components/KeywordRankingsManager.vue'));
 const AdminPasswordForm = defineAsyncComponent(() => import('../components/AdminPasswordForm.vue'));
 const SeoManager = defineAsyncComponent(() => import('../components/SeoManager.vue'));
 import { currentAccount, isSuperAdmin, signOut } from '../services/session.js';
@@ -133,6 +135,8 @@ const inquiriesManager = ref(null);
 const mailManager = ref(null);
 const accountsManager = ref(null), passwordDialog = ref(false), passwordBusy = ref(false);
 const seoManager = ref(null);
+const operationLogsManager = ref(null);
+const keywordRankingsManager = ref(null);
 const currentPublicPreview = computed(() => {
   if (tab.value === 'about') return aboutManager.value?.publicPath || (route.query.page === 'about' ? '/about' : '/');
   if (['contact','forms'].includes(tab.value)) return contactManager.value?.publicPath || currentModule.value.preview;
@@ -376,6 +380,8 @@ async function refresh() {
   else if (tab.value === 'inquiries') inquiriesManager.value?.load();
   else if (tab.value === 'mail') mailManager.value?.load();
   else if (tab.value === 'accounts') accountsManager.value?.load();
+  else if (tab.value === 'logs') operationLogsManager.value?.load();
+  else if (tab.value === 'rankings') keywordRankingsManager.value?.load();
   else if (tab.value === 'seo') seoManager.value?.load();
   else { load(); loadIndustries(); }
 }
@@ -580,6 +586,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         <ContactSettingsManager v-else-if="tab === 'contact' || tab === 'forms'" :mode="tab === 'forms' ? 'inquiry' : 'company'" :key="tab" ref="contactManager" />
         <EmailNotificationsManager v-else-if="tab === 'mail'" ref="mailManager" />
         <AdminAccountsManager v-else-if="tab === 'accounts' && isSuperAdmin" ref="accountsManager" />
+        <OperationLogsManager v-else-if="tab === 'logs'" ref="operationLogsManager" />
+        <KeywordRankingsManager v-else-if="tab === 'rankings'" ref="keywordRankingsManager" />
         <SeoManager v-else-if="tab === 'seo'" ref="seoManager" />
 
         <footer class="admin-footer">

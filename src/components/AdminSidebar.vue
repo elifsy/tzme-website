@@ -59,7 +59,7 @@ const groups = computed(() =>
     .map((group) => ({
       ...group,
       icon: icons[group.icon],
-      items: group.items.map((item) => ({ ...item, icon: icons[item.icon] })),
+      items: group.items.filter(item => !item.superAdminOnly || isSuperAdmin.value).map((item) => ({ ...item, icon: icons[item.icon] })),
     })),
 );
 

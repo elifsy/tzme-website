@@ -9,6 +9,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 import org.springframework.security.web.csrf.MissingCsrfTokenException;
+import org.springframework.security.web.csrf.CsrfFilter;
+import com.tzme.cms.audit.OperationLogFilter;
+import com.tzme.cms.audit.OperationLogService;
 
 @Configuration
 public class AdminSecurityConfig {
@@ -18,7 +21,7 @@ public class AdminSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain apiSecurity(HttpSecurity http, AdminAccountRepository accounts) throws Exception {
+    SecurityFilterChain apiSecurity(HttpSecurity http, AdminAccountRepository accounts, OperationLogService operationLogs) throws Exception {
         http.formLogin(form -> form.disable()).httpBasic(basic -> basic.disable()).logout(logout -> logout.disable())
                 .requestCache(cache -> cache.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -41,6 +44,7 @@ public class AdminSecurityConfig {
                             SecurityJson.write(response, 403, csrf ? "CSRF_INVALID" : "FORBIDDEN",
                                     csrf ? "登录校验已过期，请重新登录后再试。" : "当前账号没有此操作权限。");
                         }))
+                .addFilterBefore(new OperationLogFilter(operationLogs), CsrfFilter.class)
                 .addFilterBefore(new AccountSessionFilter(accounts), AuthorizationFilter.class);
         return http.build();
     }

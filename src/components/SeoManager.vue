@@ -178,6 +178,7 @@ defineExpose({ load, publicPath });
 </script>
 <template>
   <section v-loading="loading" class="seo-manager">
+    <router-link to="/admin/rankings" class="seo-rank-entry">查看关键词排名与升降趋势 ↗</router-link>
     <el-alert
       v-if="error"
       :title="error"
@@ -408,6 +409,7 @@ defineExpose({ load, publicPath });
   </section>
 </template>
 <style scoped>
+.seo-rank-entry { display: inline-block; margin-bottom: 16px; color: #147f93; font-size: 12px; }
 .seo-manager {
   min-height: 320px;
 }
