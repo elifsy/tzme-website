@@ -42,16 +42,21 @@
 .global-reach-image-error { display: grid; min-height: 250px; place-items: center; color: #647f8b; }
 
 .global-reach-statistics {
-  display: grid;
-  grid-template-columns: minmax(0, .85fr) minmax(0, 1.45fr) minmax(0, .85fr);
-  gap: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 4px;
   margin: 28px 0 0;
   padding: 24px 0 0;
   border-top: 1px solid #b8cdd5;
 }
-.global-reach-statistic { display: flex; flex-direction: column; min-width: 0; padding: 0 16px; border-left: 1px solid #b8cdd5; }
-.global-reach-statistic:first-child { padding-left: 0; border-left: 0; }
-.global-reach-statistic:last-child { padding-right: 0; }
+.global-reach-statistics::before,
+.global-reach-statistics::after { content: ''; flex: 0 0 1px; background: #b8cdd5; }
+.global-reach-statistics::before { order: 2; }
+.global-reach-statistics::after { order: 4; }
+.global-reach-statistic { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 0; text-align: center; order: 1; }
+.global-reach-statistic:nth-child(2) { order: 3; }
+.global-reach-statistic:last-child { order: 5; }
 .global-reach-statistic dt { order: 1; margin-top: 7px; line-height: 1.6; overflow-wrap: anywhere; }
 .global-reach-statistic dd { display: flex; align-items: baseline; gap: 3px; margin: 0; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .global-reach-statistic dd > span { color: #147d8e; font: 400 14px/1.4 var(--f-ui); letter-spacing: 0; }
@@ -59,7 +64,6 @@
 @media (max-width: 1100px) and (min-width: 801px) {
   .global-reach-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr); gap: 24px; }
   .global-reach-map:not(.is-image) { width: calc(100% + 24px); }
-  .global-reach-statistic { padding-inline: 10px; }
   .global-reach .global-reach-statistic dd { font-size: 30px; }
 }
 @media (max-width: 800px) {
@@ -68,7 +72,7 @@
   .global-reach-copy { max-width: 540px; }
   .global-reach-title > span { display: inline; }
   .global-reach-intro { margin-top: 14px; }
-  .global-reach-statistics { max-width: 440px; margin-top: 22px; padding-top: 20px; }
+  .global-reach-statistics { margin-top: 22px; padding-top: 20px; }
   .global-reach .global-reach-statistic dd { font-size: 30px; }
   .global-reach .global-reach-statistic dt { font-size: 11px; }
   .global-reach-link { margin-top: 22px; }
@@ -76,7 +80,6 @@
   .global-reach-map:not(.is-image) { width: calc(100% + 24px); justify-self: center; }
 }
 @media (max-width: 390px) {
-  .global-reach-statistic { padding-inline: 12px; }
   .global-reach .global-reach-statistic dd { font-size: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {

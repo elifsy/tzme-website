@@ -218,15 +218,7 @@ onBeforeUnmount(() => {
               <span class="capability-detail-number" aria-hidden="true">{{
                 String(activeIndex + 1).padStart(2, "0")
               }}</span>
-              <div>
-                <span class="capability-detail-kicker">{{
-                  ui("stepPosition", {
-                    current: String(activeIndex + 1).padStart(2, "0"),
-                    total: String(visibleSteps.length).padStart(2, "0"),
-                  })
-                }}</span>
-                <h3>{{ capabilityText(activeStep.label, localeCode) }}</h3>
-              </div>
+              <h3>{{ capabilityText(activeStep.label, localeCode) }}</h3>
             </div>
             <p v-if="description" class="capability-detail-description">
               {{ description }}
@@ -513,14 +505,8 @@ onBeforeUnmount(() => {
   font: 600 48px/1 var(--f-din);
   font-variant-numeric: tabular-nums;
 }
-.capability-detail-kicker {
-  color: #6c8795;
-  font-size: 10px;
-  line-height: 1.5;
-  letter-spacing: 1px;
-}
 .capability-detail-heading h3 {
-  margin: 6px 0 0;
+  margin: 0;
   color: #123a50;
   font: 600 21px/1.5 var(--f-ui);
   overflow-wrap: anywhere;
