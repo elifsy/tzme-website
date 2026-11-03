@@ -6,8 +6,8 @@ import { trackEvent } from "../services/analytics.js";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useDesignPage } from "../composables/useDesignPage.js";
-import { localizedField } from "../services/catalog.js";
 import {
+  articleField,
   articleCategoryKey,
   resolveArticleCategory,
   articleDate,
@@ -18,6 +18,7 @@ import SiteFooter from "../components/SiteFooter.vue";
 import SiteNav from "../components/SiteNav.vue";
 import NewsIntro from "../components/NewsIntro.vue";
 import { responsiveImage } from "../utils/responsiveImages.js";
+import { isDownloadArticle } from "../utils/articleCategories.js";
 import "../style/news-list.css";
 
 const page = ref(null);
@@ -62,7 +63,7 @@ const rangeStart = computed(() =>
 const rangeEnd = computed(() =>
   Math.min(currentPage.value * pageSize, visibleArticles.value.length),
 );
-const field = (item, name) => localizedField(item, name, locale.value);
+const field = (item, name) => articleField(item, name, locale.value);
 const articleImage = (item) =>
   item.image || siteAsset("/assets/rnd-1.jpg") || "/assets/rnd-1.jpg";
 const selectedCategoryLabel = computed(
@@ -117,7 +118,6 @@ onMounted(async () => {
         <NewsIntro />
         <section class="news-filter-section">
           <div class="hc-w news-category-filter">
-            <span class="news-filter-label">资讯分类</span>
             <div
               class="news-category-options"
               role="group"
@@ -153,7 +153,11 @@ onMounted(async () => {
               <h2>重点关注</h2>
               <span>制造 · 质量 · 交付</span>
             </div>
-            <router-link :to="detailLink(featured.id)" class="news-featured">
+            <router-link
+              :to="detailLink(featured.id)"
+              class="news-featured"
+              :class="{ 'news-download': isDownloadArticle(featured) }"
+            >
               <div class="news-featured-image">
                 <img
                   v-bind="
@@ -174,8 +178,8 @@ onMounted(async () => {
                     articleDate(featured.date)
                   }}</time>
                 </div>
-                <h3>{{ field(featured, "title") }}</h3>
-                <p>{{ field(featured, "summary") }}</p>
+                <h3 :title="isDownloadArticle(featured) ? field(featured, 'title') : undefined">{{ field(featured, "title") }}</h3>
+                <p v-if="field(featured, 'summary')">{{ field(featured, "summary") }}</p>
                 <span class="news-text-link"
                   >阅读全文<span aria-hidden="true">→</span></span
                 >
@@ -206,6 +210,7 @@ onMounted(async () => {
                 :key="article.id"
                 :to="detailLink(article.id)"
                 class="news-row"
+                :class="{ 'news-download': isDownloadArticle(article) }"
               >
                 <time
                   v-if="article.date"
@@ -226,8 +231,8 @@ onMounted(async () => {
                   <span class="news-row-category">{{
                     field(article, "category")
                   }}</span>
-                  <h3>{{ field(article, "title") }}</h3>
-                  <p>{{ field(article, "summary") }}</p>
+                  <h3 :title="isDownloadArticle(article) ? field(article, 'title') : undefined">{{ field(article, "title") }}</h3>
+                  <p v-if="field(article, 'summary')">{{ field(article, "summary") }}</p>
                 </div>
                 <img
                   class="news-row-image"

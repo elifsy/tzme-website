@@ -17,7 +17,13 @@ const props = defineProps({
   selectedIndustry: { type: String, default: "" },
   preview: Boolean,
 });
-const emit = defineEmits(["ready", "unavailable", "select-industry", "reset"]);
+const emit = defineEmits([
+  "ready",
+  "unavailable",
+  "select-industry",
+  "explore",
+  "reset",
+]);
 const host = ref(null),
   ready = ref(false),
   error = ref(""),
@@ -46,7 +52,9 @@ const hint = computed(
     (animatedIndustry.value ? "已选设备持续演示 · " : "") +
     (mode.value === "inspect"
       ? "拖动自由旋转 · 按钮或双指缩放"
-      : "拖动环绕 · 点选标签切换行业"),
+      : canBrowseIndustry(selected.value)
+        ? "拖动环绕 · 再点已选标签查看产品"
+        : "拖动环绕 · 点选标签切换行业"),
 );
 let engine,
   disposed = false,
@@ -130,14 +138,43 @@ function inspect() {
 function selectIndustry(key) {
   if (!props.industries.some((industry) => industry.id === key)) return;
   track("model_select", key);
-  selected.value = key;
   if (props.selectedIndustry === key) engine?.focus(key);
   emit("select-industry", key);
 }
-function changeEquipment() {
-  track("model_control", `equipment:${selected.value}`);
-  if (mode.value === "inspect") engine?.inspect(selected.value);
-  else engine?.focus(selected.value);
+function canBrowseIndustry(key) {
+  return (
+    ready.value &&
+    !overview.value &&
+    !transitioning.value &&
+    selected.value === key &&
+    props.selectedIndustry === key
+  );
+}
+function labelAction(point) {
+  return canBrowseIndustry(point.industryId)
+    ? `查看${industryName(point)}行业产品`
+    : `聚焦${industryName(point)}行业设备`;
+}
+function activateLabel(key) {
+  if (
+    !overview.value &&
+    selected.value === key &&
+    props.selectedIndustry === key
+  ) {
+    if (canBrowseIndustry(key)) {
+      track("model_control", `catalog:${key}`);
+      emit("explore", "catalog");
+    }
+    return;
+  }
+  selectIndustry(key);
+}
+function changeEquipment(key) {
+  if (!props.industries.some((industry) => industry.id === key)) return;
+  track("model_control", `equipment:${key}`);
+  if (mode.value === "inspect") engine?.inspect(key);
+  else engine?.focus(key);
+  emit("select-industry", key);
 }
 async function initialize() {
   const current = ++generation;
@@ -207,8 +244,11 @@ watch(
   () => props.selectedIndustry,
   (value) => {
     if (!engine) return;
-    if (props.industries.some((item) => item.id === value)) engine.focus(value);
-    else engine.reset();
+    if (props.industries.some((item) => item.id === value)) {
+      // The picker already moved the scene. Keep its current viewing mode
+      // when the same selection comes back from the page's industry filter.
+      if (selected.value !== value || overview.value) engine.focus(value);
+    } else engine.reset();
   },
 );
 watch(
@@ -367,15 +407,18 @@ onBeforeUnmount(() => {
           :aria-hidden="!label.visible"
           :tabindex="label.visible ? 0 : -1"
           :aria-pressed="selectedIndustry === label.point.industryId"
-          :aria-label="`切换到${industryName(label.point)}行业`"
+          :aria-label="labelAction(label.point)"
+          :title="labelAction(label.point)"
           @pointerenter="hoverLabel(label.point.industryId, $event)"
           @pointerleave="engine.hover('')"
           @focus="hoverLabel(label.point.industryId, $event)"
           @blur="engine.hover('')"
-          @click.stop="selectIndustry(label.point.industryId)"
+          @click.stop="activateLabel(label.point.industryId)"
         >
           <i aria-hidden="true" /><span>{{ industryName(label.point) }}</span
-          ><b aria-hidden="true">→</b>
+          ><b aria-hidden="true">{{
+            canBrowseIndustry(label.point.industryId) ? "↓" : "→"
+          }}</b>
         </button>
       </div>
       <div class="industrial-bottom-panel">
@@ -383,10 +426,11 @@ onBeforeUnmount(() => {
           <label class="industrial-model-picker"
             ><span class="sr-only">查看设备</span
             ><select
-              v-model="selected"
+              :value="overview ? '' : selected"
               aria-label="选择查看设备"
-              @change="changeEquipment"
+              @change="changeEquipment($event.target.value)"
             >
+              <option value="" disabled>选择行业装备</option>
               <option
                 v-for="industry in industries"
                 :key="industry.id"
@@ -437,6 +481,7 @@ onBeforeUnmount(() => {
   color: #27566c;
   font-family: var(--f-ui);
   isolation: isolate;
+  container-type: size;
 }
 .industrial-canvas-host {
   position: absolute;
@@ -681,6 +726,15 @@ onBeforeUnmount(() => {
   color: #886d42;
   background: #ffffffe0;
   padding: 5px 8px;
+}
+@container (max-height: 360px) {
+  .industrial-bottom-panel {
+    bottom: 4px;
+    gap: 0;
+  }
+  .industrial-hint {
+    display: none;
+  }
 }
 .industrial-viewer button:focus-visible,
 .industrial-viewer select:focus-visible {

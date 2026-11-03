@@ -59,7 +59,12 @@ const label = (item) =>
         :data-analytics-event="preview ? undefined : 'social_click'"
         :data-analytics-target="`${item.platform}:${item.id}`"
       >
-        <SocialLinkIcon :platform="item.platform" :icon="item.icon || ''" />
+        <SocialLinkIcon
+          :platform="item.platform"
+          :icon="item.icon || ''"
+          :label="item.label || ''"
+          :url="item.url"
+        />
       </el-button>
     </el-tooltip>
   </div>

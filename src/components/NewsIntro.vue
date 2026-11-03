@@ -178,10 +178,7 @@ const artworkUnavailable = ref(false);
     line-height: 1.8;
   }
   .news-intro-ocean .news-intro-link {
-    min-height: 36px;
-    margin-top: 4px;
-    font-size: 11px;
-    gap: 17px;
+    display: none;
   }
   .news-intro-art {
     top: auto;

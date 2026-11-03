@@ -12,6 +12,21 @@ import { validSocialIcon } from "../data/socialLinks.js";
 const props = defineProps({
   platform: { type: String, default: "link" },
   icon: { type: String, default: "" },
+  label: { type: String, default: "" },
+  url: { type: String, default: "" },
+});
+const defaultPlatform = computed(() => {
+  if (props.platform !== "link") return props.platform;
+  if (/^whats\s*app$/i.test(props.label.trim())) return "whatsapp";
+  try {
+    const hostname = new URL(props.url).hostname.toLowerCase();
+    if (
+      hostname === "wa.me" ||
+      hostname === "whatsapp.com" ||
+      hostname.endsWith(".whatsapp.com")
+    ) return "whatsapp";
+  } catch { /* A custom link without a URL keeps the generic icon. */ }
+  return "link";
 });
 const icons = {
   youtube: VideoPlay,
@@ -45,8 +60,17 @@ watch(
     aria-hidden="true"
     @error="imageFailed = true"
   />
-  <el-icon v-else-if="icons[platform]" aria-hidden="true"
-    ><component :is="icons[platform]"
+  <svg
+    v-else-if="defaultPlatform === 'whatsapp'"
+    viewBox="0 0 24 24"
+    class="social-symbol social-whatsapp"
+    aria-hidden="true"
+  >
+    <path d="M20.5 11.7a8.2 8.2 0 0 1-12.2 7.1L3.5 20l1.3-4.6a8.2 8.2 0 1 1 15.7-3.7Z" />
+    <path d="M8.4 7.2h1.4l1 2.4-1.1 1.1a6.5 6.5 0 0 0 3.6 3.6l1.1-1.1 2.4 1v1.4c0 .7-.6 1.2-1.3 1.1a10.4 10.4 0 0 1-8.2-8.2c-.1-.7.4-1.3 1.1-1.3Z" />
+  </svg>
+  <el-icon v-else-if="icons[defaultPlatform]" aria-hidden="true"
+    ><component :is="icons[defaultPlatform]"
   /></el-icon>
   <svg
     v-else-if="platform === 'weibo'"

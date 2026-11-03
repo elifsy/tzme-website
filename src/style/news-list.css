@@ -1,7 +1,6 @@
 /* Approved ocean news layout. Article details keep their existing styles. */
 .design-site.news-page .news-filter-section { border-bottom: 1px solid #e0e9ec; background: #fff; }
 .design-site.news-page .news-category-filter { display: flex; align-items: center; flex-wrap: nowrap; gap: 36px; min-height: 84px; margin-bottom: 0; }
-.design-site.news-page .news-filter-label { color: #57737e; font-size: 12px; flex-shrink: 0; }
 .design-site.news-page .news-category-options { display: flex; flex-wrap: nowrap; align-self: stretch; gap: 30px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
 .design-site.news-page .news-category-button { position: relative; flex-shrink: 0; padding: 0 5px; border: 0; background: transparent; color: #58727f; font: 13px var(--f-ui); white-space: nowrap; cursor: pointer; }
 .design-site.news-page .news-category-button[aria-pressed="true"] { color: #087f91; font-weight: 600; }
@@ -42,6 +41,12 @@
 .design-site.news-page .news-row:hover h3 { color: #087f91; }
 .design-site.news-page .news-pagination-summary { margin-top: 24px; color: #738b97; font-size: 11px; text-align: center; }
 .design-site.news-page .news-pagination { justify-content: center; max-width: 100%; margin-top: 14px; }
+/* Fit download titles to their text column, including narrow split layouts. */
+.design-site.news-page .news-download .news-featured-content,
+.design-site.news-page .news-download .news-row-copy { container-type: inline-size; }
+.design-site.news-page .news-download h3 { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.design-site.news-page .news-featured.news-download h3 { font-size: clamp(16px, 7.5cqi, 29px); }
+.design-site.news-page .news-row.news-download h3 { font-size: clamp(13px, 7.5cqi, 17px); }
 @media (max-width: 1050px) {
   .design-site.news-page .news-category-filter { gap: 24px; }
   .design-site.news-page .news-category-options { gap: 20px; }
@@ -52,7 +57,7 @@
 }
 @media (max-width: 700px) {
   .design-site.news-page .news-category-filter { min-height: 62px; gap: 0; }
-  .design-site.news-page .news-filter-label, .design-site.news-page .news-result-count { display: none; }
+  .design-site.news-page .news-result-count { display: none; }
   .design-site.news-page .news-category-options { flex: 1; justify-content: space-between; gap: 0; }
   .design-site.news-page .news-category-button { min-height: 62px; padding-inline: 8px; font-size: 11px; }
   .design-site.news-page .news-category-button:first-child { padding-left: 0; }
@@ -66,6 +71,7 @@
   .design-site.news-page .news-featured-content { padding: 22px; }
   .design-site.news-page .news-featured-meta { gap: 16px; font-size: 10px; }
   .design-site.news-page .news-featured-content h3 { margin: 12px 0 10px; font-size: 21px; line-height: 1.5; }
+  .design-site.news-page .news-featured.news-download h3 { font-size: clamp(16px, 7.5cqi, 21px); }
   .design-site.news-page .news-featured-content p { margin-bottom: 12px; font-size: 12px; }
   .design-site.news-page .news-featured .news-text-link { min-height: 32px; font-size: 11px; }
   .design-site.news-page .news-list-section { padding-bottom: 38px; }
@@ -74,6 +80,7 @@
   .design-site.news-page .news-row-date strong { font-size: 24px; }
   .design-site.news-page .news-row-date > span { font-size: 8px; }
   .design-site.news-page .news-row h3 { font-size: 14px; }
+  .design-site.news-page .news-row.news-download h3 { font-size: clamp(13px, 7.5cqi, 14px); }
   .design-site.news-page .news-row p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 11px; }
   .design-site.news-page .news-row-image { display: none; }
   .design-site.news-page .news-row-category { font-size: 9px; }

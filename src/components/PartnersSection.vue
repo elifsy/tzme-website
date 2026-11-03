@@ -49,6 +49,9 @@ const expanded = ref(false);
           <img
             :src="item.image"
             :alt="item.name"
+            :class="{
+              'partner-logo-padded': item.image.startsWith('/assets/tzme-partners/'),
+            }"
             width="240"
             height="180"
             loading="lazy"
@@ -128,7 +131,7 @@ const expanded = ref(false);
   height: 102px;
   border-right: 1px solid #e4ecef;
   border-bottom: 1px solid #e4ecef;
-  padding: 12px 21px;
+  padding: 6px 10px;
   box-sizing: border-box;
   overflow: hidden;
   transition: background 0.2s;
@@ -139,13 +142,17 @@ const expanded = ref(false);
   height: 100%;
   object-fit: contain;
   mix-blend-mode: multiply;
+  transform: scale(var(--partner-logo-scale, 1));
   transition: transform 0.25s ease;
+}
+.partner-logo-padded {
+  --partner-logo-scale: 1.4;
 }
 .partner-tile:hover {
   background: #f3f8fa;
 }
 .partner-tile:hover img {
-  transform: scale(1.045);
+  transform: scale(calc(var(--partner-logo-scale, 1) * 1.045));
 }
 .partners-more {
   display: none;
@@ -185,7 +192,10 @@ const expanded = ref(false);
   }
   .partner-tile {
     height: 87px;
-    padding: 10px;
+    padding: 6px;
+  }
+  .partner-logo-padded {
+    --partner-logo-scale: 1.2;
   }
   .partners-section:not(.partners-expanded) .partner-tile:nth-child(n + 7) {
     display: none;
@@ -217,7 +227,7 @@ const expanded = ref(false);
     transition: none;
   }
   .partner-tile:hover img {
-    transform: none;
+    transform: scale(var(--partner-logo-scale, 1));
   }
 }
 </style>

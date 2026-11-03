@@ -190,12 +190,12 @@ onBeforeUnmount(() => {
             <span class="capability-step-number" aria-hidden="true">{{
               String(index + 1).padStart(2, "0")
             }}</span>
-            <span class="capability-step-icon"
+            <!-- <span class="capability-step-icon"
               ><CapabilityIcon
                 :icon-mode="step.iconMode"
                 :icon-name="step.iconName"
                 :icon="step.icon"
-            /></span>
+            /></span> -->
             <span class="capability-step-label">{{
               capabilityText(step.label, localeCode)
             }}</span>
@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
 .capability-step-button {
   position: relative;
   display: grid;
-  grid-template-columns: 26px 24px minmax(0, 1fr) 8px;
+  grid-template-columns: 26px minmax(0, 1fr) 8px;
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -427,12 +427,13 @@ onBeforeUnmount(() => {
   justify-content: center;
   width: 26px;
   height: 24px;
-  padding-top: 2px;
+  padding: 0;
   margin: 0;
   color: inherit;
+  font-family: var(--f-ui);
   font-size: 22px;
   font-weight: 600;
-  line-height: 1;
+  line-height: 24px;
   font-variant-numeric: tabular-nums;
 }
 .home-capabilities .capability-step-button .capability-step-icon {
@@ -449,6 +450,8 @@ onBeforeUnmount(() => {
   color: inherit;
 }
 .home-capabilities .capability-step-button .capability-step-label {
+  display: flex;
+  align-items: center;
   min-width: 0;
   width: auto;
   height: 24px;
@@ -620,7 +623,7 @@ onBeforeUnmount(() => {
 }
 @media (max-width: 700px) {
   .capability-step-button {
-    grid-template-columns: 26px 22px minmax(0, 1fr) 6px;
+    grid-template-columns: 26px minmax(0, 1fr) 6px;
     gap: 3px;
   }
   .capability-step-state {

@@ -206,7 +206,7 @@ async function moveTab(event, index) {
   border-bottom: 2px solid transparent;
   background: transparent;
   color: #607e8b;
-  font: 14px var(--f-ui);
+  font: 18px var(--f-ui);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -300,7 +300,7 @@ button:focus-visible,
     font-size: 29px;
   }
   .solution-tabs button {
-    font-size: 12px;
+    font-size: 16px;
     gap: 8px;
   }
 }

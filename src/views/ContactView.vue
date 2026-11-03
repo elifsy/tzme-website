@@ -9,7 +9,6 @@ import { useDesignPage } from "../composables/useDesignPage.js";
 import SiteFooter from "../components/SiteFooter.vue";
 import SiteNav from "../components/SiteNav.vue";
 import InquiryForm from "../components/InquiryForm.vue";
-import SubsidiaryCards from "../components/SubsidiaryCards.vue";
 import ContactDetails from "../components/ContactDetails.vue";
 import ContactIntro from "../components/ContactIntro.vue";
 import SeoKnowledgeSection from "../components/SeoKnowledgeSection.vue";
@@ -56,15 +55,6 @@ useDesignPage("hc-contact", page);
                 <li><b>03</b>联系沟通</li>
               </ol>
             </div>
-            <details
-              v-if="contactSettings.subsidiaries.some((item) => item.enabled)"
-              class="refine-company-contacts"
-            >
-              <summary>
-                下属企业联系方式 <span aria-hidden="true">＋</span>
-              </summary>
-              <SubsidiaryCards />
-            </details>
           </div>
           <div
             v-if="contactSettings?.form.showOnContact"

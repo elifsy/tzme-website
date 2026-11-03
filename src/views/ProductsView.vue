@@ -20,7 +20,6 @@ import { trackEvent } from "../services/analytics.js";
 import { dataErrors } from "../services/api.js";
 
 const page = ref(null),
-  categoriesExpanded = ref(false),
   catalogReady = ref(false);
 const route = useRoute(),
   router = useRouter();
@@ -99,13 +98,6 @@ const selectedCategories = computed(() =>
     categories.value.includes(category),
   ),
 );
-const displayedCategories = computed(() =>
-  categoriesExpanded.value
-    ? categories.value
-    : categories.value.filter(
-        (item, index) => index < 9 || selectedCategories.value.includes(item),
-      ),
-);
 const filteredProducts = computed(() => {
   const result = contextualProducts.value.filter(
     (item) =>
@@ -180,16 +172,18 @@ function setIndustry(id) {
 }
 async function scrollToSection(section) {
   await nextTick();
-  page.value
-    ?.querySelector(
-      section === "industries" ? "#industry-explorer" : "#equipment-catalog",
-    )
-    ?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-      block: "start",
-    });
+  const target = page.value?.querySelector(
+    section === "industries" ? "#industry-explorer" : "#equipment-catalog",
+  );
+  if (!target) return;
+  // Align the section with the viewport; scroll padding and margins otherwise
+  // leave the preceding industry strip visible above the product catalog.
+  window.scrollTo({
+    top: target.getBoundingClientRect().top + window.scrollY,
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant"
+      : "smooth",
+  });
 }
 async function browseAll() {
   await resetOverview();
@@ -199,7 +193,6 @@ async function resetOverview() {
   if (selectedIndustry.value) trackEvent("industry_filter", "all");
   const query = { ...route.query };
   for (const key of ["industry", "cat", "q", "limit"]) delete query[key];
-  categoriesExpanded.value = false;
   await router.push({ path: "/solutions", query });
 }
 
@@ -284,7 +277,7 @@ onMounted(async () => {
               全部产品
             </button>
             <button
-              v-for="category in displayedCategories"
+              v-for="category in categories"
               :key="category"
               type="button"
               :data-category="category"
@@ -293,24 +286,6 @@ onMounted(async () => {
             >
               <span class="category-check" aria-hidden="true">✓</span
               ><span class="category-label">{{ categoryLabel(category) }}</span>
-            </button>
-            <button
-              v-if="categories.length > 9"
-              type="button"
-              class="category-expand"
-              :aria-expanded="categoriesExpanded"
-              data-analytics-event="cta_click"
-              :data-analytics-target="
-                categoriesExpanded
-                  ? 'product-types-collapse'
-                  : 'product-types-expand'
-              "
-              @click="categoriesExpanded = !categoriesExpanded"
-            >
-              {{ categoriesExpanded ? "收起分类" : "更多分类"
-              }}<span aria-hidden="true">{{
-                categoriesExpanded ? "↑" : "↓"
-              }}</span>
             </button>
           </div>
           <div
@@ -528,14 +503,6 @@ onMounted(async () => {
 .equipment-categories button:hover {
   color: #087f91;
 }
-.equipment-categories .category-expand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-  color: #3e7a8f;
-  font-size: 11px;
-}
 .category-check {
   display: inline-flex;
   align-items: center;
@@ -615,7 +582,7 @@ onMounted(async () => {
 }
 .product-industry-label {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   color: #5a8796;
   line-height: 1.7;
   margin-bottom: 9px;
@@ -627,19 +594,19 @@ onMounted(async () => {
   gap: 14px;
 }
 .product-card-title h3 {
-  font: 650 19px/1.6 var(--f-ui);
+  font: 650 24px/1.6 var(--f-ui);
   margin: 0;
   color: #123a50;
   overflow-wrap: anywhere;
 }
 .product-card-title > span {
-  font-size: 18px;
+  font-size: 22px;
   color: #087f91;
   flex-shrink: 0;
 }
 .equipment-product-card .bd p {
   color: #728b9b;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.9;
   margin: 10px 0 0;
   display: -webkit-box;
@@ -725,7 +692,7 @@ onMounted(async () => {
     width: 250px;
   }
   .product-card-title h3 {
-    font-size: 17px;
+    font-size: 21px;
   }
   .equipment-categories {
     gap: 7px 22px;
@@ -785,10 +752,6 @@ onMounted(async () => {
     min-height: 37px;
     padding-bottom: 10px;
   }
-  .equipment-categories .category-expand {
-    font-size: 10px;
-    gap: 7px;
-  }
   .equipment-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px 16px;
@@ -800,20 +763,20 @@ onMounted(async () => {
     padding: 12px 0 0;
   }
   .product-industry-label {
-    font-size: 8px;
+    font-size: 11px;
   }
   .product-card-title {
     gap: 8px;
   }
   .product-card-title h3 {
-    font-size: 15px;
+    font-size: 18px;
     line-height: 1.6;
   }
   .product-card-title > span {
-    font-size: 14px;
+    font-size: 18px;
   }
   .equipment-product-card .bd p {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.8;
     margin-top: 7px;
   }

@@ -275,204 +275,207 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section
-    class="product-showcase"
-    aria-labelledby="products-page-title"
-    :class="{ 'is-entered': entered }"
-  >
-    <div class="hc-w product-showcase-inner">
-      <div class="product-showcase-copy">
-        <span class="showcase-kicker">{{
-          industry ? `产品中心 / ${industry.titleZh}` : overview.kicker
-        }}</span>
-        <Transition name="showcase-copy" mode="out-in">
-          <div :key="industry?.id || 'overview'" class="showcase-story">
-            <h1 id="products-page-title" class="site-page-title">
-              {{ title }}
-            </h1>
-            <p class="site-intro-description">{{ description }}</p>
-          </div>
-        </Transition>
-        <div class="showcase-actions">
-          <button
-            type="button"
-            class="showcase-primary"
-            :data-analytics-event="preview ? undefined : 'cta_click'"
-            :data-analytics-target="
-              industry ? 'industry-equipment' : 'catalog-browse-all'
-            "
-            @click="industry ? emit('explore', 'catalog') : emit('browse-all')"
-          >
-            {{
-              industry ? `查看${industry.titleZh}装备` : overview.secondaryText
-            }}<span aria-hidden="true">↓</span>
-          </button>
-        </div>
-        <div v-if="industry" class="showcase-related" aria-label="行业代表产品">
-          <span>相关装备</span
-          ><router-link
-            v-for="product in industryProducts.slice(0, 3)"
-            :key="product.id"
-            :to="productLink(product)"
-            >{{ product.titleZh || product.title
-            }}<i aria-hidden="true">↗</i></router-link
-          >
-        </div>
-        <div v-else class="showcase-counts" aria-label="产品目录统计">
-          <span
-            ><strong>{{ activeIndustries.length }}</strong> 个行业</span
-          ><span
-            ><strong>{{ categories }}</strong> 个分类</span
-          ><span
-            ><strong>{{ publishedProducts.length }}</strong> 个产品</span
-          >
-        </div>
-        <button
-          v-if="industry"
-          type="button"
-          class="showcase-overview"
-          @click="selectIndustry('')"
-        >
-          <span aria-hidden="true">←</span>返回行业全景
-        </button>
-        <span v-else class="showcase-scroll-note"
-          ><i aria-hidden="true" /> 探索装备与应用场景</span
-        >
-      </div>
-      <div
-        ref="stage"
-        class="equipment-scene"
-        :class="{
-          'is-photo': presentation === 'photo',
-          'has-industry': industry,
-          'image-unavailable': failedImage,
-          'has-three-d': useThreeD,
-          'three-d-ready': useThreeD && threeReady,
-          'three-d-failed': threeFailed,
-        }"
-        @pointermove="movePointer"
-        @pointerleave="resetPointer"
-        @keydown.esc.stop="closeHotspot(true)"
-      >
-        <div class="scene-ambient" aria-hidden="true" />
-        <div class="equipment-scene-motion">
-          <Transition name="scene-switch" mode="out-in">
-            <img
-              v-if="image && !failedImage"
-              :key="image"
-              class="equipment-scene-art"
-              v-bind="responsiveImage(image, '(max-width:700px) 100vw, 70vw')"
-              :alt="imageAlt"
-              width="1536"
-              height="1024"
-              fetchpriority="high"
-              decoding="async"
-              @error="failedImage = true"
-            />
-            <div v-else class="equipment-scene-placeholder">
-              <IndustryIcon :icon="industry?.icon || ''" /><span>{{
-                industry?.titleZh || "装备制造"
-              }}</span>
+  <div class="product-showcase-screen">
+    <section
+      class="product-showcase"
+      aria-labelledby="products-page-title"
+      :class="{ 'is-entered': entered }"
+    >
+      <div class="hc-w product-showcase-inner">
+        <div class="product-showcase-copy">
+          <span class="showcase-kicker">{{
+            industry ? `产品中心 / ${industry.titleZh}` : overview.kicker
+          }}</span>
+          <Transition name="showcase-copy" mode="out-in">
+            <div :key="industry?.id || 'overview'" class="showcase-story">
+              <h1 id="products-page-title" class="site-page-title">
+                {{ title }}
+              </h1>
+              <p class="site-intro-description">{{ description }}</p>
             </div>
           </Transition>
-          <EquipmentScene3D
-            v-if="useThreeD"
-            :settings="threeSettings"
-            :industries="activeIndustries"
-            :hotspots="hotspots"
-            :selected-industry="selectedIndustry"
-            :preview="preview"
-            @ready="threeReady = true"
-            @unavailable="threeFailed = true"
-            @select-industry="selectIndustry"
-            @reset="resetOverview"
-          />
-          <div v-if="!useThreeD && !failedImage" class="scene-hotspots">
+          <div class="showcase-actions">
             <button
-              v-for="(point, index) in hotspots"
-              :key="`${industry?.id}-${index}`"
               type="button"
-              class="scene-hotspot"
-              :class="{
-                'is-active': openHotspot === index,
-                'is-right': point.x > 70,
-                'is-bottom': point.y > 80,
-              }"
-              :style="{ left: `${point.x}%`, top: `${point.y}%` }"
-              :data-hotspot-index="index"
-              :aria-label="`了解${point.label}`"
-              :aria-expanded="openHotspot === index"
-              :aria-controls="`${uid}-scene-card`"
-              @click.stop="toggleHotspot(index, $event)"
+              class="showcase-primary"
+              :data-analytics-event="preview ? undefined : 'cta_click'"
+              :data-analytics-target="
+                industry ? 'industry-equipment' : 'catalog-browse-all'
+              "
+              @click="industry ? emit('explore', 'catalog') : emit('browse-all')"
             >
-              <span class="scene-hotspot-dot" aria-hidden="true" /><span>{{
-                point.label
-              }}</span
-              ><i aria-hidden="true">↗</i>
+              {{
+                industry ? `查看${industry.titleZh}装备` : overview.secondaryText
+              }}<span aria-hidden="true">↓</span>
             </button>
           </div>
-        </div>
-        <Transition name="scene-card"
-          ><SceneProductPopover
-            v-if="currentPoint && !useThreeD"
-            :id="`${uid}-scene-card`"
-            :label="currentPoint.label"
-            :product="currentProduct"
-            :industry="currentIndustry"
-            :product-link="
-              currentProduct ? productLink(currentProduct) : undefined
-            "
-            @close="closeHotspot(true)"
-            @select-industry="selectIndustry"
-        /></Transition>
-        <div v-if="industry && !useThreeD" class="scene-industry-caption">
-          <span>{{ industry.titleZh }}</span
-          ><small>{{ industryProducts.length }} 项相关产品</small>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section
-    id="industry-explorer"
-    class="showcase-industry-section"
-    aria-label="按应用行业选择装备"
-  >
-    <div class="hc-w">
-      <div class="industry-section-heading">
-        <h2>选择应用行业</h2>
-        <span>从实际工况，找到适用装备</span>
-      </div>
-      <div class="showcase-industries">
-        <button
-          type="button"
-          :aria-pressed="!industry"
-          @click="selectIndustry('')"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            aria-hidden="true"
+          <div v-if="industry" class="showcase-related" aria-label="行业代表产品">
+            <span>相关装备</span
+            ><router-link
+              v-for="product in industryProducts.slice(0, 3)"
+              :key="product.id"
+              :to="productLink(product)"
+              >{{ product.titleZh || product.title
+              }}<i aria-hidden="true">↗</i></router-link
+            >
+          </div>
+          <div v-else class="showcase-counts" aria-label="产品目录统计">
+            <span
+              ><strong>{{ activeIndustries.length }}</strong> 个行业</span
+            ><span
+              ><strong>{{ categories }}</strong> 个分类</span
+            ><span
+              ><strong>{{ publishedProducts.length }}</strong> 个产品</span
+            >
+          </div>
+          <button
+            v-if="industry"
+            type="button"
+            class="showcase-overview"
+            @click="selectIndustry('')"
           >
-            <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" /></svg
-          ><span>全部行业</span>
-        </button>
-        <button
-          v-for="item in activeIndustries"
-          :key="item.id"
-          type="button"
-          :aria-pressed="industry?.id === item.id"
-          :data-industry="item.id"
-          @click="selectIndustry(item.id)"
+            <span aria-hidden="true">←</span>返回行业全景
+          </button>
+          <span v-else class="showcase-scroll-note"
+            ><i aria-hidden="true" /> 探索装备与应用场景</span
+          >
+        </div>
+        <div
+          ref="stage"
+          class="equipment-scene"
+          :class="{
+            'is-photo': presentation === 'photo',
+            'has-industry': industry,
+            'image-unavailable': failedImage,
+            'has-three-d': useThreeD,
+            'three-d-ready': useThreeD && threeReady,
+            'three-d-failed': threeFailed,
+          }"
+          @pointermove="movePointer"
+          @pointerleave="resetPointer"
+          @keydown.esc.stop="closeHotspot(true)"
         >
-          <IndustryIcon :icon="item.icon || ''" /><span>{{
-            item.titleZh
-          }}</span>
-        </button>
+          <div class="scene-ambient" aria-hidden="true" />
+          <div class="equipment-scene-motion">
+            <Transition name="scene-switch" mode="out-in">
+              <img
+                v-if="image && !failedImage"
+                :key="image"
+                class="equipment-scene-art"
+                v-bind="responsiveImage(image, '(max-width:700px) 100vw, 70vw')"
+                :alt="imageAlt"
+                width="1536"
+                height="1024"
+                fetchpriority="high"
+                decoding="async"
+                @error="failedImage = true"
+              />
+              <div v-else class="equipment-scene-placeholder">
+                <IndustryIcon :icon="industry?.icon || ''" /><span>{{
+                  industry?.titleZh || "装备制造"
+                }}</span>
+              </div>
+            </Transition>
+            <EquipmentScene3D
+              v-if="useThreeD"
+              :settings="threeSettings"
+              :industries="activeIndustries"
+              :hotspots="hotspots"
+              :selected-industry="selectedIndustry"
+              :preview="preview"
+              @ready="threeReady = true"
+              @unavailable="threeFailed = true"
+              @select-industry="selectIndustry"
+              @explore="emit('explore', $event)"
+              @reset="resetOverview"
+            />
+            <div v-if="!useThreeD && !failedImage" class="scene-hotspots">
+              <button
+                v-for="(point, index) in hotspots"
+                :key="`${industry?.id}-${index}`"
+                type="button"
+                class="scene-hotspot"
+                :class="{
+                  'is-active': openHotspot === index,
+                  'is-right': point.x > 70,
+                  'is-bottom': point.y > 80,
+                }"
+                :style="{ left: `${point.x}%`, top: `${point.y}%` }"
+                :data-hotspot-index="index"
+                :aria-label="`了解${point.label}`"
+                :aria-expanded="openHotspot === index"
+                :aria-controls="`${uid}-scene-card`"
+                @click.stop="toggleHotspot(index, $event)"
+              >
+                <span class="scene-hotspot-dot" aria-hidden="true" /><span>{{
+                  point.label
+                }}</span
+                ><i aria-hidden="true">↗</i>
+              </button>
+            </div>
+          </div>
+          <Transition name="scene-card"
+            ><SceneProductPopover
+              v-if="currentPoint && !useThreeD"
+              :id="`${uid}-scene-card`"
+              :label="currentPoint.label"
+              :product="currentProduct"
+              :industry="currentIndustry"
+              :product-link="
+                currentProduct ? productLink(currentProduct) : undefined
+              "
+              @close="closeHotspot(true)"
+              @select-industry="selectIndustry"
+          /></Transition>
+          <div v-if="industry && !useThreeD" class="scene-industry-caption">
+            <span>{{ industry.titleZh }}</span
+            ><small>{{ industryProducts.length }} 项相关产品</small>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+    <section
+      id="industry-explorer"
+      class="showcase-industry-section"
+      aria-label="按应用行业选择装备"
+    >
+      <div class="hc-w">
+        <div class="industry-section-heading">
+          <h2>选择应用行业</h2>
+          <span>从实际工况，找到适用装备</span>
+        </div>
+        <div class="showcase-industries">
+          <button
+            type="button"
+            :aria-pressed="!industry"
+            @click="selectIndustry('')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" /></svg
+            ><span>全部行业</span>
+          </button>
+          <button
+            v-for="item in activeIndustries"
+            :key="item.id"
+            type="button"
+            :aria-pressed="industry?.id === item.id"
+            :data-industry="item.id"
+            @click="selectIndustry(item.id)"
+          >
+            <IndustryIcon :icon="item.icon || ''" /><span>{{
+              item.titleZh
+            }}</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <style scoped>
@@ -1275,6 +1278,417 @@ onBeforeUnmount(() => {
     margin: 8px 0 15px;
     transform: none;
     justify-self: center;
+  }
+}
+/* Budget the introduction and every industry entry together, including the
+   navigation above this component. The scene responds to the remaining space. */
+.product-showcase-screen {
+  --site-title-font-size: clamp(30px, 5.2svh, 48px);
+  --site-intro-font-size: clamp(14px, 1.85svh, 16px);
+  --site-intro-line-height: 1.85;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--site-nav-height, 96px));
+  height: calc(100svh - var(--site-nav-height, 96px));
+  min-height: 0;
+}
+.product-showcase-screen .product-showcase {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.product-showcase-screen .product-showcase-inner {
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+.product-showcase-screen .product-showcase-copy {
+  min-height: 0;
+  padding-block: var(--site-hero-copy-top, 64px) clamp(14px, 2.5svh, 32px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b6cfdb transparent;
+}
+.product-showcase-screen .product-showcase-copy > * {
+  flex-shrink: 0;
+}
+.product-showcase-screen .showcase-story h1 {
+  margin-bottom: clamp(12px, 2.1svh, 24px);
+}
+.product-showcase-screen .showcase-actions {
+  margin-top: clamp(16px, 2.8svh, 30px);
+}
+.product-showcase-screen .showcase-counts {
+  margin-top: clamp(16px, 3svh, 32px);
+}
+.product-showcase-screen .showcase-related {
+  margin-top: clamp(14px, 2.5svh, 28px);
+  gap: 6px 12px;
+}
+.product-showcase-screen .showcase-overview {
+  margin-top: clamp(8px, 1.8svh, 20px);
+}
+.product-showcase-screen .showcase-scroll-note {
+  margin-top: clamp(18px, 3svh, 34px);
+}
+.product-showcase-screen .equipment-scene {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+.product-showcase-screen .equipment-scene.has-three-d {
+  height: 100%;
+  aspect-ratio: auto;
+  margin-block: 0;
+}
+.product-showcase-screen .equipment-scene.is-photo {
+  height: calc(100% - 48px);
+  aspect-ratio: auto;
+  margin-block: 24px;
+}
+.product-showcase-screen .showcase-industry-section {
+  flex: 0 0 auto;
+  padding-top: clamp(10px, 1.6svh, 20px);
+}
+.product-showcase-screen .industry-section-heading {
+  margin-bottom: 12px;
+}
+.product-showcase-screen .showcase-industries {
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 0 4px;
+}
+.product-showcase-screen .showcase-industries button {
+  min-height: 60px;
+  gap: 7px;
+  padding: 0 2px 12px;
+}
+.product-showcase-screen .showcase-industries button > svg,
+.product-showcase-screen .showcase-industries :deep(.industry-icon) {
+  width: 23px;
+  height: 23px;
+}
+@media (min-width: 701px) and (max-width: 1050px) {
+  .product-showcase-screen .showcase-industries {
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  }
+  .product-showcase-screen .showcase-industries button {
+    font-size: 10px;
+  }
+}
+@media (min-width: 701px) and (max-height: 800px) {
+  .product-showcase-screen .product-showcase-copy {
+    padding-block: var(--site-hero-copy-top, 64px) 16px;
+  }
+  .product-showcase-screen .showcase-actions button {
+    min-height: 40px;
+    padding-block: 10px;
+  }
+  .product-showcase-screen .showcase-related {
+    margin-top: 14px;
+  }
+  .product-showcase-screen .showcase-overview {
+    padding-top: 4px;
+    margin-top: 8px;
+  }
+  .product-showcase-screen .showcase-scroll-note {
+    display: none;
+  }
+  .product-showcase-screen .showcase-industry-section {
+    padding-top: 10px;
+  }
+  .product-showcase-screen .industry-section-heading {
+    margin-bottom: 8px;
+  }
+  .product-showcase-screen .showcase-industries button {
+    min-height: 56px;
+    gap: 6px;
+    padding-bottom: 10px;
+  }
+}
+@media (max-width: 700px), (max-width: 1050px) and (orientation: portrait) {
+  .product-showcase-screen {
+    --site-title-font-size: clamp(24px, 4.3svh, 32px);
+    --site-intro-font-size: clamp(12px, 1.8svh, 14px);
+    --site-intro-line-height: 1.65;
+  }
+  .product-showcase-screen .product-showcase-inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, max-content) minmax(150px, 1fr);
+  }
+  .product-showcase-screen .product-showcase-copy {
+    --showcase-row-gap: 8px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: max-content minmax(0, 1fr) max-content max-content;
+    gap: var(--showcase-row-gap) 12px;
+    align-content: start;
+    align-items: center;
+    padding-block: var(--site-hero-copy-top, 24px) 6px;
+    overflow: hidden;
+  }
+  .product-showcase-screen .showcase-kicker {
+    grid-column: 1 / -1;
+    margin: 0 0 calc(var(--site-hero-title-gap, 12px) - var(--showcase-row-gap));
+    line-height: var(--site-hero-kicker-line-height, 20px);
+  }
+  .product-showcase-screen .showcase-story {
+    grid-column: 1 / -1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .product-showcase-screen .showcase-story h1 {
+    flex-shrink: 0;
+    margin-bottom: 10px;
+  }
+  .product-showcase-screen .showcase-story p {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .product-showcase-screen .showcase-actions {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 0;
+  }
+  .product-showcase-screen .showcase-primary {
+    min-width: 128px;
+    min-height: 38px;
+    padding: 9px 14px;
+  }
+  .product-showcase-screen .showcase-counts {
+    grid-column: 2;
+    grid-row: 3;
+    align-self: center;
+    justify-self: end;
+    gap: 6px;
+    margin: 0;
+    font-size: 9px;
+  }
+  .product-showcase-screen .showcase-counts strong {
+    font-size: 12px;
+    padding-right: 1px;
+  }
+  .product-showcase-screen .showcase-related {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    gap: 5px 12px;
+    margin: 0;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .product-showcase-screen .showcase-related > * {
+    flex-shrink: 0;
+  }
+  .product-showcase-screen .showcase-related > span {
+    width: auto;
+    letter-spacing: 0;
+  }
+  .product-showcase-screen .showcase-overview {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    padding: 8px 0;
+    margin: 0;
+  }
+  .product-showcase-screen .equipment-scene,
+  .product-showcase-screen .equipment-scene.has-three-d,
+  .product-showcase-screen .equipment-scene.is-photo {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    margin: 0;
+    transform: none;
+    justify-self: center;
+  }
+  .product-showcase-screen .industry-section-heading {
+    margin-bottom: 8px;
+  }
+  .product-showcase-screen .showcase-industries {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .product-showcase-screen .showcase-industries button {
+    min-height: 54px;
+    gap: 4px;
+    padding: 3px 1px 7px;
+    font-size: 10px;
+  }
+  .product-showcase-screen .showcase-industries button > svg,
+  .product-showcase-screen .showcase-industries :deep(.industry-icon) {
+    width: 20px;
+    height: 20px;
+  }
+}
+@media (min-width: 701px) and (max-width: 1050px) and (orientation: portrait) {
+  .product-showcase-screen {
+    --site-title-font-size: 40px;
+    --site-intro-font-size: 16px;
+    --site-intro-line-height: 1.85;
+  }
+  .product-showcase-screen .product-showcase-copy {
+    --showcase-row-gap: 14px;
+    padding-block: var(--site-hero-copy-top, 48px) 12px;
+    gap: var(--showcase-row-gap) 24px;
+  }
+  .product-showcase-screen .showcase-primary {
+    min-width: 160px;
+    min-height: 44px;
+  }
+  .product-showcase-screen .showcase-counts {
+    gap: 18px;
+    font-size: 12px;
+  }
+  .product-showcase-screen .showcase-counts strong {
+    font-size: 16px;
+  }
+  .product-showcase-screen .showcase-industries {
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  }
+}
+@media (max-width: 700px) and (max-height: 600px) {
+  .product-showcase-screen .industry-section-heading {
+    display: none;
+  }
+  .product-showcase-screen .showcase-industry-section {
+    padding-top: 8px;
+  }
+  .product-showcase-screen .showcase-industries button {
+    min-height: 44px;
+    padding: 3px 0 5px;
+    font-size: 9px;
+  }
+  .product-showcase-screen .showcase-industries button > svg,
+  .product-showcase-screen .showcase-industries :deep(.industry-icon) {
+    width: 18px;
+    height: 18px;
+  }
+  .product-showcase-screen .product-showcase-inner {
+    grid-template-rows: minmax(0, max-content) minmax(170px, 1fr);
+  }
+}
+@media (max-width: 900px) and (max-height: 500px) {
+  .product-showcase-screen {
+    --site-title-font-size: 24px;
+    --site-intro-font-size: 12px;
+    --site-intro-line-height: 1.6;
+  }
+  .product-showcase-screen .product-showcase-inner {
+    grid-template-columns: 36% 64%;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .product-showcase-screen .product-showcase-copy {
+    --showcase-row-gap: 6px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: max-content minmax(0, 1fr) max-content max-content;
+    padding-block: var(--site-hero-copy-top, 48px) 4px;
+    gap: var(--showcase-row-gap) 10px;
+    overflow: hidden;
+  }
+  .product-showcase-screen .showcase-kicker {
+    grid-column: 1 / -1;
+    margin: 0 0 calc(var(--site-hero-title-gap, 12px) - var(--showcase-row-gap));
+    line-height: var(--site-hero-kicker-line-height, 20px);
+  }
+  .product-showcase-screen .showcase-story {
+    grid-column: 1 / -1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .product-showcase-screen .showcase-story h1 {
+    flex-shrink: 0;
+    margin-bottom: 8px;
+  }
+  .product-showcase-screen .showcase-story p {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .product-showcase-screen .showcase-actions {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 0;
+  }
+  .product-showcase-screen .showcase-actions button {
+    min-width: 114px;
+    min-height: 36px;
+    padding: 8px 10px;
+    font-size: 10px;
+    gap: 14px;
+  }
+  .product-showcase-screen .showcase-counts {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    margin: 0;
+    gap: 6px;
+    font-size: 9px;
+  }
+  .product-showcase-screen .showcase-counts strong {
+    font-size: 12px;
+  }
+  .product-showcase-screen .showcase-related {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    margin: 0;
+    gap: 6px;
+    font-size: 9px;
+  }
+  .product-showcase-screen .showcase-related > * {
+    flex-shrink: 0;
+  }
+  .product-showcase-screen .showcase-related > span {
+    width: auto;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .product-showcase-screen .showcase-overview {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    margin: 0;
+    padding: 6px 0;
+    font-size: 9px;
+  }
+  .product-showcase-screen .showcase-scroll-note {
+    display: none;
+  }
+  .product-showcase-screen .showcase-industry-section {
+    padding-top: 8px;
+  }
+  .product-showcase-screen .industry-section-heading {
+    display: none;
+  }
+  .product-showcase-screen .showcase-industries {
+    grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
+    gap: 2px;
+  }
+  .product-showcase-screen .showcase-industries button {
+    min-height: 48px;
+    gap: 3px;
+    padding-bottom: 6px;
+    font-size: 9px;
+  }
+  .product-showcase-screen .showcase-industries button > svg,
+  .product-showcase-screen .showcase-industries :deep(.industry-icon) {
+    width: 18px;
+    height: 18px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -1,11 +1,17 @@
 import { computed } from "vue";
 import { createCollection } from "./api.js";
-import { normalizeContent } from "./catalog.js";
+import { localizedField, normalizeContent } from "./catalog.js";
 import { groupArticleCategories } from "../utils/articleCategories.js";
 export {
   articleCategoryKey,
   resolveArticleCategory,
 } from "../utils/articleCategories.js";
+
+export function articleField(item, name, locale) {
+  // An optional Chinese summary may be deliberately left blank in the CMS.
+  if (locale === "zh" && name === "summary") return item?.summaryZh || "";
+  return localizedField(item, name, locale);
+}
 
 const catalog = createCollection("/api/articles", normalizeContent);
 const articles = catalog.records;

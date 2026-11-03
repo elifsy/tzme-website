@@ -45,8 +45,8 @@ import { adminGroups, adminModules, adminPath } from '../data/adminWorkspace.js'
 import { adminEditorKey, createAdminEditorState } from '../composables/useAdminEditorState.js';
 import '../style/admin-workspace.css';
 import { sanitizeRichText } from "../utils/richText.js";
-import { MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
-import { useArticleCatalog } from "../services/articles.js";
+import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
+import { articleField, useArticleCatalog } from "../services/articles.js";
 import { useInquiryCatalog } from "../services/inquiries.js";
 import { apiRequest, dataErrors } from "../services/api.js";
 import { industryField, useIndustryCatalog } from "../services/industries.js";
@@ -224,9 +224,7 @@ function warnBeforeUnload(event) { if (hasUnsavedChanges.value || editorBusy.val
 onMounted(() => window.addEventListener('beforeunload', warnBeforeUnload));
 onBeforeUnmount(() => window.removeEventListener('beforeunload', warnBeforeUnload));
 function field(item, key) {
-  return locale.value === "zh"
-    ? item[`${key}Zh`] || item[`${key}En`] || item[key] || ""
-    : item[`${key}En`] || item[key] || "";
+  return (tab.value === "articles" ? articleField : localizedField)(item, key, locale.value);
 }
 function industryNames(ids) {
   return (ids || []).map((id) => industryField(industryRecords.value.find((item) => item.id === id), 'title', locale.value))
@@ -505,7 +503,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                   ></el-image>
                   <div>
                     <strong>{{ field(row, "title") }}</strong
-                    ><small>{{ field(row, "summary") }}</small>
+                    ><small v-if="field(row, 'summary')">{{ field(row, "summary") }}</small>
                     <div v-if="contentNeedsAttention(row, tab)" class="bilingual-badges"><el-tag size="small" type="warning" effect="plain">待补充：{{ contentMissingFields(row, tab).join('、') }}</el-tag></div>
                   </div>
                 </div></template

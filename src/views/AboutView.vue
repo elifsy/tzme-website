@@ -8,6 +8,7 @@ import SeoKnowledgeSection from "../components/SeoKnowledgeSection.vue";
 import SiteNav from "../components/SiteNav.vue";
 import GlobalReachSection from "../components/GlobalReachSection.vue";
 import AboutCompanyIntro from "../components/AboutCompanyIntro.vue";
+import CompanyCulture from "../components/CompanyCulture.vue";
 import ManufacturingQuality from "../components/ManufacturingQuality.vue";
 import PdfFirstPage from "../components/PdfFirstPage.vue";
 import CertificateDetailsDialog from "../components/CertificateDetailsDialog.vue";
@@ -22,7 +23,6 @@ import ManufacturingFilm from "../components/ManufacturingFilm.vue";
 import PartnersSection from "../components/PartnersSection.vue";
 import { usePartners } from "../services/partners.js";
 import { isPdf } from "../data/jDesign.js";
-import { jCompany } from "../data/jCompany.js";
 const page = ref(null);
 useDesignPage("hc-about", page);
 const { locale } = useI18n({ useScope: "global" });
@@ -148,8 +148,7 @@ onMounted(() => {
         class="company-section-nav hc-w"
         aria-label="关于我们页面导航"
       >
-        <span>继续了解</span
-        ><a v-if="capabilities?.enabled" href="#manufacturing-quality"
+        <a v-if="capabilities?.enabled" href="#manufacturing-quality"
           >制造与质量 <i aria-hidden="true">↗</i></a
         ><a href="#manufacturing-bases">制造基地 <i aria-hidden="true">↗</i></a
         ><a href="#certificates-title">资质认证 <i aria-hidden="true">↗</i></a
@@ -353,25 +352,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <section class="refine-values hc-w">
-        <div>
-          <span class="refine-eyebrow">企业愿景</span>
-          <h3>{{ locale === "zh" ? jCompany.visionZh : jCompany.visionEn }}</h3>
-        </div>
-        <div>
-          <span class="refine-eyebrow">我们的使命</span>
-          <h3>
-            {{ locale === "zh" ? jCompany.missionZh : jCompany.missionEn }}
-          </h3>
-        </div>
-        <p class="refine-company-values">
-          {{
-            locale === "zh"
-              ? "价值观 / " + jCompany.valuesZh
-              : "Values / " + jCompany.valuesEn
-          }}
-        </p>
-      </section>
+      <CompanyCulture :locale-code="locale" />
       <GlobalReachSection :configuration="globalReach" />
 
       <SeoKnowledgeSection />
@@ -392,15 +373,11 @@ onMounted(() => {
 .company-section-nav {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 18px 42px;
   padding-block: 21px;
   border-block: 1px solid #d7e5e9;
-}
-.company-section-nav > span {
-  margin-right: auto;
-  color: #78909b;
-  font-size: 11px;
 }
 .company-section-nav > a {
   display: inline-flex;
@@ -424,11 +401,7 @@ onMounted(() => {
 @media (max-width: 700px) {
   .company-section-nav {
     gap: 16px;
-    justify-content: space-between;
     padding-block: 18px;
-  }
-  .company-section-nav > span {
-    display: none;
   }
   .company-section-nav > a {
     gap: 7px;

@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { localizedField } from "../services/catalog.js";
-import { articleDate } from "../services/articles.js";
+import { articleDate, articleField } from "../services/articles.js";
 import { sanitizeRichText } from "../utils/richText.js";
 import { responsiveImage } from "../utils/responsiveImages.js";
 import { articleAttachments, attachmentSize } from "../utils/articleAttachments.js";
+import { isDownloadArticle } from "../utils/articleCategories.js";
 
 const props = defineProps({
   record: { type: Object, required: true },
@@ -13,8 +13,9 @@ const props = defineProps({
 });
 const emit = defineEmits(["contact"]);
 const { locale } = useI18n({ useScope: "global" });
-const field = (name) => localizedField(props.record, name, locale.value);
+const field = (name) => articleField(props.record, name, locale.value);
 const attachments = computed(() => articleAttachments(props.record));
+const downloadArticle = computed(() => isDownloadArticle(props.record));
 const body = computed(() => {
   const template = document.createElement("template");
   template.innerHTML = sanitizeRichText(field("content") || field("summary"), {
@@ -42,14 +43,14 @@ function scrollToHeading(id) {
       <slot name="back" />
       <div
         class="refine-article-head-grid"
-        :class="{ 'without-cover': !record.image }"
+        :class="{ 'without-cover': !record.image, 'article-head-downloads': downloadArticle }"
       >
-        <div>
+        <div class="article-heading-copy">
           <div class="news-meta">
             <el-tag effect="plain">{{ field("category") || "新闻资讯" }}</el-tag
             ><time :datetime="record.date">{{ articleDate(record.date) }}</time>
           </div>
-          <h1 class="site-page-title">
+          <h1 class="site-page-title" :title="downloadArticle ? field('title') : undefined">
             {{ field("title") || (preview ? "新闻标题" : "") }}
           </h1>
           <p
@@ -117,6 +118,8 @@ function scrollToHeading(id) {
 </template>
 
 <style scoped>
+.article-head-downloads .article-heading-copy { min-width: 0; container-type: inline-size; }
+.article-intro .article-head-downloads .article-heading-copy h1 { max-width: 100%; font-size: clamp(20px, 7.5cqi, 38px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .article-downloads { margin-top:40px; padding-top:28px; border-top:1px solid #cce0e6; }
 .article-downloads h2 { margin:10px 0; font-size:24px; color:#123e53; }
 .article-downloads > p { margin:0 0 22px; color:#668594; font-size:14px; line-height:1.8; }
@@ -128,4 +131,10 @@ function scrollToHeading(id) {
 .article-download-file:hover { color:#00879a; }
 .article-download-file[aria-disabled='true'] { cursor:default; }
 @media(max-width:700px) { .article-download-file { gap:12px; } .article-download-action { gap:6px; } .article-download-name { font-size:14px; } }
+@media (max-width: 700px) {
+  .article-contact { display: none; }
+}
+@media (max-width: 640px) {
+  .article-sidebar { display: none; }
+}
 </style>
