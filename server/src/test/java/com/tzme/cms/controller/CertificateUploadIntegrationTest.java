@@ -81,6 +81,63 @@ class CertificateUploadIntegrationTest {
             .andExpect(status().isOk()).andExpect(jsonPath("image").value(pdf)).andExpect(jsonPath("certificateNo").value("CERT-001"));
         mvc.perform(get("/api/certifications")).andExpect(status().isOk()).andExpect(jsonPath("$[0].image").value(pdf)).andExpect(jsonPath("$[0].issuerZh").value("认证机构"));
     }
+    @Test void homeSelectionPersistsAndDoesNotControlPublication() throws Exception {
+        var record = new LinkedHashMap<String, Object>(Map.of("id", "home-selection", "titleZh", "首页资质测试",
+                "issuerZh", "认证机构", "sortOrder", 25, "status", "published", "image", "/assets/certificate.pdf"));
+        mvc.perform(post("/api/certifications").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isCreated()).andExpect(jsonPath("showOnHome").value(false));
+        record.put("showOnHome", true);
+        mvc.perform(put("/api/certifications/home-selection").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isOk()).andExpect(jsonPath("showOnHome").value(true));
+        mvc.perform(get("/api/certifications")).andExpect(jsonPath("$[0].showOnHome").value(true));
+        assertThat(certificates.findById("home-selection").orElseThrow().isShowOnHome()).isTrue();
+
+        record.put("status", "draft");
+        mvc.perform(put("/api/certifications/home-selection").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isOk()).andExpect(jsonPath("showOnHome").value(false));
+        mvc.perform(get("/api/certifications")).andExpect(jsonPath("$.length()").value(0));
+        mvc.perform(get("/api/certifications").with(authentication(auth())))
+                .andExpect(jsonPath("$[0].showOnHome").value(false));
+        assertThat(certificates.findById("home-selection").orElseThrow().isShowOnHome()).isFalse();
+
+        record.put("status", "published");
+        record.put("showOnHome", false);
+        mvc.perform(put("/api/certifications/home-selection").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isOk()).andExpect(jsonPath("showOnHome").value(false));
+        mvc.perform(get("/api/certifications")).andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].showOnHome").value(false)).andExpect(jsonPath("$[0].issuerZh").value("认证机构"));
+    }
+    @Test void draftCannotEnableHomeDisplayEvenWhenSentDirectlyToApi() throws Exception {
+        var record = Map.of("id", "draft-home-selection", "titleZh", "草稿资质", "status", "draft", "showOnHome", true);
+        mvc.perform(post("/api/certifications").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isCreated()).andExpect(jsonPath("showOnHome").value(false));
+        mvc.perform(put("/api/certifications/draft-home-selection").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isOk()).andExpect(jsonPath("showOnHome").value(false));
+        assertThat(certificates.findById("draft-home-selection").orElseThrow().isShowOnHome()).isFalse();
+    }
+    @Test void certificateValidationReturnsTheSpecificProblem() throws Exception {
+        var record = new LinkedHashMap<String, Object>(Map.of("id", "invalid-certificate", "titleZh", "资质测试",
+                "status", "published", "image", ""));
+        mvc.perform(post("/api/certifications").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value("请先上传证书 PDF 或图片，再发布资质认证。"));
+        record.put("titleZh", " ");
+        mvc.perform(post("/api/certifications").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("message").value("请填写资质名称（中文）。"));
+        record.put("titleZh", "资质测试"); record.put("image", "/assets/certificate.pdf");
+        record.put("issuedAt", "2026-11-04"); record.put("expiresAt", "2026-11-03");
+        mvc.perform(post("/api/certifications").with(authentication(auth())).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(record)))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("message").value("证书到期日期不能早于颁发日期。"));
+    }
     @Test void invalidEmptyAndOversizedFilesNeverReachStorage() throws Exception {
         long before;
         Files.createDirectories(UPLOADS.resolve("certificates"));

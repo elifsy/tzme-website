@@ -10,6 +10,7 @@ import AdminSaveBar from "./AdminSaveBar.vue";
 import { useAdminEditorState } from "../composables/useAdminEditorState.js";
 
 import ImageUpload from "./ImageUpload.vue";
+import VideoUpload from "./VideoUpload.vue";
 import AboutTzmeContent from "./AboutTzmeContent.vue";
 import AboutCompanyIntro from "./AboutCompanyIntro.vue";
 import { editorLocales as availableLocales } from "../i18n/locales/index.js";
@@ -18,6 +19,7 @@ import {
   aboutSettingsDraft,
   aboutText,
   validAboutImage,
+  validAboutVideo,
 } from "../data/aboutTzme.js";
 import { loadAboutTzme, saveAboutTzme } from "../services/aboutTzme.js";
 import "../style/admin-editor.css";
@@ -27,7 +29,9 @@ const form = ref(null);
 const original = ref("");
 const loading = ref(false);
 const saving = ref(false);
-const uploading = ref(false);
+const imageUploading = ref(false);
+const videoUploading = ref(false);
+const uploading = computed(() => imageUploading.value || videoUploading.value);
 const error = ref(false);
 const editingPage = ref("home");
 const route = useRoute();
@@ -84,6 +88,7 @@ function validate() {
     if (value.entries.length !== ABOUT_ENTRY_COUNT)
       return t("aboutTzmeAdmin.invalidEntries");
     if (!validAboutImage(value.image)) return t("aboutTzmeAdmin.invalidImage");
+    if (!validAboutVideo(value.video)) return "请选择已上传的 MP4 或 WebM 视频。";
     for (const { code, label } of availableLocales) {
       const required = (field) => {
         editingPage.value = pageKey;
@@ -287,7 +292,7 @@ defineExpose({ load, publicPath });
             </AdminEditorPanel>
             <AdminEditorPanel
               step="03"
-              :title="$t('aboutTzmeAdmin.imageSettings')"
+              :title="editingPage === 'about' ? '图片与视频配置' : $t('aboutTzmeAdmin.imageSettings')"
             >
               <el-form-item
                 :label="
@@ -302,9 +307,9 @@ defineExpose({ load, publicPath });
                   v-model="section.image"
                   :kind="editingPage === 'home' ? 'aboutHome' : 'aboutIntro'"
                   :context-key="editingPage"
-                  :disabled="saving"
+                  :disabled="saving || uploading"
                   :alt="aboutText(section.imageAlt, editingLocale)"
-                  @uploading="uploading = $event"
+                  @uploading="imageUploading = $event"
                 />
               </el-form-item>
               <el-form-item :label="$t('aboutTzmeAdmin.fields.imageAlt')"
@@ -313,6 +318,10 @@ defineExpose({ load, publicPath });
                   maxlength="255"
                   show-word-limit
               /></el-form-item>
+              <el-form-item v-if="editingPage === 'about'" label="企业介绍视频（选填）">
+                <VideoUpload v-model="section.video" :poster="section.image" :disabled="saving || imageUploading" @uploading="videoUploading = $event" />
+                <p class="cms-field-hint">有视频时优先静音自动循环播放；没有视频时显示上方图片。图片也用作视频封面和播放失败时的备用画面。上传后点击保存才会应用到官网。</p>
+              </el-form-item>
             </AdminEditorPanel>
           </div>
           <aside class="about-settings-preview">

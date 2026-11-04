@@ -54,8 +54,9 @@ public class AboutTzmeController {
         if (!(node instanceof ObjectNode))
             invalid("Invalid About TZME section");
         var value = (ObjectNode) node;
+        if (!value.has("video")) value.put("video", "");
         exactKeys(value, Set.of("kicker", "titleLine1", "titleLine2", "description", "description2", "image",
-                "imageAlt", "entries"));
+                "imageAlt", "entries", "video"));
         translated(value.path("kicker"), 100, true, false);
         translated(value.path("titleLine1"), 120, true, false);
         translated(value.path("titleLine2"), 120, false, false);
@@ -71,6 +72,12 @@ public class AboutTzmeController {
         if (!path.isEmpty() && !uploaded && !preset)
             invalid("Select an uploaded image");
         value.put("image", path);
+        if (!value.path("video").isTextual()) invalid("请选择已上传的 MP4 或 WebM 视频。");
+        String video = value.path("video").asText().trim();
+        if (!video.isEmpty() && !video.matches("/api/uploads/videos/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(mp4|webm)")
+                && !video.matches("/assets/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\\.(mp4|webm)"))
+            invalid("请选择已上传的 MP4 或 WebM 视频。");
+        value.put("video", video);
         var entries = value.path("entries");
         if (!entries.isArray() || entries.size() != ENTRY_COUNT)
             invalid("Each section must contain exactly four entries");

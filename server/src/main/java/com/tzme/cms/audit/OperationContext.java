@@ -52,6 +52,7 @@ final class OperationContext {
             Map.entry("/api/analytics/config", "analytics"));
         if (settings.containsKey(path)) return new OperationContext(settings.get(path), "configure");
         if (path.equals("/api/uploads/certificates")) return new OperationContext("certifications", "upload");
+        if (path.equals("/api/uploads/videos")) return new OperationContext("about", "upload");
         if (path.equals("/api/article-attachments")) return new OperationContext("articles", "upload");
         if (path.startsWith("/api/uploads/")) return new OperationContext("uploads", "upload");
         return operation;

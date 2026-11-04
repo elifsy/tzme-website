@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS certifications (
   expires_at DATE COMMENT '证书到期日期',
   image VARCHAR(500) COMMENT '证书图片地址，可使用站内路径或完整网址',
   status VARCHAR(255) NOT NULL COMMENT '发布状态：published 已发布，draft 草稿，deleted 已删除',
-  sort_order INT NOT NULL COMMENT '资质认证展示顺序，数值越小越靠前'
+  sort_order INT NOT NULL COMMENT '资质认证展示顺序，数值越小越靠前',
+  show_on_home BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否选择在首页展示，实际展示还需已发布且有证书文件'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='企业资质认证，中英文证书信息';
 
 CREATE TABLE IF NOT EXISTS projects (

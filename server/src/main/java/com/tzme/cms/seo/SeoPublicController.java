@@ -14,7 +14,7 @@ public class SeoPublicController {
     private final SeoSettingsService settings;
     private final SeoHtmlRenderer renderer;
     public SeoPublicController(SeoPageService pages,PublicSiteData data,SeoSettingsService settings,SeoHtmlRenderer renderer){this.pages=pages;this.data=data;this.settings=settings;this.renderer=renderer;}
-    @GetMapping(value="/robots.txt",produces="text/plain;charset=UTF-8") public String robots(){return "User-agent: *\nAllow: /\nAllow: /api/uploads/images/\nDisallow: /admin\nDisallow: /api/\nDisallow: /docs/\nDisallow: /database/\nDisallow: /server/\nDisallow: /scripts/\nDisallow: /src/\nDisallow: /node_modules/\n\nSitemap: "+settings.get().path("siteUrl").asText()+"/sitemap.xml\n";}
+    @GetMapping(value="/robots.txt",produces="text/plain;charset=UTF-8") public String robots(){return "User-agent: *\nAllow: /\nAllow: /api/uploads/images/\nAllow: /api/uploads/videos/\nDisallow: /admin\nDisallow: /api/\nDisallow: /docs/\nDisallow: /database/\nDisallow: /server/\nDisallow: /scripts/\nDisallow: /src/\nDisallow: /node_modules/\n\nSitemap: "+settings.get().path("siteUrl").asText()+"/sitemap.xml\n";}
     @GetMapping(value="/sitemap.xml",produces="application/xml;charset=UTF-8") public String sitemap(){
         String base=settings.get().path("siteUrl").asText();var xml=new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
         for(var link:pages.links(data.read()))xml.append("<url><loc>").append(HtmlUtils.htmlEscape(base+link.path(),"UTF-8")).append("</loc></url>\n");

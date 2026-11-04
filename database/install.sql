@@ -1706,3 +1706,32 @@ CREATE TABLE IF NOT EXISTS seo_rank_snapshots (
  CONSTRAINT uk_rank_observation UNIQUE (keyword_id, observed_at),
  CONSTRAINT fk_rank_keyword FOREIGN KEY (keyword_id) REFERENCES seo_rank_keywords(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Run after certificate seeds. Preserve all subsequent administrator choices.
+SET NAMES utf8mb4;
+SET @tzme_cert_home_column_exists = EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='certifications' AND column_name='show_on_home');
+SET @tzme_cert_home_sql = IF(@tzme_cert_home_column_exists, 'SELECT 1', 'ALTER TABLE certifications ADD COLUMN show_on_home BOOLEAN NOT NULL DEFAULT FALSE COMMENT ''是否选择在首页展示，实际展示还需已发布且有证书文件''');
+PREPARE tzme_cert_home_statement FROM @tzme_cert_home_sql;
+EXECUTE tzme_cert_home_statement;
+DEALLOCATE PREPARE tzme_cert_home_statement;
+
+START TRANSACTION;
+UPDATE certifications SET show_on_home = TRUE
+WHERE id IN ('iso-9001', 'iso-14001', 'iso-45001', 'en-1090-2', 'iso-3834')
+  AND NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-11-04-certification-home-v1');
+INSERT INTO app_migrations (id) SELECT '2026-11-04-certification-home-v1'
+WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-11-04-certification-home-v1');
+COMMIT;
+
+-- Add the existing manufacturing film once; preserve text, images and later video choices.
+SET NAMES utf8mb4;
+START TRANSACTION;
+UPDATE site_settings SET configuration = JSON_SET(configuration, '$.home.video', '')
+WHERE id='about-tzme' AND JSON_CONTAINS_PATH(configuration, 'one', '$.home.video')=0
+  AND NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-11-04-about-intro-video-v1');
+UPDATE site_settings SET configuration = JSON_SET(configuration, '$.about.video', '/assets/tzme-j/videos/greenland-aerial.mp4')
+WHERE id='about-tzme' AND JSON_CONTAINS_PATH(configuration, 'one', '$.about.video')=0
+  AND NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-11-04-about-intro-video-v1');
+INSERT INTO app_migrations (id) SELECT '2026-11-04-about-intro-video-v1'
+WHERE NOT EXISTS (SELECT 1 FROM app_migrations WHERE id='2026-11-04-about-intro-video-v1');
+COMMIT;

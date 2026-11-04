@@ -1,8 +1,8 @@
 <script setup>
-import { responsiveImage } from "../utils/responsiveImages.js";
 import { computed } from "vue";
 import { aboutText } from "../data/aboutTzme.js";
 import CompanyStatistics from "./CompanyStatistics.vue";
+import CompanyIntroMedia from "./CompanyIntroMedia.vue";
 
 const props = defineProps({
   configuration: { type: Object, required: true },
@@ -23,7 +23,7 @@ const chapterTitles = ["企业沿革", "制造布局", "产品与全球业务"];
     <section class="company-hero" aria-labelledby="about-page-title">
       <div
         class="hc-w company-hero-grid"
-        :class="{ 'without-photo': !configuration.image }"
+        :class="{ 'without-photo': !configuration.image && !configuration.video }"
       >
         <div class="company-hero-copy">
           <span class="company-eyebrow"
@@ -42,18 +42,8 @@ const chapterTitles = ["企业沿革", "制造布局", "产品与全球业务"];
             >
           </div>
         </div>
-        <figure v-if="configuration.image" class="company-hero-photo">
-          <img
-            v-bind="
-              responsiveImage(
-                configuration.image,
-                '(max-width:700px) 100vw, 54vw',
-              )
-            "
-            :alt="field('imageAlt') || '制造基地实景'"
-            fetchpriority="high"
-            decoding="async"
-          />
+        <figure v-if="configuration.image || configuration.video" class="company-hero-photo">
+          <CompanyIntroMedia :video="configuration.video || ''" :image="configuration.image" :alt="field('imageAlt') || '制造基地实景'" />
           <figcaption>
             <span>TIANJIN / MANUFACTURING</span
             ><span>从制造基地，到全球工程现场。</span>
@@ -187,13 +177,15 @@ const chapterTitles = ["企业沿革", "制造布局", "产品与全球业务"];
   margin: 0;
   overflow: hidden;
 }
-.company-hero-photo > img {
+.company-hero-photo > img,
+.company-hero-photo > :deep(.company-intro-video) {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 58%;
 }
+.company-hero-photo > :deep(.company-intro-video) ~ figcaption { display:none; }
 .company-hero-photo figcaption {
   position: absolute;
   inset: auto 0 0;

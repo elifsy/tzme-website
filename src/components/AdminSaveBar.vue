@@ -18,7 +18,7 @@ defineEmits(["save"]);
       <div>
         <strong>{{
           busy
-            ? "图片正在上传"
+            ? "文件正在上传"
             : saving
               ? "正在保存"
               : dirty

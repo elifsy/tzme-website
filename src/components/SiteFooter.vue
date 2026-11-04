@@ -130,7 +130,6 @@ onMounted(() => {
         </div>
         <div class="site-footer-meta">
           <router-link to="/site-map">网站地图</router-link>
-          <span>{{ $t("contactUi.footerTerms") }}</span>
         </div>
       </div>
     </div>

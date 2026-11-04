@@ -4,11 +4,14 @@ import com.tzme.cms.model.Certification;
 import com.tzme.cms.auth.ApiAccess;
 import com.tzme.cms.repository.CertificationRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,7 +46,7 @@ public class CertificationController {
             input.setId("cert-" + UUID.randomUUID());
         }
         if (repository.existsById(input.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Certification already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "该资质记录已存在，请刷新列表后重试。");
         }
         return repository.save(input);
     }
@@ -52,7 +55,7 @@ public class CertificationController {
     public Certification update(@PathVariable String id, @RequestBody Certification input) {
         validate(input);
         Certification existing = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "该资质已删除或不存在，请刷新列表后重试。"));
         existing.setTitleEn(input.getTitleEn());
         existing.setTitleZh(input.getTitleZh());
         existing.setIssuerEn(input.getIssuerEn());
@@ -65,6 +68,7 @@ public class CertificationController {
         existing.setImage(input.getImage());
         existing.setStatus(input.getStatus());
         existing.setSortOrder(input.getSortOrder());
+        existing.setShowOnHome(input.isShowOnHome());
         return repository.save(existing);
     }
 
@@ -78,12 +82,13 @@ public class CertificationController {
             return Certification.deletedMarker(id);
         });
         existing.setStatus("deleted");
+        existing.setShowOnHome(false);
         repository.save(existing);
     }
 
     private void validate(Certification input) {
         if (input.getTitleZh() == null || input.getTitleZh().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A Chinese title is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请填写资质名称（中文）。");
         }
         input.setTitleEn(input.getTitleEn() == null ? "" : input.getTitleEn().trim());
         input.setTitleZh(input.getTitleZh().trim());
@@ -91,7 +96,10 @@ public class CertificationController {
             input.setStatus("published");
         }
         if (!"published".equals(input.getStatus()) && !"draft".equals(input.getStatus())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid publication status");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请选择有效的发布状态：已发布或草稿。");
+        }
+        if (!"published".equals(input.getStatus())) {
+            input.setShowOnHome(false);
         }
         if (input.getImage() != null) {
             input.setImage(input.getImage().trim());
@@ -99,11 +107,17 @@ public class CertificationController {
         if ("published".equals(input.getStatus())
                 && (input.getImage() == null || input.getImage().isBlank())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A certificate PDF or image is required before publishing");
+                    "请先上传证书 PDF 或图片，再发布资质认证。");
         }
         if (input.getIssuedAt() != null && input.getExpiresAt() != null
                 && input.getExpiresAt().isBefore(input.getIssuedAt())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Expiry date must follow issue date");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "证书到期日期不能早于颁发日期。");
         }
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> validationError(ResponseStatusException error) {
+        return ResponseEntity.status(error.getStatusCode()).body(Map.of("message",
+                error.getReason() == null ? "资质操作未完成，请刷新列表后重试。" : error.getReason()));
     }
 }

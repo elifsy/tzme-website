@@ -18,6 +18,12 @@ export const validAboutImage = (value) =>
       value,
     ));
 
+export const validAboutVideo = (value) =>
+  typeof value === "string" &&
+  (value === "" ||
+    /^\/api\/uploads\/videos\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(mp4|webm)$/.test(value) ||
+    /^\/assets\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.(mp4|webm)$/.test(value));
+
 export function isAboutSettings(value) {
   const translated = (item) =>
     item &&
@@ -31,6 +37,7 @@ export function isAboutSettings(value) {
         section &&
         aboutTextFields.every((field) => translated(section[field])) &&
         validAboutImage(section.image) &&
+        (section.video === undefined || validAboutVideo(section.video)) &&
         Array.isArray(section.entries) &&
         section.entries.length === ABOUT_ENTRY_COUNT &&
         section.entries.every(
@@ -48,6 +55,7 @@ export function isAboutSettings(value) {
 export function aboutSettingsDraft(value, localeCodes) {
   const draft = JSON.parse(JSON.stringify(value));
   for (const section of Object.values(draft)) {
+    section.video ??= "";
     for (const text of [
       ...aboutTextFields.map((key) => section[key]),
       ...section.entries.flatMap((entry) => [

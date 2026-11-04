@@ -145,7 +145,7 @@ export const adminModules = {
     group: "company",
     icon: "OfficeBuilding",
     description:
-      "分别维护首页企业简介和关于我们页；每处文案、统计和图片独立配置。",
+      "分别维护首页企业简介和关于我们页；关于我们首屏可上传视频，优先静音自动播放。",
     steps: ["选择展示页面", "文案、统计与图片", "预览并保存"],
     related: ["contact", "certifications", "home"],
     preview: "/about",
@@ -154,9 +154,9 @@ export const adminModules = {
     label: "资质与质量体系",
     group: "company",
     icon: "Medal",
-    description: "维护证书图片或 PDF、名称及有效期，发布后展示在关于我们页面。",
-    steps: ["名称与有效期", "证书图片或 PDF", "预览并发布"],
-    related: ["capabilities", "about"],
+    description: "维护证书图片或 PDF、名称及有效期；选择哪些资质同时展示在首页。",
+    steps: ["名称与有效期", "证书文件与首页展示", "排序并发布"],
+    related: ["home", "capabilities", "about"],
     preview: "/about#certificates-title",
   },
   contact: {

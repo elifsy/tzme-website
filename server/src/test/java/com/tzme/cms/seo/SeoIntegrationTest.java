@@ -46,6 +46,8 @@ class SeoIntegrationTest {
     @Autowired
     IndustryRepository industries;
     @Autowired
+    CertificationRepository certificates;
+    @Autowired
     AdminAccountRepository accounts;
     @Autowired
     SeoSettingsService seo;
@@ -74,6 +76,7 @@ class SeoIntegrationTest {
         settings.deleteAll();
         content.deleteAll();
         industries.deleteAll();
+        certificates.deleteAll();
         accounts.deleteAll();
         Files.writeString(FRONTEND.resolve("index.html"),
                 "<!doctype html><html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><!--site:head:start--><title>old</title><!--site:head:end--></head><body><div id=\"app\"><!--site:body--></div><!--site:bootstrap--></body></html>");
@@ -120,6 +123,47 @@ class SeoIntegrationTest {
         node.put("status", status);
         node.putArray("industries").add("ports");
         return content.saveAndFlush(mapper.treeToValue(node, Content.class));
+    }
+
+    @Test
+    void homeHtmlUsesSelectedPublishedCertificatesAndAboutRetainsAllPublishedCertificates() throws Exception {
+        for (var entry : List.of(
+                "{\"id\":\"home-cert\",\"titleZh\":\"首页选中资质\",\"showOnHome\":true,\"status\":\"published\"}",
+                "{\"id\":\"about-cert\",\"titleZh\":\"仅关于我们资质\",\"showOnHome\":false,\"status\":\"published\"}",
+                "{\"id\":\"draft-cert\",\"titleZh\":\"尚未发布资质\",\"showOnHome\":true,\"status\":\"draft\"}")) {
+            var node = (ObjectNode) mapper.readTree(entry);
+            node.put("titleEn", ""); node.put("image", "/assets/test-certificate.pdf");
+            certificates.saveAndFlush(mapper.treeToValue(node, Certification.class));
+        }
+        String home = mvc.perform(get("/")).andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(java.nio.charset.StandardCharsets.UTF_8).split("</main>", 2)[0];
+        assertThat(home).contains("我们目前拥有的资质", "首页选中资质")
+                .doesNotContain("仅关于我们资质", "尚未发布资质");
+        String about = mvc.perform(get("/about")).andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(java.nio.charset.StandardCharsets.UTF_8).split("</main>", 2)[0];
+        assertThat(about).contains("首页选中资质", "仅关于我们资质").doesNotContain("尚未发布资质");
+        var selected = certificates.findById("home-cert").orElseThrow();
+        selected.setShowOnHome(false); certificates.saveAndFlush(selected);
+        String emptyHome = mvc.perform(get("/")).andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(java.nio.charset.StandardCharsets.UTF_8).split("</main>", 2)[0];
+        assertThat(emptyHome).doesNotContain("我们目前拥有的资质", "首页选中资质", "尚未发布资质");
+    }
+
+    @Test
+    void aboutInitialHtmlPrefersVideoAndFallsBackToImageWhenRemoved() throws Exception {
+        var configuration = (ObjectNode) mapper.readTree(settings.findById("about-tzme").orElseThrow().getConfiguration());
+        var about = (ObjectNode) configuration.path("about");
+        about.put("image", "/assets/factory.jpg");
+        about.put("video", "/assets/tzme-j/videos/greenland-aerial.mp4");
+        setting("about-tzme", configuration);
+        String videoHtml = mvc.perform(get("/about")).andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(videoHtml).contains("<video class=\"sd-hero-image\"", "autoplay muted loop playsinline", "poster=\"/assets/factory.jpg\"");
+        about.put("video", ""); setting("about-tzme", configuration);
+        String imageHtml = mvc.perform(get("/about")).andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        assertThat(imageHtml).contains("<img class=\"sd-hero-image\" src=\"/assets/factory.jpg\"")
+                .doesNotContain("<video class=\"sd-hero-image\"");
     }
 
     @Test

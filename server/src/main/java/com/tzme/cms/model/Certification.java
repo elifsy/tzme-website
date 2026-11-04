@@ -41,6 +41,9 @@ public class Certification {
     @Column(nullable = false)
     private int sortOrder;
 
+    @Column(nullable = false)
+    private boolean showOnHome;
+
     protected Certification() {
     }
 
@@ -79,4 +82,6 @@ public class Certification {
     public void setStatus(String value) { status = value; }
     public int getSortOrder() { return sortOrder; }
     public void setSortOrder(int value) { sortOrder = value; }
+    public boolean isShowOnHome() { return showOnHome; }
+    public void setShowOnHome(boolean value) { showOnHome = value; }
 }

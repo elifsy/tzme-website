@@ -46,7 +46,7 @@ const modules = [
   },
   {
     title: "资质与质量体系",
-    description: "维护关于我们页的资质资料，首页保留品质入口。",
+    description: "维护资质资料，在资质管理中勾选首页展示，按排序值显示。",
     to: "/admin/certifications",
     action: "维护资质",
   },

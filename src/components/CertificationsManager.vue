@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Delete, Edit, Promotion } from "@element-plus/icons-vue";
@@ -12,13 +12,16 @@ import { apiRequest } from "../services/api.js";
 import { isPdf } from "../data/jDesign.js";
 
 const { t, locale } = useI18n({ useScope: "global" });
-const { certifications: records, loadCertifications } =
+const { certifications: records, homeCertifications, loadCertifications } =
   useCertificationCatalog();
 const loading = ref(false);
 const saving = ref(false);
+const homeSavingId = ref("");
 const imageUploading = ref(false);
 const dialogOpen = ref(false);
 const editingLocale = ref("zh");
+const editorForm = ref(null);
+const validationRequested = ref(false);
 const hasCertificateImage = (item) =>
   typeof item.image === "string" && Boolean(item.image.trim());
 const publishedCount = computed(
@@ -46,9 +49,14 @@ const form = reactive({
   expiresAt: "",
   image: "",
   sortOrder: 10,
+  showOnHome: false,
   status: "published",
 });
+watch(() => form.status, (status) => {
+  if (status !== "published") form.showOnHome = false;
+}, { flush: "sync" });
 const editorOriginal = ref("");
+const formErrors = computed(() => validationRequested.value ? certificateProblems(form) : {});
 const editorDirty = computed(
   () => dialogOpen.value && JSON.stringify(form) !== editorOriginal.value,
 );
@@ -65,14 +73,61 @@ function field(item, name) {
     : item[`${name}En`] || "";
 }
 
+function certificateProblems(record) {
+  const problems = {};
+  if (!record.titleZh?.trim()) problems.titleZh = "请填写资质名称（中文）。";
+  if (record.status === "published" && !hasCertificateImage(record))
+    problems.image = t("admin.certImageRequired");
+  if (record.issuedAt && record.expiresAt && record.expiresAt < record.issuedAt)
+    problems.expiresAt = t("admin.certInvalidDateRange");
+  return problems;
+}
+
+async function showValidationProblem(record, problems) {
+  if (!dialogOpen.value) openEditor(record);
+  validationRequested.value = true;
+  const message = Object.values(problems)[0];
+  const title = field(record, "title");
+  ElMessage.warning(title ? `“${title}”：${message}` : message);
+  await nextTick();
+  focusValidationProblem();
+}
+
+function focusValidationProblem() {
+  const name = Object.keys(formErrors.value)[0];
+  if (!name) return;
+  const element = editorForm.value?.$el.querySelector(`[data-cert-field="${name}"]`);
+  element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  element?.querySelector('input:not([type="file"]):not([type="hidden"]), button')?.focus({ preventScroll: true });
+}
+
+function showRequestError(error, action) {
+  if ([400, 409, 422].includes(error.status)) {
+    ElMessage.warning(error.message && !/^HTTP \d+$/.test(error.message)
+      ? error.message : "资质资料不完整或格式有误，请检查名称、证书文件及有效期。");
+  } else if (error.status === 404) {
+    ElMessage.warning("该资质已删除或不存在，请刷新列表后重试。");
+  } else if (error.status === 401) {
+    ElMessage.warning("登录已过期，请重新登录后操作。");
+  } else if (error.status === 403) {
+    ElMessage.warning("当前操作未获授权，请刷新页面后重试。");
+  } else {
+    ElMessage.error(`资质${action}失败，${error.status ? "服务暂不可用" : "网络连接异常"}，请稍后重试。`);
+  }
+}
+
 async function load() {
   loading.value = true;
-  records.value = await loadCertifications();
-  loading.value = false;
+  try {
+    records.value = await loadCertifications();
+  } finally {
+    loading.value = false;
+  }
 }
 
 function openEditor(item = null) {
   editingLocale.value = "zh";
+  validationRequested.value = false;
   Object.assign(form, {
     id: item?.id || "",
     titleEn: item?.titleEn || "",
@@ -86,6 +141,7 @@ function openEditor(item = null) {
     expiresAt: item?.expiresAt || "",
     image: item?.image || "",
     sortOrder: Number(item?.sortOrder ?? (records.value.length + 1) * 10),
+    showOnHome: item?.status === "published" && item?.showOnHome === true,
     status: item?.status || "published",
   });
   editorOriginal.value = JSON.stringify(form);
@@ -93,6 +149,13 @@ function openEditor(item = null) {
 }
 
 async function persist(record, update) {
+  if (saving.value) return false;
+  const problems = certificateProblems(record);
+  if (Object.keys(problems).length) {
+    await showValidationProblem(record, problems);
+    return false;
+  }
+  saving.value = true;
   try {
     await apiRequest(
       "/api/certifications" +
@@ -109,27 +172,16 @@ async function persist(record, update) {
     await load();
     ElMessage.success(t("admin.contentSaved"));
     return true;
-  } catch {
-    ElMessage.error(t("admin.apiWriteFailed"));
+  } catch (error) {
+    showRequestError(error, "保存");
     return false;
+  } finally {
+    saving.value = false;
   }
 }
 
 async function save() {
   if (saving.value || imageUploading.value) return;
-  if (!form.titleZh.trim()) {
-    ElMessage.warning(t("admin.bothTitlesRequired"));
-    return;
-  }
-  if (form.issuedAt && form.expiresAt && form.expiresAt < form.issuedAt) {
-    ElMessage.warning(t("admin.certInvalidDateRange"));
-    return;
-  }
-  if (form.status === "published" && !hasCertificateImage(form)) {
-    ElMessage.warning(t("admin.certImageRequired"));
-    return;
-  }
-  saving.value = true;
   const record = {
     ...form,
     id: form.id || `cert-${Date.now()}`,
@@ -138,24 +190,31 @@ async function save() {
     image: form.image.trim(),
     sortOrder: Number(form.sortOrder) || 0,
   };
-  try {
-    if (await persist(record, Boolean(form.id))) dialogOpen.value = false;
-  } finally {
-    saving.value = false;
-  }
+  if (await persist(record, Boolean(form.id))) dialogOpen.value = false;
 }
 
 async function toggle(item) {
+  if (saving.value || loading.value) return;
   const record = {
     ...item,
     status: item.status === "published" ? "draft" : "published",
+    showOnHome: false,
   };
-  if (record.status === "published" && !hasCertificateImage(record)) {
-    ElMessage.warning(t("admin.certImageRequired"));
-    openEditor(record);
+  await persist(record, true);
+}
+
+async function setHomeDisplay(item, selected) {
+  if (saving.value || loading.value || item.showOnHome === selected) return;
+  if (item.status !== "published") {
+    ElMessage.warning("请先发布资质，再设置首页展示。");
     return;
   }
-  await persist(record, true);
+  homeSavingId.value = item.id;
+  try {
+    await persist({ ...item, showOnHome: selected }, true);
+  } finally {
+    homeSavingId.value = "";
+  }
 }
 
 async function remove(item) {
@@ -178,8 +237,8 @@ async function remove(item) {
     });
     await load();
     ElMessage.success(t("admin.contentDeleted"));
-  } catch {
-    ElMessage.error(t("admin.apiWriteFailed"));
+  } catch (error) {
+    showRequestError(error, "删除");
   }
 }
 
@@ -195,7 +254,8 @@ onMounted(load);
           <strong>{{ $t("admin.certifications") }}</strong>
           <small
             >{{ publishedCount }} {{ $t("admin.certPublishedCount") }} ·
-            {{ records.length }} {{ $t("admin.records") }}</small
+            {{ records.length }} {{ $t("admin.records") }} ·
+            {{ homeCertifications.length }} 项首页展示</small
           >
         </div>
         <el-button type="primary" @click="openEditor()">{{
@@ -286,6 +346,18 @@ onMounted(load);
           </el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="首页展示" width="110" align="center">
+        <template #default="{ row }">
+          <el-switch
+            :model-value="row.status === 'published' && row.showOnHome === true"
+            :loading="homeSavingId === row.id"
+            :disabled="saving || loading || row.status !== 'published'"
+            :title="row.status !== 'published' ? '请先发布资质，再设置首页展示' : undefined"
+            :aria-label="`${field(row, 'title')}：首页展示`"
+            @change="setHomeDisplay(row, $event)"
+          />
+        </template>
+      </el-table-column>
       <el-table-column
         :label="$t('admin.actions')"
         width="150"
@@ -361,9 +433,10 @@ onMounted(load);
     :dirty="editorDirty"
     :saving="saving"
     :save-disabled="imageUploading"
+    @opened="focusValidationProblem"
     @save="save"
   >
-    <el-form :model="form" label-position="top" @submit.prevent="save">
+    <el-form ref="editorForm" :model="form" label-position="top" @submit.prevent="save">
       <div class="cms-editor-layout">
         <div class="cms-editor-main">
           <AdminEditorPanel
@@ -380,7 +453,7 @@ onMounted(load);
             />
             <el-tabs v-model="editingLocale">
               <el-tab-pane :label="$t('admin.chinese')" name="zh">
-                <el-form-item :label="$t('admin.certNameZh')" required>
+                <el-form-item :label="$t('admin.certNameZh')" data-cert-field="titleZh" :error="formErrors.titleZh" required>
                   <el-input
                     v-model="form.titleZh"
                     maxlength="255"
@@ -427,7 +500,7 @@ onMounted(load);
                   :placeholder="$t('admin.certSelectDate')"
                 />
               </el-form-item>
-              <el-form-item :label="$t('admin.certExpiresAt')">
+              <el-form-item :label="$t('admin.certExpiresAt')" data-cert-field="expiresAt" :error="formErrors.expiresAt">
                 <el-date-picker
                   v-model="form.expiresAt"
                   type="date"
@@ -447,6 +520,8 @@ onMounted(load);
             <el-form-item
               :label="$t('admin.certImage')"
               :required="form.status === 'published'"
+              data-cert-field="image"
+              :error="formErrors.image"
             >
               <ImageUpload
                 v-model="form.image"
@@ -478,6 +553,12 @@ onMounted(load);
                       : "admin.editorDraftHint",
                   )
                 }}
+              </p>
+            </el-form-item>
+            <el-form-item label="首页展示">
+              <el-switch v-model="form.showOnHome" :disabled="saving || form.status !== 'published'" aria-label="首页展示" />
+              <p class="cms-field-hint">
+                {{ form.status !== 'published' ? '请先发布资质，再设置首页展示。改为草稿会自动取消首页展示。' : '开启后，该资质会按排序值展示在首页。改为草稿会自动取消；全部关闭时，首页隐藏资质栏。' }}
               </p>
             </el-form-item>
           </AdminEditorPanel>

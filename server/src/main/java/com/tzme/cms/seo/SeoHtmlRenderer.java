@@ -105,11 +105,19 @@ public class SeoHtmlRenderer {
         html.append(link("/about","了解制造基地与企业资料 →")).append("</section>");
         industries(html,data); html.append("<section class=\"sd-wrap sd-section\"><h2>行业装备与产品</h2>"); cards(html,data.products().stream().filter(item->Boolean.TRUE.equals(item.getShowOnHome())).sorted(Comparator.comparingInt(item->item.getHomeOrder()==null?999:item.getHomeOrder())).limit(5).toList()); html.append("</section>");
         quality(html,data.capabilities());
+        var homeCertificates = data.certificates().stream()
+                .filter(item -> item.isShowOnHome() && item.getImage() != null && !item.getImage().isBlank())
+                .toList();
+        if (!homeCertificates.isEmpty()) {
+            html.append("<section class=\"sd-wrap sd-section\"><h2>我们目前拥有的资质</h2><ul>");
+            for (var item : homeCertificates) html.append("<li>").append(link("/about#certificates-title", value(item.getTitleZh(), item.getTitleEn()))).append("</li>");
+            html.append("</ul>").append(link("/about#certificates-title", "查看全部")).append("</section>");
+        }
         partners(html, data, "showOnHome");
     }
     private void about(StringBuilder html, SeoPageService.Document document) {
         var about = document.data().about().path("about");
-        hero(html,"关于重钢机械",value(about.path("titleLine1").path("zh").asText(),"中国制造，") + value(about.path("titleLine2").path("zh").asText(),"服务全球工程。"),document.page().description(),about.path("image").asText());
+        hero(html,"关于重钢机械",value(about.path("titleLine1").path("zh").asText(),"中国制造，") + value(about.path("titleLine2").path("zh").asText(),"服务全球工程。"),document.page().description(),about.path("image").asText(),about.path("video").asText());
         html.append("<section class=\"sd-wrap sd-section\"><h2>完整公司介绍</h2>"); paragraphs(html,about.path("description").path("zh").asText()); paragraphs(html,about.path("description2").path("zh").asText()); html.append("</section>");
         quality(html,document.data().capabilities());
         html.append("<section id=\"manufacturing-bases\" class=\"sd-wrap sd-section\"><h2>总部与制造基地</h2>");
@@ -167,7 +175,17 @@ public class SeoHtmlRenderer {
     private void quality(StringBuilder html,JsonNode quality){if(!quality.path("enabled").asBoolean())return;html.append("<section class=\"sd-soft\"><div class=\"sd-wrap sd-section\"><h2>制造与质量</h2>");paragraphs(html,quality.path("description").path("zh").asText());html.append("<ol class=\"sd-quality\">");for(var step:quality.path("steps"))if(step.path("enabled").asBoolean(true)){html.append("<li><strong>").append(e(step.path("label").path("zh").asText())).append("</strong>");paragraphs(html,step.path("description").path("zh").asText());html.append("</li>");}html.append("</ol></div></section>");}
     private void facility(StringBuilder html,JsonNode item){var facility=item.path("facility");if(!facility.isObject()||(facility.has("enabled")&&!facility.path("enabled").asBoolean()))return;html.append("<article><h3>").append(e(value(facility.path("title").path("zh").asText(),item.path("name").path("zh").asText(),item.path("headquarters").path("zh").asText()))).append("</h3>");paragraphs(html,facility.path("description").path("zh").asText());paragraphs(html,item.path("address").path("zh").asText());html.append("</article>");}
     private void contactDetails(StringBuilder html,JsonNode contact){String address=contact.path("address").path("zh").asText();if(!address.isBlank())html.append("<p>").append(e(address)).append("</p>");String phone=contact.path("phone").asText();if(!phone.isBlank())html.append("<p>电话：").append(e(phone)).append("</p>");for(var email:contact.path("emails"))if(email.asText().matches("[^\\s<>\"]+@[^\\s<>\"]+"))html.append("<p>").append(link("mailto:"+email.asText(),email.asText())).append("</p>");}
-    private void hero(StringBuilder html,String kicker,String heading,String description,String image){html.append("<section class=\"sd-soft\"><div class=\"sd-wrap sd-section sd-hero\"><div><p class=\"sd-kicker\">").append(e(kicker)).append("</p><h1>").append(e(heading)).append("</h1><span class=\"sd-rule\"></span>");paragraphs(html,description);html.append("</div>");image(html,image,heading,"sd-hero-image");html.append("</div></section>");}
+    private void hero(StringBuilder html,String kicker,String heading,String description,String image){ hero(html,kicker,heading,description,image,""); }
+    private void hero(StringBuilder html,String kicker,String heading,String description,String image,String video){
+        html.append("<section class=\"sd-soft\"><div class=\"sd-wrap sd-section sd-hero\"><div><p class=\"sd-kicker\">").append(e(kicker)).append("</p><h1>").append(e(heading)).append("</h1><span class=\"sd-rule\"></span>");
+        paragraphs(html,description);html.append("</div>");
+        if (video.matches("/(?:assets/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+|api/uploads/videos/[0-9a-f-]{36})\\.(mp4|webm)")) {
+            html.append("<video class=\"sd-hero-image\" src=\"").append(e(video)).append("\" autoplay muted loop playsinline controls preload=\"metadata\" aria-label=\"").append(e(heading)).append("\"");
+            if (image != null && (image.startsWith("/assets/") || image.startsWith("/api/uploads/images/"))) html.append(" poster=\"").append(e(image)).append("\"");
+            html.append("></video>");
+        } else image(html,image,heading,"sd-hero-image");
+        html.append("</div></section>");
+    }
     private void questions(StringBuilder html,List<Faq> faqs){if(faqs.isEmpty())return;html.append("<section class=\"sd-wrap sd-section sd-questions\"><h2>制造服务常见问题</h2>");for(var item:faqs)html.append("<details open><summary>").append(e(item.question())).append("</summary><p>").append(e(item.answer())).append("</p></details>");html.append("</section>");}
     private static void paragraphs(StringBuilder html,String value){String text=plain(value);if(text.isBlank())return;for(var paragraph:text.split("\\n+"))if(!paragraph.isBlank())html.append("<p>").append(e(paragraph)).append("</p>");}
     private static void image(StringBuilder html,String image,String alt,String css){if(image==null||!(image.startsWith("/assets/")||image.startsWith("/api/uploads/images/")))return;html.append("<img class=\"").append(css).append("\" src=\"").append(e(image)).append("\" alt=\"").append(e(alt)).append("\" decoding=\"async\">");}

@@ -17,7 +17,8 @@ import { responsiveImage } from "../utils/responsiveImages.js";
 import { useAboutTzme } from "../services/aboutTzme.js";
 import { useCapabilities } from "../services/capabilities.js";
 import { useHomeSolutions } from "../services/homeSolutions.js";
-import { MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
+import { localizedField, MAX_HOME_PRODUCTS, useProductCatalog } from "../services/catalog.js";
+import { useCertificationCatalog } from "../services/certifications.js";
 import { useIndustryCatalog } from "../services/industries.js";
 import { useGlobalReach } from "../services/globalReach.js";
 import { useContactSettings } from "../services/contactSettings.js";
@@ -33,6 +34,7 @@ const { aboutTzme, loadAboutTzme } = useAboutTzme();
 const { globalReach, loadGlobalReach } = useGlobalReach();
 const { contactSettings } = useContactSettings();
 const { partners, loadPartners } = usePartners();
+const { homeCertifications, loadCertifications } = useCertificationCatalog();
 const activeIndustries = computed(() =>
   industries.value
     .filter((item) => item.status === "published")
@@ -52,6 +54,7 @@ onMounted(() => {
   loadAboutTzme();
   loadGlobalReach();
   loadPartners();
+  loadCertifications();
 });
 </script>
 
@@ -143,6 +146,7 @@ onMounted(() => {
           :locale-code="locale"
         />
         <section
+          v-if="homeCertifications.length"
           class="j-quality-strip hc-w"
           aria-labelledby="home-certifications-title"
         >
@@ -154,17 +158,11 @@ onMounted(() => {
           </header>
           <ul class="j-quality-certifications">
             <li
-              v-for="title in [
-                'ISO 9001',
-                'ISO 14001',
-                'ISO 45001',
-                'EN 1090',
-                'ISO 3834',
-              ]"
-              :key="title"
+              v-for="certificate in homeCertifications"
+              :key="certificate.id"
             >
               <router-link to="/about#certificates-title">{{
-                title
+                localizedField(certificate, 'title', locale)
               }}</router-link>
             </li>
           </ul>
@@ -239,7 +237,7 @@ onMounted(() => {
 }
 .j-quality-certifications {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: 24px;
   margin: 18px 0 0;
   padding: 0;
@@ -270,7 +268,7 @@ onMounted(() => {
     font-size: 12px;
   }
   .j-quality-certifications {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100px, 100%), 1fr));
     gap: 10px 14px;
     margin-top: 14px;
   }
