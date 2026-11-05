@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS admin_accounts (
   created_at DATETIME(6) NOT NULL,
   updated_at DATETIME(6) NOT NULL,
   last_login_at DATETIME(6) NULL,
+  tutorial_seen_at DATETIME(6) NULL,
   CONSTRAINT uk_admin_username UNIQUE (username)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { currentSeoPage } from "../services/seo.js";
+import KnowledgeFlipCard from './KnowledgeFlipCard.vue';
 const route = useRoute();
 const questions = computed(() =>
   currentSeoPage.value?.path === route.path
@@ -25,13 +26,10 @@ const questions = computed(() =>
           >沟通具体需求 <span aria-hidden="true">↗</span></router-link
         >
       </header>
-      <div class="site-knowledge-list">
-        <details v-for="item in questions" :key="item.question" open>
-          <summary>
-            {{ item.question }}<span aria-hidden="true">＋</span>
-          </summary>
-          <p>{{ item.answer }}</p>
-        </details>
+      <p class="site-knowledge-hint"><span class="site-knowledge-hover-hint">鼠标移入预览 · 点击固定答案 · 再次点击返回</span><span class="site-knowledge-tap-hint">点击卡片查看答案 · 再次点击返回</span></p>
+      <div class="site-knowledge-list" :style="{ '--knowledge-columns': Math.min(questions.length, 4) }">
+        <KnowledgeFlipCard v-for="(item, index) in questions" :key="`${route.path}:${item.question}:${item.answer}`"
+          :question="item.question" :answer="item.answer" :index="index" />
       </div>
       <p class="site-knowledge-source">
         资料来自重钢机械官网。具体制造范围、检验要求和交付安排以项目沟通确认为准。
@@ -40,9 +38,6 @@ const questions = computed(() =>
   </section>
 </template>
 <style scoped>
-.site-knowledge details p {
-  white-space: pre-line;
-}
 .site-knowledge {
   padding: 48px 0 50px;
   background: #f7fafb;
@@ -77,51 +72,29 @@ const questions = computed(() =>
 }
 .site-knowledge-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 40px;
-  align-items: start;
-}
-.site-knowledge details {
-  border-top: 1px solid #cfdee5;
-  padding: 18px 0;
-}
-.site-knowledge summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
+  grid-template-columns: repeat(var(--knowledge-columns, 4), minmax(0, 1fr));
   gap: 20px;
-  font-size: 14px;
-  font-weight: 600;
+}
+.site-knowledge-list:has(> :only-child) { max-width: 520px; grid-template-columns: 1fr; }
+.site-knowledge-hint {
+  margin: 0 0 17px;
+  color: #8297a2;
+  font-size: 11px;
   line-height: 1.8;
-  cursor: pointer;
 }
-.site-knowledge summary::-webkit-details-marker {
-  display: none;
-}
-.site-knowledge summary > span {
-  color: #087f91;
-  font-size: 18px;
-  font-weight: 400;
-}
-.site-knowledge details[open] summary > span {
-  transform: rotate(45deg);
-}
-.site-knowledge details p {
-  font-size: 13px;
-  line-height: 1.95;
-  color: #587586;
-  margin: 12px 30px 0 0;
-  overflow-wrap: anywhere;
+.site-knowledge-hover-hint { display:none; }
+@media (hover:hover) {
+  .site-knowledge-hover-hint { display:inline; }
+  .site-knowledge-tap-hint { display:none; }
 }
 .site-knowledge-source {
   font-size: 10px;
   line-height: 1.9;
   color: #8499a5;
-  margin: 17px 0 0;
+  margin: 27px 0 0;
 }
-.site-knowledge summary:focus-visible {
-  outline: 2px solid #087f91;
-  outline-offset: 5px;
+@media (max-width: 1100px) {
+  .site-knowledge-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 700px) {
   .site-knowledge {
@@ -142,14 +115,10 @@ const questions = computed(() =>
     margin-left: 8px;
   }
   .site-knowledge-list {
-    grid-template-columns: 1fr;
+    gap: 15px;
   }
-  .site-knowledge summary {
-    font-size: 13px;
-  }
-  .site-knowledge details p {
-    font-size: 12px;
-    margin-right: 10px;
-  }
+}
+@media (max-width: 420px) {
+  .site-knowledge-list { grid-template-columns: 1fr; }
 }
 </style>

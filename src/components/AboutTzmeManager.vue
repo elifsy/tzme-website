@@ -194,6 +194,7 @@ defineExpose({ load, publicPath });
           <div class="about-settings-main">
             <AdminEditorPanel
               step="01"
+              data-admin-tour="about-text"
               :title="$t('aboutTzmeAdmin.textSettings')"
               :description="$t('aboutTzmeAdmin.textHint')"
             >

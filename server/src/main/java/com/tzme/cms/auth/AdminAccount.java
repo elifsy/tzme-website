@@ -3,6 +3,7 @@ package com.tzme.cms.auth;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.Map;
 
 @Entity
 @Table(name = "admin_accounts")
@@ -31,13 +32,18 @@ public class AdminAccount {
     @Column(nullable = false)
     public Instant updatedAt = Instant.now();
     public Instant lastLoginAt;
+    public Instant tutorialSeenAt;
 
     public AccountView view() {
+        return view(Map.of());
+    }
+
+    public AccountView view(Map<String, Instant> tutorialSeen) {
         return new AccountView(id, username, displayName, role, status, mustChangePassword, createdAt, updatedAt,
-                lastLoginAt);
+                lastLoginAt, tutorialSeenAt, tutorialSeen);
     }
 
     public record AccountView(String id, String username, String displayName, String role, String status,
-            boolean mustChangePassword, Instant createdAt, Instant updatedAt, Instant lastLoginAt) {
+            boolean mustChangePassword, Instant createdAt, Instant updatedAt, Instant lastLoginAt, Instant tutorialSeenAt, Map<String, Instant> tutorialSeen) {
     }
 }

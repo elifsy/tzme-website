@@ -91,12 +91,15 @@
   border: 0;
 }
 .cms-editor-status .el-tag__content {
-  gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .cms-status-dot {
   display: inline-block;
   width: 5px;
   height: 5px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: currentColor;
 }

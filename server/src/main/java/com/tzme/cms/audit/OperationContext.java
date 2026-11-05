@@ -19,6 +19,7 @@ final class OperationContext {
         if (path.equals("/api/auth/login")) return new OperationContext("auth", "login");
         if (path.equals("/api/auth/logout")) return new OperationContext("auth", "logout");
         if (path.equals("/api/auth/password")) return new OperationContext("accounts", "change_password");
+        if (path.equals("/api/auth/tutorial/start")) return new OperationContext("auth", "tutorial");
         var operation = new OperationContext("other", switch (method) { case "POST" -> "create"; case "DELETE" -> "delete"; default -> "update"; });
         if(path.startsWith("/api/seo/rankings/")) {
             operation.module="rankings";

@@ -104,6 +104,15 @@ export async function signIn(username, password) {
   currentAccount.value = account;
   return account;
 }
+export async function claimAdminTutorial(module) {
+  const accountId = currentAccount.value?.id;
+  const result = await authRequest("tutorial/start", { module });
+  if (result.module !== module || !result.seenAt || typeof result.shouldStart !== "boolean") throw new Error("Invalid tutorial response");
+  if (currentAccount.value?.id === accountId) {
+    currentAccount.value = { ...currentAccount.value, tutorialSeen: { ...currentAccount.value.tutorialSeen, [module]: result.seenAt } };
+  }
+  return result;
+}
 export async function signOut() {
   try {
     await authRequest("logout", {});

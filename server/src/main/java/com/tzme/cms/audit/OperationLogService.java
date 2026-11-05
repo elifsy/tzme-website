@@ -18,6 +18,7 @@ public class OperationLogService {
         String[][] modules = {{"auth","登录与会话"},{"accounts","账号管理"},{"products","产品资料"},{"articles","新闻资讯"},{"industries","行业分类"},{"projects","项目资料"},{"certifications","资质与质量体系"},{"website","网站文案"},{"about","企业介绍"},{"capabilities","制造与质量流程"},{"global","全球业务"},{"solutions","首页方案文案"},{"product-showcase","产品中心展示"},{"partners","合作伙伴"},{"contact","企业与咨询配置"},{"mail","邮件通知"},{"inquiries","客户咨询"},{"analytics","访问统计配置"},{"seo","搜索与 AI 展示"},{"uploads","素材上传"},{"other","其他操作"}};
         for (var entry : modules) MODULES.put(entry[0], entry[1]);
         MODULES.put("rankings", "SEO关键词排名");
+        ACTIONS.put("tutorial", "开启新手教程");
         String[][] actions = {{"login","登录"},{"logout","退出登录"},{"create","新增"},{"update","修改"},{"delete","删除"},{"publish","发布"},{"unpublish","下架"},{"enable","启用账号"},{"disable","停用账号"},{"configure","保存配置"},{"upload","上传文件"},{"change_password","修改本人密码"},{"reset_password","重置账号密码"},{"update_status","更新跟进状态"},{"notify","重新提交邮件通知"}};
         for (var entry : actions) ACTIONS.put(entry[0], entry[1]);
         ACTIONS.put("record_rank", "录入实际排名"); ACTIONS.put("check_rank", "采集关键词排名"); ACTIONS.put("import_rank", "导入排名历史"); ACTIONS.put("archive", "归档关键词监测");

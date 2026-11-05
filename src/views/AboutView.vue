@@ -182,7 +182,7 @@ onMounted(() => {
             show-media
             collapsible-details
           />
-          <div class="j-about-film"><ManufacturingFilm /></div>
+          <!-- <div class="j-about-film"><ManufacturingFilm /></div> -->
         </div>
       </section>
       <section

@@ -28,11 +28,13 @@ class AdminAuthIntegrationTest {
     @Autowired ContentRepository content;
     @Autowired PasswordEncoder passwords;
     @Autowired ObjectMapper json;
+    @Autowired AdminTutorialService tutorials;
+    @Autowired AdminTutorialRepository tutorialProgress;
     private static final String PASSWORD = "Integration-Password-2026";
     private AdminAccount root, editor;
 
     @BeforeEach void setup() {
-        accounts.deleteAll(); content.deleteAll();
+        tutorialProgress.deleteAll(); accounts.deleteAll(); content.deleteAll();
         root = account("root", "SUPER_ADMIN", false); editor = account("editor", "ADMIN", false);
     }
     private AdminAccount account(String name, String role, boolean mustChange) {
@@ -55,6 +57,55 @@ class AdminAuthIntegrationTest {
     private ResultActions write(String method, String path, MockHttpSession session, Object body) throws Exception {
         return mvc.perform(request(org.springframework.http.HttpMethod.valueOf(method), path).session(session)
             .header("X-CSRF-TOKEN", csrf(session)).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(body)));
+    }
+    @Test void tutorialIsAutomaticOnlyOncePerModuleAndAccountAcrossLogins() throws Exception {
+        var session = login("editor");
+        mvc.perform(get("/api/auth/me").session(session)).andExpect(jsonPath("tutorialSeen").isEmpty());
+        var first = write("POST", "/api/auth/tutorial/start", session, Map.of("module", "overview")).andExpect(status().isOk())
+                .andExpect(jsonPath("module").value("overview"))
+                .andExpect(jsonPath("shouldStart").value(true)).andReturn();
+        String seen = json.readTree(first.getResponse().getContentAsString()).path("seenAt").asText();
+        assertThat(seen).isNotBlank();
+        write("POST", "/api/auth/tutorial/start", session, Map.of("module", "overview")).andExpect(status().isOk())
+                .andExpect(jsonPath("shouldStart").value(false)).andExpect(jsonPath("seenAt").value(seen));
+        mvc.perform(get("/api/auth/me").session(session)).andExpect(status().isOk()).andExpect(jsonPath("tutorialSeen.overview").value(seen));
+        write("POST", "/api/auth/tutorial/start", login("editor"), Map.of("module", "overview")).andExpect(status().isOk()).andExpect(jsonPath("shouldStart").value(false));
+        write("POST", "/api/auth/tutorial/start", session, Map.of("module", "products")).andExpect(status().isOk()).andExpect(jsonPath("shouldStart").value(true));
+        write("POST", "/api/auth/tutorial/start", login("root"), Map.of("module", "overview")).andExpect(status().isOk()).andExpect(jsonPath("shouldStart").value(true));
+        mvc.perform(get("/api/auth/me").session(login("editor"))).andExpect(jsonPath("tutorialSeen.overview").value(seen)).andExpect(jsonPath("tutorialSeen.products").isNotEmpty());
+        assertThat(accounts.findById(editor.id).orElseThrow().authVersion).isZero();
+    }
+    @Test void tutorialRequiresLoginAndCsrfAndOnlyChangesTheCurrentAccount() throws Exception {
+        write("POST", "/api/auth/tutorial/start", new MockHttpSession(), Map.of("module", "products")).andExpect(status().isUnauthorized());
+        var session = login("editor");
+        mvc.perform(post("/api/auth/tutorial/start").session(session)).andExpect(status().isForbidden());
+        write("POST", "/api/auth/tutorial/start", session, Map.of("module", "products", "accountId", root.id)).andExpect(status().isOk());
+        assertThat(tutorials.seen(editor.id)).containsKey("products");
+        assertThat(tutorials.seen(root.id)).isEmpty();
+    }
+    @Test void tutorialsValidateModuleAndRespectAccountPermissions() throws Exception {
+        var session = login("editor");
+        write("POST", "/api/auth/tutorial/start", session, Map.of()).andExpect(status().isBadRequest());
+        write("POST", "/api/auth/tutorial/start", session, Map.of("module", "not-a-module")).andExpect(status().isBadRequest());
+        write("POST", "/api/auth/tutorial/start", session, Map.of("module", "accounts")).andExpect(status().isForbidden());
+        assertThat(tutorials.seen(editor.id)).isEmpty();
+        write("POST", "/api/auth/tutorial/start", login("root"), Map.of("module", "accounts")).andExpect(status().isOk()).andExpect(jsonPath("shouldStart").value(true));
+    }
+    @Test void legacyGlobalTutorialDoesNotSuppressModuleTutorials() throws Exception {
+        editor.tutorialSeenAt = java.time.Instant.now(); accounts.saveAndFlush(editor);
+        var session = login("editor");
+        write("POST", "/api/auth/tutorial/start", session, Map.of("module", "about")).andExpect(status().isOk()).andExpect(jsonPath("shouldStart").value(true));
+        mvc.perform(get("/api/auth/me").session(session)).andExpect(jsonPath("tutorialSeen.about").isNotEmpty());
+    }
+    @Test void simultaneousTutorialClaimsHaveOnlyOneAutomaticStart() throws Exception {
+        var pool = java.util.concurrent.Executors.newFixedThreadPool(2);
+        try {
+            var first = pool.submit(() -> tutorials.start(editor.id, "overview"));
+            var second = pool.submit(() -> tutorials.start(editor.id, "overview"));
+            var results = java.util.List.of(first.get(10, java.util.concurrent.TimeUnit.SECONDS), second.get(10, java.util.concurrent.TimeUnit.SECONDS));
+            assertThat(results.stream().filter(AdminTutorialService.TutorialStart::shouldStart).count()).isEqualTo(1);
+            assertThat(results.get(0).seenAt()).isEqualTo(results.get(1).seenAt());
+        } finally { pool.shutdownNow(); }
     }
     @Test void anonymousPrivateReadsAndWritesAreBlockedEvenWithPreviewFlag() throws Exception {
         for (String path : new String[]{"/api/inquiries", "/api/mail-settings", "/api/contact-settings/admin", "/api/analytics/report", "/api/analytics/events", "/api/inquiry-attachments/not-a-file", "/api/admin/accounts"})

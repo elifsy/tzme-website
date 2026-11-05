@@ -10,6 +10,7 @@ import {
   Promotion,
   Refresh,
   View,
+  QuestionFilled,
 } from "@element-plus/icons-vue";
 const CertificationsManager = defineAsyncComponent(() => import('../components/CertificationsManager.vue'));
 const IndustriesManager = defineAsyncComponent(() => import('../components/IndustriesManager.vue'));
@@ -24,7 +25,10 @@ const OperationLogsManager = defineAsyncComponent(() => import('../components/Op
 const KeywordRankingsManager = defineAsyncComponent(() => import('../components/KeywordRankingsManager.vue'));
 const AdminPasswordForm = defineAsyncComponent(() => import('../components/AdminPasswordForm.vue'));
 const SeoManager = defineAsyncComponent(() => import('../components/SeoManager.vue'));
-import { currentAccount, isSuperAdmin, signOut } from '../services/session.js';
+import { claimAdminTutorial, currentAccount, isSuperAdmin, signOut } from '../services/session.js';
+import AdminTutorial from '../components/AdminTutorial.vue';
+import AdminTutorialPicker from '../components/AdminTutorialPicker.vue';
+import { adminTutorials } from '../data/adminTutorial.js';
 import AdminSidebar from "../components/AdminSidebar.vue";
 const AnalyticsManager = defineAsyncComponent(() => import('../components/AnalyticsManager.vue'));
 const PartnersManager = defineAsyncComponent(() => import('../components/PartnersManager.vue'));
@@ -68,6 +72,12 @@ const tab = computed(() => route.params.view || "overview");
 const currentModule = computed(() => adminModules[tab.value] || adminModules.overview);
 const currentGroup = computed(() => adminGroups.find(group => group.key === currentModule.value.group));
 const pageEditor = createAdminEditorState();
+const tutorial = ref(null);
+const tutorialStarting = ref(false);
+const tutorialPickerOpen = ref(false);
+const tutorialAttempts = new Set();
+let tutorialDisposed = false;
+let tutorialTimer, tutorialVersion = 0;
 provide(adminEditorKey, pageEditor);
 const homepageManager = ref(null);
 const contentPreview = ref(null);
@@ -361,6 +371,76 @@ function navigate(key) {
   closeMobileSidebar();
   router.push(adminPath(key));
 }
+
+async function prepareTutorialStep(step, isCurrent = () => true) {
+  if (editorBusy.value) return false;
+  closeMobileSidebar();
+  const editorKind = step.editor === 'downloads' ? 'articles' : step.editor;
+  if (modal.value && (!editorKind || editorKind !== kind.value)) {
+    if (!(await confirmDiscard()) || !isCurrent()) return false;
+    modal.value = false;
+    await nextTick();
+  }
+  if (step.to && route.fullPath !== step.to) {
+    const failure = await router.push(step.to);
+    if (failure && route.fullPath !== step.to) return false;
+  }
+  if (!isCurrent()) return false;
+  if (editorKind && !modal.value) {
+    openEditor(editorKind, { status: 'draft', ...(step.editor === 'downloads' ? { categoryZh: '下载中心' } : {}) });
+  }
+  await nextTick();
+  return true;
+}
+
+function openTutorialPicker() {
+  tutorialVersion++;
+  tutorial.value?.close();
+  tutorialPickerOpen.value = true;
+}
+async function startTutorial(module, manual = true) {
+  const account = currentAccount.value;
+  if (!account || !adminTutorials[module] || (adminModules[module]?.superAdminOnly && !isSuperAdmin.value)
+      || tutorialStarting.value || editorBusy.value) return;
+  tutorialStarting.value = true;
+  try {
+    if (manual && tab.value !== module) {
+      const failure = await router.push(adminPath(module));
+      if (failure || tab.value !== module) return;
+    }
+    const version = ++tutorialVersion;
+    const key = `${account.id}:${module}`;
+    tutorialAttempts.add(key);
+    const result = account.tutorialSeen?.[module] ? { shouldStart: false } : await claimAdminTutorial(module);
+    if (!tutorialDisposed && version === tutorialVersion && tab.value === module
+        && currentAccount.value?.id === account.id && (manual || result.shouldStart)) {
+      tutorialPickerOpen.value = false;
+      await nextTick();
+      await tutorial.value?.start(module);
+    }
+  } catch {
+    if (manual && !tutorialDisposed) ElMessage.warning('新手教程暂时无法开启，请稍后重试。');
+  } finally {
+    if (!tutorialDisposed) tutorialStarting.value = false;
+  }
+}
+
+watch(tab, () => {
+  tutorialVersion++;
+  tutorial.value?.close();
+  modal.value = false;
+}, { flush: 'sync' });
+watch(() => [currentAccount.value?.id, tab.value, currentAccount.value?.tutorialSeen?.[tab.value], loading.value,
+  hasUnsavedChanges.value, editorBusy.value, tutorialPickerOpen.value, tutorialStarting.value], () => {
+  clearTimeout(tutorialTimer);
+  const account = currentAccount.value;
+  const module = tab.value;
+  if (!account || account.mustChangePassword || !adminTutorials[module] || account.tutorialSeen?.[module]
+      || loading.value || hasUnsavedChanges.value || editorBusy.value || tutorialPickerOpen.value || tutorialStarting.value
+      || tutorialAttempts.has(`${account.id}:${module}`) || (adminModules[module]?.superAdminOnly && !isSuperAdmin.value)) return;
+  tutorialTimer = setTimeout(() => startTutorial(module, false), 200);
+}, { immediate: true, flush: 'post' });
+onBeforeUnmount(() => { tutorialDisposed = true; tutorialVersion++; clearTimeout(tutorialTimer); });
 async function refresh() {
   if (!(await confirmDiscard())) return;
   if (tab.value === 'home') { homepageManager.value?.load(); load(); loadIndustries(); }
@@ -403,7 +483,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="admin-profile">
-
+          <el-button class="admin-tutorial-trigger" data-admin-tour="tutorial-entry" text :icon="QuestionFilled" :loading="tutorialStarting" :disabled="editorBusy" aria-haspopup="dialog" @click="openTutorialPicker">新手教程</el-button>
           <el-dropdown trigger="click" @command="userAction"><button class="admin-user-trigger" type="button" aria-label="账号操作"><el-avatar :size="32" class="admin-avatar">{{ currentAccount?.displayName?.slice(0, 1) || 'A' }}</el-avatar><span>{{ currentAccount?.displayName }}<small>{{ isSuperAdmin ? '超级管理员' : '普通管理员' }}</small></span><span aria-hidden="true">⌄</span></button><template #dropdown><el-dropdown-menu><el-dropdown-item v-if="isSuperAdmin" command="accounts">账号管理</el-dropdown-item><el-dropdown-item command="password">修改我的密码</el-dropdown-item><el-dropdown-item command="logout" divided>退出登录</el-dropdown-item></el-dropdown-menu></template></el-dropdown>
           <el-tooltip :content="$t('admin.refreshData')"
             ><el-button text circle :icon="Refresh" @click="refresh"
@@ -604,7 +684,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
       <el-form :model="form" label-position="top" class="cms-editor-form" @submit.prevent="save">
         <div class="cms-editor-layout">
           <div class="cms-editor-main">
-            <AdminEditorPanel step="01" title="基本信息" :description="kind === 'products' ? '先填写名称与所属行业，再补充对外展示的简介。' : '先填写标题、分类和发布日期，再补充摘要与正文。'">
+            <AdminEditorPanel data-admin-tour="content-basics" step="01" title="基本信息" :description="kind === 'products' ? '先填写名称与所属行业，再补充对外展示的简介。' : '先填写标题、分类和发布日期，再补充摘要与正文。'">
                   <div class="cms-field-grid">
                     <el-form-item :label="$t('admin.titleChinese')" required>
                       <el-input v-model="form.titleZh" :placeholder="$t('admin.enterChineseTitle')" />
@@ -637,7 +717,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
                   </el-form-item>
                   <p v-if="editorPublicPath" class="cms-field-hint">搜索标题和摘要默认采用已发布资料。<router-link :to="{ path: '/admin/seo', query: { page: editorPublicPath } }">维护此页搜索展示 ↗</router-link></p>
             </AdminEditorPanel>
-            <AdminEditorPanel v-if="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length)" step="02" title="资料附件" description="上传产品手册、技术资料等下载文件，正文中原有的下载链接仍会保留。">
+            <AdminEditorPanel v-if="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length)" data-admin-tour="article-attachments" step="02" title="资料附件" description="上传产品手册、技术资料等下载文件，正文中原有的下载链接仍会保留。">
               <ArticleAttachmentsUpload v-model="form.attachments" :active="modal" :context-key="`article-${form.id}`" :disabled="saving" @uploading="attachmentUploading = $event" />
             </AdminEditorPanel>
             <AdminEditorPanel :step="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length) ? '03' : '02'" :title="kind === 'products' ? '产品详情与参数' : '新闻正文'" :description="kind === 'products' ? '介绍、特点和参数会显示在产品详情页，支持分行填写。' : '正文支持排版与插入图片，保存前可查看填写效果。'">
@@ -668,7 +748,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
             </AdminEditorPanel>
           </div>
           <aside class="cms-editor-aside">
-            <AdminEditorPanel :step="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length) ? '04' : '03'" title="封面与发布" description="上传对外展示的图片，再选择保存为草稿或发布到官网。">
+            <AdminEditorPanel data-admin-tour="content-publish" :step="kind === 'articles' && (isDownloadArticle(form) || form.attachments.length) ? '04' : '03'" title="封面与发布" description="上传对外展示的图片，再选择保存为草稿或发布到官网。">
               <div class="cms-media-grid">
               <el-form-item class="news-cover-field" prop="image" :label="$t('admin.editorDisplayImage')"
                 :required="kind === 'articles'" :error="kind === 'articles' && coverImageError ? $t('admin.newsCoverRequired') : ''">
@@ -709,6 +789,8 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
       </el-form>
     </AdminEditorDialog>
     <el-dialog v-model="passwordDialog" class="admin-password-dialog cms-compact-dialog" title="修改我的密码" width="min(440px, calc(100vw - 32px))" :close-on-click-modal="false" :close-on-press-escape="!passwordBusy" :show-close="!passwordBusy" append-to-body destroy-on-close><AdminPasswordForm @busy="passwordBusy = $event" @success="passwordChanged" /></el-dialog>
+    <AdminTutorial ref="tutorial" :prepare-step="prepareTutorialStep" :context-key="`${route.fullPath}:${modal}:${loading}`" :busy="editorBusy" />
+    <AdminTutorialPicker v-model="tutorialPickerOpen" :current-module="tab" :seen="currentAccount?.tutorialSeen || {}" :busy="tutorialStarting" @select="startTutorial" />
   </el-container>
 </template>
 

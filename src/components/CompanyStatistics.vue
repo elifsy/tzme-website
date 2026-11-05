@@ -86,7 +86,7 @@ const { locale } = useI18n({ useScope: "global" });
 }
 .is-compact dt,
 .is-compact small {
-  font-size: 10px;
+  font-size: 12px;
 }
 @media (max-width: 1100px) {
   .company-statistics > div {

@@ -45,7 +45,8 @@ const uploads = new Set();
 let destroyed = false;
 i18nChangeLanguage(locale.value === "zh" ? "zh-CN" : "en");
 
-watch(valueHtml, (value) => emit("update:modelValue", value), {
+// The editor creates an empty paragraph on mount; it is still an untouched value.
+watch(valueHtml, (value) => emit("update:modelValue", value === "<p><br></p>" ? "" : value), {
   flush: "sync",
 });
 watch(

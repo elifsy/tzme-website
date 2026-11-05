@@ -283,7 +283,7 @@ async function moveTab(event, index) {
 }
 .j-solution-copy .j-button {
   margin-top: 25px;
-  font-size: 12px;
+  font-size: 14px;
   min-height: 44px;
   min-width: 170px;
 }

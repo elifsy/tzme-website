@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AdminAccountService service;
+    private final AdminTutorialService tutorials;
 
-    public AuthController(AdminAccountService service) {
+    public AuthController(AdminAccountService service, AdminTutorialService tutorials) {
         this.service = service;
+        this.tutorials = tutorials;
     }
 
     public record LoginInput(String username, String password) {
@@ -43,13 +45,20 @@ public class AuthController {
         SecurityContextHolder.setContext(context);
         new HttpSessionSecurityContextRepository().saveContext(context, request, response);
         new HttpSessionCsrfTokenRepository().saveToken(null, request, response);
-        return account.view();
+        return tutorials.view(account);
     }
 
     @GetMapping("/me")
     public AdminAccount.AccountView me(@AuthenticationPrincipal AdminPrincipal principal) {
-        return service.get(principal.id()).view();
+        return tutorials.view(service.get(principal.id()));
     }
+
+    @PostMapping("/tutorial/start")
+    public AdminTutorialService.TutorialStart startTutorial(@AuthenticationPrincipal AdminPrincipal principal, @RequestBody TutorialInput input) {
+        return tutorials.start(principal.id(), input.module());
+    }
+
+    public record TutorialInput(String module) {}
 
     @PostMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
