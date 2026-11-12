@@ -164,8 +164,8 @@ export const adminModules = {
     group: "company",
     icon: "Setting",
     description:
-      "维护总部、下属企业的照片及对应联系方式，联系页与页脚共用联系资料；社交链接在同页单独维护。",
-    steps: ["总部与下属企业", "照片、地址与联系方式", "联系页及页脚预览"],
+      "维护通用联系方式、分项联系名片及总部与下属企业资料；支持新增联系分类，单独填写电话、邮箱，并实时预览。",
+    steps: ["通用联系方式", "分项联系与企业资料", "预览并保存"],
     related: ["about", "forms"],
     preview: "/contact",
   },

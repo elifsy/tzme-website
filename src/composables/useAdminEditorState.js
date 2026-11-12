@@ -7,6 +7,9 @@ export function useAdminEditorState(state) {
   const current = inject(adminEditorKey, null);
   if (!current) return;
   const owner = {
+    get loading() {
+      return Boolean(unref(state.loading));
+    },
     get dirty() {
       return !unref(state.loading) && Boolean(unref(state.dirty));
     },

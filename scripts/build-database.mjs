@@ -305,6 +305,8 @@ appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/reso
 writeFileSync('database/migrations/2026-11-04-admin-tutorial.sql', readFileSync('server/src/main/resources/db/33-admin-tutorial.sql', 'utf8'))
 appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/34-module-tutorials.sql', 'utf8'))
 writeFileSync('database/migrations/2026-11-04-module-tutorials.sql', readFileSync('server/src/main/resources/db/34-module-tutorials.sql', 'utf8'))
+appendFileSync('database/install.sql', '\n' + readFileSync('server/src/main/resources/db/35-account-avatar.sql', 'utf8'))
+writeFileSync('database/migrations/2026-11-06-account-avatar.sql', readFileSync('server/src/main/resources/db/35-account-avatar.sql', 'utf8'))
 console.log(`Chinese database comments: ${definitions.length} tables, ${columnCount} columns.`)
 for (const [table, rows] of Object.entries(tables)) console.log(`${table}: ${rows.length} baseline records`)
 console.log('Saved database/install.sql and the Java SQL resources.')

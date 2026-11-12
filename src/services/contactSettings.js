@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import { apiRequest, dataErrors, registerDataLoader } from "./api.js";
 import { validSocialUrl } from "../data/socialLinks.js";
+import { contactDepartments } from '../data/contactDepartments.js';
 
 const settings = ref(null);
 export async function loadContactSettings() {
@@ -35,6 +36,7 @@ export async function saveContactSettings(value) {
   );
   body.contact = {
     ...body.contact,
+    departments: contactDepartments(body.contact).map(item => ({ ...item, title: item.title.trim(), description: item.description.trim(), phone: item.phone.trim(), email: item.email.trim() })),
     socialLinks: Object.fromEntries(
       Object.entries(body.contact.socialLinks || {}).map(([code, links]) => [
         code,

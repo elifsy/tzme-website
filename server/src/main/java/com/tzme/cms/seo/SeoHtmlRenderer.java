@@ -2,6 +2,8 @@ package com.tzme.cms.seo;
 
 import com.fasterxml.jackson.databind.*;
 import com.tzme.cms.model.Content;
+import com.tzme.cms.service.ContactDepartments;
+import com.tzme.cms.service.ContactSettingsService;
 import java.nio.file.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -169,7 +171,25 @@ public class SeoHtmlRenderer {
         }
         html.append("<p>发布机构：").append(COMPANY).append("</p></article>");
     }
-    private void contact(StringBuilder html,SeoPageService.Document document){hero(html,"联系我们 / CONTACT TZME","下一项制造需求，从交流开始。","告诉我们您的图纸、工况、质量要求与交付计划，一起明确设备制造与交付需求。","");html.append("<section class=\"sd-wrap sd-section\"><h2>直接联系</h2>");contactDetails(html,document.data().contact().path("contact"));html.append("<h2>咨询资料准备</h2><p>设备名称、图纸、工况与物料说明、质量检验要求、数量及交付计划。</p><p>启用浏览器 JavaScript 后可在本页填写咨询表单，也可通过上述邮箱或电话联系。</p></section>");}
+    private void contact(StringBuilder html,SeoPageService.Document document){
+        hero(html,"联系我们 / CONTACT TZME","下一项制造需求，从交流开始。","告诉我们您的图纸、工况、质量要求与交付计划，一起明确设备制造与交付需求。","");
+        var contact = document.data().contact().path("contact");
+        html.append("<section class=\"sd-wrap sd-section\"><h2>直接联系</h2><p>选择对应联系事项，与我们沟通需求。</p>");
+        for (var department : contact.path("departments")) if (department.path("enabled").asBoolean()) {
+            html.append("<details><summary>").append(e(department.path("title").asText())).append("</summary>");
+            paragraphs(html, department.path("description").asText());
+            String phone = ContactDepartments.phone(department, contact);
+            if (!phone.isBlank()) html.append("<p>电话：").append(e(phone)).append("</p>");
+            for (String email : ContactDepartments.emails(department, contact)) if (ContactSettingsService.validEmail(email)) {
+                String address = java.net.URLEncoder.encode(email, java.nio.charset.StandardCharsets.UTF_8).replace("%40", "@").replace("+", "%20");
+                String subject = java.net.URLEncoder.encode("【" + department.path("title").asText() + "】联系咨询", java.nio.charset.StandardCharsets.UTF_8).replace("+", "%20");
+                html.append("<p>").append(link("mailto:" + address + "?subject=" + subject, email)).append("</p>");
+            }
+            html.append("</details>");
+        }
+        html.append("<h2>总部联系信息</h2>"); contactDetails(html,contact);
+        html.append("<h2>沟通流程</h2><p>提交需求、核对资料、联系沟通。</p><p>启用浏览器 JavaScript 后可在本页填写咨询表单，也可通过上述邮箱或电话联系。</p></section>");
+    }
     private void industries(StringBuilder html,PublicSiteData.Snapshot data){html.append("<nav class=\"sd-industries sd-wrap\" aria-label=\"应用行业\">");for(var industry:data.industries())if(data.products().stream().anyMatch(item->item.getIndustries().contains(industry.getId())))html.append(link("/solutions?industry="+industry.getId(),value(industry.getTitleZh(),industry.getTitleEn())));html.append("</nav>");}
     private void cards(StringBuilder html,List<Content> records){html.append("<div class=\"sd-card-grid\">");for(var item:records){String path=("articles".equals(item.getType())?"/insights/":"/solutions/")+item.getId();html.append("<article><a href=\"").append(e(path)).append("\">");image(html,"articles".equals(item.getType())?item.getImage():value(item.getPresentationImage(),item.getImage()),name(item),"sd-card-image");html.append("<h3>").append(e(name(item))).append("</h3></a>");paragraphs(html,summary(item));html.append("</article>");}html.append("</div>");}
     private void quality(StringBuilder html,JsonNode quality){if(!quality.path("enabled").asBoolean())return;html.append("<section class=\"sd-soft\"><div class=\"sd-wrap sd-section\"><h2>制造与质量</h2>");paragraphs(html,quality.path("description").path("zh").asText());html.append("<ol class=\"sd-quality\">");for(var step:quality.path("steps"))if(step.path("enabled").asBoolean(true)){html.append("<li><strong>").append(e(step.path("label").path("zh").asText())).append("</strong>");paragraphs(html,step.path("description").path("zh").asText());html.append("</li>");}html.append("</ol></div></section>");}

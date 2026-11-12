@@ -3,6 +3,7 @@ package com.tzme.cms.seo;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 import com.tzme.cms.model.*;
+import com.tzme.cms.service.ContactDepartments;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -113,6 +114,16 @@ public class SeoPageService {
         var contact = snapshot.contact().path("contact");
         if (!contact.path("phone").asText().isBlank()) org.put("telephone",contact.path("phone").asText());
         if (contact.path("emails").size() > 0) org.put("email",contact.path("emails").get(0).asText());
+        var points = org.putArray("contactPoint");
+        for (var department : contact.path("departments")) if (department.path("enabled").asBoolean()) {
+            String phone = ContactDepartments.phone(department, contact);
+            var emails = ContactDepartments.emails(department, contact);
+            if (phone.isBlank() && emails.isEmpty()) continue;
+            var point = points.addObject(); point.put("@type", "ContactPoint"); point.put("contactType", department.path("title").asText());
+            point.put("url", siteUrl + "/contact");
+            if (!phone.isBlank()) point.put("telephone", phone);
+            if (!emails.isEmpty()) point.put("email", emails.get(0));
+        }
         String address = contact.path("address").path("zh").asText();
         if (!address.isBlank()) { var postal = org.putObject("address"); postal.put("@type","PostalAddress"); postal.put("addressCountry","CN"); postal.put("addressRegion","天津"); postal.put("streetAddress",address); }
         graph.add(org);

@@ -10,11 +10,14 @@ import SiteFooter from "../components/SiteFooter.vue";
 import SiteNav from "../components/SiteNav.vue";
 import InquiryForm from "../components/InquiryForm.vue";
 import ContactDetails from "../components/ContactDetails.vue";
+import ContactDepartments from '../components/ContactDepartments.vue';
+import { contactDepartments } from '../data/contactDepartments.js';
 import ContactIntro from "../components/ContactIntro.vue";
 import SeoKnowledgeSection from "../components/SeoKnowledgeSection.vue";
 const { locale } = useI18n({ useScope: "global" });
 const { contactSettings } = useContactSettings();
 const contact = computed(() => contactSettings.value?.contact);
+const showDepartments = computed(() => contactDepartments(contact.value).some(item => item.enabled));
 const page = ref(null);
 useDesignPage("hc-contact", page);
 </script>
@@ -36,16 +39,13 @@ useDesignPage("hc-contact", page);
             <span class="refine-eyebrow">DIRECT CONTACT</span>
             <h2>直接联系</h2>
             <p class="refine-description">
-              交流工况、图纸、质量要求和交付计划。
+              选择对应联系事项，与我们沟通需求。
             </p>
-            <a
-              v-for="email in contact.emails"
-              :key="email"
-              class="refine-email"
-              :href="'mailto:' + email"
-              >{{ email }} <span aria-hidden="true">↗</span></a
-            >
-            <p v-if="contact.phone" class="refine-phone">{{ contact.phone }}</p>
+            <ContactDepartments v-if="showDepartments" :contact="contact" />
+            <template v-else>
+              <a v-for="email in contact.emails" :key="email" class="refine-email" :href="'mailto:' + email">{{ email }} <span aria-hidden="true">↗</span></a>
+              <p v-if="contact.phone" class="refine-phone">{{ contact.phone }}</p>
+            </template>
             <ContactDetails :contact="{ ...contact, phone: '', emails: [] }" />
             <div class="refine-response">
               <span>沟通流程</span>

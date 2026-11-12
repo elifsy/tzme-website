@@ -8,6 +8,7 @@ import EquipmentImage from "../components/EquipmentImage.vue";
 import ProductShowcase from "../components/ProductShowcase.vue";
 import SeoKnowledgeSection from "../components/SeoKnowledgeSection.vue";
 import { useDesignPage } from "../composables/useDesignPage.js";
+import { useProductListMotion } from '../composables/useProductListMotion.js';
 import { useSiteContent } from "../services/website.js";
 import { localizedField, useProductCatalog } from "../services/catalog.js";
 import { useIndustryCatalog } from "../services/industries.js";
@@ -21,6 +22,15 @@ import { dataErrors } from "../services/api.js";
 
 const page = ref(null),
   catalogReady = ref(false);
+const { enabled: productMotionEnabled, revealed: revealedProducts, register: registerProduct, beforeEnter: prepareProductEnter, remove: removeProduct, cancelEntry: cancelProductEntry } = useProductListMotion(page, catalogReady);
+const hoveredProduct = ref(''), focusedProduct = ref('');
+function enterProduct(event, id) {
+  if (event.pointerType === 'mouse') hoveredProduct.value = id;
+}
+function focusProduct(id) {
+  cancelProductEntry(id);
+  focusedProduct.value = id;
+}
 const route = useRoute(),
   router = useRouter();
 const { siteAsset } = useSiteContent();
@@ -327,17 +337,23 @@ onMounted(async () => {
               清除筛选
             </button>
           </div>
-          <div v-loading="productsLoading" class="equipment-product-grid">
+          <TransitionGroup v-loading="productsLoading" tag="div" name="equipment-list" :css="productMotionEnabled" :aria-busy="productsLoading || !catalogReady" class="equipment-product-grid"
+            @before-enter="prepareProductEnter" @leave="removeProduct">
             <router-link
-              v-for="item in visibleProducts"
+              v-for="(item, index) in visibleProducts"
               :key="item.id"
+              :ref="component => registerProduct(component?.$el || component, item.id)"
               class="equipment-product-card"
+              :data-product-id="item.id" :data-motion-index="index"
               :to="productShowcaseLink(item.id, route.fullPath)"
+              @pointerenter="enterProduct($event, item.id)" @pointerleave="hoveredProduct === item.id && (hoveredProduct = '')"
+              @focus="focusProduct(item.id)" @blur="focusedProduct = ''"
             >
               <EquipmentImage
                 :record="item"
                 :alt="field(item, 'title')"
                 :fallback="siteAsset('/assets/p-other-1.jpg')"
+                interactive :active="hoveredProduct === item.id || focusedProduct === item.id" :revealed="revealedProducts.has(item.id)"
               />
               <div class="bd">
                 <span class="product-industry-label">{{
@@ -351,7 +367,7 @@ onMounted(async () => {
                 <span class="go">查看产品 <i aria-hidden="true">↗</i></span>
               </div>
             </router-link>
-          </div>
+          </TransitionGroup>
           <el-empty
             v-if="!productsLoading && !filteredProducts.length"
             class="product-filter-empty"
@@ -552,11 +568,14 @@ onMounted(async () => {
   color: #087f91;
 }
 .equipment-product-grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 35px 34px;
 }
 .equipment-product-card {
+  --product-enter-delay: 0ms;
+  position: relative;
   display: block;
   min-width: 0;
   background: transparent;
@@ -567,6 +586,25 @@ onMounted(async () => {
   padding-bottom: 21px;
   color: #123a50;
 }
+.equipment-product-card:nth-child(3n + 2) { --product-enter-delay:80ms; }
+.equipment-product-card:nth-child(3n + 3) { --product-enter-delay:160ms; }
+.equipment-product-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg,#087f91,#58b7c3);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s cubic-bezier(.2,.7,.2,1);
+  pointer-events: none;
+}
+.equipment-product-card:is(:hover,:focus-visible)::after { transform:scaleX(1); }
+.equipment-list-move { transition:transform .64s cubic-bezier(.2,.7,.2,1); transition-delay:var(--product-enter-delay,0ms); }
+.equipment-list-enter-active { transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1); transition-delay:var(--product-enter-delay,0ms); }
+.equipment-product-card.equipment-list-enter-from { opacity:0; transform:translateY(24px); }
 .equipment-product-card:hover {
   box-shadow: none;
   border-color: #91bdc8;
@@ -603,7 +641,9 @@ onMounted(async () => {
   font-size: 22px;
   color: #087f91;
   flex-shrink: 0;
+  transition: transform .45s ease;
 }
+.equipment-product-card:is(:hover,:focus-visible) .product-card-title > span { transform:translateX(6px); }
 .equipment-product-card .bd p {
   color: #728b9b;
   font-size: 15px;
@@ -702,6 +742,8 @@ onMounted(async () => {
   }
 }
 @media (max-width: 850px) {
+  .equipment-product-card:nth-child(n) { --product-enter-delay:0ms; }
+  .equipment-product-card:nth-child(2n) { --product-enter-delay:80ms; }
   .equipment-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -804,8 +846,7 @@ onMounted(async () => {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .equipment-product-card {
-    transition: none;
-  }
+  .equipment-product-card,.equipment-product-card::after,.product-card-title > span { transition:none!important; }
+  .equipment-product-card.equipment-list-enter-from { opacity:1; transform:none; }
 }
 </style>

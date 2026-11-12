@@ -1,0 +1,16 @@
+[Unit]
+Description=Start TZME frontend and backend in tmux
+After=network-online.target mysql.service
+Wants=network-online.target
+Requires=mysql.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/tzme-tmux start
+ExecStop=/usr/local/sbin/tzme-tmux stop
+TimeoutStartSec=360
+TimeoutStopSec=100
+
+[Install]
+WantedBy=multi-user.target

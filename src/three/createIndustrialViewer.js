@@ -6,6 +6,7 @@ import { buildIndustrialScene, disposeObject } from "./industrialScene.js";
 import { createIndustrialRegions } from "./industrialRegions.js";
 import { createIndustrialMotion } from "./industrialMotion.js";
 import { createIndustrialQuality } from "./industrialQuality.js";
+import { createIndustrialPedestrian } from "./industrialPedestrian.js";
 
 const V = (value) => new THREE.Vector3(...value);
 
@@ -51,6 +52,8 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
       object.matrixAutoUpdate = false;
   });
   scene.matrixAutoUpdate = false;
+  const pedestrian = createIndustrialPedestrian();
+  industrial.landscape.add(pedestrian.root);
   const motion = createIndustrialMotion(industrial.assemblies);
   const regions = createIndustrialRegions(
     industrial.assemblies,
@@ -126,7 +129,10 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     lastAnchorReport = null,
     lastAnchors = null,
     cameraChangedDuringFrame = false,
-    framingSamples = null;
+    framingSamples = null,
+    bufferDirty = true,
+    firstFrameDrawn = false,
+    lastDrawTime = -Infinity;
   const quality = createIndustrialQuality({
     pixelRatio: win.devicePixelRatio || 1,
     compact,
@@ -160,8 +166,8 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
       qualityTimer = 0;
     }
   }
-  function invalidate() {
-    cancelQualityRestore();
+  function invalidate(keepQualityRestore = false) {
+    if (!keepQualityRestore) cancelQualityRestore();
     if (!disposed && !frame && inView && !doc.hidden)
       frame = win.requestAnimationFrame(render);
   }
@@ -171,8 +177,10 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     invalidate();
   }
   function applyQuality(ratio) {
-    if (Math.abs(renderer.getPixelRatio() - ratio) > 0.001)
+    if (bufferDirty || Math.abs(renderer.getPixelRatio() - ratio) > 0.001) {
       renderer.setDrawingBufferSize(viewWidth, viewHeight, ratio);
+      bufferDirty = false;
+    }
   }
   function restoreQualityLater() {
     if (qualityTimer || Math.abs(quality.ratio - quality.restRatio) < 0.001)
@@ -180,7 +188,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     qualityTimer = win.setTimeout(() => {
       qualityTimer = 0;
       if (disposed || !inView || doc.hidden) return;
-      applyQuality(quality.restore());
+      quality.restore();
       invalidate();
     }, 200);
   }
@@ -309,7 +317,6 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     orbit.enabled = mode === "orbit";
     trackball.enabled = mode === "inspect";
     quality.configure(mode, viewWidth, viewHeight);
-    applyQuality(quality.ratio);
     canvas.style.cursor = "grab";
   }
   function showAll() {
@@ -533,6 +540,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
   }
   function visibility() {
     quality.pause();
+    pedestrian.pause();
     if (doc.hidden) clearHover(true);
     else invalidate();
   }
@@ -605,7 +613,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     quality.configure(mode, width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setDrawingBufferSize(width, height, quality.ratio);
+    bufferDirty = true;
     trackball.handleResize();
     clearHover(true);
     fitOverview();
@@ -646,14 +654,31 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     const moving = Boolean(
       tween || pointerStart || cameraChangedDuringFrame || animation.running,
     );
+    const walking = industrial.landscape.visible && !reduced.matches;
+    // The small worker needs 30 fps at rest; camera/selected machinery retain
+    // their existing frame rate and quality adaptation. No Vue/label updates.
+    if (walking && !moving && firstFrameDrawn && !anchorsDirty && !bufferDirty && !renderer.shadowMap.needsUpdate && now - lastDrawTime < 1000 / 30 - 0.5) {
+      invalidate(true);
+      return;
+    }
+    pedestrian.update(now, walking);
     applyQuality(quality.update(now, moving));
     // Reuse the equipment's resting projection during small mechanical motions.
     // Shadow maps refresh on layout/model/mode changes, never on every hover frame.
     renderer.render(scene, camera);
+    lastDrawTime = now;
+    if (!firstFrameDrawn) {
+      firstFrameDrawn = true;
+      canvas.dataset.firstFrame = 'painted';
+      callbacks.ready?.();
+    }
     if (anchorsDirty)
       reportAnchors(now, !tween && !pointerStart && !cameraChangedDuringFrame);
     if (tween || animation.running) invalidate();
-    else restoreQualityLater();
+    else {
+      restoreQualityLater();
+      if (walking) invalidate(true);
+    }
   }
   const resizeObserver = new win.ResizeObserver(resize);
   resizeObserver.observe(host);
@@ -661,6 +686,7 @@ export function createIndustrialViewer(host, callbacks = {}, options = {}) {
     (entries) => {
       inView = entries.some((entry) => entry.isIntersecting);
       quality.pause();
+      pedestrian.pause();
       if (inView) invalidate();
       else clearHover(true);
     },

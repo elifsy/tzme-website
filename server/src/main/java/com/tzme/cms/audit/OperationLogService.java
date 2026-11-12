@@ -19,6 +19,7 @@ public class OperationLogService {
         for (var entry : modules) MODULES.put(entry[0], entry[1]);
         MODULES.put("rankings", "SEO关键词排名");
         ACTIONS.put("tutorial", "开启新手教程");
+        ACTIONS.put("change_avatar", "更换虚拟形象");
         String[][] actions = {{"login","登录"},{"logout","退出登录"},{"create","新增"},{"update","修改"},{"delete","删除"},{"publish","发布"},{"unpublish","下架"},{"enable","启用账号"},{"disable","停用账号"},{"configure","保存配置"},{"upload","上传文件"},{"change_password","修改本人密码"},{"reset_password","重置账号密码"},{"update_status","更新跟进状态"},{"notify","重新提交邮件通知"}};
         for (var entry : actions) ACTIONS.put(entry[0], entry[1]);
         ACTIONS.put("record_rank", "录入实际排名"); ACTIONS.put("check_rank", "采集关键词排名"); ACTIONS.put("import_rank", "导入排名历史"); ACTIONS.put("archive", "归档关键词监测");

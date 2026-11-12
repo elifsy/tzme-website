@@ -24,15 +24,19 @@ public class ContactSettingsService {
     public ObjectNode configuration() {
         try {
             var row = repository.findById("contact").orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Import the contact configuration SQL migration"));
-            return (ObjectNode) mapper.readTree(row.getConfiguration());
+            var value = (ObjectNode) mapper.readTree(row.getConfiguration());
+            ContactDepartments.ensure(value.path("contact"), mapper);
+            return value;
         } catch (ResponseStatusException error) { throw error; }
         catch (Exception error) { throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid contact configuration"); }
     }
     public ObjectNode publicConfiguration() {
-        var value = configuration(); value.remove("notification"); return value;
+        var value = configuration(); value.remove("notification");
+        for (var item : value.path("contact").path("departments")) if (item instanceof ObjectNode row && !item.path("enabled").asBoolean()) { row.put("phone", ""); row.put("email", ""); }
+        return value;
     }
     public ObjectNode adminConfiguration() {
-        return publicConfiguration();
+        var value = configuration(); value.remove("notification"); return value;
     }
     public ObjectNode mailConfiguration() {
         return maskedNotification((ObjectNode) configuration().path("notification"));
@@ -58,6 +62,8 @@ public class ContactSettingsService {
         }
         // Preserve social links when an older client updates contact information.
         if (storedSocialLinks != null && value.path("contact") instanceof ObjectNode contact && !contact.has("socialLinks")) contact.set("socialLinks", storedSocialLinks);
+        if (value.path("contact") instanceof ObjectNode contact && !contact.has("departments") && storedContact.has("departments")) contact.set("departments", storedContact.get("departments").deepCopy());
+        ContactDepartments.ensure(value.path("contact"), mapper);
         preserveFacility(value.path("contact"), storedContact);
         // Older clients may omit facility fields. Match by stable ID, even after a reorder.
         var facilitiesById = new HashMap<String, JsonNode>();
@@ -100,6 +106,7 @@ public class ContactSettingsService {
         for (var email : contact.path("emails")) if (!validEmail(email.asText())) invalid("Invalid contact email");
         validateSocialLinks(contact.path("socialLinks"));
         validateFacility(contact.path("facility"));
+        validateDepartments(contact.path("departments"));
         if (!value.path("subsidiaries").isArray() || value.path("subsidiaries").size() > 50) invalid("Maximum 50 subsidiaries");
         var ids = new HashSet<String>();
         for (var item : value.path("subsidiaries")) {
@@ -122,6 +129,19 @@ public class ContactSettingsService {
     }
     private static void preserveFacility(JsonNode incoming, JsonNode stored) {
         if (incoming instanceof ObjectNode target && !target.has("facility") && stored != null && stored.has("facility")) target.set("facility", stored.get("facility").deepCopy());
+    }
+    private static void validateDepartments(JsonNode rows) {
+        if (!rows.isArray() || rows.size() > ContactDepartments.MAX_COUNT) invalid("联系分类最多支持 " + ContactDepartments.MAX_COUNT + " 项。");
+        var ids = new HashSet<String>();
+        for (var row : rows) {
+            if (!row.isObject() || !row.path("id").isTextual() || !row.path("id").asText().matches("[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}") || !ids.add(row.path("id").asText())) invalid("联系事项无效或重复。");
+            row.fieldNames().forEachRemaining(key -> { if (!Set.of("id", "title", "description", "phone", "email", "enabled").contains(key)) invalid("联系入口包含无效字段。"); });
+            for (String key : List.of("title", "description", "phone", "email")) if (!row.path(key).isTextual()) invalid("请填写有效的联系信息。");
+            text(row, "title", 40); text(row, "description", 300); text(row, "phone", 255); text(row, "email", 255);
+            if (row.path("title").asText().isBlank()) invalid("请填写联系事项名称。");
+            if (!row.path("email").asText().isBlank() && !validEmail(row.path("email").asText().trim())) invalid(row.path("title").asText() + "的联系邮箱格式不正确。");
+            if (!row.path("enabled").isBoolean()) invalid("请选择联系入口是否展示。");
+        }
     }
     private static void validateFacility(JsonNode facility) {
         if (facility.isMissingNode()) return;

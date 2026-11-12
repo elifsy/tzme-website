@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $EUID -eq 0 ]] || { echo 'Use sudo tzme-tmux <command>.' >&2; exit 1; }
+# A dedicated root-owned tmux server avoids affecting unrelated sessions.
+tm=(/usr/bin/tmux -L tzme -f /etc/tzme/tmux.conf)
+session=tzme
+backend='exec /usr/sbin/runuser -u tzme -- /opt/tzme/bin/backend.sh'
+frontend='exec /opt/tzme/bin/frontend.sh'
+has_session() { "${tm[@]}" has-session -t "=$session" 2>/dev/null; }
+has_window() { has_session && "${tm[@]}" list-windows -t "$session" -F '#{window_name}' | grep -qx "$1"; }
+is_alive() { has_window "$1" && [[ $("${tm[@]}" display-message -p -t "$session:$1.0" '#{pane_dead}') == 0 ]]; }
+start_window() {
+    local name=$1 command=$2
+    if [[ "$name" == backend ]] && ! is_alive backend; then
+        if ss -H -ltn '( sport = :8080 )' | grep -q .; then
+            echo 'Port 8080 is already occupied outside this running backend window. Inspect ss -lntp first.' >&2
+            return 1
+        fi
+    fi
+    if ! has_session; then
+        "${tm[@]}" new-session -d -s "$session" -n "$name" "$command"
+    elif ! has_window "$name"; then
+        "${tm[@]}" new-window -d -t "$session:" -n "$name" "$command"
+    elif ! is_alive "$name"; then
+        "${tm[@]}" respawn-window -t "$session:$name" "$command"
+    fi
+}
+wait_backend() {
+    local attempt
+    for attempt in {1..120}; do
+        if curl --fail --silent --max-time 2 http://127.0.0.1:8080/api/auth/csrf >/dev/null; then return; fi
+        if ! is_alive backend; then
+            echo 'Backend exited. Inspect sudo tzme-tmux attach or /var/log/tzme/backend.log.' >&2
+            return 1
+        fi
+        sleep 1
+    done
+    echo 'Backend did not become ready. Inspect /var/log/tzme/backend.log.' >&2
+    return 1
+}
+wait_stopped() {
+    local name=$1 attempt
+    for attempt in {1..40}; do
+        is_alive "$name" || return 0
+        sleep 1
+    done
+    echo "$name is still running; no forced kill was performed." >&2
+    return 1
+}
+stop_backend() {
+    if is_alive backend; then
+        "${tm[@]}" send-keys -t "$session:backend.0" C-c
+        wait_stopped backend
+    fi
+}
+stop_frontend() {
+    if is_alive frontend; then
+        /usr/sbin/nginx -c /etc/tzme/nginx.conf -s quit
+        wait_stopped frontend
+    fi
+}
+case "${1:-status}" in
+    start)
+        /usr/sbin/nginx -t -c /etc/tzme/nginx.conf
+        start_window backend "$backend"
+        wait_backend
+        start_window frontend "$frontend"
+        sleep 1
+        is_alive frontend || { echo 'Frontend exited. Inspect /var/log/tzme/nginx-error.log.' >&2; exit 1; }
+        echo 'Started. Use sudo tzme-tmux status / attach.'
+        ;;
+    restart-backend) stop_backend; start_window backend "$backend"; wait_backend ;;
+    reload-front)
+        /usr/sbin/nginx -t -c /etc/tzme/nginx.conf
+        is_alive frontend || { echo 'Frontend is not running. Use start.' >&2; exit 1; }
+        /usr/sbin/nginx -c /etc/tzme/nginx.conf -s reload
+        ;;
+    stop)
+        stop_frontend
+        stop_backend
+        if has_session; then "${tm[@]}" kill-session -t "$session"; fi
+        ;;
+    status)
+        if has_session; then
+            "${tm[@]}" list-panes -a -F '#{session_name}:#{window_name} running=#{!=:#{pane_dead},1} pid=#{pane_pid} exit=#{pane_dead_status}'
+        else echo 'No TZME tmux session.'; fi
+        ss -ltn '( sport = :8080 or sport = :8088 or sport = :80 or sport = :443 or sport = :3306 )'
+        ;;
+    attach)
+        has_session || { echo 'No TZME session. Use start first.' >&2; exit 1; }
+        exec /usr/bin/tmux -L tzme attach-session -t "$session"
+        ;;
+    *) echo 'Usage: sudo tzme-tmux {start|status|attach|restart-backend|reload-front|stop}' >&2; exit 2 ;;
+esac

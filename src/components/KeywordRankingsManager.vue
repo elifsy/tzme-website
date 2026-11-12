@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { Download, Plus, Refresh, Upload } from '@element-plus/icons-vue';
+import { Download, Plus, Upload } from '@element-plus/icons-vue';
 import { apiRequest } from '../services/api.js';
 import AdminEditorDialog from './AdminEditorDialog.vue';
 import AdminEditorPanel from './AdminEditorPanel.vue';
@@ -130,7 +130,7 @@ defineExpose({ load });
     <el-alert v-if="error" type="error" :title="error" show-icon :closable="false" />
     <el-card shadow="never" class="keyword-rank-card">
       <template #header><div class="keyword-rank-toolbar"><div><strong>关键词排名监测</strong><small>共 {{ filtered.length }} 个监测条件 · 升降与上一次有效结果相比</small></div><div class="keyword-rank-toolbar-actions"><input ref="picker" class="keyword-rank-csv-picker" type="file" accept=".csv,text/csv" aria-label="导入实际关键词排名 CSV" @change="importCsv" /><el-button :icon="Download" :disabled="!filtered.some(item => !item.archived)" @click="template">下载模板</el-button><el-button :icon="Upload" :loading="importing" :disabled="busy || saving" @click="picker.click()">导入排名</el-button><el-button type="primary" :icon="Plus" :disabled="busy || saving" @click="openKeyword()">新增关键词</el-button></div></div></template>
-      <div class="keyword-rank-filters"><el-input v-model="search" clearable placeholder="搜索关键词或备注" aria-label="搜索监测关键词" @input="page = 1" /><el-select v-model="deviceFilter" clearable placeholder="全部终端" aria-label="筛选终端" @change="page = 1"><el-option v-for="(label, value) in rankDevices" :key="value" :label="label" :value="value" /></el-select><el-select v-model="statusFilter" aria-label="筛选监测状态" @change="page = 1"><el-option label="全部监测" value="all" /><el-option label="监测中" value="enabled" /><el-option label="已暂停" value="paused" /><el-option label="已归档" value="archived" /></el-select><el-select v-model="changeFilter" clearable placeholder="全部升降" aria-label="筛选排名变化" @change="page = 1"><el-option label="上升" value="up" /><el-option label="下降" value="down" /><el-option label="新进榜" value="entered" /><el-option label="跌出范围" value="left" /><el-option label="持平" value="same" /><el-option label="首次记录" value="first" /><el-option label="待采集" value="pending" /></el-select><el-button :icon="Refresh" :loading="loading" @click="load">刷新</el-button></div>
+      <div class="keyword-rank-filters"><el-input v-model="search" clearable placeholder="搜索关键词或备注" aria-label="搜索监测关键词" @input="page = 1" /><el-select v-model="deviceFilter" clearable placeholder="全部终端" aria-label="筛选终端" @change="page = 1"><el-option v-for="(label, value) in rankDevices" :key="value" :label="label" :value="value" /></el-select><el-select v-model="statusFilter" aria-label="筛选监测状态" @change="page = 1"><el-option label="全部监测" value="all" /><el-option label="监测中" value="enabled" /><el-option label="已暂停" value="paused" /><el-option label="已归档" value="archived" /></el-select><el-select v-model="changeFilter" clearable placeholder="全部升降" aria-label="筛选排名变化" @change="page = 1"><el-option label="上升" value="up" /><el-option label="下降" value="down" /><el-option label="新进榜" value="entered" /><el-option label="跌出范围" value="left" /><el-option label="持平" value="same" /><el-option label="首次记录" value="first" /><el-option label="待采集" value="pending" /></el-select></div>
       <el-table v-loading="loading" :data="pageRows" row-key="id" stripe>
         <el-table-column label="关键词 / 监测范围" min-width="220"><template #default="{ row }"><div class="keyword-rank-word"><strong>{{ row.keyword }}</strong><small>{{ rankDevices[row.device] }} · 前 {{ row.searchDepth }} 位 <span v-if="!row.enabled">· 已暂停</span></small><small v-if="row.notes">{{ row.notes }}</small></div></template></el-table-column>
         <el-table-column label="最近有效排名" min-width="160"><template #default="{ row }"><strong class="keyword-rank-position">{{ rankLabel(row.latestStatus, row.latestRank, row.searchDepth) }}</strong><el-tooltip v-if="row.lastError" :content="row.lastError + '，这里保留上次有效结果。'"><small class="keyword-rank-error">最近采集失败</small></el-tooltip><small v-else class="keyword-rank-muted">{{ row.latestSource ? rankSources[row.latestSource] : '尚无实际数据' }}</small></template></el-table-column>
@@ -176,7 +176,7 @@ defineExpose({ load });
 .keyword-rank-toolbar-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .keyword-rank-toolbar-actions .el-button { margin: 0; }
 .keyword-rank-csv-picker { display: none; }
-.keyword-rank-filters { display: grid; grid-template-columns: minmax(190px, 1.6fr) repeat(3, minmax(120px, 1fr)) auto; gap: 12px; padding: 20px; border-bottom: 1px solid #edf1f4; }
+.keyword-rank-filters { display: grid; grid-template-columns: minmax(190px, 1.6fr) repeat(3, minmax(120px, 1fr)); gap: 12px; padding: 20px; border-bottom: 1px solid #edf1f4; }
 .keyword-rank-word { display: grid; gap: 4px; }
 .keyword-rank-word strong { color: #294b60; font-size: 13px; font-weight: 600; }
 .keyword-rank-word small, .keyword-rank-muted { color: #93a5b1; font-size: 11px; line-height: 1.8; }

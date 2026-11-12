@@ -12,6 +12,9 @@ import SubsidiaryCards from "./SubsidiaryCards.vue";
 import SocialLinksEditor from "./SocialLinksEditor.vue";
 import ContactFacilityFields from "./ContactFacilityFields.vue";
 import ContactDetails from "./ContactDetails.vue";
+import ContactDepartments from './ContactDepartments.vue';
+import ContactDepartmentsEditor from './ContactDepartmentsEditor.vue';
+import { MAX_CONTACT_DEPARTMENTS } from '../data/contactDepartments.js';
 import InquiryForm from "./InquiryForm.vue";
 import {
   emptyFacility,
@@ -47,7 +50,7 @@ const uploading = computed(
 );
 const activeTab = ref("contact");
 const availableTabs = computed(() =>
-  props.mode === "inquiry" ? ["form"] : ["contact", "subsidiaries", "social"],
+  props.mode === "inquiry" ? ["form"] : ["contact", "departments", "subsidiaries", "social"],
 );
 watch(
   () => [props.mode, route.query.section],
@@ -144,6 +147,12 @@ function validate() {
     return t("contactAdmin.emailInvalid");
   if (value.upload.enabled && !value.upload.allowedExtensions.length)
     return t("contactAdmin.selectTypes");
+  if (value.contact.departments.length > MAX_CONTACT_DEPARTMENTS) return `联系分类最多支持 ${MAX_CONTACT_DEPARTMENTS} 项。`;
+  for (const item of value.contact.departments) {
+    if (!item.title.trim() || item.title.length > 40) return '请填写有效的联系分类名称（最多 40 字）。';
+    if (item.description.length > 300) return `${item.title}的事项说明最多 300 字。`;
+    if (item.email.trim() && !validEmail(item.email.trim())) return `${item.title}的联系邮箱格式不正确。`;
+  }
   for (const item of [value.contact, ...value.subsidiaries]) {
     if (!validFacilityImage(item.facility.image))
       return t("contactAdmin.facilityImageInvalid");
@@ -250,7 +259,7 @@ defineExpose({ load, publicPath });
             v-for="key in availableTabs"
             :key="key"
             :name="key"
-            :label="$t('contactAdmin.tabs.' + key)"
+            :label="key === 'departments' ? '分项联系' : $t('contactAdmin.tabs.' + key)"
         /></el-tabs>
       </div>
       <div v-show="activeTab === 'contact'" class="contact-settings-grid">
@@ -306,6 +315,12 @@ defineExpose({ load, publicPath });
               <ContactDetails :contact="form.contact" />
             </div></section
         ></AdminPreviewFrame>
+      </div>
+      <div v-if="activeTab === 'departments'" class="contact-departments-layout">
+        <AdminEditorPanel step="01" title="按事项配置联系方式" description="可新增联系分类、拖动调整顺序，分别维护名称、说明、电话和邮箱。">
+          <ContactDepartmentsEditor v-model="form.contact.departments" :contact="form.contact" :disabled="saving" />
+        </AdminEditorPanel>
+        <aside class="contact-departments-preview"><AdminPreviewFrame title="联系名片实时预览" public-path="/contact"><section class="contact-departments-preview-body"><h2>直接联系</h2><p>移入或点击分类，查看联系名片。</p><ContactDepartments :contact="form.contact" /><p v-if="!form.contact.departments.some(item => item.enabled)" class="cms-field-hint">已关闭全部分项联系，官网将显示通用联系方式。</p></section></AdminPreviewFrame></aside>
       </div>
       <div v-show="activeTab === 'subsidiaries'">
         <p class="contact-settings-help">
@@ -629,6 +644,12 @@ defineExpose({ load, publicPath });
   gap: 24px;
   margin-bottom: 20px;
 }
+.contact-departments-layout { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr); gap:20px; align-items:start; }
+.contact-departments-preview { position:sticky; top:82px; min-width:0; }
+.contact-departments-preview-body { min-height:465px; padding:28px 25px 280px; background:#fff; color:#153f52; }
+.contact-departments-preview-body h2 { margin:0; font-size:28px; }
+.contact-departments-preview-body > p { color:#688795; font-size:12px; line-height:1.8; }
+@media (max-width:1100px) { .contact-departments-layout { grid-template-columns:1fr; } .contact-departments-preview { position:static; } }
 .inquiry-preview-content {
   max-width: 650px;
 }

@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
-import { Download, InfoFilled, Refresh } from '@element-plus/icons-vue'
+import { Download, InfoFilled } from '@element-plus/icons-vue'
 import AnalyticsTrend from './AnalyticsTrend.vue'
 import { availableLocales } from '../i18n/locales/index.js'
 import { localizedField, useProductCatalog } from '../services/catalog.js'
@@ -193,7 +193,7 @@ defineExpose({ load })
       <div class="analytics-date"><label>{{ $t('analyticsAdmin.fromTo') }}</label><el-date-picker v-model="dates" type="daterange" value-format="YYYY-MM-DD" :clearable="false" :shortcuts="shortcuts" :start-placeholder="$t('analyticsAdmin.start')" :end-placeholder="$t('analyticsAdmin.end')" :disabled-date="date => calendarDay(date) > today()" /><div class="date-presets"><el-button v-for="days in [7, 30, 90]" :key="days" size="small" :type="dates.join() === range(days).join() ? 'primary' : 'default'" @click="dates = range(days)">{{ $t(`analyticsAdmin.last${days}`) }}</el-button></div></div>
       <div><label>{{ $t('analyticsAdmin.language') }}</label><el-select v-model="language" :aria-label="$t('analyticsAdmin.language')"><el-option value="" :label="$t('analyticsAdmin.allLanguages')" /><el-option v-for="item in availableLocales" :key="item.code" :value="item.code" :label="languageLabel(item.code)" /></el-select></div>
       <div><label>{{ $t('analyticsAdmin.device') }}</label><el-select v-model="selectedDevice" :aria-label="$t('analyticsAdmin.device')"><el-option value="" :label="$t('analyticsAdmin.allDevices')" /><el-option v-for="name in ['desktop','tablet','mobile']" :key="name" :value="name" :label="$t(`analyticsAdmin.${name}`)" /></el-select></div>
-      <div class="analytics-filter-actions"><el-button :icon="Refresh" :loading="loading" @click="load">{{ $t('analyticsAdmin.refresh') }}</el-button><el-button :icon="Download" :disabled="!report || loading" @click="exportTrend">{{ $t('analyticsAdmin.export') }}</el-button></div>
+      <div class="analytics-filter-actions"><el-button :icon="Download" :disabled="!report || loading" @click="exportTrend">{{ $t('analyticsAdmin.export') }}</el-button></div>
     </section>
     <p v-if="updated" class="analytics-updated">{{ $t('analyticsAdmin.generated', { time: updated }) }}</p>
     <el-alert v-if="error" :title="$t('analyticsAdmin.loadFailed')" type="error" show-icon :closable="false" />

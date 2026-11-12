@@ -18,6 +18,7 @@ const props = defineProps({
   preview: Boolean,
 });
 const emit = defineEmits([
+  "loading",
   "ready",
   "unavailable",
   "select-industry",
@@ -179,6 +180,7 @@ function changeEquipment(key) {
 async function initialize() {
   const current = ++generation;
   ready.value = false;
+  emit('loading');
   engine?.dispose();
   engine = null;
   anchors.value = {};
@@ -193,6 +195,11 @@ async function initialize() {
       host.value,
       {
         state: syncState,
+        ready: () => {
+          if (disposed || current !== generation) return;
+          ready.value = true;
+          emit('ready');
+        },
         anchors: (value, size) => {
           anchors.value = value;
           if (
@@ -231,8 +238,6 @@ async function initialize() {
       )
     )
       engine.focus(props.selectedIndustry);
-    ready.value = true;
-    emit("ready");
   } catch {
     if (!disposed && current === generation) {
       error.value = "当前设备暂不支持三维查看";
@@ -266,6 +271,7 @@ function scheduleInitialize() {
     engine ||
     scheduled != null ||
     !inViewport ||
+    !props.industries.length ||
     (!props.preview && document.documentElement.hasAttribute("data-site-boot"))
   )
     return;

@@ -69,6 +69,18 @@ public class AdminAccountService {
     }
 
     @Transactional
+    public AdminAccount updateOwnAvatar(String id, String avatarKey) {
+        if (avatarKey == null || !List.of("engineer", "inspector", "robot", "astronaut", "bear", "cat").contains(avatarKey))
+            invalid("请选择有效的虚拟形象。");
+        var account = accounts.findForUpdate(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "账号不存在。"));
+        account.avatarKey = avatarKey;
+        account.updatedAt = Instant.now();
+        // A display preference must not revoke sessions or change account permissions.
+        return accounts.saveAndFlush(account);
+    }
+
+    @Transactional
     public AdminAccount login(String input, String password, String address) {
         // Bound invalid input too, without disclosing whether the account exists.
         String name = input == null ? "" : input.trim().toLowerCase(Locale.ROOT);

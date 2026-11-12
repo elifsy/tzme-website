@@ -15,6 +15,8 @@ public class AdminAccount {
     public String username;
     @Column(nullable = false, length = 64)
     public String displayName;
+    @Column(length = 24)
+    public String avatarKey = "engineer";
     @Column(nullable = false)
     public String passwordHash;
     @Column(nullable = false, length = 24)
@@ -40,10 +42,10 @@ public class AdminAccount {
 
     public AccountView view(Map<String, Instant> tutorialSeen) {
         return new AccountView(id, username, displayName, role, status, mustChangePassword, createdAt, updatedAt,
-                lastLoginAt, tutorialSeenAt, tutorialSeen);
+                lastLoginAt, tutorialSeenAt, tutorialSeen, avatarKey == null ? "engineer" : avatarKey);
     }
 
     public record AccountView(String id, String username, String displayName, String role, String status,
-            boolean mustChangePassword, Instant createdAt, Instant updatedAt, Instant lastLoginAt, Instant tutorialSeenAt, Map<String, Instant> tutorialSeen) {
+            boolean mustChangePassword, Instant createdAt, Instant updatedAt, Instant lastLoginAt, Instant tutorialSeenAt, Map<String, Instant> tutorialSeen, String avatarKey) {
     }
 }

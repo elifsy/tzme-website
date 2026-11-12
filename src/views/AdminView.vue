@@ -8,7 +8,6 @@ import {
   Edit,
   Plus,
   Promotion,
-  Refresh,
   View,
   QuestionFilled,
 } from "@element-plus/icons-vue";
@@ -30,6 +29,7 @@ import AdminTutorial from '../components/AdminTutorial.vue';
 import AdminTutorialPicker from '../components/AdminTutorialPicker.vue';
 import { adminTutorials } from '../data/adminTutorial.js';
 import AdminSidebar from "../components/AdminSidebar.vue";
+import AdminAccountBadge from '../components/AdminAccountBadge.vue';
 const AnalyticsManager = defineAsyncComponent(() => import('../components/AnalyticsManager.vue'));
 const PartnersManager = defineAsyncComponent(() => import('../components/PartnersManager.vue'));
 import LegacyDataMigration from "../components/LegacyDataMigration.vue";
@@ -165,6 +165,8 @@ async function userAction(action) {
 function passwordChanged() { location.replace('/admin/login?changed=1'); }
 const { industries: industryRecords, loadIndustries } = useIndustryCatalog();
 const loading = ref(true);
+const refreshing = ref(false);
+let refreshLock = false;
 const modal = ref(false);
 const kind = ref("products");
 const saving = ref(false);
@@ -221,9 +223,9 @@ function clearContentFilters() {
   router.replace({ path: route.path, query });
 }
 const hasUnsavedChanges = computed(() => Boolean(pageEditor.value?.dirty || (modal.value && JSON.stringify(form) !== modalOriginal.value)));
-const editorBusy = computed(() => Boolean(pageEditor.value?.busy || saving.value || imageUploading.value || passwordBusy.value));
+const editorBusy = computed(() => Boolean(pageEditor.value?.busy || saving.value || imageUploading.value || passwordBusy.value || refreshing.value));
 async function confirmDiscard() {
-  if (editorBusy.value) { ElMessage.info('正在保存或上传，请完成后再离开。'); return false; }
+  if (editorBusy.value) { ElMessage.info('正在加载、保存或上传，请完成后再离开。'); return false; }
   if (!hasUnsavedChanges.value) return true;
   try { await ElMessageBox.confirm('当前有未保存的修改，离开后将丢弃这些内容。', '保留编辑内容', { confirmButtonText: '丢弃修改并继续', cancelButtonText: '继续填写', type: 'warning', distinguishCancelAndClose: true }); return true; }
   catch { return false; }
@@ -442,26 +444,27 @@ watch(() => [currentAccount.value?.id, tab.value, currentAccount.value?.tutorial
 }, { immediate: true, flush: 'post' });
 onBeforeUnmount(() => { tutorialDisposed = true; tutorialVersion++; clearTimeout(tutorialTimer); });
 async function refresh() {
-  if (!(await confirmDiscard())) return;
-  if (tab.value === 'home') { homepageManager.value?.load(); load(); loadIndustries(); }
-  else if (tab.value === 'certifications') certManager.value?.load();
-  else if (tab.value === 'industries') industryManager.value?.load();
-  else if (tab.value === 'projects') projectManager.value?.load();
-  else if (tab.value === 'global') globalManager.value?.load();
-  else if (tab.value === 'capabilities') capabilitiesManager.value?.load();
-  else if (tab.value === 'solutions') solutionsManager.value?.load();
-  else if (tab.value === 'product-showcase') productShowcaseManager.value?.load();
-  else if (tab.value === 'about') aboutManager.value?.load();
-  else if (tab.value === 'analytics') analyticsManager.value?.load();
-  else if (tab.value === 'partners') partnersManager.value?.load();
-  else if (tab.value === 'contact' || tab.value === 'forms') contactManager.value?.load();
-  else if (tab.value === 'inquiries') inquiriesManager.value?.load();
-  else if (tab.value === 'mail') mailManager.value?.load();
-  else if (tab.value === 'accounts') accountsManager.value?.load();
-  else if (tab.value === 'logs') operationLogsManager.value?.load();
-  else if (tab.value === 'rankings') keywordRankingsManager.value?.load();
-  else if (tab.value === 'seo') seoManager.value?.load();
-  else { load(); loadIndustries(); }
+  if (refreshLock) return false;
+  refreshLock = true;
+  try {
+    if (!(await confirmDiscard())) return false;
+    refreshing.value = true;
+    if (tab.value === 'home') await Promise.all([homepageManager.value?.load(), load(), loadIndustries()]);
+    else {
+      const managers = { certifications: certManager, industries: industryManager, projects: projectManager,
+        global: globalManager, capabilities: capabilitiesManager, solutions: solutionsManager,
+        'product-showcase': productShowcaseManager, about: aboutManager, analytics: analyticsManager,
+        partners: partnersManager, contact: contactManager, forms: contactManager, inquiries: inquiriesManager,
+        mail: mailManager, accounts: accountsManager, logs: operationLogsManager, rankings: keywordRankingsManager, seo: seoManager };
+      const manager = managers[tab.value];
+      if (manager && typeof manager.value?.load !== 'function') { ElMessage.info('当前功能正在加载，请稍后刷新。'); return false; }
+      if (manager) await manager.value.load();
+      else await Promise.all([load(), loadIndustries()]);
+    }
+    return true;
+  } catch (failure) {
+    ElMessage.error(failure.message || '刷新失败，请稍后重试。'); return false;
+  } finally { refreshing.value = false; refreshLock = false; }
 }
 onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 </script>
@@ -484,10 +487,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
         </el-breadcrumb>
         <div class="admin-profile">
           <el-button class="admin-tutorial-trigger" data-admin-tour="tutorial-entry" text :icon="QuestionFilled" :loading="tutorialStarting" :disabled="editorBusy" aria-haspopup="dialog" @click="openTutorialPicker">新手教程</el-button>
-          <el-dropdown trigger="click" @command="userAction"><button class="admin-user-trigger" type="button" aria-label="账号操作"><el-avatar :size="32" class="admin-avatar">{{ currentAccount?.displayName?.slice(0, 1) || 'A' }}</el-avatar><span>{{ currentAccount?.displayName }}<small>{{ isSuperAdmin ? '超级管理员' : '普通管理员' }}</small></span><span aria-hidden="true">⌄</span></button><template #dropdown><el-dropdown-menu><el-dropdown-item v-if="isSuperAdmin" command="accounts">账号管理</el-dropdown-item><el-dropdown-item command="password">修改我的密码</el-dropdown-item><el-dropdown-item command="logout" divided>退出登录</el-dropdown-item></el-dropdown-menu></template></el-dropdown>
-          <el-tooltip :content="$t('admin.refreshData')"
-            ><el-button text circle :icon="Refresh" @click="refresh"
-          /></el-tooltip>
+          <AdminAccountBadge :refresh-action="refresh" :refreshing="refreshing" :refresh-disabled="editorBusy || loading || pageEditor?.loading" @command="userAction" />
         </div>
       </el-header>
 
@@ -504,9 +504,6 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
           </div>
           <div class="admin-actions">
             <a v-if="currentPublicPreview" class="admin-public-preview" :href="currentPublicPreview" target="_blank" rel="noopener noreferrer">查看已保存网页 ↗</a>
-            <el-button :icon="Refresh" @click="refresh">{{
-              $t('admin.refresh')
-            }}</el-button>
             <el-button
               v-if="tab === 'products' || tab === 'articles'"
               type="primary"
@@ -825,6 +822,9 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
 }
 .admin-topbar .el-breadcrumb {
   font-size: 11px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .admin-topbar .el-breadcrumb__inner {
   color: #687686 !important;
@@ -836,16 +836,6 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   gap: 9px;
   color: #344354;
   font-size: 11px;
-}
-.admin-profile small {
-  display: block;
-  color: #9aa5b1;
-  font-size: 9px;
-}
-.admin-profile .admin-avatar {
-  background: #e5eefb;
-  color: #3378c9;
-  font-weight: 700;
 }
 .admin-profile .el-button {
   margin-left: 5px;
@@ -864,6 +854,7 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
   justify-content: space-between;
   gap: 20px;
   margin-bottom: 24px;
+  padding-inline-end: 110px;
 }
 .admin-eyebrow {
   color: #718297;
@@ -1165,17 +1156,24 @@ onMounted(() => { load(); if (tab.value !== 'industries') loadIndustries(); });
     padding: 26px 22px 10px;
   }
 }
+@media (min-width: 681px) and (max-width: 1000px) {
+  .admin-heading { padding-inline-end: 76px; }
+}
 @media (max-width: 680px) {
   .admin-shell { --admin-sidebar-width: 244px; --admin-sidebar-compact-width: 58px; --admin-content-offset: 58px; }
   .admin-topbar.el-header {
     height: 54px !important;
     padding: 0 12px;
   }
+  .admin-topbar .el-breadcrumb__item:not(:last-child) { display:none; }
+  .admin-topbar .el-breadcrumb__item:last-child { display:block; float:none; min-width:0; }
+  .admin-topbar .el-breadcrumb__item:last-child .el-breadcrumb__inner { display:block; overflow:hidden; text-overflow:ellipsis; }
   .admin-content.el-main {
     padding: 22px 12px 8px;
   }
   .admin-heading {
     align-items: flex-start;
+    padding-inline-end: 0;
   }
   .admin-heading h1 {
     font-size: 23px;

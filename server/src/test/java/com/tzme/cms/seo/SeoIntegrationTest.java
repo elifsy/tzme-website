@@ -35,6 +35,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 @AutoConfigureMockMvc
 class SeoIntegrationTest {
+    @Test void contactDepartmentsAreReadableInPublicHtmlAndStructuredData() throws Exception {
+        var document = pages.document("/contact");
+        var organization = document.page().structuredData().path("@graph").get(0);
+        assertThat(organization.path("contactPoint").size()).isEqualTo(5);
+        var response = mvc.perform(get("/contact")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertThat(response).contains("采购", "销售", "HR", "企业文化", "数字精益", "subject=");
+        assertThat(response).doesNotContain("PRIVATE-SMTP-SENTINEL");
+        var configured = (ObjectNode) mapper.readTree(settings.findById("contact").orElseThrow().getConfiguration());
+        var rows = com.tzme.cms.service.ContactDepartments.defaults(mapper);
+        ((ObjectNode) rows.get(2)).put("email", "hidden-hr@example.invalid").put("enabled", false);
+        ((ObjectNode) configured.path("contact")).set("departments", rows); setting("contact", configured);
+        var hidden = mvc.perform(get("/contact")).andReturn().getResponse().getContentAsString();
+        assertThat(hidden).doesNotContain("hidden-hr@example.invalid");
+        assertThat(pages.document("/contact").page().structuredData().path("@graph").get(0).path("contactPoint").size()).isEqualTo(4);
+        rows.addObject().put("id", "customer-support").put("title", "客户服务").put("description", "售后支持与维护咨询").put("phone", "022-11112222").put("email", "support@example.invalid").put("enabled", true);
+        setting("contact", configured);
+        var custom = mvc.perform(get("/contact")).andReturn().getResponse().getContentAsString();
+        assertThat(custom).contains("客户服务", "售后支持与维护咨询", "support@example.invalid");
+        var points = pages.document("/contact").page().structuredData().path("@graph").get(0).path("contactPoint");
+        assertThat(points.size()).isEqualTo(5);
+        assertThat(points.get(4).path("contactType").asText()).isEqualTo("客户服务");
+        assertThat(points.get(4).path("email").asText()).isEqualTo("support@example.invalid");
+    }
     @Autowired
     MockMvc mvc;
     @Autowired

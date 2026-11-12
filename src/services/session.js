@@ -123,6 +123,17 @@ export async function signOut() {
   sessionExpired.value = false;
   csrf = undefined;
 }
+export async function updateOwnAvatar(avatarKey) {
+  const accountId = currentAccount.value?.id;
+  try {
+    const account = await authRequest("avatar", { avatarKey });
+    if (currentAccount.value?.id === accountId && account.id === accountId) currentAccount.value = account;
+    return account;
+  } catch (error) {
+    if (error.status === 401 && currentAccount.value) sessionExpired.value = true;
+    throw error;
+  }
+}
 export async function changeOwnPassword(currentPassword, newPassword) {
   await authRequest("password", { currentPassword, newPassword });
   currentAccount.value = null;

@@ -58,6 +58,37 @@ class AdminAuthIntegrationTest {
         return mvc.perform(request(org.springframework.http.HttpMethod.valueOf(method), path).session(session)
             .header("X-CSRF-TOKEN", csrf(session)).contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(body)));
     }
+    @Test void avatarPersistsAcrossLoginsWithoutChangingPermissionsOrRevokingSessions() throws Exception {
+        var first = login("editor"); var second = login("editor");
+        long version = accounts.findById(editor.id).orElseThrow().authVersion;
+        write("POST", "/api/auth/tutorial/start", first, Map.of("module", "overview")).andExpect(status().isOk());
+        for (String preset : new String[]{"engineer", "inspector", "robot", "astronaut", "bear", "cat"}) {
+            write("POST", "/api/auth/avatar", first, Map.of("avatarKey", preset, "id", root.id, "role", "SUPER_ADMIN"))
+                .andExpect(status().isOk()).andExpect(jsonPath("avatarKey").value(preset)).andExpect(jsonPath("role").value("ADMIN"))
+                .andExpect(jsonPath("tutorialSeen.overview").isNotEmpty()).andExpect(jsonPath("passwordHash").doesNotExist());
+        }
+        mvc.perform(get("/api/auth/me").session(second)).andExpect(status().isOk()).andExpect(jsonPath("avatarKey").value("cat"));
+        mvc.perform(get("/api/auth/me").session(login("editor"))).andExpect(jsonPath("avatarKey").value("cat"));
+        assertThat(accounts.findById(root.id).orElseThrow().avatarKey).isEqualTo("engineer");
+        assertThat(accounts.findById(editor.id).orElseThrow().authVersion).isEqualTo(version);
+    }
+    @Test void avatarRejectsInvalidPresetsAndRequiresLoginCsrfAndCompletedPasswordSetup() throws Exception {
+        var session = login("editor");
+        for (String preset : new String[]{"", "administrator", "https://example.com/image.png", "../cat"})
+            write("POST", "/api/auth/avatar", session, Map.of("avatarKey", preset)).andExpect(status().isBadRequest());
+        write("POST", "/api/auth/avatar", session, Map.of()).andExpect(status().isBadRequest());
+        mvc.perform(post("/api/auth/avatar").session(session).contentType(MediaType.APPLICATION_JSON).content("{\"avatarKey\":\"cat\"}"))
+            .andExpect(status().isForbidden());
+        write("POST", "/api/auth/avatar", new MockHttpSession(), Map.of("avatarKey", "cat")).andExpect(status().isUnauthorized());
+        account("initial-avatar", "ADMIN", true);
+        write("POST", "/api/auth/avatar", login("initial-avatar"), Map.of("avatarKey", "cat"))
+            .andExpect(status().isForbidden()).andExpect(jsonPath("code").value("PASSWORD_CHANGE_REQUIRED"));
+        assertThat(accounts.findById(editor.id).orElseThrow().avatarKey).isEqualTo("engineer");
+    }
+    @Test void oldAccountsWithoutAnAvatarReceiveTheDefaultPreset() throws Exception {
+        editor.avatarKey = null; accounts.saveAndFlush(editor);
+        mvc.perform(get("/api/auth/me").session(login("editor"))).andExpect(jsonPath("avatarKey").value("engineer"));
+    }
     @Test void tutorialIsAutomaticOnlyOncePerModuleAndAccountAcrossLogins() throws Exception {
         var session = login("editor");
         mvc.perform(get("/api/auth/me").session(session)).andExpect(jsonPath("tutorialSeen").isEmpty());

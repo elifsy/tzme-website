@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { Refresh, Search } from '@element-plus/icons-vue';
+import { Search } from '@element-plus/icons-vue';
 import { apiRequest } from '../services/api.js';
 
 const rows = ref([]), total = ref(0), page = ref(1), pageSize = ref(20);
@@ -39,7 +39,7 @@ async function loadOptions() {
     if (!disposed) { modules.value = value.modules || []; actions.value = value.actions || []; }
   } catch { if (!disposed) error.value = '日志筛选选项加载失败，请刷新重试。'; }
 }
-function refresh() { loadOptions(); load(); }
+async function refresh() { await Promise.all([loadOptions(), load()]); }
 onMounted(refresh);
 onBeforeUnmount(() => { disposed = true; request?.abort(); });
 defineExpose({ load: refresh });
@@ -60,9 +60,9 @@ defineExpose({ load: refresh });
       <el-form-item label="操作日期" class="operation-log-dates"><el-date-picker v-model="filters.dates" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" range-separator="至" clearable /></el-form-item>
       <div class="operation-log-filter-actions"><el-button type="primary" native-type="submit" :icon="Search" :loading="loading">查询</el-button><el-button :disabled="!hasFilters" @click="reset">重置</el-button></div>
     </el-form>
-    <el-alert v-if="error" type="error" :title="error" show-icon :closable="false" class="operation-log-error"><el-button text @click="refresh">重新加载</el-button></el-alert>
+    <el-alert v-if="error" type="error" :title="error" show-icon :closable="false" class="operation-log-error" />
     <el-card shadow="never" class="operation-log-table">
-      <template #header><div class="operation-log-table-heading"><span>共 <strong>{{ total.toLocaleString() }}</strong> 条记录</span><el-button :icon="Refresh" :loading="loading" @click="refresh">刷新</el-button></div></template>
+      <template #header><div class="operation-log-table-heading"><span>共 <strong>{{ total.toLocaleString() }}</strong> 条记录</span></div></template>
       <el-table v-loading="loading" :data="rows" row-key="id" stripe>
         <el-table-column label="操作时间" width="180"><template #default="{ row }"><span class="operation-log-date">{{ dateLabel(row.createdAt) }}</span></template></el-table-column>
         <el-table-column label="操作人" min-width="155"><template #default="{ row }"><div class="operation-log-actor"><strong>{{ row.displayName || row.username || '未认证' }}</strong><small>{{ row.username || '账号未识别' }}<span v-if="row.role === 'ANONYMOUS'"> · 登录尝试</span></small></div></template></el-table-column>

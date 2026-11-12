@@ -1,3 +1,5 @@
+import { contactDepartments } from './contactDepartments.js';
+
 export const emptyFacility = () => ({
   title: { zh: "" },
   description: { zh: "" },
@@ -7,6 +9,7 @@ export const emptyFacility = () => ({
 
 export function ensureContactFacilities(value) {
   const result = structuredClone(value);
+  result.contact.departments = contactDepartments(result.contact);
   for (const item of [result.contact, ...result.subsidiaries]) {
     const facility = item.facility || {};
     item.facility = {

@@ -383,6 +383,7 @@ onBeforeUnmount(() => {
               :hotspots="hotspots"
               :selected-industry="selectedIndustry"
               :preview="preview"
+              @loading="threeReady = false"
               @ready="threeReady = true"
               @unavailable="threeFailed = true"
               @select-industry="selectIndustry"

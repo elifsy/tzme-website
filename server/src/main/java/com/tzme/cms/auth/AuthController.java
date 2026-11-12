@@ -60,6 +60,13 @@ public class AuthController {
 
     public record TutorialInput(String module) {}
 
+    public record AvatarInput(String avatarKey) {}
+
+    @PostMapping("/avatar")
+    public AdminAccount.AccountView avatar(@AuthenticationPrincipal AdminPrincipal principal, @RequestBody AvatarInput input) {
+        return tutorials.view(service.updateOwnAvatar(principal.id(), input.avatarKey()));
+    }
+
     @PostMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void password(@AuthenticationPrincipal AdminPrincipal principal,
